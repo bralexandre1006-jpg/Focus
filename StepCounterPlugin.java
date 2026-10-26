@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.SystemClock;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PermissionState;
@@ -82,6 +83,8 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         if (event.sensor.getType() != Sensor.TYPE_STEP_COUNTER) return;
         JSObject ret = new JSObject();
         ret.put("total", (long) event.values[0]);
+        // Heure du dernier demarrage du telephone (le compteur repart de 0 a ce moment-la)
+        ret.put("bootTime", System.currentTimeMillis() - SystemClock.elapsedRealtime());
         notifyListeners("steps", ret);
     }
 
