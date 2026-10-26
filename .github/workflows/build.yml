@@ -24,9 +24,10 @@ jobs:
           mkdir -p www assets
           cp index.html www/index.html
           npm init -y
-          npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app @capgo/capacitor-pedometer
+          npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app
           npx cap init Focus com.alexandre.focus --web-dir www
           npx cap add android
+          cp StepCounterPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
 
       - name: Permissions Android
         run: |
