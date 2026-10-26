@@ -37,7 +37,7 @@ button{border:0;background:none;cursor:pointer}
 .head h1{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.05}
 .head .sub{color:var(--mut);font-size:16px;margin-bottom:6px;text-transform:capitalize}
 .logo-btn{width:52px;height:52px;border-radius:18px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
-.logo-btn svg{width:28px;height:28px}
+.logo-btn svg{width:32px;height:32px}
 
 .card{background:var(--card);border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;animation:rise .6s var(--ease) both}
 .card h3{font-size:14px;color:var(--mut);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
@@ -50,10 +50,11 @@ button{border:0;background:none;cursor:pointer}
 
 /* steps ring */
 .ring-wrap{display:flex;align-items:center;gap:20px}
-.ring{position:relative;width:150px;height:150px;flex-shrink:0}
+.ring{position:relative;width:166px;height:166px;flex-shrink:0;margin:-8px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .bgc{stroke:var(--card2)}
-.ring .fgc{stroke:var(--acc);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease);filter:drop-shadow(0 0 10px rgba(215,255,58,.35))}
+.ring .fgc,.ring .glw{stroke:var(--acc);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease)}
+.ring .glw{opacity:.5}
 .ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
 .ring .mid b{font-size:34px;font-weight:800;letter-spacing:-.04em}
 .ring .mid span{font-size:14px;color:var(--mut)}
@@ -407,7 +408,8 @@ button{border:0;background:none;cursor:pointer}
       <h3><i style="background:var(--acc)"></i>Pas du jour</h3>
       <div class="ring-wrap">
         <div class="ring">
-          <svg viewBox="0 0 120 120"><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
+          <svg viewBox="-12 -12 144 144"><defs><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
+          <circle class="glw" id="ringGl" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7" filter="url(#ringBlur)"/>
           <circle class="fgc" id="ringFg" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
           <div class="mid"><b id="stepsNow">0</b><span>pas</span></div>
         </div>
@@ -566,7 +568,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.6<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.7<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -714,6 +716,27 @@ button{border:0;background:none;cursor:pointer}
   </div>
 </div>
 
+<!-- PRODUIT INCONNU -->
+<div class="modal" id="prodModal">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4>Nouveau produit</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody">
+    <div class="hint" style="margin:0 0 6px">Ce produit n'est pas encore dans la base. Recopie les valeurs <b style="color:var(--txt)">pour 100 g</b> de l'emballage : Focus le reconnaîtra à chaque scan.</div>
+    <div class="hint" style="margin:0 0 4px;font-size:12px">Code-barres <span id="npCode"></span></div>
+    <div class="mini-lbl">Nom du produit</div>
+    <label class="field"><input id="npName" placeholder="Ex : Skyr nature Milbona"></label>
+    <div class="mini-lbl">Calories pour 100 g</div>
+    <label class="field"><input id="npKcal" type="text" inputmode="decimal" placeholder="0"><span>kcal</span></label>
+    <div class="mini-lbl">Protéines · Glucides · Lipides pour 100 g</div>
+    <div class="qgrid">
+      <label class="field"><input id="npP" type="text" inputmode="decimal" placeholder="P"><span>g</span></label>
+      <label class="field"><input id="npC" type="text" inputmode="decimal" placeholder="G"><span>g</span></label>
+      <label class="field"><input id="npF" type="text" inputmode="decimal" placeholder="L"><span>g</span></label>
+    </div>
+  </div>
+  <div class="mfoot"><button class="btn full press" id="npSave">Enregistrer le produit</button></div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div class="dim" id="dim"></div>
 <div class="sheet" id="sheet"><h4 id="shT"></h4><p id="shP"></p><div class="row"><button class="btn ghost press" id="shNo">Annuler</button><button class="btn danger press" id="shYes">Confirmer</button></div></div>
@@ -849,7 +872,9 @@ const burst = (el, colors=['#D7FF3A','#3DDC84','#5AB8FF','#FF6B4A','#B88CFF']) =
 const stack = [];
 const syncDim = () => $('#dim').classList.toggle('on', stack.length > 0);
 const openOv = id => { const el = $('#'+id); el.classList.add('on'); if (!stack.includes(id)) stack.push(id); syncDim(); };
-const closeOv = id => { const el = $('#'+id); el.classList.remove('on'); const i = stack.indexOf(id); if (i>-1) stack.splice(i,1); syncDim(); document.activeElement && document.activeElement.blur(); };
+const closeOv = id => { const el = $('#'+id); el.classList.remove('on'); const i = stack.indexOf(id); if (i>-1) stack.splice(i,1); syncDim(); document.activeElement && document.activeElement.blur();
+  if (id === 'prodModal' && prodRes) { const r = prodRes; prodRes = null; r(null); } };
+let prodRes = null;
 let sheetRes = null;
 const confirmSheet = (t, p, o = {}) => new Promise(res => {
   $('#shT').textContent=t; $('#shP').textContent=p;
@@ -960,7 +985,7 @@ const renderSteps = () => {
   const s = day().steps || 0, g = goals().steps;
   countTo($('#stepsNow'), s);
   $('#stepGoalTxt').textContent = fmt(g);
-  $('#ringFg').style.strokeDashoffset = 326.7 * (1 - Math.min(1, s/g));
+  const off = 326.7 * (1 - Math.min(1, s/g)); $('#ringFg').style.strokeDashoffset = off; $('#ringGl').style.strokeDashoffset = off;
 };
 
 /* poids */
@@ -1118,13 +1143,30 @@ const lookupProduct = async () => {
   S.barcodes ||= {};
   if (S.barcodes[code]) { sfx.ok(); buzz('success'); return S.barcodes[code]; }
   toast('Recherche du produit…');
-  try {
-    const prod = await offFetch(code);
-    if (!prod) { sfx.no(); buzz('medium'); toast('Produit introuvable'); return null; }
-    S.barcodes[code] = prod;
-    S.foods[prod.name.toLowerCase()] = { name:prod.name, kcal:prod.kcal, p:prod.p, c:prod.c, f:prod.f };
-    save(); sfx.ok(); buzz('success'); return prod;
-  } catch(e) { sfx.no(); toast('Pas de connexion internet'); return null; }
+  let prod = null, offline = false;
+  try { prod = await offFetch(code); } catch(e) { offline = true; }
+  if (!prod || !prod.kcal) {
+    sfx.no(); buzz('medium'); toast(offline ? 'Pas de connexion : entre les valeurs' : 'Produit inconnu : entre les valeurs');
+    prod = await askProduct(code, prod);
+    if (!prod) return null;
+  }
+  S.barcodes[code] = prod;
+  S.foods[prod.name.toLowerCase()] = { name:prod.name, kcal:prod.kcal, p:prod.p, c:prod.c, f:prod.f };
+  save(); sfx.ok(); buzz('success'); return prod;
+};
+const askProduct = (code, partial) => new Promise(res => {
+  prodRes = res;
+  $('#npCode').textContent = code;
+  $('#npName').value = partial && partial.name && partial.name !== 'Produit' ? partial.name : '';
+  ['npKcal','npP','npC','npF'].forEach(i => $('#'+i).value = '');
+  openOv('prodModal');
+  setTimeout(() => ($('#npName').value ? $('#npKcal') : $('#npName')).focus(), 500);
+});
+$('#npSave').onclick = () => {
+  const name = $('#npName').value.trim(), kcal = num($('#npKcal').value);
+  if (!name || !kcal) { sfx.no(); buzz('medium'); toast('Indique le nom et les calories'); return; }
+  const prod = { code:$('#npCode').textContent, name, kcal:Math.round(kcal), p:num($('#npP').value), c:num($('#npC').value), f:num($('#npF').value), own:true };
+  const r = prodRes; prodRes = null; closeOv('prodModal'); toast('Produit enregistré ✓'); r && r(prod);
 };
 let qPer = null;
 const calcQ = () => {
