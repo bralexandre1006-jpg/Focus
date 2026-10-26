@@ -207,6 +207,29 @@ button{border:0;background:none;cursor:pointer}
 .rem .lbl{display:block;width:100%;margin-top:10px;background:var(--card2);border:2px solid transparent;border-radius:12px;min-height:48px;padding:12px;outline:0;font-size:16px;font-weight:700;line-height:1.35;resize:none;overflow:hidden}
 .rem .lbl:focus{border-color:var(--acc)}
 
+/* scanner */
+.bc{width:22px;height:22px;flex-shrink:0}
+.prod{background:var(--card);border-radius:18px;padding:14px;margin-top:12px;animation:rise .4s var(--ease) both}
+.prod b{display:block;font-size:17px;line-height:1.3}
+.prod small{display:block;color:var(--mut);font-size:13px;margin-top:4px}
+
+/* bilan */
+.rc-range{color:var(--mut);font-size:16px;margin:-4px 0 14px}
+.rc-hero{background:linear-gradient(155deg,#16291B 0%,#101712 70%);border-radius:24px;padding:18px;margin-bottom:10px;animation:rise .5s var(--ease) both}
+.rc-hero small{color:#7C8F80;font-size:13px;text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+.rc-hero b{display:block;font-size:46px;letter-spacing:-.045em;margin:4px 0 6px}
+.rc-hero .l{font-size:15px;color:#A9BBAD;line-height:1.45}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rc-tile{background:var(--card);border-radius:20px;padding:14px;animation:rise .5s var(--ease) both}
+.rc-grid .rc-tile:nth-child(2){animation-delay:.05s}.rc-grid .rc-tile:nth-child(3){animation-delay:.1s}.rc-grid .rc-tile:nth-child(4){animation-delay:.15s}
+.rc-tile small{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;display:flex;align-items:center;gap:6px}
+.rc-tile small i{width:7px;height:7px;border-radius:50%}
+.rc-tile b{display:block;font-size:26px;letter-spacing:-.035em;margin:6px 0 2px}
+.rc-tile span{font-size:13px;color:var(--mut);line-height:1.35;display:block}
+.rc-verdict{background:var(--card);border-radius:20px;padding:16px;margin-top:10px;font-size:16px;line-height:1.5;animation:rise .5s .2s var(--ease) both}
+.rc-verdict p+p{margin-top:6px}
+.g{color:var(--ok)}.r{color:var(--bad)}
+
 /* splash */
 #splash{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .55s var(--ease)}
 #splash.out{opacity:0;pointer-events:none}
@@ -357,6 +380,7 @@ button{border:0;background:none;cursor:pointer}
 <body>
 <svg width="0" height="0" style="position:absolute">
   <defs>
+    <symbol id="bcIco" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10.5 8v8M14 8v8M17 8v8"/></symbol>
     <symbol id="logo" viewBox="255 155 535 670">
       <path fill="currentColor" d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/>
       <path fill="currentColor" d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/>
@@ -458,6 +482,7 @@ button{border:0;background:none;cursor:pointer}
   <!-- STATS -->
   <section class="screen" id="s-stats">
     <div class="head"><div><div class="sub">Ta progression</div><h1>Stats</h1></div></div>
+    <button class="btn full press" id="openRecap" style="margin-bottom:14px">📊 Bilan de la semaine</button>
     <div class="seg" id="seg"><div class="si"></div>
       <button class="on" data-p="week">Semaine</button><button data-p="month">Mois</button><button data-p="year">Année</button>
     </div>
@@ -524,17 +549,14 @@ button{border:0;background:none;cursor:pointer}
     <div class="card">
       <h3><i style="background:var(--acc)"></i>Podomètre</h3>
       <div class="srow"><div class="l">État</div><span class="sval" id="pdState">—</span></div>
-      <div class="srow"><div class="l">Pas aujourd'hui (Focus)</div><span class="sval" id="pdToday">—</span></div>
-      <div class="srow"><div class="l">Compteur du téléphone</div><span class="sval" id="pdRaw">—</span></div>
-      <div class="srow"><div class="l">Téléphone allumé depuis</div><span class="sval" id="pdBoot">—</span></div>
-      <div class="srow"><div class="l">Focus compte depuis</div><span class="sval" id="pdSince">—</span></div>
-      <div class="srow"><div class="l">Dernière lecture</div><span class="sval" id="pdAt">—</span></div>
-      <div class="hint">Le compteur du téléphone additionne tous tes pas depuis son dernier redémarrage, sur plusieurs jours. Focus, lui, compte tes pas jour par jour à partir de son installation. Si le téléphone a redémarré aujourd'hui, Focus reprend tout son compteur.</div>
+      <div class="srow"><div class="l">Aujourd'hui</div><span class="sval" id="pdToday">—</span></div>
+      <button class="btn ghost full press hidden" id="pdSync" style="margin-top:12px"></button>
     </div>
     <div class="card">
       <h3><i style="background:var(--spt)"></i>Expérience</h3>
       <div class="srow"><div class="l">Sons</div><button class="tgl" id="tSound"></button></div>
       <div class="srow"><div class="l">Vibrations</div><button class="tgl" id="tHaptic"></button></div>
+      <div class="srow"><div class="l">Bilan du dimanche à 19 h</div><button class="tgl" id="tRecap"></button></div>
     </div>
     <div class="card">
       <h3><i style="background:var(--cal)"></i>Données</h3>
@@ -544,7 +566,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.4<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.6<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -626,6 +648,12 @@ button{border:0;background:none;cursor:pointer}
       <div id="pickList"></div>
     </div>
     <div id="addQuick" class="hidden">
+      <button class="btn full press" id="qScan"><svg class="bc"><use href="#bcIco"/></svg>Scanner un produit</button>
+      <div id="qProd" class="hidden">
+        <div class="prod"><b id="qPName"></b><small id="qPInfo"></small></div>
+        <div class="mini-lbl">Quantité mangée</div>
+        <label class="field"><input id="qGrams" type="text" inputmode="decimal" placeholder="100"><span>g</span></label>
+      </div>
       <div class="mini-lbl">Nom (facultatif)</div>
       <label class="field"><input id="qName" placeholder="Ex : Pomme"></label>
       <div class="mini-lbl">Calories</div>
@@ -647,6 +675,13 @@ button{border:0;background:none;cursor:pointer}
   </div>
 </div>
 
+<!-- BILAN -->
+<div class="modal" id="recapModal">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4>Bilan de la semaine</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody" id="rcBody"></div>
+</div>
+
 <!-- RECIPE EDITOR -->
 <div class="modal" id="recModal">
   <div class="mgrab"></div>
@@ -665,7 +700,10 @@ button{border:0;background:none;cursor:pointer}
     </div>
     <div class="lbl-s" style="margin-top:0">Ingrédients · valeurs pour 100 g</div>
     <div id="ingList"></div>
-    <button class="btn ghost full press" id="ingAdd">+ Ajouter un ingrédient</button>
+    <div style="display:flex;gap:10px">
+      <button class="btn ghost press" id="ingAdd" style="flex:1">+ Ingrédient</button>
+      <button class="btn press" id="ingScan" style="flex:1"><svg class="bc"><use href="#bcIco"/></svg>Scanner</button>
+    </div>
     <datalist id="foodList"></datalist>
   </div>
   <div class="mfoot">
@@ -703,8 +741,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const SK = 'focus.v1';
 const blank = () => ({ v:2, onboarded:false,
   profile:{ name:'', height:null, weight:null, startWeight:null, targetWeight:null, trainingDays:[0,2,4], stepGoal:8000, calGoal:2200, proteinGoal:null },
-  settings:{ sound:true, haptic:true, reminders:[] },
-  days:{}, pedo:{}, recipes:[], foods:{}, program:null });
+  settings:{ sound:true, haptic:true, recap:true, reminders:[] },
+  days:{}, pedo:{}, recipes:[], foods:{}, barcodes:{}, program:null });
 let S;
 const load = raw => {
   const s = Object.assign(blank(), raw || {});
@@ -1014,7 +1052,8 @@ const openAdd = slot => {
   addSlot = slot; pickId = null; portions = 1;
   const s = SLOTS.find(x=>x[0]===slot);
   $('#addTitle').textContent = `${s[2]} ${s[1]}`;
-  $('#recSearch').value = ''; ['qName','qKcal','qP','qC','qF'].forEach(i=>$('#'+i).value='');
+  $('#recSearch').value = ''; ['qName','qKcal','qP','qC','qF','qGrams'].forEach(i=>$('#'+i).value='');
+  qPer = null; $('#qProd').classList.add('hidden');
   setAddMode(S.recipes.length ? 'rec' : 'quick');
   renderPick(); updateAddFoot(); openOv('addModal'); sfx.tap(); buzz();
 };
@@ -1039,6 +1078,69 @@ const renderPick = () => {
   $$('#pickList .pick').forEach(b => b.onclick = () => { pickId = b.dataset.id; portions = 1; renderPick(); updateAddFoot(); sfx.tap(); buzz(); });
 };
 $('#recSearch').addEventListener('input', renderPick);
+
+/* ---------- SCANNER (ML Kit + Open Food Facts) ---------- */
+const scanBarcode = async () => {
+  const BS = P.BarcodeScanner;
+  if (!BS) { const c = window.prompt('Code-barres du produit'); return c ? c.trim() : null; }
+  try {
+    const m = await BS.isGoogleBarcodeScannerModuleAvailable();
+    if (!m.available) {
+      toast('Installation du scanner…');
+      await new Promise(async res => {
+        const t = setTimeout(res, 45000);
+        await BS.addListener('googleBarcodeScannerModuleInstallProgress', e => { if (e.state === 4 || e.state === 3 || e.state === 5) { clearTimeout(t); res(); } });
+        await BS.installGoogleBarcodeScannerModule();
+      });
+    }
+    const r = await BS.scan({ formats:['EAN_13','EAN_8','UPC_A','UPC_E'] });
+    return r && r.barcodes && r.barcodes[0] ? r.barcodes[0].rawValue : null;
+  } catch(e) {
+    if (!/cancel/i.test(String(e && (e.message || e)))) { sfx.no(); toast('Scan impossible'); }
+    return null;
+  }
+};
+const offFetch = async code => {
+  const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}.json?fields=product_name,product_name_fr,brands,nutriments`);
+  const j = await r.json();
+  if (j.status !== 1 || !j.product) return null;
+  const p = j.product, n = p.nutriments || {};
+  let kcal = n['energy-kcal_100g'];
+  if (kcal == null && n['energy_100g'] != null) kcal = n['energy_100g'] / 4.184;
+  const brand = p.brands ? p.brands.split(',')[0].trim() : '';
+  const base = (p.product_name_fr || p.product_name || 'Produit').trim();
+  const r1 = x => Math.round((+x || 0) * 10) / 10;
+  return { code, name: brand && !base.toLowerCase().includes(brand.toLowerCase()) ? `${base} · ${brand}` : base,
+    kcal: Math.round(+kcal || 0), p: r1(n.proteins_100g), c: r1(n.carbohydrates_100g), f: r1(n.fat_100g) };
+};
+const lookupProduct = async () => {
+  const code = await scanBarcode(); if (!code) return null;
+  S.barcodes ||= {};
+  if (S.barcodes[code]) { sfx.ok(); buzz('success'); return S.barcodes[code]; }
+  toast('Recherche du produit…');
+  try {
+    const prod = await offFetch(code);
+    if (!prod) { sfx.no(); buzz('medium'); toast('Produit introuvable'); return null; }
+    S.barcodes[code] = prod;
+    S.foods[prod.name.toLowerCase()] = { name:prod.name, kcal:prod.kcal, p:prod.p, c:prod.c, f:prod.f };
+    save(); sfx.ok(); buzz('success'); return prod;
+  } catch(e) { sfx.no(); toast('Pas de connexion internet'); return null; }
+};
+let qPer = null;
+const calcQ = () => {
+  if (!qPer) return; const k = num($('#qGrams').value) / 100;
+  $('#qKcal').value = Math.round(qPer.kcal * k); $('#qP').value = f1(qPer.p * k); $('#qC').value = f1(qPer.c * k); $('#qF').value = f1(qPer.f * k);
+};
+$('#qGrams').addEventListener('input', calcQ);
+$('#qScan').onclick = async () => {
+  const prod = await lookupProduct(); if (!prod) return;
+  qPer = prod;
+  $('#qPName').textContent = prod.name;
+  $('#qPInfo').textContent = `Pour 100 g : ${fmt(prod.kcal)} kcal · P ${f1(prod.p)} · G ${f1(prod.c)} · L ${f1(prod.f)}`;
+  $('#qProd').classList.remove('hidden');
+  $('#qName').value = prod.name; $('#qGrams').value = '100'; calcQ();
+  setTimeout(() => { $('#qGrams').focus(); $('#qGrams').select(); }, 300);
+};
 const updateAddFoot = () => {
   const btn = $('#addConfirm');
   $('#portionRow').classList.toggle('hidden', addMode!=='rec' || !pickId);
@@ -1135,6 +1237,16 @@ $('#rpPlus').onclick  = () => { draft.portions = Math.min(50, draft.portions+1);
 $('#ingAdd').onclick = () => {
   draft.ingredients.push(blankIng()); renderIngs(); sfx.tap(); buzz();
   const last = $$('#ingList .ing').at(-1); last.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>last.querySelector('input').focus(), 350);
+};
+$('#ingScan').onclick = async () => {
+  const prod = await lookupProduct(); if (!prod) return;
+  const s = x => String(x).replace('.', ',');
+  const g = { name:prod.name, qty:'', kcal:s(prod.kcal), p:s(prod.p), c:s(prod.c), f:s(prod.f) };
+  const last = draft.ingredients.at(-1);
+  if (last && !last.name.trim() && !num(last.qty)) draft.ingredients[draft.ingredients.length - 1] = g; else draft.ingredients.push(g);
+  renderIngs(); updateTotals(); toast('Produit ajouté, indique la quantité');
+  const box = $$('#ingList .ing').at(-1); box.scrollIntoView({ behavior:'smooth', block:'center' });
+  setTimeout(() => box.querySelector('[data-k="qty"]').focus(), 400);
 };
 $('#rSave').onclick = e => {
   draft.name = $('#rName').value.trim();
@@ -1300,6 +1412,69 @@ const renderHistory = () => {
 };
 RENDER.history = renderHistory;
 
+/* ---------- BILAN DE LA SEMAINE ---------- */
+// Dimanche : semaine en cours. Les autres jours : semaine précédente complète.
+const recapRange = () => {
+  const n = new Date(), back = wd(n) === 6 ? 0 : 7;
+  const a = new Date(n.getFullYear(), n.getMonth(), n.getDate() - wd(n) - back), b = new Date(a); b.setDate(a.getDate() + 6);
+  return [a, b];
+};
+const avgOf = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+const goalsOn = k => {
+  const pi = progInfo(k), wk = pi && !pi.done ? pi.wk : null, p = S.profile;
+  return { steps:(wk && wk.steps) || p.stepGoal || 8000, kcal:(wk && wk.calories) || p.calGoal || 2200,
+    td: gymDays(pi) || p.trainingDays, target: wk && wk.targetWeight };
+};
+const openRecap = () => {
+  const [a, b] = recapRange(), now = new Date();
+  const ks = eachDay(a, b).filter(k => parseKey(k) <= now);
+  const pa = new Date(a); pa.setDate(a.getDate() - 7); const pb = new Date(a); pb.setDate(a.getDate() - 1);
+  const D = k => S.days[k] || {};
+  const ws = ks.map(k => D(k).weight).filter(Boolean), pws = eachDay(pa, pb).map(k => D(k).weight).filter(Boolean);
+  const wAvg = avgOf(ws), pwAvg = avgOf(pws);
+  const stTot = ks.reduce((s, k) => s + (D(k).steps || 0), 0), stHit = ks.filter(k => (D(k).steps || 0) >= goalsOn(k).steps).length;
+  const calK = ks.filter(k => D(k).calories > 0), calAvg = avgOf(calK.map(k => D(k).calories));
+  const calHit = calK.filter(k => D(k).calories <= goalsOn(k).kcal * 1.05).length;
+  const protAvg = avgOf(calK.map(k => sumMeals(D(k).meals || []).p));
+  const planned = ks.filter(k => goalsOn(k).td.includes(wd(parseKey(k)))).length;
+  const done = ks.filter(k => D(k).workout === true).length;
+  const tgt = goalsOn(key(b)).target;
+  const range = `Du ${a.getDate()} ${a.toLocaleDateString('fr-BE', { month:'long' })} au ${b.getDate()} ${b.toLocaleDateString('fr-BE', { month:'long' })}`;
+
+  let hero = '<small>Poids moyen</small>';
+  if (wAvg) {
+    hero += `<b>${f1(wAvg)} kg</b><div class="l">`;
+    if (pwAvg) { const d = wAvg - pwAvg; hero += `${d < 0 ? '▼ −' : d > 0 ? '▲ +' : '= '}${f1(Math.abs(d))} kg par rapport à la semaine d'avant`; }
+    else hero += `${ws.length} pesée${ws.length > 1 ? 's' : ''} cette semaine`;
+    if (tgt) { const e = wAvg - tgt; hero += `<br>Cible du programme : ${f1(tgt)} kg · ${Math.abs(e) < .05 ? 'pile dans les temps' : e > 0 ? `${f1(e)} kg au-dessus` : `${f1(-e)} kg d'avance`}`; }
+    hero += '</div>';
+  } else hero += `<b>—</b><div class="l">Aucune pesée cette semaine. Pèse-toi chaque matin pour suivre ta courbe.</div>`;
+
+  const tiles = [
+    ['var(--acc)', 'Pas', fmt(stTot), `${fmt(stTot / Math.max(1, ks.length))} / jour · objectif atteint ${stHit}/${ks.length} j`],
+    ['var(--cal)', 'Calories', calAvg ? fmt(calAvg) : '—', calK.length ? `moy. / jour noté · dans l'objectif ${calHit}/${calK.length} j` : 'aucun repas noté'],
+    ['var(--pro)', 'Protéines', protAvg ? Math.round(protAvg) + ' g' : '—', protAvg && goals().protein ? `moy. / jour · objectif ${goals().protein} g` : 'moyenne par jour noté'],
+    ['var(--spt)', 'Séances', `${done}/${planned || done}`, done >= planned && planned ? 'toutes faites, bravo' : planned ? `${planned - Math.min(done, planned)} manquée${planned - done > 1 ? 's' : ''}` : 'aucune prévue'],
+  ];
+
+  const good = [], work = [];
+  if (pwAvg && wAvg) (wAvg < pwAvg ? good : work).push(wAvg < pwAvg ? `Ton poids moyen baisse de ${f1(pwAvg - wAvg)} kg.` : `Ton poids moyen ne baisse pas cette semaine : regarde d'abord tes calories.`);
+  if (planned) (done >= planned ? good : work).push(done >= planned ? 'Toutes tes séances sont faites.' : `${planned - done} séance${planned - done > 1 ? 's' : ''} manquée${planned - done > 1 ? 's' : ''}.`);
+  if (calK.length) (calHit >= Math.ceil(calK.length * .7) ? good : work).push(calHit >= Math.ceil(calK.length * .7) ? `Calories tenues ${calHit} jours sur ${calK.length}.` : `Calories dépassées ${calK.length - calHit} jour${calK.length - calHit > 1 ? 's' : ''}.`);
+  if (ks.length) (stHit >= Math.ceil(ks.length * .6) ? good : work).push(stHit >= Math.ceil(ks.length * .6) ? `Objectif de pas atteint ${stHit} jours.` : (stHit ? `Objectif de pas atteint seulement ${stHit} jour${stHit > 1 ? 's' : ''} : ajoute une marche.` : 'Objectif de pas jamais atteint : ajoute une marche.'));
+  if (calK.length < ks.length) work.push(`Repas notés ${calK.length} jour${calK.length > 1 ? 's' : ''} sur ${ks.length}.`);
+
+  $('#rcBody').innerHTML = `<div class="rc-range">${range}</div>
+    <div class="rc-hero">${hero}</div>
+    <div class="rc-grid">${tiles.map(t => `<div class="rc-tile"><small><i style="background:${t[0]}"></i>${t[1]}</small><b>${t[2]}</b><span>${t[3]}</span></div>`).join('')}</div>
+    <div class="rc-verdict">${good.map(x => `<p><span class="g">✓</span> ${x}</p>`).join('')}${work.map(x => `<p><span class="r">→</span> ${x}</p>`).join('') || ''}${!good.length && !work.length ? '<p>Remplis tes journées pour avoir un vrai bilan la semaine prochaine.</p>' : ''}</div>
+    <button class="btn full press" id="rcClose" style="margin-top:14px">Fermer</button>`;
+  $('#rcClose').onclick = () => { closeOv('recapModal'); sfx.tap(); buzz(); };
+  S.settings.recapSeen = key(a); save();
+  openOv('recapModal'); sfx.ok(); buzz('success');
+};
+$('#openRecap').onclick = openRecap;
+
 /* ---------- NOTIFICATIONS ---------- */
 const LN = P.LocalNotifications;
 const askNotif = async () => {
@@ -1321,6 +1496,8 @@ const scheduleAll = async () => {
       daysTo.forEach(dIdx => list.push({ id: 1000 + ri*10 + dIdx, title:'Focus', body: r.label || 'Remplis ta journée',
         schedule:{ on:{ weekday: ((dIdx+1)%7)+1, hour:h, minute:m }, allowWhileIdle:true } }));
     });
+    if (S.settings.recap !== false) list.push({ id:9000, title:'Ton bilan de la semaine est prêt 📊', body:'Poids moyen, pas, calories et séances : ouvre Focus pour voir où tu en es.',
+      schedule:{ on:{ weekday:1, hour:19, minute:0 }, allowWhileIdle:true } });
     if (list.length) await LN.schedule({notifications:list});
   } catch(e){ console.warn(e); }
 };
@@ -1401,15 +1578,23 @@ const renderProgSettings = () => {
 const renderPedo = () => {
   const pd = S.pedo;
   $('#pdState').textContent = $('#pedoTxt').textContent || '—';
-  const dt = t => t ? new Date(t).toLocaleString('fr-BE', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-  $('#pdToday').textContent = fmt(day().steps || 0) + ' pas';
-  $('#pdRaw').textContent = pd.last != null ? fmt(pd.last) + ' pas' : '—';
-  $('#pdBoot').textContent = dt(pd.boot);
-  $('#pdSince').textContent = dt(pd.since);
-  $('#pdAt').textContent = pd.at ? new Date(pd.at).toLocaleTimeString('fr-BE', { hour:'2-digit', minute:'2-digit' }) : '—';
+  const t = day().steps || 0, btn = $('#pdSync');
+  $('#pdToday').textContent = fmt(t) + ' pas';
+  const show = pd.last != null && pd.last > t;
+  btn.classList.toggle('hidden', !show);
+  if (show) btn.textContent = `Prendre les ${fmt(pd.last)} pas du téléphone`;
+};
+$('#pdSync').onclick = async () => {
+  const raw = S.pedo.last; if (raw == null) return;
+  if (!(await confirmSheet(`Passer à ${fmt(raw)} pas aujourd'hui ?`, 'Ce chiffre inclut tous les pas faits depuis que ton téléphone est allumé, y compris les jours d\'avant s\'il n\'a pas redémarré.', { yes:'Utiliser', danger:false }))) return;
+  day().steps = raw; save(); renderPedo(); sfx.ok(); buzz('success'); toast(`${fmt(raw)} pas aujourd'hui ✓`);
 };
 const tgl = (id,f) => { const el=$(id); el.onclick=()=>{ S.settings[f]=!S.settings[f]; save(); el.classList.toggle('on',S.settings[f]); sfx.tap(); buzz(); }; };
 tgl('#tSound','sound'); tgl('#tHaptic','haptic');
+$('#tRecap').onclick = async () => {
+  S.settings.recap = S.settings.recap === false; save(); $('#tRecap').classList.toggle('on', S.settings.recap);
+  if (S.settings.recap) await askNotif(); scheduleAll(); sfx.tap(); buzz();
+};
 const renderSettings = () => {
   const p = S.profile;
   $('#pName').value=p.name||''; $('#pHeight').value=p.height||''; $('#pSteps').value=p.stepGoal||''; $('#pCal').value=p.calGoal||'';
@@ -1417,6 +1602,7 @@ const renderSettings = () => {
   $('#pProt').value = p.proteinGoal || '';
   daysPicker($('#pDays'), p.trainingDays, save);
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
+  $('#tRecap').classList.toggle('on', S.settings.recap !== false);
   renderRems(); renderProgSettings(); renderPedo();
 };
 RENDER.settings = renderSettings;
@@ -1501,7 +1687,12 @@ let booted = false;
 const boot = () => {
   if (booted) return; booted = true;
   $('#tabbar').classList.remove('hide');
-  setTimeout(moveInd, 60); renderToday(); startSteps();
+  setTimeout(moveInd, 60); renderToday(); startSteps(); scheduleAll();
+  if (LN) LN.addListener('localNotificationActionPerformed', e => { if (e && e.notification && e.notification.id === 9000) setTimeout(openRecap, 400); });
+  // Ouvre le bilan une fois, le dimanche soir ou le lundi
+  const n = new Date(), [ra, rb] = recapRange();
+  if (S.settings.recap !== false && ((wd(n) === 6 && n.getHours() >= 19) || wd(n) === 0) && S.settings.recapSeen !== key(ra)
+      && Object.keys(S.days).some(k => { const t = parseKey(k); return t >= ra && t <= rb; })) setTimeout(openRecap, 900);
   if (P.App) P.App.addListener('backButton', () => {
     const top = stack.at(-1);
     if (top==='sheet') endSheet(false); else if (top) closeOv(top);
