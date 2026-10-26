@@ -37,7 +37,11 @@ jobs:
       - name: Icone de l'app
         continue-on-error: true
         run: |
-          cp icon.png assets/logo.png
+          if [ -f icon-foreground.png ]; then
+            cp icon-only.png icon-foreground.png icon-background.png splash.png splash-dark.png assets/
+          else
+            cp icon.png assets/logo.png
+          fi
           npx --yes @capacitor/assets generate --android --iconBackgroundColor '#0B0B0F' --iconBackgroundColorDark '#0B0B0F' --splashBackgroundColor '#0B0B0F' --splashBackgroundColorDark '#0B0B0F'
 
       - name: Synchroniser
