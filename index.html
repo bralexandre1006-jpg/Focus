@@ -319,10 +319,18 @@ button{border:0;background:none;cursor:pointer}
 .tot .k span{color:var(--mut);font-size:15px}
 .tot .chipsm{font-size:14px;gap:14px;margin-top:8px}
 .ing{background:var(--card);border-radius:20px;padding:14px;margin-bottom:10px;animation:rise .4s var(--ease) both}
-.ing .top{display:flex;gap:8px;margin-bottom:8px}
-.ing .top .field{flex:1;height:50px}
-.ing .top .field.q{flex:0 0 108px}
-.ing .top .field input{font-size:17px}
+.ing .field{height:50px}
+.ing .field input{font-size:17px}
+.ing .ing-l{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;font-weight:800;margin:14px 0 6px 4px}
+.ing .qrow{display:flex;gap:8px;align-items:center}
+.ing .qrow .field{flex:1;min-width:0}
+.unit{display:flex;background:var(--card2);border-radius:14px;padding:4px;flex-shrink:0}
+.unit button{height:42px;padding:0 14px;border-radius:10px;font-weight:800;font-size:15px;color:var(--mut);transition:background .25s,color .25s}
+.unit button.on{background:var(--txt);color:#0B0B0F}
+.pwrow{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px;color:var(--mut);animation:rise .35s var(--ease) both}
+.pwrow .field{width:140px;flex:none}
+.ing .calc{color:var(--txt)}
+.ing .calc em{font-style:normal;color:var(--mut)}
 .ing .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .ing .g4 label{display:block}
 .ing .g4 small{display:block;font-size:11px;color:var(--mut);margin:0 0 4px 4px;text-transform:uppercase;letter-spacing:.04em}
@@ -568,7 +576,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.7<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.8<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -700,7 +708,7 @@ button{border:0;background:none;cursor:pointer}
       <div class="k"><b id="rKcal">0</b><span>kcal / portion</span></div>
       <div class="chipsm" id="rMac"></div>
     </div>
-    <div class="lbl-s" style="margin-top:0">Ingrédients · valeurs pour 100 g</div>
+    <div class="lbl-s" style="margin-top:0">Ingrédients</div>
     <div id="ingList"></div>
     <div style="display:flex;gap:10px">
       <button class="btn ghost press" id="ingAdd" style="flex:1">+ Ingrédient</button>
@@ -1066,9 +1074,10 @@ const renderNutrition = () => {
 
 /* ---------- AJOUT REPAS ---------- */
 let addSlot = 'snack', addMode = 'rec', pickId = null, portions = 1;
+const ingGrams = i => i.unit === 'pc' ? num(i.qty) * num(i.pw) : num(i.qty);
 const recTotals = r => {
   const t = {kcal:0,p:0,c:0,f:0};
-  (r.ingredients||[]).forEach(i => { const k = num(i.qty)/100; t.kcal += k*num(i.kcal); t.p += k*num(i.p); t.c += k*num(i.c); t.f += k*num(i.f); });
+  (r.ingredients||[]).forEach(i => { const k = ingGrams(i)/100; t.kcal += k*num(i.kcal); t.p += k*num(i.p); t.c += k*num(i.c); t.f += k*num(i.f); });
   const n = Math.max(1, num(r.portions) || 1);
   return { total:t, per:{ kcal:t.kcal/n, p:t.p/n, c:t.c/n, f:t.f/n } };
 };
@@ -1227,7 +1236,7 @@ RENDER.meals = renderMeals;
 $('#newRec').onclick = () => openRecipe(null);
 
 let draft = null;
-const blankIng = () => ({ name:'', qty:'', kcal:'', p:'', c:'', f:'' });
+const blankIng = () => ({ name:'', qty:'', unit:'g', pw:'', kcal:'', p:'', c:'', f:'' });
 const openRecipe = id => {
   const r = id && S.recipes.find(x=>x.id===id);
   draft = r ? JSON.parse(JSON.stringify(r)) : { id:null, name:'', emoji:'🍽️', portions:1, ingredients:[blankIng()] };
@@ -1241,31 +1250,51 @@ const renderEmojis = () => {
   $('#emojiRow').innerHTML = EMOJIS.map(e=>`<button class="${e===draft.emoji?'on':''}">${e}</button>`).join('');
   $$('#emojiRow button').forEach(b => b.onclick = () => { draft.emoji = b.textContent; renderEmojis(); sfx.tap(); buzz(); });
 };
-const ingKcal = i => num(i.qty)/100*num(i.kcal);
+const ingKcal = i => ingGrams(i)/100*num(i.kcal);
+const ingCalc = i => { const g = ingGrams(i), k = g/100;
+  if (!g) return '<em>Indique la quantité</em>';
+  return `${i.unit==='pc' ? `${fmt(g)} g · ` : ''}<b>${fmt(k*num(i.kcal))} kcal</b> <em>· P ${Math.round(k*num(i.p))} · G ${Math.round(k*num(i.c))} · L ${Math.round(k*num(i.f))}</em>`; };
+let ingRendering = false;
 const renderIngs = () => {
-  $('#ingList').innerHTML = draft.ingredients.map((g,i) => `<div class="ing" data-i="${i}">
-    <div class="top">
-      <label class="field"><input data-k="name" list="foodList" placeholder="Ingrédient" value="${esc(g.name)}"></label>
-      <label class="field q"><input data-k="qty" type="text" inputmode="decimal" placeholder="0" value="${esc(g.qty)}"><span>g</span></label>
-    </div>
+  if (ingRendering) return; ingRendering = true;
+  $('#ingList').innerHTML = draft.ingredients.map((g,i) => { const pc = g.unit === 'pc'; return `<div class="ing" data-i="${i}">
+    <label class="field"><input data-k="name" list="foodList" placeholder="Ingrédient (ex : Wrap)" value="${esc(g.name)}"></label>
+    <div class="ing-l">Valeurs pour 100 g</div>
     <div class="g4">
       <label><small>kcal</small><input data-k="kcal" type="text" inputmode="decimal" placeholder="0" value="${esc(g.kcal)}"></label>
       <label><small>Prot.</small><input data-k="p" type="text" inputmode="decimal" placeholder="0" value="${esc(g.p)}"></label>
       <label><small>Gluc.</small><input data-k="c" type="text" inputmode="decimal" placeholder="0" value="${esc(g.c)}"></label>
       <label><small>Lip.</small><input data-k="f" type="text" inputmode="decimal" placeholder="0" value="${esc(g.f)}"></label>
     </div>
-    <div class="foot"><span class="ik">${fmt(ingKcal(g))} kcal</span><button data-rm="${i}">Retirer</button></div></div>`).join('');
+    <div class="ing-l">Quantité dans la recette</div>
+    <div class="qrow">
+      <label class="field"><input data-k="qty" type="text" inputmode="decimal" placeholder="${pc?'1':'0'}" value="${esc(g.qty)}"><span>${pc?'pièce(s)':'g'}</span></label>
+      <div class="unit"><button class="${pc?'':'on'}" data-u="g">g</button><button class="${pc?'on':''}" data-u="pc">Pièce</button></div>
+    </div>
+    ${pc ? `<div class="pwrow">1 pièce =<label class="field"><input data-k="pw" type="text" inputmode="decimal" placeholder="125" value="${esc(g.pw)}"><span>g</span></label></div>` : ''}
+    <div class="foot"><span class="calc">${ingCalc(g)}</span><button data-rm="${i}">Retirer</button></div></div>`; }).join('');
   $$('#ingList input').forEach(inp => {
     const box = inp.closest('.ing'), i = +box.dataset.i;
-    inp.addEventListener('input', () => { draft.ingredients[i][inp.dataset.k] = inp.value; box.querySelector('.ik').textContent = fmt(ingKcal(draft.ingredients[i])) + ' kcal'; updateTotals(); });
+    inp.addEventListener('input', () => { draft.ingredients[i][inp.dataset.k] = inp.value; box.querySelector('.calc').innerHTML = ingCalc(draft.ingredients[i]); updateTotals(); });
     if (inp.dataset.k === 'name') inp.addEventListener('change', () => {
+      if (ingRendering) return;
       const f = S.foods[inp.value.trim().toLowerCase()]; if (!f) return;
       const g = draft.ingredients[i]; let filled = false;
-      ['kcal','p','c','f'].forEach(k => { if (g[k] === '' || g[k] == null) { g[k] = String(f[k]).replace('.',','); box.querySelector(`[data-k="${k}"]`).value = g[k]; filled = true; } });
-      if (filled) { box.querySelector('.ik').textContent = fmt(ingKcal(g)) + ' kcal'; updateTotals(); sfx.tap(); }
+      ['kcal','p','c','f'].forEach(k => { if (g[k] === '' || g[k] == null) { g[k] = String(f[k]).replace('.',','); filled = true; } });
+      if (f.pw && !num(g.qty)) { g.unit = 'pc'; g.pw = String(f.pw).replace('.',','); g.qty = '1'; filled = true; }
+      if (filled) { setTimeout(() => { renderIngs(); updateTotals(); }, 0); sfx.tap(); }
     });
   });
+  $$('#ingList [data-u]').forEach(b => b.onclick = () => {
+    const box = b.closest('.ing'), i = +box.dataset.i, g = draft.ingredients[i];
+    if (g.unit === b.dataset.u) return;
+    g.unit = b.dataset.u; if (g.unit === 'pc' && !num(g.qty)) g.qty = '1';
+    if (document.activeElement) document.activeElement.blur();
+    renderIngs(); updateTotals(); sfx.tap(); buzz();
+    const nb = $$('#ingList .ing')[i]; setTimeout(() => (nb.querySelector(g.unit === 'pc' ? '[data-k="pw"]' : '[data-k="qty"]')).focus(), 60);
+  });
   $$('#ingList [data-rm]').forEach(b => b.onclick = () => { draft.ingredients.splice(+b.dataset.rm,1); if (!draft.ingredients.length) draft.ingredients.push(blankIng()); renderIngs(); updateTotals(); sfx.no(); buzz(); });
+  ingRendering = false;
 };
 const updateTotals = () => {
   const {per} = recTotals(draft);
@@ -1283,7 +1312,7 @@ $('#ingAdd').onclick = () => {
 $('#ingScan').onclick = async () => {
   const prod = await lookupProduct(); if (!prod) return;
   const s = x => String(x).replace('.', ',');
-  const g = { name:prod.name, qty:'', kcal:s(prod.kcal), p:s(prod.p), c:s(prod.c), f:s(prod.f) };
+  const g = { name:prod.name, qty:'', unit:'g', pw:'', kcal:s(prod.kcal), p:s(prod.p), c:s(prod.c), f:s(prod.f) };
   const last = draft.ingredients.at(-1);
   if (last && !last.name.trim() && !num(last.qty)) draft.ingredients[draft.ingredients.length - 1] = g; else draft.ingredients.push(g);
   renderIngs(); updateTotals(); toast('Produit ajouté, indique la quantité');
@@ -1293,12 +1322,14 @@ $('#ingScan').onclick = async () => {
 $('#rSave').onclick = e => {
   draft.name = $('#rName').value.trim();
   const ings = draft.ingredients.filter(g => g.name.trim() || num(g.qty));
+  const miss = ings.find(g => g.unit === 'pc' && !num(g.pw));
+  if (miss) { sfx.no(); buzz('medium'); toast(`Indique le poids d'une pièce${miss.name ? ' : ' + miss.name : ''}`); return; }
   if (!draft.name) { sfx.no(); buzz('medium'); toast('Donne un nom à ta recette'); $('#rName').focus(); return; }
   if (!ings.length) { sfx.no(); buzz('medium'); toast('Ajoute au moins un ingrédient'); return; }
   ings.forEach(g => { const n = g.name.trim(); if (n && (num(g.kcal)||num(g.p)||num(g.c)||num(g.f)))
-    S.foods[n.toLowerCase()] = { name:n, kcal:num(g.kcal), p:num(g.p), c:num(g.c), f:num(g.f) }; });
+    S.foods[n.toLowerCase()] = { name:n, kcal:num(g.kcal), p:num(g.p), c:num(g.c), f:num(g.f), pw: g.unit === 'pc' ? num(g.pw) : (S.foods[n.toLowerCase()] || {}).pw || null }; });
   const rec = { id: draft.id || uid(), name:draft.name, emoji:draft.emoji, portions:draft.portions,
-    ingredients: ings.map(g => ({ name:g.name.trim(), qty:num(g.qty), kcal:num(g.kcal), p:num(g.p), c:num(g.c), f:num(g.f) })) };
+    ingredients: ings.map(g => ({ name:g.name.trim(), qty:num(g.qty), unit: g.unit === 'pc' ? 'pc' : 'g', pw: g.unit === 'pc' ? num(g.pw) : null, kcal:num(g.kcal), p:num(g.p), c:num(g.c), f:num(g.f) })) };
   const i = S.recipes.findIndex(x=>x.id===rec.id);
   if (i>-1) S.recipes[i] = rec; else S.recipes.push(rec);
   save(); closeOv('recModal'); sfx.win(); buzz('success'); toast(i>-1 ? 'Recette modifiée ✓' : 'Recette créée ✓');
