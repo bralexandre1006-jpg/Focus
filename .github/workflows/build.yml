@@ -24,14 +24,15 @@ jobs:
           mkdir -p www assets
           cp index.html www/index.html
           npm init -y
-          npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app
+          npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app @capacitor-mlkit/barcode-scanning
           npx cap init Focus com.alexandre.focus --web-dir www
           npx cap add android
           cp StepCounterPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
 
       - name: Permissions Android
         run: |
-          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n</manifest>#' android/app/src/main/AndroidManifest.xml
+          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-permission android:name="android.permission.CAMERA" />\n</manifest>#' android/app/src/main/AndroidManifest.xml
+          sed -i 's#</application>#    <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />\n    </application>#' android/app/src/main/AndroidManifest.xml
 
       - name: Icone de l'app
         continue-on-error: true
