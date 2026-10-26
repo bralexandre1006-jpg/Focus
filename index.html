@@ -115,7 +115,7 @@ button{border:0;background:none;cursor:pointer}
 .bar i.over{background:var(--bad)}
 .macros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
 .mac{background:var(--card2);border-radius:16px;padding:12px}
-.mac b{font-size:20px;font-weight:800;display:block}
+.mac b{font-size:18px;font-weight:800;display:block;white-space:nowrap}
 .mac small{font-size:13px;color:var(--mut);display:flex;align-items:center;gap:6px}
 .mac small i{width:7px;height:7px;border-radius:50%}
 .slot{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
@@ -292,6 +292,47 @@ button{border:0;background:none;cursor:pointer}
 .emojis::-webkit-scrollbar{display:none}
 .emojis button{width:48px;height:48px;border-radius:14px;background:var(--card);font-size:24px;flex-shrink:0;border:2px solid transparent}
 .emojis button.on{border-color:var(--acc)}
+/* icons */
+.ico{display:inline-block;background-size:contain;background-repeat:no-repeat;background-position:center}
+.i-ok{background-image:url(data:image/png;base64,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)}
+.i-no{background-image:url(data:image/png;base64,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)}
+.i-rest{background-image:url(data:image/png;base64,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)}
+.wk button .ico{width:36px;height:36px;transition:transform .45s var(--spring)}
+.wk button.sel .ico{transform:scale(1.15) rotate(-6deg)}
+.wk button.yes.sel{background:rgba(61,220,132,.16);color:var(--ok);box-shadow:inset 0 0 0 2px var(--ok)}
+.wk button.no.sel{background:rgba(255,77,106,.14);color:var(--bad);box-shadow:inset 0 0 0 2px var(--bad)}
+.wk button{height:88px;gap:6px}
+.restv{display:flex;align-items:center;gap:16px}
+.restv .ico{width:76px;height:76px;flex-shrink:0;animation:float 4s ease-in-out infinite}
+.restv b{font-size:21px;display:block;margin-bottom:4px;letter-spacing:-.02em}
+.restv small{color:var(--mut);font-size:15px;line-height:1.4;display:block}
+.linkbtn{color:var(--acc);font-size:15px;font-weight:800;margin-top:8px;min-height:40px;padding:0;text-align:left}
+.hico{width:18px;height:18px;vertical-align:-3px;margin-right:3px}
+
+/* programme */
+.pg-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pg-top b{font-size:21px;letter-spacing:-.02em;line-height:1.2}
+.pg-top span{color:var(--spt);font-size:15px;white-space:nowrap;font-weight:800}
+.pgbar{height:8px;border-radius:99px;background:var(--card2);margin:12px 0 14px;overflow:hidden}
+.pgbar i{display:block;height:100%;background:var(--spt);border-radius:99px;width:0;transition:width 1s var(--ease)}
+.pgchips{display:flex;flex-wrap:wrap;gap:8px}
+.pgchips span{background:var(--card2);border-radius:12px;padding:8px 11px;font-size:14px}
+.pgnote{color:var(--mut);font-size:15px;line-height:1.45;margin-top:12px}
+.sess-t{font-size:23px;font-weight:800;letter-spacing:-.025em;margin-bottom:2px}
+.sess-s{color:var(--mut);font-size:15px;margin-bottom:8px}
+.exo{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);width:100%;text-align:left}
+.exo .ck{width:28px;height:28px;border-radius:9px;border:2px solid var(--line);flex-shrink:0;display:grid;place-items:center;font-size:15px;color:transparent;transition:background .25s,border-color .25s,color .25s,transform .35s var(--spring)}
+.exo.done .ck{background:var(--acc);border-color:var(--acc);color:#0B0B0F;transform:scale(1.08)}
+.exo .en{flex:1;min-width:0;font-size:16px;transition:opacity .3s}
+.exo.done .en{opacity:.45;text-decoration:line-through}
+.exo .en small{display:block;color:var(--mut);font-size:13px;margin-top:2px;text-decoration:none}
+.exo .er{font-size:15px;white-space:nowrap;color:var(--acc)}
+.walk{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:16px;padding:12px 14px;margin:12px 0 2px}
+.walk em{font-style:normal;font-size:26px}
+.walk b{display:block;font-size:16px}
+.walk small{color:var(--mut);font-size:13px;line-height:1.35}
+.sval{font-size:16px;font-weight:800;text-align:right}
+.hint{color:var(--mut);font-size:14px;line-height:1.4;margin-top:12px}
 .hidden{display:none!important}
 </style>
 </head>
@@ -329,6 +370,14 @@ button{border:0;background:none;cursor:pointer}
       </div>
     </div>
 
+    <div class="card hidden" id="pgCard">
+      <h3><i style="background:var(--spt)"></i>Programme</h3>
+      <div class="pg-top"><b id="pgName"></b><span id="pgWeek"></span></div>
+      <div class="pgbar"><i id="pgBar"></i></div>
+      <div class="pgchips" id="pgChips"></div>
+      <div class="pgnote" id="pgNote"></div>
+    </div>
+
     <div class="card wcard">
       <div class="wtop">
         <div>
@@ -346,12 +395,18 @@ button{border:0;background:none;cursor:pointer}
       </div>
     </div>
 
-    <div class="card">
-      <h3><i style="background:var(--spt)"></i>Séance de sport</h3>
+    <div class="card" id="wkCard">
+      <h3><i style="background:var(--spt)"></i><span id="wkH">Séance de sport</span></h3>
       <span class="badge hidden" id="wkBadge">JOUR DE SÉANCE</span>
-      <div class="wk">
-        <button class="yes press" id="wkYes"><em>💪</em>Faite</button>
-        <button class="no press" id="wkNo"><em>😴</em>Pas faite</button>
+      <div id="sess"></div>
+      <div class="wk" id="wkBtns">
+        <button class="yes press" id="wkYes"><span class="ico i-ok"></span>Faite</button>
+        <button class="no press" id="wkNo"><span class="ico i-no"></span>Pas faite</button>
+      </div>
+      <div class="restv hidden" id="restV">
+        <span class="ico i-rest"></span>
+        <div><b>Jour de repos</b><small id="restTxt">Ton corps récupère et progresse aujourd'hui.</small>
+        <button class="linkbtn" id="wkAnyway">J'ai quand même fait une séance</button></div>
       </div>
     </div>
 
@@ -431,8 +486,22 @@ button{border:0;background:none;cursor:pointer}
       <div class="srow"><div class="l">Objectif poids</div><input class="sin" id="pTarget" type="text" inputmode="decimal" style="width:100px"></div>
       <div class="srow"><div class="l">Objectif pas</div><input class="sin" id="pSteps" type="number" inputmode="numeric" style="width:110px"></div>
       <div class="srow"><div class="l">Objectif kcal</div><input class="sin" id="pCal" type="number" inputmode="numeric" style="width:110px"></div>
+      <div class="srow"><div class="l">Objectif protéines (g)</div><input class="sin" id="pProt" type="number" inputmode="numeric" style="width:110px"></div>
       <div class="lbl-s">Jours de séance</div>
       <div class="days" id="pDays"></div>
+      <div class="hint hidden" id="pgHint">Un programme est en cours : ses objectifs de pas, calories, protéines et jours de séance remplacent ceux-ci. Arrête-le pour revenir à tes réglages.</div>
+    </div>
+    <div class="card">
+      <h3><i style="background:var(--spt)"></i>Programme</h3>
+      <div id="pgSet"></div>
+      <input type="file" id="pgFile" accept="application/json,.json" class="hidden">
+    </div>
+    <div class="card">
+      <h3><i style="background:var(--acc)"></i>Podomètre</h3>
+      <div class="srow"><div class="l">État</div><span class="sval" id="pdState">—</span></div>
+      <div class="srow"><div class="l">Compteur du téléphone</div><span class="sval" id="pdRaw">—</span></div>
+      <div class="srow"><div class="l">Dernière lecture</div><span class="sval" id="pdAt">—</span></div>
+      <div class="hint">Le compteur du téléphone grimpe à chaque pas, même app fermée. Focus ajoute à ta journée la différence depuis la dernière lecture.</div>
     </div>
     <div class="card">
       <h3><i style="background:var(--spt)"></i>Expérience</h3>
@@ -447,7 +516,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.2
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.3<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -605,9 +674,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 /* ---------- store ---------- */
 const SK = 'focus.v1';
 const blank = () => ({ v:2, onboarded:false,
-  profile:{ name:'', height:null, weight:null, startWeight:null, targetWeight:null, trainingDays:[0,2,4], stepGoal:8000, calGoal:2200 },
+  profile:{ name:'', height:null, weight:null, startWeight:null, targetWeight:null, trainingDays:[0,2,4], stepGoal:8000, calGoal:2200, proteinGoal:null },
   settings:{ sound:true, haptic:true, reminders:[] },
-  days:{}, pedo:{}, recipes:[], foods:{} });
+  days:{}, pedo:{}, recipes:[], foods:{}, program:null });
 let S;
 const load = raw => {
   const s = Object.assign(blank(), raw || {});
@@ -624,6 +693,37 @@ const load = raw => {
 try { S = load(JSON.parse(localStorage.getItem(SK))); } catch(e){ S = load(null); }
 const save = () => { try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} };
 const day = (k = today()) => (S.days[k] ||= { weight:null, workout:null, calories:0, steps:0, meals:[] });
+
+/* ---------- programme : semaine en cours et objectifs effectifs ---------- */
+const DK = ['mon','tue','wed','thu','fri','sat','sun'];
+const dayDiff = (a, b) => Math.round((parseKey(b) - parseKey(a)) / 864e5);
+const progInfo = (k = today()) => {
+  const pr = S.program; if (!pr || !pr.active || !pr.data) return null;
+  const weeks = pr.data.weeks || [], n = dayDiff(pr.start, k);
+  if (n < 0) return null;
+  const w = Math.floor(n / 7);
+  if (w >= weeks.length) return { done:true, total:weeks.length, n };
+  const wk = weeks[w], dk = DK[wd(parseKey(k))];
+  const dp = (wk.days && wk.days[dk]) || (pr.data.days && pr.data.days[dk]) || { type:'rest' };
+  return { week:w+1, total:weeks.length, n, wk, day:dp };
+};
+const gymDays = pi => {
+  if (!pi || pi.done) return null;
+  const src = Object.assign({}, S.program.data.days || {}, pi.wk.days || {});
+  return DK.map((d,i) => (src[d] && src[d].type === 'gym') ? i : -1).filter(i => i > -1);
+};
+const goals = () => {
+  const p = S.profile, pi = progInfo(), wk = pi && !pi.done ? pi.wk : null, pr = S.program;
+  return {
+    steps: (wk && wk.steps) || p.stepGoal || 8000,
+    kcal: (wk && wk.calories) || p.calGoal || 2200,
+    protein: (wk && wk.protein) || p.proteinGoal || null,
+    target: (wk && pr.data.goalWeight) || p.targetWeight,
+    start: (wk && pr.startWeight) || p.startWeight,
+    trainingDays: gymDays(pi) || p.trainingDays,
+    pi
+  };
+};
 
 /* ---------- sound + haptics ---------- */
 let AC;
@@ -685,8 +785,10 @@ const syncDim = () => $('#dim').classList.toggle('on', stack.length > 0);
 const openOv = id => { const el = $('#'+id); el.classList.add('on'); if (!stack.includes(id)) stack.push(id); syncDim(); };
 const closeOv = id => { const el = $('#'+id); el.classList.remove('on'); const i = stack.indexOf(id); if (i>-1) stack.splice(i,1); syncDim(); document.activeElement && document.activeElement.blur(); };
 let sheetRes = null;
-const confirmSheet = (t, p) => new Promise(res => {
-  $('#shT').textContent=t; $('#shP').textContent=p; sheetRes = res; openOv('sheet');
+const confirmSheet = (t, p, o = {}) => new Promise(res => {
+  $('#shT').textContent=t; $('#shP').textContent=p;
+  const y = $('#shYes'); y.textContent = o.yes || 'Confirmer'; y.classList.toggle('danger', o.danger !== false);
+  sheetRes = res; openOv('sheet');
 });
 const endSheet = v => { closeOv('sheet'); if (sheetRes) { sheetRes(v); sheetRes = null; } };
 $('#shYes').onclick = () => endSheet(true);
@@ -724,15 +826,72 @@ const renderToday = () => {
   $('#todayDate').textContent = now.toLocaleDateString('fr-BE',{weekday:'long', day:'numeric', month:'long'});
   const h = now.getHours();
   $('#hello').textContent = (h<12?'Bonjour':h<18?'Salut':'Bonsoir') + (p.name?' '+p.name:'');
-  renderSteps(); renderWeight();
-  $('#wkBadge').classList.toggle('hidden', !p.trainingDays.includes(wd(now)));
-  $('#wkYes').classList.toggle('sel', d.workout===true);
-  $('#wkNo').classList.toggle('sel', d.workout===false);
-  renderNutrition();
+  renderSteps(); renderProgram(); renderWeight(); renderSession(); renderNutrition();
 };
 RENDER.today = renderToday;
+
+/* programme du jour */
+const renderProgram = () => {
+  const card = $('#pgCard'), pi = progInfo();
+  if (!pi) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  $('#pgName').textContent = S.program.data.name || 'Programme';
+  if (pi.done) {
+    $('#pgWeek').textContent = 'Terminé 🎉'; $('#pgBar').style.width = '100%'; $('#pgChips').innerHTML = '';
+    $('#pgNote').textContent = 'Tu as bouclé ton programme. Va dans Réglages pour le retirer : tes objectifs de base reviendront.';
+    return;
+  }
+  const wk = pi.wk;
+  $('#pgWeek').textContent = `Semaine ${pi.week}/${pi.total}`;
+  $('#pgBar').style.width = Math.min(100, (pi.n + 1) / (pi.total * 7) * 100) + '%';
+  const ch = [];
+  if (wk.calories) ch.push(`🔥 ${fmt(wk.calories)} kcal`);
+  if (wk.protein) ch.push(`🥩 ${wk.protein} g prot.`);
+  if (wk.steps) ch.push(`👟 ${fmt(wk.steps)} pas`);
+  if (wk.targetWeight) ch.push(`⚖️ cible ${f1(wk.targetWeight)} kg`);
+  $('#pgChips').innerHTML = ch.map(c => `<span>${c}</span>`).join('');
+  $('#pgNote').textContent = [wk.title, wk.note].filter(Boolean).join(' · ');
+};
+
+/* séance du jour */
+const fmtSets = e => e.sets ? `${e.sets} × ${e.reps || ''}`.trim() : (e.duration || e.reps || '');
+const renderSession = () => {
+  const d = day(), g = goals(), pi = g.pi, isTD = g.trainingDays.includes(wd(new Date()));
+  let html = '', dp = null;
+  if (pi && !pi.done) {
+    dp = pi.day;
+    if (dp.title) html += `<div class="sess-t">${esc(dp.title)}</div>`;
+    if (dp.focus) html += `<div class="sess-s">${esc(dp.focus)}</div>`;
+    const done = d.progDone || [];
+    (dp.exercises || []).forEach((e,i) => html += `<button class="exo ${done.includes(i)?'done':''}" data-ex="${i}"><span class="ck">✓</span>
+      <span class="en">${esc(e.name)}${e.tip?`<small>${esc(e.tip)}</small>`:''}</span><span class="er">${esc(fmtSets(e))}</span></button>`);
+    if (dp.walk) html += `<div class="walk"><em>🚶</em><div><b>Tapis · ${dp.walk.minutes} min à ${String(dp.walk.speed).replace('.',',')} km/h</b>
+      <small>${esc(dp.walk.note || 'Téléphone dans la poche, sinon tes pas ne comptent pas')}</small></div></div>`;
+  }
+  $('#wkH').textContent = pi && !pi.done ? 'Séance du jour' : 'Séance de sport';
+  const sess = $('#sess'); sess.innerHTML = html; sess.style.marginBottom = html ? '14px' : '0';
+  $$('#sess [data-ex]').forEach(b => b.onclick = () => toggleExo(+b.dataset.ex, b));
+  const rest = !isTD && d.workout !== true;
+  $('#wkBtns').classList.toggle('hidden', rest);
+  $('#restV').classList.toggle('hidden', !rest);
+  $('#wkBadge').classList.toggle('hidden', !isTD);
+  $('#restTxt').textContent = dp && dp.walk ? 'Pas de salle aujourd\'hui. Fais ta marche, puis récupère.' : 'Ton corps récupère et progresse aujourd\'hui.';
+  $('#wkYes').classList.toggle('sel', d.workout===true);
+  $('#wkNo').classList.toggle('sel', d.workout===false);
+};
+const toggleExo = (i, el) => {
+  const d = day(), pi = progInfo(); d.progDone ||= [];
+  const k = d.progDone.indexOf(i); k > -1 ? d.progDone.splice(k,1) : d.progDone.push(i);
+  el.classList.toggle('done', k === -1); sfx.tap(); buzz();
+  const n = (pi && pi.day && pi.day.exercises || []).length;
+  if (k === -1 && n && d.progDone.length === n && d.workout !== true) {
+    d.workout = true; save(); renderSession(); sfx.win(); buzz('success'); burst($('#wkYes')); toast('Séance terminée 💪');
+  } else save();
+};
+$('#wkAnyway').onclick = e => { const d = day(); d.workout = true; save(); renderSession(); sfx.win(); buzz('success'); burst($('#wkYes')); toast('Bien joué 🔥'); };
+
 const renderSteps = () => {
-  const s = day().steps || 0, g = S.profile.stepGoal || 8000;
+  const s = day().steps || 0, g = goals().steps;
   countTo($('#stepsNow'), s);
   $('#stepGoalTxt').textContent = fmt(g);
   $('#ringFg').style.strokeDashoffset = 326.7 * (1 - Math.min(1, s/g));
@@ -744,7 +903,7 @@ const lastWeight = () => {
   return ks.length ? S.days[ks.at(-1)].weight : S.profile.weight;
 };
 const renderWeight = () => {
-  const p = S.profile, w = lastWeight(), start = p.startWeight || w, tgt = p.targetWeight;
+  const G = goals(), w = lastWeight(), start = G.start || w, tgt = G.target;
   $('#wNow').textContent = w ? f1(w) : '—';
   $('#wIn').value = day().weight ? f1(day().weight) : '';
   $('#wIn').placeholder = day().weight ? '' : 'Poids du jour';
@@ -774,7 +933,7 @@ $('#wSave').onclick = e => {
   const before = day().weight;
   day().weight = +v.toFixed(1); save(); $('#wIn').blur();
   renderWeight(); sfx.ok(); buzz('success'); toast(before ? 'Poids modifié ✓' : 'Poids enregistré ✓');
-  const p = S.profile; if (p.targetWeight && (p.startWeight > p.targetWeight ? v <= p.targetWeight : v >= p.targetWeight)) burst(e.currentTarget, ['#6BD36E','#D7FF3A','#ffffff']);
+  const G = goals(); if (G.target && G.start && (G.start > G.target ? v <= G.target : v >= G.target)) burst(e.currentTarget, ['#6BD36E','#D7FF3A','#ffffff']);
 };
 $('#wIn').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#wSave').click(); });
 $('#wDel').onclick = () => {
@@ -784,7 +943,7 @@ $('#wDel').onclick = () => {
 
 /* séance */
 const setWorkout = (val, el) => {
-  const d = day(); d.workout = d.workout===val ? null : val; save(); renderToday();
+  const d = day(); d.workout = d.workout===val ? null : val; save(); renderSession();
   if (d.workout===true) { sfx.win(); buzz('success'); burst(el); toast('Bien joué 🔥'); }
   else if (d.workout===false) { sfx.no(); buzz('medium'); }
   else { sfx.tap(); buzz(); }
@@ -796,11 +955,11 @@ $('#wkNo').onclick  = e => setWorkout(false, e.currentTarget);
 const sumMeals = meals => meals.reduce((t,m)=>({kcal:t.kcal+(+m.kcal||0), p:t.p+(+m.p||0), c:t.c+(+m.c||0), f:t.f+(+m.f||0)}), {kcal:0,p:0,c:0,f:0});
 const syncCalories = d => { d.calories = Math.round(sumMeals(d.meals||[]).kcal); };
 const renderNutrition = () => {
-  const d = day(), t = sumMeals(d.meals), g = S.profile.calGoal || 2200;
+  const d = day(), t = sumMeals(d.meals), G = goals(), g = G.kcal;
   countTo($('#kNow'), t.kcal);
   $('#kGoal').textContent = '/ ' + fmt(g) + ' kcal';
   const bar = $('#cBar'); bar.style.width = Math.min(100, t.kcal/g*100) + '%'; bar.classList.toggle('over', t.kcal > g*1.05);
-  $('#mP').textContent = Math.round(t.p) + ' g'; $('#mC').textContent = Math.round(t.c) + ' g'; $('#mF').textContent = Math.round(t.f) + ' g';
+  $('#mP').textContent = Math.round(t.p) + (G.protein ? ' / ' + G.protein : '') + ' g'; $('#mC').textContent = Math.round(t.c) + ' g'; $('#mF').textContent = Math.round(t.f) + ' g';
   $('#slots').innerHTML = SLOTS.map(([id,lab,ic]) => {
     const items = d.meals.filter(m=>m.slot===id), st = sumMeals(items);
     return `<div class="slot"><div class="slot-h"><div class="t">${ic} ${lab}${items.length?` <small>${fmt(st.kcal)} kcal</small>`:''}</div>
@@ -974,10 +1133,10 @@ const pedoState = (txt, live) => { $('#pedoTxt').textContent = txt; $('#pedoPill
 const onSensorTotal = total => {
   total = Number(total); if (!isFinite(total) || total < 0) return;
   const pd = S.pedo;
-  if (pd.last == null) { pd.last = total; save(); return; }
+  if (pd.last == null) { pd.last = total; pd.at = Date.now(); pd.since = Date.now(); save(); return; }
   let delta = total - pd.last;
   if (delta < 0) delta = total;
-  pd.last = total;
+  pd.last = total; pd.at = Date.now();
   if (delta > 0 && delta < 100000) { const d = day(); d.steps = (d.steps || 0) + delta; }
   save(); if (cur === 'today') renderSteps();
 };
@@ -1061,7 +1220,7 @@ const renderStats = () => {
   $('#stCalSub').textContent = `${pl} · moy. ${fmt(ca/Math.max(1,calDays))} kcal/jour noté`;
   const sC = series(period,'calories'); bars($('#chCal'), sC.vals, sC.labels, sC.hl);
   renderWeightStats();
-  const [ra] = rangeFor(period), tdK = eachDay(ra, new Date()).filter(k=>S.profile.trainingDays.includes(wd(parseKey(k))));
+  const TD = goals().trainingDays, [ra] = rangeFor(period), tdK = eachDay(ra, new Date()).filter(k=>TD.includes(wd(parseKey(k))));
   const done = curK.filter(k=>S.days[k]&&S.days[k].workout===true).length;
   countTo($('#kDone'), done);
   $('#kRate').textContent = (tdK.length? Math.min(100,Math.round(done/tdK.length*100)) : 0)+'%';
@@ -1069,8 +1228,8 @@ const renderStats = () => {
 };
 RENDER.stats = renderStats;
 const streak = () => {
-  let n=0; const d=new Date(); if (day().workout!==true) d.setDate(d.getDate()-1);
-  for (let i=0;i<400;i++){ const k=key(d), td=S.profile.trainingDays.includes(wd(d)), w=S.days[k]&&S.days[k].workout;
+  let n=0; const d=new Date(), TD = goals().trainingDays; if (day().workout!==true) d.setDate(d.getDate()-1);
+  for (let i=0;i<400;i++){ const k=key(d), td=TD.includes(wd(d)), w=S.days[k]&&S.days[k].workout;
     if (w===true) n++; else if (td) break; d.setDate(d.getDate()-1); }
   return n;
 };
@@ -1080,7 +1239,7 @@ const renderWeightStats = () => {
     el.innerHTML='<div class="empty">Aucun poids sur cette période</div>'; return; }
   const vals = ks.map(k=>S.days[k].weight), last = vals.at(-1), first = vals[0];
   $('#stW').textContent = f1(last)+' kg';
-  const df = +(last-first).toFixed(1), t=$('#trW'), wantDown = (S.profile.targetWeight||0) < (S.profile.startWeight||last);
+  const G = goals(), df = +(last-first).toFixed(1), t=$('#trW'), wantDown = (G.target||0) < (G.start||last);
   t.className='trend '+(df===0?'flat':(df<0)===wantDown?'up':'down');
   t.textContent = df===0?'= stable':`${df>0?'▲ +':'▼ −'}${f1(Math.abs(df))} kg`;
   const h = S.profile.height, bmi = h ? f1(last/((h/100)**2)) : null;
@@ -1104,7 +1263,7 @@ const renderHistory = () => {
   el.innerHTML = ks.slice(0,120).map(k=>{ const d=S.days[k], dt=parseKey(k), t = sumMeals(d.meals||[]);
     return `<div class="hrow"><div class="hd"><b>${dt.getDate()}</b><small>${dt.toLocaleDateString('fr-BE',{month:'short'}).replace('.','')}</small></div>
     <div class="hv"><span>👟 <b>${fmt(d.steps||0)}</b></span>${d.weight?`<span>⚖️ <b>${f1(d.weight)} kg</b></span>`:''}
-    ${d.calories?`<span>🔥 <b>${fmt(d.calories)}</b></span>`:''}${t.p?`<span>🥩 <b>${Math.round(t.p)} g</b></span>`:''}${d.workout===true?'<span>💪 <b>Séance</b></span>':d.workout===false?'<span>😴 <b>Repos</b></span>':''}</div></div>`;}).join('');
+    ${d.calories?`<span>🔥 <b>${fmt(d.calories)}</b></span>`:''}${t.p?`<span>🥩 <b>${Math.round(t.p)} g</b></span>`:''}${d.workout===true?'<span><i class="ico hico i-ok"></i><b>Séance</b></span>':d.workout===false?'<span><i class="ico hico i-no"></i><b>Ratée</b></span>':''}</div></div>`;}).join('');
 };
 RENDER.history = renderHistory;
 
@@ -1165,16 +1324,58 @@ const bindProf = (id, f, kind) => { const el=$(id); el.onchange=()=>{
   if (S.profile[f] === v) return;
   S.profile[f] = v; save(); toast('Profil mis à jour'); sfx.tap(); }; };
 bindProf('#pName','name'); bindProf('#pHeight','height','num'); bindProf('#pStart','startWeight','num'); bindProf('#pTarget','targetWeight','num');
-bindProf('#pSteps','stepGoal','num'); bindProf('#pCal','calGoal','num');
+bindProf('#pSteps','stepGoal','num'); bindProf('#pCal','calGoal','num'); bindProf('#pProt','proteinGoal','num');
+
+/* programme : import / arrêt */
+const validProg = j => j && j.type === 'focus-program' && Array.isArray(j.weeks) && j.weeks.length > 0;
+const importProgram = async j => {
+  if (!validProg(j)) { sfx.no(); buzz('heavy'); toast('Programme invalide'); return; }
+  const info = `${j.weeks.length} semaine${j.weeks.length>1?'s':''}${j.goalWeight?` · objectif ${f1(j.goalWeight)} kg`:''}. Tes objectifs de pas, calories et protéines suivront le programme dès aujourd'hui.`;
+  const t = S.program && S.program.active ? `Remplacer par « ${j.name || 'Programme'} » ?` : `Lancer « ${j.name || 'Programme'} » ?`;
+  if (!(await confirmSheet(t, info, { yes:'Lancer', danger:false }))) return;
+  S.program = { data:j, start:today(), active:true, startWeight:lastWeight() || null };
+  save(); renderSettings(); sfx.win(); buzz('success'); toast('Programme lancé 🚀');
+};
+const stopProgram = async () => {
+  if (!(await confirmSheet('Arrêter le programme ?', 'Tes objectifs de base reviennent tout de suite. Ton historique reste en place.', { yes:'Arrêter' }))) return;
+  S.program = null; save(); renderSettings(); sfx.no(); buzz('medium'); toast('Retour à tes objectifs');
+};
+$('#pgFile').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { await importProgram(JSON.parse(await f.text())); } catch(err) { sfx.no(); toast('Fichier invalide'); }
+  e.target.value = '';
+};
+const renderProgSettings = () => {
+  const el = $('#pgSet'), pr = S.program, pi = progInfo();
+  $('#pgHint').classList.toggle('hidden', !(pi && !pi.done));
+  if (!pr || !pr.active) {
+    el.innerHTML = `<div class="hint" style="margin:0 0 14px">Importe un programme en JSON. Chaque semaine, il fixe tes objectifs de pas, de calories et de protéines, et te donne ta séance du jour.</div>
+      <button class="btn ghost full press" id="pgImp">⬇︎ Importer un programme</button>`;
+  } else {
+    const started = parseKey(pr.start).toLocaleDateString('fr-BE', { day:'numeric', month:'long' });
+    const st = pi && pi.done ? 'Terminé' : pi ? `Semaine ${pi.week}/${pi.total}` : 'Commence bientôt';
+    el.innerHTML = `<div class="srow"><div class="l">${esc(pr.data.name || 'Programme')}<small style="display:block;color:var(--mut);font-size:13px;font-weight:700;margin-top:2px">Lancé le ${started}</small></div><span class="sval" style="color:var(--spt)">${st}</span></div>
+      <div style="display:flex;gap:10px;margin-top:12px"><button class="btn ghost press" id="pgImp" style="flex:1">Remplacer</button><button class="btn danger press" id="pgStop" style="flex:1">Arrêter</button></div>`;
+    $('#pgStop').onclick = stopProgram;
+  }
+  $('#pgImp').onclick = () => $('#pgFile').click();
+};
+const renderPedo = () => {
+  const pd = S.pedo;
+  $('#pdState').textContent = $('#pedoTxt').textContent || '—';
+  $('#pdRaw').textContent = pd.last != null ? fmt(pd.last) + ' pas' : '—';
+  $('#pdAt').textContent = pd.at ? new Date(pd.at).toLocaleTimeString('fr-BE', { hour:'2-digit', minute:'2-digit' }) : '—';
+};
 const tgl = (id,f) => { const el=$(id); el.onclick=()=>{ S.settings[f]=!S.settings[f]; save(); el.classList.toggle('on',S.settings[f]); sfx.tap(); buzz(); }; };
 tgl('#tSound','sound'); tgl('#tHaptic','haptic');
 const renderSettings = () => {
   const p = S.profile;
   $('#pName').value=p.name||''; $('#pHeight').value=p.height||''; $('#pSteps').value=p.stepGoal||''; $('#pCal').value=p.calGoal||'';
   $('#pStart').value = p.startWeight ? f1(p.startWeight) : ''; $('#pTarget').value = p.targetWeight ? f1(p.targetWeight) : '';
+  $('#pProt').value = p.proteinGoal || '';
   daysPicker($('#pDays'), p.trainingDays, save);
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
-  renderRems();
+  renderRems(); renderProgSettings(); renderPedo();
 };
 RENDER.settings = renderSettings;
 
@@ -1198,6 +1399,7 @@ $('#impFile').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
   try {
     const j = JSON.parse(await f.text());
+    if (j && j.type === 'focus-program') { e.target.value=''; return importProgram(j); }
     if (!j.days || !j.profile) throw 0;
     if (!(await confirmSheet('Importer ces données ?', `${Object.keys(j.days).length} jours et ${(j.recipes||[]).length} recettes trouvés. Tes données actuelles seront remplacées.`))) return;
     const { app, exportedAt, ...rest } = j; const keepPedo = S.pedo;
