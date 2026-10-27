@@ -576,7 +576,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.8<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.9<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1344,18 +1344,38 @@ $('#rDel').onclick = async () => {
 const pedoState = (txt, live) => { $('#pedoTxt').textContent = txt; $('#pedoPill').classList.toggle('live', !!live); };
 // Compteur matériel : total depuis le démarrage du téléphone. On ajoute à aujourd'hui l'écart depuis la lecture précédente.
 // Si le téléphone a redémarré aujourd'hui, tout son compteur date d'aujourd'hui : la journée vaut au moins ce total.
-const onSensorTotal = (total, boot) => {
+// Les pas sont découpés jour par jour grâce aux relevés que le téléphone prend chaque nuit à 00:00.
+const addSteps = (k, n) => { if (n > 0 && n < 100000) { const d = day(k); d.steps = (d.steps || 0) + n; } };
+let pedoQ = Promise.resolve();
+const onSensorTotal = (total, boot) => { pedoQ = pedoQ.then(() => processSteps(total, boot)).catch(() => {}); };
+const processSteps = async (total, boot) => {
   total = Number(total); if (!isFinite(total) || total < 0) return;
-  const pd = S.pedo, d = day();
+  const pd = S.pedo, T = today();
   if (boot) pd.boot = Number(boot);
   if (pd.last == null) { pd.since = Date.now(); }
   else {
-    let delta = total - pd.last;
-    if (delta < 0) delta = total;
-    if (delta > 0 && delta < 100000) d.steps = (d.steps || 0) + delta;
+    const lastDay = pd.lastDay || (pd.at ? key(new Date(pd.at)) : T);
+    if (lastDay >= T) addSteps(T, total >= pd.last ? total - pd.last : total);
+    else {
+      // On a passé minuit depuis la dernière lecture : on répartit avec les relevés de 00:00
+      let snaps = {};
+      try { if (P.StepCounter && P.StepCounter.getSnapshots) snaps = (await P.StepCounter.getSnapshots()).snapshots || {}; } catch(e) {}
+      let prevDay = lastDay, prevVal = pd.last;
+      if (total < pd.last) { // le téléphone a redémarré : son compteur est reparti de 0
+        const bd = pd.boot ? key(new Date(pd.boot)) : T;
+        prevDay = bd > lastDay ? bd : lastDay; prevVal = 0;
+      }
+      Object.keys(snaps).filter(k => k > prevDay && k <= T).sort().forEach(k => {
+        const v = Number(snaps[k]);
+        if (!isFinite(v) || v < prevVal || v > total) return;
+        addSteps(prevDay, v - prevVal); prevDay = k; prevVal = v;
+      });
+      addSteps(T, total - prevVal);
+    }
   }
-  pd.last = total; pd.at = Date.now();
-  if (pd.boot && pd.boot >= parseKey(today()).getTime() && total > (d.steps || 0)) d.steps = total;
+  pd.last = total; pd.at = Date.now(); pd.lastDay = T;
+  const d = day();
+  if (pd.boot && pd.boot >= parseKey(T).getTime() && total > (d.steps || 0)) d.steps = total;
   save(); if (cur === 'today') renderSteps(); if (cur === 'settings') renderPedo();
 };
 let pedoStarted = false, pedoListening = false;

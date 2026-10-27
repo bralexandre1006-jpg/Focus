@@ -76,6 +76,22 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         sensorManager.unregisterListener(this);
         sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
         listening = true;
+        MidnightReceiver.schedule(getContext());
+    }
+
+    /** Valeurs du compteur relevees chaque nuit a 00:00, par jour (yyyy-MM-dd). */
+    @PluginMethod
+    public void getSnapshots(PluginCall call) {
+        JSObject snaps = new JSObject();
+        android.content.SharedPreferences p = getContext().getSharedPreferences(MidnightReceiver.PREFS, Context.MODE_PRIVATE);
+        for (java.util.Map.Entry<String, ?> e : p.getAll().entrySet()) {
+            if (e.getKey().startsWith("mid_") && e.getValue() instanceof Long) {
+                snaps.put(e.getKey().substring(4), (long) (Long) e.getValue());
+            }
+        }
+        JSObject ret = new JSObject();
+        ret.put("snapshots", snaps);
+        call.resolve(ret);
     }
 
     @Override
