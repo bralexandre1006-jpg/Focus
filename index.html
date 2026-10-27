@@ -331,7 +331,22 @@ button{border:0;background:none;cursor:pointer}
 .pwrow .field{width:140px;flex:none}
 .ing .calc{color:var(--txt)}
 .ing .calc em{font-style:normal;color:var(--mut)}
-.ing .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ing .g4,#addQuick .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+#addQuick .g4 label{display:block}
+#addQuick .g4 small{display:block;font-size:11px;color:var(--mut);margin:0 0 4px 4px;text-transform:uppercase;letter-spacing:.04em}
+#addQuick .g4 input{width:100%;height:48px;border-radius:12px;background:var(--card);border:2px solid transparent;outline:0;padding:0 8px;font-size:17px;font-weight:800;text-align:center}
+#addQuick .g4 input:focus{border-color:var(--acc)}
+.qres{background:var(--card);border-radius:16px;padding:14px;margin-top:12px;font-size:15px;color:var(--mut);line-height:1.4}
+.qres b{color:var(--txt);font-size:20px}
+.flist{background:var(--card);border-radius:18px;margin-top:10px;overflow:hidden;animation:rise .35s var(--ease) both}
+.flist .fh{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;font-weight:800;padding:12px 14px 4px}
+.fitem{display:flex;align-items:center;border-top:1px solid var(--line)}
+.fitem:first-of-type{border-top:0}
+.fpick{flex:1;min-width:0;text-align:left;padding:11px 14px}
+.fpick b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fpick small{display:block;color:var(--mut);font-size:13px;margin-top:2px}
+.fdel{width:46px;height:46px;color:var(--mut);font-size:16px;flex-shrink:0}
+.fmore{width:100%;padding:12px;color:var(--acc);font-weight:800;font-size:14px;border-top:1px solid var(--line)}
 .ing .g4 label{display:block}
 .ing .g4 small{display:block;font-size:11px;color:var(--mut);margin:0 0 4px 4px;text-transform:uppercase;letter-spacing:.04em}
 .ing .g4 input{width:100%;height:44px;border-radius:12px;background:var(--card2);border:2px solid transparent;outline:0;padding:0 8px;font-size:16px;font-weight:800;text-align:center}
@@ -576,7 +591,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.10<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.11<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -659,21 +674,19 @@ button{border:0;background:none;cursor:pointer}
     </div>
     <div id="addQuick" class="hidden">
       <button class="btn full press" id="qScan"><svg class="bc"><use href="#bcIco"/></svg>Scanner un produit</button>
-      <div id="qProd" class="hidden">
-        <div class="prod"><b id="qPName"></b><small id="qPInfo"></small></div>
-        <div class="mini-lbl">Quantité mangée</div>
-        <label class="field"><input id="qGrams" type="text" inputmode="decimal" placeholder="100"><span>g</span></label>
+      <div class="mini-lbl">Aliment</div>
+      <label class="field"><input id="qName" placeholder="Nom ou recherche (ex : Pomme)" autocomplete="off"></label>
+      <div id="qRecent"></div>
+      <div class="mini-lbl">Valeurs pour 100 g</div>
+      <div class="g4">
+        <label><small>kcal</small><input id="qKcal" type="text" inputmode="decimal" placeholder="0"></label>
+        <label><small>Prot.</small><input id="qP" type="text" inputmode="decimal" placeholder="0"></label>
+        <label><small>Gluc.</small><input id="qC" type="text" inputmode="decimal" placeholder="0"></label>
+        <label><small>Lip.</small><input id="qF" type="text" inputmode="decimal" placeholder="0"></label>
       </div>
-      <div class="mini-lbl">Nom (facultatif)</div>
-      <label class="field"><input id="qName" placeholder="Ex : Pomme"></label>
-      <div class="mini-lbl">Calories</div>
-      <label class="field"><input id="qKcal" type="number" inputmode="numeric" placeholder="0"><span>kcal</span></label>
-      <div class="mini-lbl">Macros (facultatif)</div>
-      <div class="qgrid">
-        <label class="field"><input id="qP" type="text" inputmode="decimal" placeholder="P"><span>g</span></label>
-        <label class="field"><input id="qC" type="text" inputmode="decimal" placeholder="G"><span>g</span></label>
-        <label class="field"><input id="qF" type="text" inputmode="decimal" placeholder="L"><span>g</span></label>
-      </div>
+      <div class="mini-lbl">Quantité mangée</div>
+      <label class="field"><input id="qGrams" type="text" inputmode="decimal" placeholder="100"><span>g</span></label>
+      <div class="qres" id="qRes"></div>
     </div>
   </div>
   <div class="mfoot">
@@ -1063,7 +1076,7 @@ const renderNutrition = () => {
     const items = d.meals.filter(m=>m.slot===id), st = sumMeals(items);
     return `<div class="slot"><div class="slot-h"><div class="t">${ic} ${lab}${items.length?` <small>${fmt(st.kcal)} kcal</small>`:''}</div>
       <button class="plus" data-add="${id}" aria-label="Ajouter">+</button></div>
-      ${items.map(m=>`<div class="ent"><div class="n"><b>${esc(m.name)}</b><small>${m.portions&&m.portions!==1?`${String(m.portions).replace('.',',')} portions · `:''}P ${Math.round(m.p||0)} · G ${Math.round(m.c||0)} · L ${Math.round(m.f||0)}</small></div>
+      ${items.map(m=>`<div class="ent"><div class="n"><b>${esc(m.name)}</b><small>${m.grams?`${fmt(m.grams)} g · `:''}${m.portions&&m.portions!==1?`${String(m.portions).replace('.',',')} portions · `:''}P ${Math.round(m.p||0)} · G ${Math.round(m.c||0)} · L ${Math.round(m.f||0)}</small></div>
         <div class="k">${fmt(m.kcal)} kcal</div><button class="del" data-del="${m.id}" aria-label="Retirer">✕</button></div>`).join('')}</div>`;
   }).join('');
   $$('#slots [data-add]').forEach(b => b.onclick = () => openAdd(b.dataset.add));
@@ -1087,7 +1100,7 @@ const openAdd = slot => {
   const s = SLOTS.find(x=>x[0]===slot);
   $('#addTitle').textContent = `${s[2]} ${s[1]}`;
   $('#recSearch').value = ''; ['qName','qKcal','qP','qC','qF','qGrams'].forEach(i=>$('#'+i).value='');
-  qPer = null; $('#qProd').classList.add('hidden');
+  qAll = false; renderQuick();
   setAddMode(S.recipes.length ? 'rec' : 'quick');
   renderPick(); updateAddFoot(); openOv('addModal'); sfx.tap(); buzz();
 };
@@ -1177,21 +1190,46 @@ $('#npSave').onclick = () => {
   const prod = { code:$('#npCode').textContent, name, kcal:Math.round(kcal), p:num($('#npP').value), c:num($('#npC').value), f:num($('#npF').value), own:true };
   const r = prodRes; prodRes = null; closeOv('prodModal'); toast('Produit enregistré ✓'); r && r(prod);
 };
-let qPer = null;
-const calcQ = () => {
-  if (!qPer) return; const k = num($('#qGrams').value) / 100;
-  $('#qKcal').value = Math.round(qPer.kcal * k); $('#qP').value = f1(qPer.p * k); $('#qC').value = f1(qPer.c * k); $('#qF').value = f1(qPer.f * k);
+/* Ajout rapide : valeurs pour 100 g + grammes mangés. Chaque aliment est gardé pour la prochaine fois. */
+let qAll = false;
+const s1 = x => String(Math.round(num(x) * 10) / 10).replace('.', ',');
+const qTotals = () => { const g = num($('#qGrams').value) || 100, k = g / 100;
+  return { g, kcal: Math.round(num($('#qKcal').value) * k), p: +(num($('#qP').value) * k).toFixed(1), c: +(num($('#qC').value) * k).toFixed(1), f: +(num($('#qF').value) * k).toFixed(1) }; };
+const renderQRes = () => {
+  const t = qTotals(), el = $('#qRes');
+  if (!num($('#qKcal').value)) { el.innerHTML = 'Remplis les calories pour 100 g, puis la quantité mangée.'; return; }
+  el.innerHTML = `${fmt(t.g)} g = <b>${fmt(t.kcal)} kcal</b><br>P ${Math.round(t.p)} g · G ${Math.round(t.c)} g · L ${Math.round(t.f)} g`;
 };
-$('#qGrams').addEventListener('input', calcQ);
-$('#qScan').onclick = async () => {
-  const prod = await lookupProduct(); if (!prod) return;
-  qPer = prod;
-  $('#qPName').textContent = prod.name;
-  $('#qPInfo').textContent = `Pour 100 g : ${fmt(prod.kcal)} kcal · P ${f1(prod.p)} · G ${f1(prod.c)} · L ${f1(prod.f)}`;
-  $('#qProd').classList.remove('hidden');
-  $('#qName').value = prod.name; $('#qGrams').value = '100'; calcQ();
-  setTimeout(() => { $('#qGrams').focus(); $('#qGrams').select(); }, 300);
+const renderQuick = () => {
+  const q = $('#qName').value.trim().toLowerCase();
+  const list = Object.entries(S.foods)
+    .filter(([k, f]) => f && f.name && (!q || k.includes(q)) && k !== q)
+    .sort((a, b) => (b[1].last || 0) - (a[1].last || 0) || a[1].name.localeCompare(b[1].name, 'fr'));
+  const el = $('#qRecent');
+  if (!list.length) { el.innerHTML = ''; renderQRes(); return; }
+  const shown = qAll || q ? list.slice(0, 40) : list.slice(0, 5);
+  el.innerHTML = `<div class="flist"><div class="fh">${q ? 'Aliments trouvés' : 'Tes aliments'}</div>${shown.map(([k, f]) => `<div class="fitem">
+      <button class="fpick" data-f="${esc(k)}"><b>${esc(f.name)}</b><small>${fmt(f.kcal)} kcal / 100 g${f.lastG ? ` · la dernière fois ${fmt(f.lastG)} g` : ''}</small></button>
+      <button class="fdel" data-fd="${esc(k)}" aria-label="Retirer de la liste">✕</button></div>`).join('')}
+    ${!q && !qAll && list.length > 5 ? `<button class="fmore" id="qMore">Voir les ${list.length} aliments</button>` : ''}</div>`;
+  $$('#qRecent [data-f]').forEach(b => b.onclick = () => pickFood(b.dataset.f));
+  $$('#qRecent [data-fd]').forEach(b => b.onclick = async () => {
+    const f = S.foods[b.dataset.fd]; if (!f) return;
+    if (!(await confirmSheet(`Retirer « ${f.name} » ?`, 'Il disparaît de ta liste. Tes repas déjà notés restent en place.', { yes:'Retirer' }))) return;
+    delete S.foods[b.dataset.fd]; save(); renderQuick(); sfx.no(); buzz('medium');
+  });
+  const m = $('#qMore'); if (m) m.onclick = () => { qAll = true; renderQuick(); sfx.tap(); };
+  renderQRes();
 };
+const fillFood = f => {
+  $('#qName').value = f.name; $('#qKcal').value = s1(f.kcal); $('#qP').value = s1(f.p); $('#qC').value = s1(f.c); $('#qF').value = s1(f.f);
+  $('#qGrams').value = f.lastG ? String(f.lastG).replace('.', ',') : '100';
+  renderQuick(); setTimeout(() => { $('#qGrams').focus(); $('#qGrams').select(); }, 250);
+};
+const pickFood = k => { const f = S.foods[k]; if (!f) return; fillFood(f); sfx.tap(); buzz(); };
+$('#qName').addEventListener('input', () => { qAll = false; renderQuick(); });
+['qKcal','qP','qC','qF','qGrams'].forEach(id => $('#'+id).addEventListener('input', renderQRes));
+$('#qScan').onclick = async () => { const prod = await lookupProduct(); if (!prod) return; fillFood(S.foods[prod.name.toLowerCase()] || prod); };
 const updateAddFoot = () => {
   const btn = $('#addConfirm');
   $('#portionRow').classList.toggle('hidden', addMode!=='rec' || !pickId);
@@ -1213,10 +1251,10 @@ $('#addConfirm').onclick = e => {
     entry = { id:uid(), slot:addSlot, name:r.name, recipeId:r.id, portions,
       kcal:Math.round(per.kcal*portions), p:+(per.p*portions).toFixed(1), c:+(per.c*portions).toFixed(1), f:+(per.f*portions).toFixed(1) };
   } else {
-    const k = Math.round(num($('#qKcal').value));
-    if (!k) { sfx.no(); buzz('medium'); toast('Indique les calories'); return; }
-    entry = { id:uid(), slot:addSlot, name:$('#qName').value.trim() || 'Ajout rapide', portions:1,
-      kcal:k, p:num($('#qP').value), c:num($('#qC').value), f:num($('#qF').value) };
+    if (!num($('#qKcal').value)) { sfx.no(); buzz('medium'); toast('Indique les calories pour 100 g'); $('#qKcal').focus(); return; }
+    const name = $('#qName').value.trim() || 'Aliment', t = qTotals(), key = name.toLowerCase();
+    entry = { id:uid(), slot:addSlot, name, portions:1, grams:t.g, kcal:t.kcal, p:t.p, c:t.c, f:t.f };
+    S.foods[key] = Object.assign({}, S.foods[key] || {}, { name, kcal:num($('#qKcal').value), p:num($('#qP').value), c:num($('#qC').value), f:num($('#qF').value), last:Date.now(), lastG:t.g });
   }
   d.meals.push(entry); syncCalories(d); save();
   closeOv('addModal'); renderNutrition(); sfx.ok(); buzz('success'); toast(`+${fmt(entry.kcal)} kcal`);
