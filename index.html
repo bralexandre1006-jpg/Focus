@@ -576,7 +576,7 @@ button{border:0;background:none;cursor:pointer}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.9<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.10<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1494,6 +1494,13 @@ const renderWeightStats = () => {
 };
 
 /* ---------- HISTORIQUE ---------- */
+// Séance faite / ratée / repos selon les jours de séance prévus ce jour-là (programme ou réglages)
+const wkTag = (k, d) => {
+  if (d.workout === true) return '<span><i class="ico hico i-ok"></i><b>Séance</b></span>';
+  const planned = goalsOn(k).td.includes(wd(parseKey(k)));
+  if (!planned) return '<span><i class="ico hico i-rest"></i><b>Repos</b></span>';
+  return d.workout === false ? '<span><i class="ico hico i-no"></i><b>Ratée</b></span>' : '';
+};
 const renderHistory = () => {
   const ks = Object.keys(S.days).filter(k=>{const d=S.days[k]; return d.weight||d.calories||d.steps||d.workout!=null;}).sort().reverse();
   const el = $('#histList');
@@ -1501,7 +1508,7 @@ const renderHistory = () => {
   el.innerHTML = ks.slice(0,120).map(k=>{ const d=S.days[k], dt=parseKey(k), t = sumMeals(d.meals||[]);
     return `<div class="hrow"><div class="hd"><b>${dt.getDate()}</b><small>${dt.toLocaleDateString('fr-BE',{month:'short'}).replace('.','')}</small></div>
     <div class="hv"><span>👟 <b>${fmt(d.steps||0)}</b></span>${d.weight?`<span>⚖️ <b>${f1(d.weight)} kg</b></span>`:''}
-    ${d.calories?`<span>🔥 <b>${fmt(d.calories)}</b></span>`:''}${t.p?`<span>🥩 <b>${Math.round(t.p)} g</b></span>`:''}${d.workout===true?'<span><i class="ico hico i-ok"></i><b>Séance</b></span>':d.workout===false?'<span><i class="ico hico i-no"></i><b>Ratée</b></span>':''}</div></div>`;}).join('');
+    ${d.calories?`<span>🔥 <b>${fmt(d.calories)}</b></span>`:''}${t.p?`<span>🥩 <b>${Math.round(t.p)} g</b></span>`:''}${wkTag(k, d)}</div></div>`;}).join('');
 };
 RENDER.history = renderHistory;
 
