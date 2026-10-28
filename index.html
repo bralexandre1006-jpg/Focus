@@ -747,6 +747,37 @@ body.lite .wb .wl small{font-size:11px}
 .fitem2 small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
 .fitem2 em{font-style:normal;opacity:.7}
 .tag{font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;background:rgba(90,184,255,.16);color:var(--wgt);flex-shrink:0;text-transform:uppercase;letter-spacing:.04em}
+/* bouton ? et fenêtre d'explication */
+.qbtn{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--mut);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex-shrink:0;position:relative;line-height:1}
+.qbtn::after{content:"";position:absolute;inset:-12px}
+.c-steps .burn .qbtn{align-self:center;margin-left:2px}
+.c-steps .burn .bw{display:none}
+body.lite .c-steps .burn .bw{display:inline}
+body.lite .c-steps .burn .qbtn{margin:4px 0 0;width:18px;height:18px;font-size:11px}
+.kbonus .qbtn{margin-left:auto;width:18px;height:18px;font-size:11px}
+#infoModal .mbody{padding-bottom:calc(var(--sb) + 24px)}
+.ib-hero{background:linear-gradient(150deg,rgba(255,120,74,.18),rgba(255,120,74,.04));border-radius:20px;padding:16px;margin-bottom:14px}
+.ib-hero b{display:block;font-size:34px;letter-spacing:-.04em;color:var(--cal)}
+.ib-hero span{color:var(--mut);font-size:14px}
+.ib-sec{background:var(--card);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+.ib-sec h5{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:10px}
+.ib-sec p{font-size:14px;line-height:1.5;color:#C9C9D4;font-weight:600}
+.ib-sec p+p,.ib-sec .ib-tbl+p{margin-top:10px}
+.ib-sec p b{color:var(--txt)}
+.ib-row{display:flex;gap:12px;padding:8px 0}
+.ib-row+.ib-row{border-top:1px solid var(--line)}
+.ib-row>span{width:24px;height:24px;border-radius:8px;background:var(--card2);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--mut);flex-shrink:0}
+.ib-row p b:first-child{display:block;font-size:15px;margin-bottom:2px}
+.ib-n{color:var(--cal)!important}
+.ib-tbl{margin-top:10px;border-radius:12px;background:var(--card2);padding:4px 12px}
+.ib-tbl div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:14px}
+.ib-tbl div+div{border-top:1px solid var(--line)}
+.ib-tbl span{color:var(--mut)}
+.ib-tbl .tot b{color:var(--cal)}
+.ib-note{color:var(--mut);font-size:12px;line-height:1.45;padding:4px 4px 0}
+.tag.tb{background:rgba(255,255,255,.07);color:var(--mut);text-transform:none;letter-spacing:0;font-weight:700}
+.qhint{color:var(--mut);font-size:13px;line-height:1.45;padding:10px 4px 2px}
+.fpick b{display:flex;align-items:center;gap:6px}
 body.lite #s-today{display:flex;flex-direction:column;padding-bottom:calc(var(--sb) + 80px)}
 body.lite #s-today>.head{flex:0 0 auto}
 body.lite #s-today>.card{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;margin-bottom:10px}
@@ -798,7 +829,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
           <div class="pill" id="pedoPill"><span class="dot"></span><span id="pedoTxt">Capteur…</span></div>
         </div>
       </div>
-      <div class="burn"><svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg><b id="burnK">0</b><small>kcal brûlées</small><small id="burnD">0 km</small></div>
+      <div class="burn"><svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg><b id="burnK">0</b><small>kcal<span class="bw"> brûlées</span></small><small id="burnD">0 km</small><button class="qbtn" id="burnQ" aria-label="Comment c'est calculé ?">?</button></div>
     </div>
 
     <div class="card c-prog hidden" id="pgCard">
@@ -970,7 +1001,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.22<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.24<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1080,6 +1111,11 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
 </div>
 
 <!-- BILAN -->
+<div class="modal" id="infoModal">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4>Calories de la marche</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody" id="infoBody"></div>
+</div>
 <div class="modal" id="recapModal">
   <div class="mgrab"></div>
   <div class="mhead"><h4>Bilan de la semaine</h4><button class="x press" data-close>×</button></div>
@@ -1403,6 +1439,33 @@ const strideM = () => (num(S.profile.height) || 170) / 100 * (S.profile.sex === 
 const stepKm = n => Math.max(0, n) * strideM() / 1000;
 const stepKcal = n => stepKm(n) * (lastWeight() || num(S.profile.weight) || 70) * 0.5;
 const stepBonus = (k = today()) => { const st = (S.days[k] && S.days[k].steps) || 0, g = goalsOn(k).steps; return Math.max(0, Math.round(stepKcal(st - g))); };
+// Explication du calcul, avec tes propres chiffres
+const openBurnInfo = () => {
+  const d = day(), st = d.steps || 0, g = goals().steps, h = num(S.profile.height) || 170, w = lastWeight() || num(S.profile.weight) || 70;
+  const f = S.profile.sex === 'f', strideCm = Math.round(strideM() * 100), km = stepKm(st), act = Math.round(stepKcal(st));
+  const hours = km / 5, rest = Math.round(w * (f ? 0.9 : 1) * hours), bonus = stepBonus();
+  const dur = hours >= 1 ? `${Math.floor(hours)} h ${String(Math.round((hours % 1) * 60)).padStart(2, '0')}` : `${Math.round(hours * 60)} min`;
+  $('#infoBody').innerHTML = `
+    <div class="ib-hero"><b>${fmt(act)} kcal</b><span>actives pour ${fmt(st)} pas</span></div>
+    <div class="ib-sec"><h5>Comment c'est calculé</h5>
+      <div class="ib-row"><span>1</span><p><b>Distance</b>Un pas fait environ ${f ? '41,3' : '41,5'} % de ta taille, soit ${strideCm} cm pour ${fmt(h)} cm.<br>${fmt(st)} pas × ${strideCm} cm = <b class="ib-n">${f1(km)} km</b></p></div>
+      <div class="ib-row"><span>2</span><p><b>Dépense</b>Marcher coûte environ 0,5 kcal par kilo et par kilomètre, en plus du repos.<br>${f1(km)} km × ${f1(w)} kg × 0,5 = <b class="ib-n">${fmt(act)} kcal</b></p></div>
+    </div>
+    <div class="ib-sec"><h5>Pourquoi c'est plus bas qu'ailleurs</h5>
+      <p>Beaucoup d'apps et de montres affichent les calories <b>totales</b> : la marche plus ce que ton corps brûle de toute façon pendant ce temps.</p>
+      <div class="ib-tbl">
+        <div><span>Calories actives (Focus)</span><b>${fmt(act)} kcal</b></div>
+        <div><span>Repos pendant ${dur} de marche</span><b>+ ${fmt(rest)} kcal</b></div>
+        <div class="tot"><span>Calories totales</span><b>≈ ${fmt(act + rest)} kcal</b></div>
+      </div>
+      <p>Focus garde les calories actives : ton objectif du jour inclut déjà ta dépense au repos. Ajouter le total la compterait deux fois.</p>
+    </div>
+    <div class="ib-sec"><h5>Calories en plus dans Nutrition</h5>
+      <p>Seuls les pas au-delà de ton objectif de ${fmt(g)} comptent, car ton objectif de calories prévoit déjà ceux-là.${st > g ? `<br>${fmt(st)} − ${fmt(g)} = ${fmt(st - g)} pas → <b class="ib-n">+${fmt(bonus)} kcal</b>` : `<br>Il te reste ${fmt(g - st)} pas avant d'en gagner.`}</p>
+    </div>
+    <p class="ib-note">Estimation à 20 à 30 % près : la vitesse, la pente et ta vraie longueur de pas font varier le résultat.</p>`;
+  openOv('infoModal'); sfx.tap(); buzz();
+};
 const lastWeight = () => {
   const ks = Object.keys(S.days).filter(k=>S.days[k].weight).sort();
   return ks.length ? S.days[ks.at(-1)].weight : S.profile.weight;
@@ -1464,7 +1527,8 @@ const renderNutrition = () => {
   countTo($('#kNow'), t.kcal);
   $('#kGoal').textContent = '/ ' + fmt(g) + ' kcal';
   const kb = $('#kBonus'); kb.classList.toggle('hidden', !bonus);
-  if (bonus) kb.innerHTML = `${'<svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg>'}<span><b>+${fmt(bonus)} kcal</b> grâce à tes ${fmt((d.steps || 0) - G.steps)} pas en plus</span>`;
+  if (bonus) kb.innerHTML = `${'<svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg>'}<span><b>+${fmt(bonus)} kcal</b> grâce à tes ${fmt((d.steps || 0) - G.steps)} pas en plus</span><button class="qbtn" data-kq="1" aria-label="Comment c'est calculé ?">?</button>`;
+  const kq = kb.querySelector('[data-kq]'); if (kq) kq.onclick = e => { e.stopPropagation(); openBurnInfo(); };
   const bar = $('#cBar'); bar.style.width = Math.min(100, t.kcal/g*100) + '%'; bar.classList.toggle('over', t.kcal > g*1.05);
   $('#mP').textContent = Math.round(t.p) + (G.protein ? ' / ' + G.protein : '') + ' g'; $('#mC').textContent = Math.round(t.c) + ' g'; $('#mF').textContent = Math.round(t.f) + ' g';
   $('#slots').innerHTML = SLOTS.map(([id,lab,ic]) => {
@@ -1605,19 +1669,37 @@ const renderQRes = () => {
   if (!num($('#qKcal').value)) { el.innerHTML = 'Remplis les calories pour 100 g, puis la quantité mangée.'; return; }
   el.innerHTML = `${fmt(t.g)} g = <b>${fmt(t.kcal)} kcal</b><br>P ${Math.round(t.p)} g · G ${Math.round(t.c)} g · L ${Math.round(t.f)} g`;
 };
+const BASE_FOODS = [["Pomme",52,0.3,14,0.2,150,"Fruits"],["Banane",89,1.1,23,0.3,120,"Fruits"],["Orange",47,0.9,12,0.1,150,"Fruits"],["Clémentine",47,0.8,12,0.2,70,"Fruits"],["Kiwi",61,1.1,15,0.5,75,"Fruits"],["Poire",57,0.4,15,0.1,160,"Fruits"],["Fraise",32,0.7,7.7,0.3,0,"Fruits"],["Framboise",52,1.2,12,0.7,0,"Fruits"],["Myrtille",57,0.7,14,0.3,0,"Fruits"],["Raisin",69,0.7,18,0.2,0,"Fruits"],["Ananas",50,0.5,13,0.1,0,"Fruits"],["Mangue",60,0.8,15,0.4,0,"Fruits"],["Pêche",39,0.9,10,0.3,150,"Fruits"],["Nectarine",44,1.1,11,0.3,150,"Fruits"],["Abricot",48,1.4,11,0.4,40,"Fruits"],["Cerise",63,1.1,16,0.2,0,"Fruits"],["Pastèque",30,0.6,7.6,0.2,0,"Fruits"],["Melon",34,0.8,8.2,0.2,0,"Fruits"],["Citron",29,1.1,9,0.3,100,"Fruits"],["Avocat",160,2,8.5,15,150,"Fruits"],["Prune",46,0.7,11,0.3,40,"Fruits"],["Figue",74,0.8,19,0.3,50,"Fruits"],["Grenade",83,1.7,19,1.2,0,"Fruits"],["Datte séchée",282,2.5,75,0.4,8,"Fruits"],["Raisins secs",299,3.1,79,0.5,0,"Fruits"],["Compote sans sucre ajouté",50,0.3,12,0.1,100,"Fruits"],["Brocoli",34,2.8,7,0.4,0,"Légumes"],["Carotte",41,0.9,10,0.2,80,"Légumes"],["Tomate",18,0.9,3.9,0.2,120,"Légumes"],["Tomate cerise",18,0.9,3.9,0.2,15,"Légumes"],["Concombre",15,0.7,3.6,0.1,0,"Légumes"],["Courgette",17,1.2,3.1,0.3,0,"Légumes"],["Poivron",26,1,6,0.3,150,"Légumes"],["Salade verte",15,1.4,2.9,0.2,0,"Légumes"],["Épinards",23,2.9,3.6,0.4,0,"Légumes"],["Haricots verts",31,1.8,7,0.2,0,"Légumes"],["Champignons de Paris",22,3.1,3.3,0.3,0,"Légumes"],["Oignon",40,1.1,9.3,0.1,100,"Légumes"],["Ail",149,6.4,33,0.5,5,"Légumes"],["Chou-fleur",25,1.9,5,0.3,0,"Légumes"],["Aubergine",25,1,6,0.2,0,"Légumes"],["Petits pois",81,5.4,14,0.4,0,"Légumes"],["Maïs doux",86,3.3,19,1.4,0,"Légumes"],["Poireau",61,1.5,14,0.3,0,"Légumes"],["Asperge",20,2.2,3.9,0.1,0,"Légumes"],["Betterave cuite",44,1.7,10,0.2,0,"Légumes"],["Chou blanc",25,1.3,5.8,0.1,0,"Légumes"],["Radis",16,0.7,3.4,0.1,0,"Légumes"],["Céleri branche",16,0.7,3,0.2,0,"Légumes"],["Patate douce",86,1.6,20,0.1,0,"Légumes"],["Courge butternut",45,1,12,0.1,0,"Légumes"],["Riz blanc cuit",130,2.7,28,0.3,0,"Féculents"],["Riz basmati cuit",121,3.5,25,0.4,0,"Féculents"],["Riz complet cuit",123,2.7,26,1,0,"Féculents"],["Riz cru",360,7,79,0.6,0,"Féculents"],["Pâtes cuites",158,5.8,31,0.9,0,"Féculents"],["Pâtes crues",371,13,75,1.5,0,"Féculents"],["Pâtes complètes cuites",124,5.3,27,0.5,0,"Féculents"],["Pomme de terre cuite",87,1.9,20,0.1,0,"Féculents"],["Purée de pommes de terre",106,1.9,16,4,0,"Féculents"],["Frites",312,3.4,41,15,0,"Féculents"],["Quinoa cuit",120,4.4,21,1.9,0,"Féculents"],["Semoule cuite",112,3.8,23,0.2,0,"Féculents"],["Lentilles cuites",116,9,20,0.4,0,"Féculents"],["Pois chiches cuits",164,8.9,27,2.6,0,"Féculents"],["Haricots rouges cuits",127,8.7,23,0.5,0,"Féculents"],["Flocons d'avoine",379,13,68,6.5,0,"Féculents"],["Pain baguette",270,9,56,1.5,0,"Féculents"],["Pain complet",247,13,41,3.4,0,"Féculents"],["Pain de mie",266,7.6,50,3.3,25,"Féculents"],["Wrap de blé",310,8,52,7.5,62,"Féculents"],["Corn flakes",357,7.5,84,0.4,0,"Féculents"],["Granola",450,10,64,17,0,"Féculents"],["Galette de riz",387,8,81,3,9,"Féculents"],["Croissant",406,8,46,21,50,"Féculents"],["Pain au chocolat",414,7,46,22,65,"Féculents"],["Blanc de poulet cru",120,23,0,2.6,0,"Viandes"],["Blanc de poulet cuit",165,31,0,3.6,0,"Viandes"],["Cuisse de poulet cuite",229,24,0,15,0,"Viandes"],["Escalope de dinde crue",114,24,0,1.5,0,"Viandes"],["Bœuf haché 5 % cru",137,21,0,5,0,"Viandes"],["Bœuf haché 15 % cru",215,19,0,15,0,"Viandes"],["Steak de bœuf cru",150,23,0,6,0,"Viandes"],["Filet de porc cru",120,21,0,3.5,0,"Viandes"],["Jambon blanc",115,20,1,3.5,40,"Viandes"],["Lardons",270,16,1,23,0,"Viandes"],["Saucisse de porc",300,14,1,27,0,"Viandes"],["Gigot d'agneau cuit",230,26,0,14,0,"Viandes"],["Saumon cru",208,20,0,13,0,"Poissons"],["Thon au naturel (boîte)",116,26,0,1,0,"Poissons"],["Cabillaud cru",82,18,0,0.7,0,"Poissons"],["Crevettes cuites",99,24,0.2,0.3,0,"Poissons"],["Sardines à l'huile",208,25,0,11,0,"Poissons"],["Truite crue",141,20,0,6.2,0,"Poissons"],["Maquereau cru",205,19,0,14,0,"Poissons"],["Surimi",105,8,15,1,0,"Poissons"],["Œuf",143,12.6,0.7,9.5,55,"Œufs et laitiers"],["Blanc d'œuf",52,11,0.7,0.2,33,"Œufs et laitiers"],["Lait demi-écrémé",46,3.3,4.8,1.6,0,"Œufs et laitiers"],["Lait entier",64,3.2,4.8,3.6,0,"Œufs et laitiers"],["Lait écrémé",34,3.4,5,0.1,0,"Œufs et laitiers"],["Yaourt nature",61,3.5,4.7,3.3,125,"Œufs et laitiers"],["Yaourt 0 %",45,4.5,6,0.1,125,"Œufs et laitiers"],["Skyr nature",63,11,4,0.2,0,"Œufs et laitiers"],["Fromage blanc 0 %",49,7.5,4,0.2,0,"Œufs et laitiers"],["Fromage blanc 3 %",74,7,4,3,0,"Œufs et laitiers"],["Cottage cheese",98,11,3.4,4.3,0,"Œufs et laitiers"],["Emmental",382,28.5,0,29.8,0,"Œufs et laitiers"],["Comté",413,27,0,34,0,"Œufs et laitiers"],["Mozzarella",250,18,1,19,125,"Œufs et laitiers"],["Feta",264,14,4,21,0,"Œufs et laitiers"],["Parmesan",392,36,3.2,26,0,"Œufs et laitiers"],["Beurre",717,0.9,0.1,81,0,"Œufs et laitiers"],["Crème fraîche 30 %",292,2.4,2.9,30,0,"Œufs et laitiers"],["Crème légère 15 %",160,3,4,15,0,"Œufs et laitiers"],["Huile d'olive",884,0,0,100,12,"Matières grasses et sucré"],["Mayonnaise",680,1,1,75,0,"Matières grasses et sucré"],["Ketchup",110,1.2,26,0.2,0,"Matières grasses et sucré"],["Moutarde",160,7,5,12,0,"Matières grasses et sucré"],["Miel",304,0.3,82,0,0,"Matières grasses et sucré"],["Sucre",400,0,100,0,5,"Matières grasses et sucré"],["Confiture",250,0.4,60,0.1,0,"Matières grasses et sucré"],["Chocolat noir 70 %",598,7.8,46,43,0,"Matières grasses et sucré"],["Chocolat au lait",535,7.6,59,30,0,"Matières grasses et sucré"],["Pâte à tartiner cacao noisette",539,6.3,57.5,30.9,0,"Matières grasses et sucré"],["Beurre de cacahuète",588,25,20,50,0,"Matières grasses et sucré"],["Biscuits secs",440,8,75,12,8,"Matières grasses et sucré"],["Chips",536,7,53,35,0,"Matières grasses et sucré"],["Amandes",579,21,22,50,0,"Fruits à coque"],["Noix",654,15,14,65,0,"Fruits à coque"],["Noix de cajou",553,18,30,44,0,"Fruits à coque"],["Cacahuètes",567,26,16,49,0,"Fruits à coque"],["Pistaches",560,20,28,45,0,"Fruits à coque"],["Tofu ferme",144,17,3,8.7,0,"Protéines végétales et sport"],["Houmous",166,8,14,10,0,"Protéines végétales et sport"],["Whey protéine (poudre)",380,78,8,5,30,"Protéines végétales et sport"],["Jus d'orange",45,0.7,10,0.2,0,"Boissons"],["Soda sucré",42,0,10.6,0,0,"Boissons"],["Soda sans sucre",1,0,0,0,0,"Boissons"],["Bière",43,0.5,3.6,0,0,"Boissons"],["Vin rouge",85,0.1,2.6,0,0,"Boissons"],["Café noir",2,0.1,0,0,0,"Boissons"],["Boisson amande sans sucre",13,0.4,0.3,1.1,0,"Boissons"],["Pizza margherita",250,11,31,9,0,"Plats"]];
+// Base d'aliments intégrée : valeurs moyennes pour 100 g (tables nutritionnelles publiques, arrondies)
+const norm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/œ/g, 'oe').trim();
+const BASE = BASE_FOODS.map(([name,kcal,p,c,f,pw,cat]) => ({ name, kcal, p, c, f, pw: pw || null, cat, n: norm(name), base:true }));
+const baseFind = name => BASE.find(b => b.n === norm(name));
+const foodLookup = name => S.foods[String(name || '').trim().toLowerCase()] || baseFind(name);
+const baseSearch = q => { const nq = norm(q); if (nq.length < 2) return [];
+  return BASE.filter(b => b.n.includes(nq)).sort((a,b) => (b.n.startsWith(nq) - a.n.startsWith(nq)) || a.n.length - b.n.length); };
 const renderQuick = () => {
-  const q = $('#qName').value.trim().toLowerCase();
-  const list = Object.entries(S.foods)
-    .filter(([k, f]) => f && f.name && (!q || k.includes(q)) && k !== q)
+  const raw = $('#qName').value.trim(), q = raw.toLowerCase(), nq = norm(raw);
+  const mine = Object.entries(S.foods)
+    .filter(([k, f]) => f && f.name && (!nq || norm(k).includes(nq)) && k !== q)
     .sort((a, b) => (b[1].last || 0) - (a[1].last || 0) || a[1].name.localeCompare(b[1].name, 'fr'));
+  const mineN = new Set(mine.map(([k]) => norm(k)).concat(Object.keys(S.foods).map(norm)));
+  const filled = num($('#qKcal').value) > 0;
+  const base = baseSearch(raw).filter(b => !mineN.has(b.n) && !(filled && b.n === nq)).slice(0, 12);
   const el = $('#qRecent');
-  if (!list.length) { el.innerHTML = ''; renderQRes(); return; }
-  const shown = qAll || q ? list.slice(0, 40) : list.slice(0, 5);
-  el.innerHTML = `<div class="flist"><div class="fh">${q ? 'Aliments trouvés' : 'Tes aliments'}</div>${shown.map(([k, f]) => `<div class="fitem">
+  const shown = qAll || q ? mine.slice(0, 30) : mine.slice(0, 5);
+  let html = '';
+  if (shown.length) html += `<div class="flist"><div class="fh">${q ? 'Tes aliments' : 'Tes derniers aliments'}</div>${shown.map(([k, f]) => `<div class="fitem">
       <button class="fpick" data-f="${esc(k)}"><b>${esc(f.name)}</b><small>${fmt(f.kcal)} kcal / 100 g${f.lastG ? ` · la dernière fois ${fmt(f.lastG)} g` : ''}</small></button>
       <button class="fdel" data-fd="${esc(k)}" aria-label="Retirer de la liste">✕</button></div>`).join('')}
-    ${!q && !qAll && list.length > 5 ? `<button class="fmore" id="qMore">Voir les ${list.length} aliments</button>` : ''}</div>`;
+    ${!q && !qAll && mine.length > 5 ? `<button class="fmore" id="qMore">Voir les ${mine.length} aliments</button>` : ''}</div>`;
+  if (base.length) html += `<div class="flist"><div class="fh">Base Focus</div>${base.map(b => `<div class="fitem">
+      <button class="fpick" data-b="${esc(b.n)}"><b>${esc(b.name)}<span class="tag tb">${esc(b.cat)}</span></b><small>${fmt(b.kcal)} kcal · P ${f1(b.p)} · G ${f1(b.c)} · L ${f1(b.f)} / 100 g${b.pw ? ` · 1 pièce ≈ ${fmt(b.pw)} g` : ''}</small></button></div>`).join('')}</div>`;
+  if (!q && !html) html = `<div class="qhint">Tape un aliment pour chercher parmi les ${BASE.length} aliments de la base, ou scanne un produit.</div>`;
+  else if (!q) html += `<div class="qhint">Tape un nom pour chercher aussi dans la base Focus (${BASE.length} aliments).</div>`;
+  else if (!shown.length && !base.length && nq.length >= 2) html = `<div class="qhint">Rien dans la base : remplis les valeurs ci-dessous, Focus retiendra cet aliment.</div>`;
+  el.innerHTML = html;
   $$('#qRecent [data-f]').forEach(b => b.onclick = () => pickFood(b.dataset.f));
+  $$('#qRecent [data-b]').forEach(b => b.onclick = () => { const f = BASE.find(x => x.n === b.dataset.b); if (!f) return; fillFood({ ...f, lastG: f.pw || null }); sfx.tap(); buzz(); });
   $$('#qRecent [data-fd]').forEach(b => b.onclick = async () => {
     const f = S.foods[b.dataset.fd]; if (!f) return;
     if (!(await confirmSheet(`Retirer « ${f.name} » ?`, 'Il disparaît de ta liste. Tes repas déjà notés restent en place.', { yes:'Retirer' }))) return;
@@ -1709,7 +1791,8 @@ const openRecipe = id => {
   draft = r ? JSON.parse(JSON.stringify(r)) : { id:null, name:'', emoji:'🍽️', portions:1, ingredients:[blankIng()] };
   $('#recTitle').textContent = r ? 'Modifier la recette' : 'Nouvelle recette';
   $('#rName').value = draft.name; $('#rDel').classList.toggle('hidden', !r);
-  $('#foodList').innerHTML = Object.values(S.foods).map(f=>`<option value="${esc(f.name)}"></option>`).join('');
+  const own = Object.values(S.foods).map(f => f.name), ownN = new Set(own.map(norm));
+  $('#foodList').innerHTML = own.concat(BASE.filter(b => !ownN.has(b.n)).map(b => b.name)).map(n=>`<option value="${esc(n)}"></option>`).join('');
   renderEmojis(); renderIngs(); updateTotals();
   openOv('recModal'); sfx.tap(); buzz();
 };
@@ -1745,10 +1828,10 @@ const renderIngs = () => {
     inp.addEventListener('input', () => { draft.ingredients[i][inp.dataset.k] = inp.value; box.querySelector('.calc').innerHTML = ingCalc(draft.ingredients[i]); updateTotals(); });
     if (inp.dataset.k === 'name') inp.addEventListener('change', () => {
       if (ingRendering) return;
-      const f = S.foods[inp.value.trim().toLowerCase()]; if (!f) return;
+      const f = foodLookup(inp.value); if (!f) return;
       const g = draft.ingredients[i]; let filled = false;
       ['kcal','p','c','f'].forEach(k => { if (g[k] === '' || g[k] == null) { g[k] = String(f[k]).replace('.',','); filled = true; } });
-      if (f.pw && !num(g.qty)) { g.unit = 'pc'; g.pw = String(f.pw).replace('.',','); g.qty = '1'; filled = true; }
+      if (f.pw && !num(g.qty) && (!f.base || ['Fruits','Légumes','Féculents','Œufs et laitiers'].includes(f.cat))) { g.unit = 'pc'; g.pw = String(f.pw).replace('.',','); g.qty = '1'; filled = true; }
       if (filled) { setTimeout(() => { renderIngs(); updateTotals(); }, 0); sfx.tap(); }
     });
   });
@@ -2245,6 +2328,7 @@ const bindSex = (el, onPick) => el.querySelectorAll('button').forEach(b => b.onc
   el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); sfx.tap(); buzz(); onPick && onPick(b.dataset.x); });
 bindSex($('#oSex'));
 bindSex($('#pSex'), x => { S.profile.sex = x; save(); toast('Profil mis à jour'); });
+$('#burnQ').onclick = e => { e.stopPropagation(); openBurnInfo(); };
 const applyLite = () => {
   document.body.classList.toggle('lite', !!S.settings.lite);
   document.body.classList.toggle('nograd', S.settings.grad === false);
