@@ -657,6 +657,13 @@ body.lite .wk button{height:50px}
 body.lite .kcal b{font-size:26px}
 body.lite .bar{margin:7px 0 9px}
 body.lite .mac{padding:7px 9px}
+/* Lite : l'écran Jour remplit toute la hauteur jusqu'à la barre du bas */
+body.lite #s-today{display:flex;flex-direction:column;padding-bottom:calc(var(--sb) + 80px)}
+body.lite #s-today>.head{flex:0 0 auto}
+body.lite #s-today>.card{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;margin-bottom:10px}
+body.lite #s-today>.card.hidden{display:none!important}
+body.lite .card h3 .badge{position:static;margin-left:auto;text-transform:none;letter-spacing:.02em}
+body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom:0}
 .hidden{display:none!important}
 </style>
 </head>
@@ -730,8 +737,7 @@ body.lite .mac{padding:7px 9px}
     </div>
 
     <div class="card c-wk" id="wkCard">
-      <h3><i style="background:var(--spt)"></i><span id="wkH">Séance de sport</span></h3>
-      <span class="badge hidden" id="wkBadge">JOUR DE SÉANCE</span>
+      <h3><i style="background:var(--spt)"></i><span id="wkH">Séance de sport</span><span class="badge hidden" id="wkBadge">JOUR DE SÉANCE</span></h3>
       <div id="sess"></div>
       <div class="wk" id="wkBtns">
         <button class="yes press" id="wkYes" aria-label="Séance faite"><span class="ico i-ok"></span></button>
@@ -861,7 +867,7 @@ body.lite .mac{padding:7px 9px}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.18<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.20<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
