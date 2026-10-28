@@ -658,6 +658,56 @@ body.lite .kcal b{font-size:26px}
 body.lite .bar{margin:7px 0 9px}
 body.lite .mac{padding:7px 9px}
 /* Lite : l'écran Jour remplit toute la hauteur jusqu'à la barre du bas */
+/* calories brûlées (carte Pas) */
+.c-steps .burn{position:absolute!important;top:16px;right:18px;display:flex;align-items:baseline;gap:5px;font-size:14px;color:var(--mut);white-space:nowrap}
+.c-steps .burn .bfl{width:15px;height:15px;color:var(--cal);align-self:center}
+.c-steps .burn b{color:var(--txt);font-size:15px}
+.c-steps .burn small{font-size:13px}
+.c-steps .burn #burnD::before{content:"· "}
+body.lite .c-steps .burn{top:50%;transform:translateY(-38%);right:16px;flex-direction:column;align-items:flex-end;gap:1px}
+body.lite .c-steps .burn .bfl{width:18px;height:18px;align-self:flex-end;margin-bottom:2px}
+body.lite .c-steps .burn b{font-size:22px;letter-spacing:-.03em;line-height:1}
+body.lite .c-steps .burn small{font-size:11px}
+body.lite .c-steps .burn #burnD::before{content:""}
+
+/* bonus de calories (Nutrition) */
+.kbonus{display:flex;align-items:center;gap:7px;margin:-6px 0 12px;font-size:13px;color:var(--mut);animation:rise .5s var(--ease) both}
+.kbonus .bfl{width:14px;height:14px;color:var(--cal);flex-shrink:0}
+.kbonus b{color:var(--cal)}
+body.lite .kbonus{margin:-3px 0 8px;font-size:12px}
+
+/* carte séance */
+.hold{position:relative;overflow:hidden;width:100%;height:66px;border-radius:20px;background:rgba(255,255,255,.05);display:flex;align-items:center;gap:13px;padding:0 11px;text-align:left;
+  box-shadow:inset 0 0 0 1.5px rgba(61,220,132,.28);-webkit-touch-callout:none;touch-action:none;transition:transform .25s var(--spring)}
+.hold .hfill{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,rgba(61,220,132,.22),rgba(61,220,132,.45),rgba(215,255,58,.45));transition:transform .3s var(--ease)}
+.hold.holding{transform:scale(.98)}
+.hold.holding .hfill{transform:scaleX(1);transition:transform .85s linear}
+.hold .hck{position:relative;width:44px;height:44px;border-radius:14px;background:var(--ok);color:#06210F;display:grid;place-items:center;flex-shrink:0;box-shadow:0 6px 18px rgba(61,220,132,.35);transition:transform .35s var(--spring)}
+.hold.holding .hck{transform:scale(.88) rotate(-8deg)}
+.hold .hck svg{width:24px;height:24px}
+.hold .hlbl{position:relative;font-size:17px;font-weight:800;line-height:1.2}
+.hold .hlbl small{display:block;color:var(--mut);font-size:12px;font-weight:700}
+.wmiss{display:block;margin:10px auto 0;min-height:32px;color:var(--mut);font-size:14px;font-weight:700}
+.wstate{display:flex;align-items:center;gap:14px;animation:wpop .55s var(--spring) both}
+@keyframes wpop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+.wstate .ico{width:54px;height:54px;flex-shrink:0}
+.wstate.ok .ico{animation:wbounce .7s var(--spring) both}
+@keyframes wbounce{0%{transform:scale(0) rotate(-30deg)}60%{transform:scale(1.15) rotate(6deg)}100%{transform:none}}
+.wstate b{display:block;font-size:19px;letter-spacing:-.02em}
+.wstate.ok b{color:var(--ok)}
+.wstate small{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.wst{flex:1;min-width:0}
+.wundo{color:var(--mut);font-size:13px;font-weight:800;padding:8px 2px;flex-shrink:0}
+body.lite .hold{height:54px;border-radius:16px;gap:11px;padding:0 8px}
+body.lite .hold .hck{width:38px;height:38px;border-radius:12px}
+body.lite .hold .hck svg{width:20px;height:20px}
+body.lite .hold .hlbl{font-size:15px}
+body.lite .hold .hlbl small{font-size:11px}
+body.lite .wmiss{margin-top:6px;font-size:12px;min-height:26px}
+body.lite .wstate .ico{width:42px;height:42px}
+body.lite .wstate b{font-size:16px}
+body.lite .wstate small{font-size:12px}
+.sexseg{margin-bottom:0}
 body.lite #s-today{display:flex;flex-direction:column;padding-bottom:calc(var(--sb) + 80px)}
 body.lite #s-today>.head{flex:0 0 auto}
 body.lite #s-today>.card{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;margin-bottom:10px}
@@ -709,6 +759,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
           <div class="pill" id="pedoPill"><span class="dot"></span><span id="pedoTxt">Capteur…</span></div>
         </div>
       </div>
+      <div class="burn"><svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg><b id="burnK">0</b><small>kcal brûlées</small><small id="burnD">0 km</small></div>
     </div>
 
     <div class="card c-prog hidden" id="pgCard">
@@ -739,9 +790,19 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
     <div class="card c-wk" id="wkCard">
       <h3><i style="background:var(--spt)"></i><span id="wkH">Séance de sport</span><span class="badge hidden" id="wkBadge">JOUR DE SÉANCE</span></h3>
       <div id="sess"></div>
-      <div class="wk" id="wkBtns">
-        <button class="yes press" id="wkYes" aria-label="Séance faite"><span class="ico i-ok"></span></button>
-        <button class="no press" id="wkNo" aria-label="Séance pas faite"><span class="ico i-no"></span></button>
+      <div id="wkBtns">
+        <div id="wkTodo">
+          <button class="hold" id="wkHold" aria-label="Maintiens pour valider ta séance">
+            <span class="hfill"></span><span class="hck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="hlbl">Valider ma séance<small id="wkHoldS">Maintiens le bouton</small></span>
+          </button>
+          <button class="wmiss" id="wkMiss">Je ne l'ai pas faite</button>
+        </div>
+        <div class="wstate hidden" id="wkState">
+          <span class="ico" id="wkSIco"></span>
+          <div class="wst"><b id="wkST"></b><small id="wkSS"></small></div>
+          <button class="wundo" id="wkUndo">Annuler</button>
+        </div>
       </div>
       <div class="restv hidden" id="restV">
         <span class="ico i-rest"></span>
@@ -758,6 +819,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
       </button>
       <div class="kcal"><b id="kNow">0</b><span id="kGoal">/ 2 200 kcal</span></div>
       <div class="bar"><i id="cBar"></i></div>
+      <div class="kbonus hidden" id="kBonus"></div>
       <div class="macros">
         <div class="mac"><b id="mP">0 g</b><small><i style="background:var(--pro)"></i>Protéines</small></div>
         <div class="mac"><b id="mC">0 g</b><small><i style="background:var(--carb)"></i>Glucides</small></div>
@@ -829,6 +891,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
       <button class="acc-h"><h3><i style="background:var(--grn)"></i>Profil</h3><small id="accProfI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Prénom</div><input class="sin" id="pName" style="width:150px"></div>
+      <div class="srow"><div class="l">Genre</div><div class="seg2 sexseg" id="pSex" style="width:170px;margin:0"><button data-x="m">Homme</button><button data-x="f">Femme</button></div></div>
       <div class="srow"><div class="l">Taille (cm)</div><input class="sin" id="pHeight" type="number" inputmode="numeric" style="width:100px"></div>
       <div class="srow"><div class="l">Poids de départ</div><input class="sin" id="pStart" type="text" inputmode="decimal" style="width:100px"></div>
       <div class="srow"><div class="l">Objectif poids</div><input class="sin" id="pTarget" type="text" inputmode="decimal" style="width:100px"></div>
@@ -867,7 +930,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.20<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.21<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -910,6 +973,8 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
       <h2>On fait connaissance ?</h2>
       <div class="lbl-s">Ton prénom</div>
       <label class="field"><input id="oName" placeholder="Alex" autocomplete="given-name"></label>
+      <div class="lbl-s">Genre</div>
+      <div class="seg2 sexseg" id="oSex"><button class="on" data-x="m">Homme</button><button data-x="f">Femme</button></div>
       <div class="ob-grid">
         <div><div class="lbl-s">Taille</div><label class="field"><input id="oHeight" type="number" inputmode="numeric" placeholder="178"><span>cm</span></label></div>
         <div><div class="lbl-s">Poids actuel</div><label class="field"><input id="oWeight" type="text" inputmode="decimal" placeholder="75,0"><span>kg</span></label></div>
@@ -1264,8 +1329,18 @@ const renderSession = () => {
   $('#restV').classList.toggle('hidden', !rest);
   $('#wkBadge').classList.toggle('hidden', !isTD);
   $('#restTxt').textContent = dp && dp.walk ? 'Pas de salle aujourd\'hui. Fais ta marche, puis récupère.' : 'Ton corps récupère et progresse aujourd\'hui.';
-  $('#wkYes').classList.toggle('sel', d.workout===true);
-  $('#wkNo').classList.toggle('sel', d.workout===false);
+  const st = d.workout === true || d.workout === false;
+  $('#wkTodo').classList.toggle('hidden', st);
+  $('#wkState').classList.toggle('hidden', !st);
+  if (d.workout === true) {
+    const n = streak();
+    $('#wkSIco').className = 'ico i-ok'; $('#wkST').textContent = 'Séance validée';
+    $('#wkSS').textContent = n > 1 ? `${n} séances d'affilée 🔥` : 'Bien joué, une de plus 💪';
+  } else if (d.workout === false) {
+    $('#wkSIco').className = 'ico i-no'; $('#wkST').textContent = 'Séance manquée';
+    $('#wkSS').textContent = 'On se rattrape à la prochaine';
+  }
+  $('#wkState').classList.toggle('ok', d.workout === true); $('#wkState').classList.toggle('no', d.workout === false);
 };
 const toggleExo = (i, el) => {
   const d = day(), pi = progInfo(); d.progDone ||= [];
@@ -1273,10 +1348,10 @@ const toggleExo = (i, el) => {
   el.classList.toggle('done', k === -1); sfx.tap(); buzz();
   const n = (pi && pi.day && pi.day.exercises || []).length;
   if (k === -1 && n && d.progDone.length === n && d.workout !== true) {
-    d.workout = true; save(); renderSession(); sfx.win(); buzz('success'); burst($('#wkYes')); toast('Séance terminée 💪');
+    d.workout = true; save(); renderSession(); sfx.win(); buzz('success'); burst($('#wkCard')); toast('Séance terminée 💪');
   } else save();
 };
-$('#wkAnyway').onclick = e => { const d = day(); d.workout = true; save(); renderSession(); sfx.win(); buzz('success'); burst($('#wkYes')); toast('Bien joué 🔥'); };
+$('#wkAnyway').onclick = e => { const d = day(); d.workout = true; save(); renderSession(); sfx.win(); buzz('success'); burst($('#wkCard')); toast('Bien joué 🔥'); };
 
 const renderSteps = () => {
   const s = day().steps || 0, g = goals().steps;
@@ -1285,10 +1360,17 @@ const renderSteps = () => {
   $('#stepsOf').textContent = `sur ${fmt(g)} pas`;
   $('#stepsPct').textContent = Math.round(s / g * 100) + '%';
   $('#stepsBig').classList.toggle('done', s >= g);
+  countTo($('#burnK'), Math.round(stepKcal(s)));
+  $('#burnD').textContent = f1(stepKm(s)) + ' km';
   const off = 326.7 * (1 - Math.min(1, s/g)); $('#ringFg').style.strokeDashoffset = off; $('#ringGl').style.strokeDashoffset = off;
 };
 
 /* poids */
+// Dépense de la marche : longueur de pas selon la taille et le genre, puis environ 0,5 kcal par kg et par km (dépense nette).
+const strideM = () => (num(S.profile.height) || 170) / 100 * (S.profile.sex === 'f' ? 0.413 : 0.415);
+const stepKm = n => Math.max(0, n) * strideM() / 1000;
+const stepKcal = n => stepKm(n) * (lastWeight() || num(S.profile.weight) || 70) * 0.5;
+const stepBonus = (k = today()) => { const st = (S.days[k] && S.days[k].steps) || 0, g = goalsOn(k).steps; return Math.max(0, Math.round(stepKcal(st - g))); };
 const lastWeight = () => {
   const ks = Object.keys(S.days).filter(k=>S.days[k].weight).sort();
   return ks.length ? S.days[ks.at(-1)].weight : S.profile.weight;
@@ -1334,21 +1416,36 @@ $('#wDel').onclick = () => {
 
 /* séance */
 const setWorkout = (val, el) => {
-  const d = day(); d.workout = d.workout===val ? null : val; save(); renderSession();
-  if (d.workout===true) { sfx.win(); buzz('success'); burst(el); toast('Bien joué 🔥'); }
-  else if (d.workout===false) { sfx.no(); buzz('medium'); }
+  const d = day(); d.workout = val; save(); renderSession();
+  if (val === true) { sfx.win(); buzz('success'); burst(el || $('#wkCard')); }
+  else if (val === false) { sfx.no(); buzz('medium'); }
   else { sfx.tap(); buzz(); }
 };
-$('#wkYes').onclick = e => setWorkout(true, e.currentTarget);
-$('#wkNo').onclick  = e => setWorkout(false, e.currentTarget);
+// Maintenir pour valider : la barre se remplit, puis la séance est validée
+(() => {
+  const b = $('#wkHold'); let t = null, tick = null;
+  const stop = () => { clearTimeout(t); clearInterval(tick); t = null; b.classList.remove('holding'); $('#wkHoldS').textContent = 'Maintiens le bouton'; };
+  b.addEventListener('pointerdown', e => {
+    if (t) return; b.classList.add('holding'); buzz(); tone([392], .08, 'sine', .05);
+    $('#wkHoldS').textContent = 'Continue…';
+    let k = 0; tick = setInterval(() => { k++; buzz(); tone([440 + k * 70], .05, 'sine', .04); }, 180);
+    t = setTimeout(() => { stop(); setWorkout(true, b); }, 850);
+  });
+  ['pointerup','pointerleave','pointercancel'].forEach(n => b.addEventListener(n, () => { if (t) stop(); }));
+  b.addEventListener('contextmenu', e => e.preventDefault());
+})();
+$('#wkMiss').onclick = () => setWorkout(false);
+$('#wkUndo').onclick = () => setWorkout(null);
 
 /* nutrition */
 const sumMeals = meals => meals.reduce((t,m)=>({kcal:t.kcal+(+m.kcal||0), p:t.p+(+m.p||0), c:t.c+(+m.c||0), f:t.f+(+m.f||0)}), {kcal:0,p:0,c:0,f:0});
 const syncCalories = d => { d.calories = Math.round(sumMeals(d.meals||[]).kcal); };
 const renderNutrition = () => {
-  const d = day(), t = sumMeals(d.meals), G = goals(), g = G.kcal;
+  const d = day(), t = sumMeals(d.meals), G = goals(), bonus = stepBonus(), g = G.kcal + bonus;
   countTo($('#kNow'), t.kcal);
   $('#kGoal').textContent = '/ ' + fmt(g) + ' kcal';
+  const kb = $('#kBonus'); kb.classList.toggle('hidden', !bonus);
+  if (bonus) kb.innerHTML = `${'<svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg>'}<span><b>+${fmt(bonus)} kcal</b> grâce à tes ${fmt((d.steps || 0) - G.steps)} pas en plus</span>`;
   const bar = $('#cBar'); bar.style.width = Math.min(100, t.kcal/g*100) + '%'; bar.classList.toggle('over', t.kcal > g*1.05);
   $('#mP').textContent = Math.round(t.p) + (G.protein ? ' / ' + G.protein : '') + ' g'; $('#mC').textContent = Math.round(t.c) + ' g'; $('#mF').textContent = Math.round(t.f) + ' g';
   $('#slots').innerHTML = SLOTS.map(([id,lab,ic]) => {
@@ -2101,6 +2198,10 @@ $('#pdSync').onclick = async () => {
 };
 const tgl = (id,f) => { const el=$(id); el.onclick=()=>{ S.settings[f]=!S.settings[f]; save(); el.classList.toggle('on',S.settings[f]); sfx.tap(); buzz(); }; };
 tgl('#tSound','sound'); tgl('#tHaptic','haptic');
+const bindSex = (el, onPick) => el.querySelectorAll('button').forEach(b => b.onclick = () => {
+  el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); sfx.tap(); buzz(); onPick && onPick(b.dataset.x); });
+bindSex($('#oSex'));
+bindSex($('#pSex'), x => { S.profile.sex = x; save(); toast('Profil mis à jour'); });
 const applyLite = () => {
   document.body.classList.toggle('lite', !!S.settings.lite);
   document.body.classList.toggle('nograd', S.settings.grad === false);
@@ -2138,6 +2239,7 @@ const renderSettings = () => {
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
   $('#tRecap').classList.toggle('on', S.settings.recap !== false);
   $('#tLite').classList.toggle('on', !!S.settings.lite);
+  $$('#pSex button').forEach(b => b.classList.toggle('on', b.dataset.x === (S.profile.sex || 'm')));
   $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
   accInfo();
   renderRems(); renderProgSettings(); renderPedo();
@@ -2191,7 +2293,7 @@ $('#obNext').onclick = () => {
   if (ob===4) {
     const n=$('#oName').value.trim(), h=num($('#oHeight').value), w=num($('#oWeight').value), tg=num($('#oTarget').value);
     if (!n || !h || !w) { sfx.no(); buzz('heavy'); toast('Remplis prénom, taille et poids'); return; }
-    Object.assign(S.profile,{ name:n, height:h, weight:+w.toFixed(1), startWeight:+w.toFixed(1), targetWeight: tg ? +tg.toFixed(1) : null });
+    Object.assign(S.profile,{ sex: $('#oSex .on').dataset.x, name:n, height:h, weight:+w.toFixed(1), startWeight:+w.toFixed(1), targetWeight: tg ? +tg.toFixed(1) : null });
     day().weight = +w.toFixed(1);
   }
   if (ob===5 && !obTD.length) { sfx.no(); toast('Choisis au moins un jour'); return; }
