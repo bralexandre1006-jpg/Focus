@@ -637,6 +637,26 @@ body.lite .chart .c i.ok{background:linear-gradient(180deg,#D7FF3A,#7BE07E)}
 body.lite .chart.cal .c i.ok{background:linear-gradient(180deg,#FFA24A,#FF7A4A)}
 body.lite .chart.picking .c i.sel{background:#fff}
 body.lite .sdots i{width:10px;height:10px}
+/* Lite : encore plus compact */
+body.lite .head{margin-bottom:10px}
+body.lite .card{padding:12px 14px;margin-bottom:8px}
+body.lite .card h3{margin-bottom:8px}
+body.lite .ring{width:86px;height:86px}
+body.lite .ring .mid .pct{font-size:18px}
+body.lite .lsteps{margin-bottom:6px}
+body.lite .lsteps b{font-size:34px}
+body.lite .wbig b{font-size:30px}
+body.lite .wpct b{font-size:20px}
+body.lite .wbar{margin:9px 0 6px}
+body.lite .wfoot{margin-bottom:9px}
+body.lite .wcard .field,body.lite .wcard .btn,body.lite .wcard .xbtn{height:42px}
+body.lite .wcard .wbtn,body.lite .wcard .xbtn{width:42px;min-width:42px}
+body.lite .restv .ico{width:38px;height:38px}
+body.lite .restv b{font-size:15px}
+body.lite .wk button{height:50px}
+body.lite .kcal b{font-size:26px}
+body.lite .bar{margin:7px 0 9px}
+body.lite .mac{padding:7px 9px}
 .hidden{display:none!important}
 </style>
 </head>
@@ -841,7 +861,7 @@ body.lite .sdots i{width:10px;height:10px}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.17<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.18<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1770,9 +1790,12 @@ const bars = (el, o) => {
     cs.forEach((c,i) => { const b = c.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - e.clientX); if (d < bd) { bd = d; best = i; } });
     show(best);
   };
-  el.onpointerdown = at;
-  el.onpointermove = e => { if (cur > -1) at(e); };
-  el.onpointerup = el.onpointercancel = el.onpointerleave = hide;
+  let drag = false;
+  el.onpointerdown = e => { drag = true; at(e); };
+  el.onpointermove = e => { if (drag) at(e); };
+  el.onpointerup = el.onpointercancel = el.onpointerleave = () => { drag = false; };
+  const card = el.closest('.card');
+  card.onclick = e => { if (!el.contains(e.target)) hide(); };
 };
 const series = (p, f) => {
   const [a,b] = rangeFor(p), n = new Date();
@@ -1842,7 +1865,7 @@ const renderWeightStats = () => {
     <line id="wGuide" x1="0" x2="0" y1="4" y2="${H}" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0"/>
     ${pts.map((p,i) => `<circle class="wdot" style="animation-delay:${Math.min(1.2, .3 + i*.03)}s" cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#6BD36E" stroke="#18181F" stroke-width="2"/>`).join('')}
     <circle id="wHi" cx="0" cy="0" r="8" fill="#6BD36E" stroke="#fff" stroke-width="3" opacity="0"/>
-  </svg><div class="whint">Maintiens ton doigt sur la courbe pour voir chaque pesée</div>`;
+  </svg><div class="whint">Touche la courbe pour voir une pesée · touche à côté pour revenir</div>`;
   const svg = el.querySelector('svg'), guide = $('#wGuide'), hi = $('#wHi');
   const def = { w: $('#stW').textContent, sub: $('#stWSub').textContent };
   let curI = -1;
@@ -1866,9 +1889,11 @@ const renderWeightStats = () => {
     let best = 0; pts.forEach((p,i) => { if (Math.abs(p[0] - x) < Math.abs(pts[best][0] - x)) best = i; });
     show(best);
   };
-  svg.addEventListener('pointerdown', at);
-  svg.addEventListener('pointermove', e => { if (curI > -1) at(e); });
-  ['pointerup','pointercancel','pointerleave'].forEach(n => svg.addEventListener(n, hide));
+  let drag = false;
+  svg.addEventListener('pointerdown', e => { drag = true; at(e); });
+  svg.addEventListener('pointermove', e => { if (drag) at(e); });
+  ['pointerup','pointercancel','pointerleave'].forEach(n => svg.addEventListener(n, () => { drag = false; }));
+  el.closest('.card').onclick = e => { if (!svg.contains(e.target)) hide(); };
 };
 
 /* ---------- HISTORIQUE ---------- */
