@@ -588,6 +588,38 @@ body.lite .tgl.on{background:linear-gradient(135deg,#D7FF3A,#7BE07E)}
 body.lite .chart .c i.hl{background:linear-gradient(180deg,#D7FF3A,#7BE07E)}
 body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
 @media (prefers-reduced-motion: reduce){body.lite .card::before,body.lite .bar i::after,body.lite .wbar i::after,body.lite .pgbar i::after{animation:none}}
+/* pas en grand (Lite) */
+.ring .mid .pct,.lsteps{display:none}
+body.lite .ring .mid #stepsNow,body.lite .ring .mid .u{display:none}
+body.lite .ring .mid .pct{display:block;font-size:20px}
+body.lite .ring-info .big,body.lite .ring-info .val{display:none}
+body.lite .lsteps{display:block;margin-bottom:8px}
+body.lite .lsteps b{display:block;font-size:38px;letter-spacing:-.045em;line-height:1}
+body.lite .lsteps b.done{color:var(--acc)}
+body.lite .lsteps span{display:block;font-size:13px;color:var(--mut);margin-top:4px}
+
+/* bouton valider du poids */
+.wbtn .ck{width:22px;height:22px;flex-shrink:0}
+.wbtn .lt{margin-left:2px}
+body.lite .wbtn{background:rgba(107,211,110,.16);color:var(--grn);padding:0;width:46px;box-shadow:inset 0 0 0 1px rgba(107,211,110,.25)}
+body.lite .wbtn .ck{width:24px;height:24px}
+
+/* menus déroulants des réglages */
+.acc-h{width:100%;display:flex;align-items:center;gap:8px;text-align:left;min-height:28px}
+.acc-h h3{margin:0!important}
+.acc-h small{margin-left:auto;color:var(--mut);font-size:13px;font-weight:800}
+.acc-h .chev{width:20px;height:20px;color:var(--mut);transition:transform .45s var(--spring);flex-shrink:0}
+.acc.open .acc-h .chev{transform:rotate(180deg)}
+.acc-b{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .5s var(--ease),opacity .35s}
+.acc-b>.acc-i{overflow:hidden;min-height:0}
+.acc.open .acc-b{grid-template-rows:1fr;opacity:1}
+.acc.open .acc-i{padding-top:10px}
+body.lite .acc-h small{font-size:12px}
+
+/* couleurs des cartes désactivées */
+body.lite.nograd .card{background:var(--card);border-color:transparent;box-shadow:none}
+body.lite.nograd .card::before{display:none}
+body.lite.nograd .mac{background:var(--card2)}
 .hidden{display:none!important}
 </style>
 </head>
@@ -624,11 +656,12 @@ body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
           <svg viewBox="-12 -12 144 144"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5BE39A"/></linearGradient><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
           <circle class="glw" id="ringGl" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7" filter="url(#ringBlur)"/>
           <circle class="fgc" id="ringFg" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
-          <div class="mid"><b id="stepsNow">0</b><span>pas</span></div>
+          <div class="mid"><b id="stepsNow">0</b><span class="u">pas</span><b class="pct" id="stepsPct">0%</b></div>
         </div>
         <div class="ring-info">
           <div class="big">Objectif</div>
           <div class="val" id="stepGoalTxt">8 000</div>
+          <div class="lsteps"><b id="stepsBig">0</b><span id="stepsOf">sur 8 000 pas</span></div>
           <div class="pill" id="pedoPill"><span class="dot"></span><span id="pedoTxt">Capteur…</span></div>
         </div>
       </div>
@@ -654,7 +687,7 @@ body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
       <div class="wfoot"><span id="wDiff" class="m"></span><span id="wLeft" class="m"></span></div>
       <div class="inrow">
         <label class="field"><input id="wIn" type="text" inputmode="decimal" placeholder="Poids du jour"></label>
-        <button class="btn wbtn press" id="wSave">+<span class="lt"> Enregistrer</span></button>
+        <button class="btn wbtn press" id="wSave" aria-label="Enregistrer le poids"><svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lt">Enregistrer</span></button>
         <button class="xbtn press" id="wDel" aria-label="Effacer le poids du jour">✕</button>
       </div>
     </div>
@@ -742,13 +775,15 @@ body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
   <!-- REGLAGES -->
   <section class="screen" id="s-settings">
     <div class="head"><div><div class="sub">Focus</div><h1>Réglages</h1></div></div>
-    <div class="card">
-      <h3><i style="background:var(--acc)"></i>Rappels</h3>
+<div class="card acc" id="accRem">
+      <button class="acc-h"><h3><i style="background:var(--acc)"></i>Rappels</h3><small id="accRemI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="acc-b"><div class="acc-i">
       <div id="remList"></div>
       <button class="btn ghost full press" id="remAdd" style="margin-top:12px">+ Ajouter un rappel</button>
-    </div>
-    <div class="card">
-      <h3><i style="background:var(--grn)"></i>Profil</h3>
+    </div></div></div>
+<div class="card acc" id="accProf">
+      <button class="acc-h"><h3><i style="background:var(--grn)"></i>Profil</h3><small id="accProfI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Prénom</div><input class="sin" id="pName" style="width:150px"></div>
       <div class="srow"><div class="l">Taille (cm)</div><input class="sin" id="pHeight" type="number" inputmode="numeric" style="width:100px"></div>
       <div class="srow"><div class="l">Poids de départ</div><input class="sin" id="pStart" type="text" inputmode="decimal" style="width:100px"></div>
@@ -759,7 +794,7 @@ body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
       <div class="lbl-s">Jours de séance</div>
       <div class="days" id="pDays"></div>
       <div class="hint hidden" id="pgHint">Un programme est en cours : ses objectifs de pas, calories, protéines et jours de séance remplacent ceux-ci. Arrête-le pour revenir à tes réglages.</div>
-    </div>
+    </div></div></div>
     <div class="card">
       <h3><i style="background:var(--spt)"></i>Programme</h3>
       <div id="pgSet"></div>
@@ -771,13 +806,15 @@ body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
       <div class="srow"><div class="l">Aujourd'hui</div><span class="sval" id="pdToday">—</span></div>
       <button class="btn ghost full press hidden" id="pdSync" style="margin-top:12px"></button>
     </div>
-    <div class="card">
-      <h3><i style="background:var(--spt)"></i>Expérience</h3>
+<div class="card acc" id="accExp">
+      <button class="acc-h"><h3><i style="background:var(--spt)"></i>Expérience</h3><small id="accExpI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Sons</div><button class="tgl" id="tSound"></button></div>
       <div class="srow"><div class="l">Vibrations</div><button class="tgl" id="tHaptic"></button></div>
       <div class="srow"><div class="l">Bilan du dimanche à 19 h</div><button class="tgl" id="tRecap"></button></div>
       <div class="srow"><div class="l">Focus Lite<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Interface épurée et compacte</small></div><button class="tgl" id="tLite"></button></div>
-    </div>
+      <div class="srow" id="gradRow"><div class="l">Couleurs des cartes<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Dégradés et halos en mode Lite</small></div><button class="tgl" id="tGrad"></button></div>
+    </div></div></div>
     <div class="card">
       <h3><i style="background:var(--cal)"></i>Données</h3>
       <button class="btn ghost full press" id="exp" style="margin-bottom:10px">⬆︎ Exporter en JSON</button>
@@ -786,7 +823,7 @@ body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.14<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.15<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1199,8 +1236,11 @@ $('#wkAnyway').onclick = e => { const d = day(); d.workout = true; save(); rende
 
 const renderSteps = () => {
   const s = day().steps || 0, g = goals().steps;
-  countTo($('#stepsNow'), s);
+  countTo($('#stepsNow'), s); countTo($('#stepsBig'), s);
   $('#stepGoalTxt').textContent = fmt(g);
+  $('#stepsOf').textContent = `sur ${fmt(g)} pas`;
+  $('#stepsPct').textContent = Math.round(s / g * 100) + '%';
+  $('#stepsBig').classList.toggle('done', s >= g);
   const off = 326.7 * (1 - Math.min(1, s/g)); $('#ringFg').style.strokeDashoffset = off; $('#ringGl').style.strokeDashoffset = off;
 };
 
@@ -1218,7 +1258,7 @@ const renderWeight = () => {
   if (!tgt || !w || !start) {
     $('#wPct').textContent = '—'; $('#wBar').style.width = '0%';
     $('#wTarget').innerHTML = '<span class="wlink" id="setTgt">Fixer un objectif</span>';
-    $('#setTgt').onclick = () => { go('settings'); setTimeout(()=>$('#pTarget').focus(), 450); };
+    $('#setTgt').onclick = () => { go('settings'); setAcc('accProf', true); setTimeout(()=>{ $('#pTarget').scrollIntoView({behavior:'smooth',block:'center'}); $('#pTarget').focus(); }, 550); };
     diff.textContent = ''; left.textContent = ''; return;
   }
   const total = start - tgt, done = start - w;
@@ -1887,6 +1927,7 @@ const daysPicker = (el, arr, onChange) => {
   });
 };
 const renderRems = () => {
+  setTimeout(accInfo, 0);
   const el = $('#remList');
   if (!S.settings.reminders.length) { el.innerHTML='<div class="empty" style="padding:10px 0">Aucun rappel</div>'; return; }
   el.innerHTML = S.settings.reminders.map((r,i)=>`<div class="rem">
@@ -1903,7 +1944,7 @@ const renderRems = () => {
     const r = S.settings.reminders[+x.dataset.i]; if (r[x.dataset.k] === x.value) return;
     r[x.dataset.k]=x.value; save(); scheduleAll(); toast('Rappel mis à jour'); });
   el.querySelectorAll('[data-t]').forEach(x=>x.onclick=async()=>{ const r=S.settings.reminders[+x.dataset.i]; r.on=!r.on;
-    if (r.on) await askNotif(); save(); x.classList.toggle('on',r.on); sfx.tap(); buzz(); scheduleAll(); });
+    if (r.on) await askNotif(); save(); x.classList.toggle('on',r.on); sfx.tap(); buzz(); scheduleAll(); accInfo(); });
   el.querySelectorAll('[data-x]').forEach(x=>x.onclick=()=>{ S.settings.reminders.splice(+x.dataset.i,1); save(); renderRems(); scheduleAll(); sfx.no(); buzz('medium'); });
 };
 $('#remAdd').onclick = async () => {
@@ -1967,7 +2008,24 @@ $('#pdSync').onclick = async () => {
 };
 const tgl = (id,f) => { const el=$(id); el.onclick=()=>{ S.settings[f]=!S.settings[f]; save(); el.classList.toggle('on',S.settings[f]); sfx.tap(); buzz(); }; };
 tgl('#tSound','sound'); tgl('#tHaptic','haptic');
-const applyLite = () => { document.body.classList.toggle('lite', !!S.settings.lite); setTimeout(moveInd, 30); };
+const applyLite = () => {
+  document.body.classList.toggle('lite', !!S.settings.lite);
+  document.body.classList.toggle('nograd', S.settings.grad === false);
+  $('#gradRow').classList.toggle('hidden', !S.settings.lite);
+  setTimeout(moveInd, 30);
+};
+$('#tGrad').onclick = () => {
+  S.settings.grad = S.settings.grad === false; save(); $('#tGrad').classList.toggle('on', S.settings.grad);
+  applyLite(); sfx.tap(); buzz();
+};
+const setAcc = (id, open) => { const c = $('#' + id); c.classList.toggle('open', open); c.querySelector('.acc-h').setAttribute('aria-expanded', open); };
+$$('.acc').forEach(c => c.querySelector('.acc-h').onclick = () => { setAcc(c.id, !c.classList.contains('open')); sfx.tap(); buzz(); });
+const accInfo = () => {
+  const n = S.settings.reminders.filter(r => r.on).length;
+  $('#accRemI').textContent = n ? `${n} actif${n > 1 ? 's' : ''}` : 'Aucun';
+  $('#accProfI').textContent = S.profile.name || '';
+  $('#accExpI').textContent = S.settings.lite ? 'Lite' : '';
+};
 $('#tLite').onclick = () => {
   S.settings.lite = !S.settings.lite; save(); $('#tLite').classList.toggle('on', S.settings.lite);
   sfx.tap(); buzz(); document.body.classList.add('switching');
@@ -1987,6 +2045,8 @@ const renderSettings = () => {
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
   $('#tRecap').classList.toggle('on', S.settings.recap !== false);
   $('#tLite').classList.toggle('on', !!S.settings.lite);
+  $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
+  accInfo();
   renderRems(); renderProgSettings(); renderPedo();
 };
 RENDER.settings = renderSettings;
