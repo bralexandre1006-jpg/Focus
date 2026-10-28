@@ -530,16 +530,19 @@ body.lite .mini-lbl,body.lite .lbl-s{font-size:12px;margin:10px 0 5px}
 body.switching .app,body.switching .tabbar{opacity:0}
 body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
 /* repas repliables */
-.mtog{width:100%;display:flex;align-items:center;gap:8px;margin-top:14px;padding:0 14px;height:50px;border-radius:15px;background:var(--card2);font-weight:800;font-size:16px;text-align:left;transition:background .25s}
-.mtog small{margin-left:auto;color:var(--mut);font-size:13px}
+.mtog{position:absolute!important;top:14px;right:14px;z-index:2;display:flex;align-items:center;gap:6px;padding:0 10px 0 14px;height:40px;border-radius:13px;background:var(--card2);font-weight:800;font-size:15px;transition:background .25s,transform .25s var(--spring)}
+.mtog small{min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:rgba(255,120,74,.18);color:var(--cal);font-size:12px;display:grid;place-items:center}
+.mtog small:empty{display:none}
+#nutCard.open .mtog{background:rgba(255,120,74,.14)}
 .mtog .chev{width:20px;height:20px;color:var(--mut);transition:transform .45s var(--spring)}
 #nutCard.open .mtog .chev{transform:rotate(180deg)}
 .mwrap{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .5s var(--ease),opacity .35s}
 .mwrap>.minner{overflow:hidden;min-height:0}
 #nutCard.open .mwrap{grid-template-rows:1fr;opacity:1}
-#nutCard .slot:first-child{border-top:0;margin-top:4px}
-body.lite .mtog{height:42px;border-radius:12px;font-size:14px;margin-top:10px;padding:0 12px}
-body.lite .mtog small{font-size:12px}
+#nutCard .slot:first-child{margin-top:12px}
+body.lite .mtog{height:34px;border-radius:11px;font-size:13px;top:10px;right:12px;padding:0 8px 0 11px}
+body.lite .mtog small{font-size:11px;min-width:19px;height:19px}
+body.lite .mtog .chev{width:17px;height:17px}
 
 /* ===== Focus Lite : couleurs et animations ===== */
 .card{--tint:140,140,170}
@@ -579,8 +582,6 @@ body.lite .seg .si{background:linear-gradient(135deg,#fff,#E6FF9A)}
 body.lite .kpi,body.lite .field,body.lite .sin,body.lite .days button{background:rgba(255,255,255,.05)}
 body.lite .days button.on{background:linear-gradient(135deg,#D7FF3A,#7BE07E)}
 body.lite .tgl.on{background:linear-gradient(135deg,#D7FF3A,#7BE07E)}
-body.lite .chart .c i.hl{background:linear-gradient(180deg,#D7FF3A,#7BE07E)}
-body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
 @media (prefers-reduced-motion: reduce){body.lite .card::before,body.lite .bar i::after,body.lite .wbar i::after,body.lite .pgbar i::after{animation:none}}
 /* pas en grand (Lite) */
 .ring .mid .pct,.lsteps{display:none}
@@ -614,6 +615,28 @@ body.lite .acc-h small{font-size:12px}
 body.lite.nograd .card{background:var(--card);border-color:transparent;box-shadow:none}
 body.lite.nograd .card::before{display:none}
 body.lite.nograd .mac{background:var(--card2)}
+/* stats : barres */
+.chart{position:relative;touch-action:pan-y}
+.chart .c i{background:#2A2A35;transition:height .9s var(--ease),background .2s,opacity .2s}
+.chart .c i.ok{background:var(--acc)}
+.chart.cal .c i.ok{background:var(--cal)}
+.chart.cal .c i.over{background:var(--bad)}
+.chart .c i.now{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.chart.picking .c i{opacity:.35}
+.chart.picking .c i.sel{opacity:1;background:#fff}
+.chart .gl{position:absolute;left:0;right:0;border-top:1.5px dashed rgba(255,255,255,.18);pointer-events:none;z-index:1}
+.chart .gl span{position:absolute;right:0;top:-17px;font-size:10px;color:var(--mut);font-weight:800;background:var(--card);padding:0 4px;border-radius:4px}
+#stSteps.wsel{color:var(--acc)}#stCal.wsel{color:var(--cal)}
+.sdots{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.sdots:empty{display:none}
+.sdots i{width:12px;height:12px;border-radius:50%;background:#2A2A35}
+.sdots i.ok{background:var(--ok)}
+.sdots i.miss{background:transparent;box-shadow:inset 0 0 0 2px rgba(255,77,106,.6)}
+.sdots i.now{background:transparent;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+body.lite .chart .c i.ok{background:linear-gradient(180deg,#D7FF3A,#7BE07E)}
+body.lite .chart.cal .c i.ok{background:linear-gradient(180deg,#FFA24A,#FF7A4A)}
+body.lite .chart.picking .c i.sel{background:#fff}
+body.lite .sdots i{width:10px;height:10px}
 .hidden{display:none!important}
 </style>
 </head>
@@ -703,6 +726,10 @@ body.lite.nograd .mac{background:var(--card2)}
 
     <div class="card c-nut" id="nutCard">
       <h3><i style="background:var(--cal)"></i>Nutrition</h3>
+      <button class="mtog" id="mTog" aria-expanded="false" aria-label="Afficher les repas du jour">
+        <span>Repas</span><small id="mTogInfo"></small>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <div class="kcal"><b id="kNow">0</b><span id="kGoal">/ 2 200 kcal</span></div>
       <div class="bar"><i id="cBar"></i></div>
       <div class="macros">
@@ -710,10 +737,6 @@ body.lite.nograd .mac{background:var(--card2)}
         <div class="mac"><b id="mC">0 g</b><small><i style="background:var(--carb)"></i>Glucides</small></div>
         <div class="mac"><b id="mF">0 g</b><small><i style="background:var(--fat)"></i>Lipides</small></div>
       </div>
-      <button class="mtog" id="mTog" aria-expanded="false">
-        <span>Repas du jour</span><small id="mTogInfo"></small>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
       <div class="mwrap"><div class="minner"><div id="slots"></div></div></div>
     </div>
   </section>
@@ -757,6 +780,7 @@ body.lite.nograd .mac{background:var(--card2)}
         <div class="kpi"><b id="kRate">0%</b><small>assiduité</small></div>
         <div class="kpi"><b id="kStreak">0</b><small>série 🔥</small></div>
       </div>
+      <div class="sdots" id="sDots"></div>
     </div>
   </section>
 
@@ -817,7 +841,7 @@ body.lite.nograd .mac{background:var(--card2)}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.16<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.17<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1309,7 +1333,7 @@ const renderNutrition = () => {
         <div class="k">${fmt(m.kcal)} kcal</div><button class="del" data-del="${m.id}" aria-label="Retirer">✕</button></div>`).join('')}</div>`;
   }).join('');
   const n = d.meals.length;
-  $('#mTogInfo').textContent = n ? `${n} aliment${n > 1 ? 's' : ''}` : 'Rien de noté';
+  $('#mTogInfo').textContent = n ? String(n) : '';
   $$('#slots [data-add]').forEach(b => b.onclick = () => openAdd(b.dataset.add));
   $$('#slots [data-del]').forEach(b => b.onclick = () => {
     const d = day(); d.meals = d.meals.filter(m => m.id !== b.dataset.del); syncCalories(d); save(); renderNutrition(); sfx.no(); buzz('medium');
@@ -1321,7 +1345,7 @@ $('#mTog').onclick = () => {
   mealsOpen = !mealsOpen;
   $('#nutCard').classList.toggle('open', mealsOpen); $('#mTog').setAttribute('aria-expanded', mealsOpen);
   sfx.tap(); buzz();
-  if (mealsOpen) setTimeout(() => $('#mTog').scrollIntoView({ behavior:'smooth', block:'start' }), 120);
+  if (mealsOpen) setTimeout(() => $('#nutCard').scrollIntoView({ behavior:'smooth', block:'start' }), 150);
 };
 
 /* ---------- AJOUT REPAS ---------- */
@@ -1708,17 +1732,54 @@ const trendEl = (el, c, prev, invertGood=false) => {
   const good = invertGood ? pc<0 : pc>0;
   el.classList.add(good?'up':'down'); el.textContent = `${pc>0?'▲':'▼'} ${Math.abs(pc)}%`;
 };
-const bars = (el, vals, labels, hlIdx) => {
-  const max = Math.max(1, ...vals);
-  el.innerHTML = vals.map((v,i)=>`<div class="c"><i class="${i===hlIdx?'hl':''}" data-h="${v/max*100}"></i><span>${labels[i]??''}</span></div>`).join('');
-  requestAnimationFrame(()=>requestAnimationFrame(()=>el.querySelectorAll('i').forEach((x,i)=>{x.style.transitionDelay=(i*18)+'ms'; x.style.height=`max(4px, calc((100% - 18px) * ${x.dataset.h/100}))`;})));
+// Barres : couleur selon l'objectif, ligne d'objectif, et doigt maintenu pour lire chaque jour.
+const bars = (el, o) => {
+  const { vals, labels, hl, keys, goal, kind } = o;
+  const max = Math.max(1, ...vals, goal ? goal * 1.12 : 0);
+  const cls = v => !v ? '' : !goal ? '' : kind === 'steps' ? (v >= goal ? 'ok' : '') : (v > goal * 1.05 ? 'over' : 'ok');
+  el.innerHTML = (goal ? `<div class="gl" style="bottom:calc(18px + (100% - 18px) * ${goal / max})"><span>${fmt(goal)}</span></div>` : '') +
+    vals.map((v,i) => `<div class="c"><i class="${cls(v)} ${i === hl ? 'now' : ''}" data-h="${v / max * 100}"></i><span>${labels[i] ?? ''}</span></div>`).join('');
+  requestAnimationFrame(() => requestAnimationFrame(() => el.querySelectorAll('i').forEach((x,i) => { x.style.transitionDelay = (i * 16) + 'ms'; x.style.height = `max(4px, calc((100% - 18px) * ${x.dataset.h / 100}))`; })));
+  const numEl = o.numEl, subEl = o.subEl, trEl = o.trEl;
+  const def = { n: o.restore, s: subEl.textContent };
+  let cur = -1;
+  const show = i => {
+    if (i === cur) return; cur = i;
+    el.querySelectorAll('i').forEach((x,j) => x.classList.toggle('sel', j === i));
+    el.classList.add('picking'); numEl.classList.add('wsel'); trEl.style.visibility = 'hidden';
+    const v = vals[i];
+    numEl.textContent = fmt(v) + (kind === 'cal' ? ' kcal' : '');
+    if (o.period === 'year') {
+      const m = new Date(new Date().getFullYear(), i, 1), nd = new Date(m.getFullYear(), i + 1, 0).getDate();
+      const lbl = m.toLocaleDateString('fr-BE', { month:'long' });
+      subEl.textContent = `${lbl.charAt(0).toUpperCase() + lbl.slice(1)} · moy. ${fmt(v / nd)} / jour`;
+    } else {
+      const lbl = parseKey(keys[i]).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' });
+      const g = goal ? (kind === 'steps' ? (v >= goal ? ' · objectif atteint ✓' : v ? ` · ${fmt(goal - v)} de moins que l'objectif` : '') : (v > goal * 1.05 ? ` · ${fmt(v - goal)} kcal au-dessus` : v ? ' · dans l\'objectif ✓' : ' · rien de noté')) : '';
+      subEl.textContent = lbl.charAt(0).toUpperCase() + lbl.slice(1) + g;
+    }
+    buzz();
+  };
+  const hide = () => {
+    if (cur < 0) return; cur = -1;
+    el.querySelectorAll('i').forEach(x => x.classList.remove('sel')); el.classList.remove('picking');
+    numEl.textContent = def.n; subEl.textContent = def.s; numEl.classList.remove('wsel'); trEl.style.visibility = '';
+  };
+  const at = e => {
+    const cs = [...el.querySelectorAll('.c')]; let best = 0, bd = 1e9;
+    cs.forEach((c,i) => { const b = c.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - e.clientX); if (d < bd) { bd = d; best = i; } });
+    show(best);
+  };
+  el.onpointerdown = at;
+  el.onpointermove = e => { if (cur > -1) at(e); };
+  el.onpointerup = el.onpointercancel = el.onpointerleave = hide;
 };
 const series = (p, f) => {
   const [a,b] = rangeFor(p), n = new Date();
   if (p==='year') return { vals: Array.from({length:12},(_,m)=>sumField(eachDay(new Date(a.getFullYear(),m,1), new Date(a.getFullYear(),m+1,0)), f)),
     labels:['J','F','M','A','M','J','J','A','S','O','N','D'], hl:n.getMonth() };
   const ks = eachDay(a,b);
-  return { vals: ks.map(k=>(S.days[k]&&S.days[k][f])||0), labels: p==='week' ? DAYS : ks.map((k,i)=>(i===0||(i+1)%5===0)?String(i+1):''), hl: ks.indexOf(today()) };
+  return { keys: ks, vals: ks.map(k=>(S.days[k]&&S.days[k][f])||0), labels: p==='week' ? DAYS : ks.map((k,i)=>(i===0||(i+1)%5===0)?String(i+1):''), hl: ks.indexOf(today()) };
 };
 const elapsed = p => { const [a,b] = rangeFor(p); const end = new Date()<b?new Date():b; return eachDay(a,end); };
 const renderStats = () => {
@@ -1727,19 +1788,26 @@ const renderStats = () => {
   const curK = elapsed(period), [pa,pb] = rangeFor(period,1), prevK = eachDay(pa,pb).slice(0, curK.length);
   const st = sumField(curK,'steps'), stP = sumField(prevK,'steps');
   countTo($('#stSteps'), st); trendEl($('#trSteps'), st, stP);
-  $('#stStepsSub').textContent = `${pl} · moy. ${fmt(st/Math.max(1,curK.length))}/jour · vs ${prevLbl}`;
-  const sS = series(period,'steps'); bars($('#chSteps'), sS.vals, sS.labels, sS.hl);
+  const G = goals(), stHit = curK.filter(k => (S.days[k] && S.days[k].steps || 0) >= G.steps).length;
+  $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · objectif atteint ${stHit} j`;
+  const sS = series(period,'steps');
+  bars($('#chSteps'), { ...sS, goal: period === 'year' ? null : G.steps, kind:'steps', period, restore: fmt(st), numEl:$('#stSteps'), subEl:$('#stStepsSub'), trEl:$('#trSteps') });
   const ca = sumField(curK,'calories'), caP = sumField(prevK,'calories');
   countTo($('#stCal'), ca); trendEl($('#trCal'), ca, caP, true);
   const calDays = curK.filter(k=>S.days[k]&&S.days[k].calories).length;
-  $('#stCalSub').textContent = `${pl} · moy. ${fmt(ca/Math.max(1,calDays))} kcal/jour noté`;
-  const sC = series(period,'calories'); bars($('#chCal'), sC.vals, sC.labels, sC.hl);
+  const calOk = curK.filter(k => { const v = S.days[k] && S.days[k].calories; return v && v <= G.kcal * 1.05; }).length;
+  $('#stCalSub').textContent = calDays ? `Moy. ${fmt(ca/calDays)} kcal / jour noté · dans l'objectif ${calOk}/${calDays} j` : 'Aucun repas noté';
+  const sC = series(period,'calories');
+  bars($('#chCal'), { ...sC, goal: period === 'year' ? null : G.kcal, kind:'cal', period, restore: fmt(ca), numEl:$('#stCal'), subEl:$('#stCalSub'), trEl:$('#trCal') });
   renderWeightStats();
   const TD = goals().trainingDays, [ra] = rangeFor(period), tdK = eachDay(ra, new Date()).filter(k=>TD.includes(wd(parseKey(k))));
   const done = curK.filter(k=>S.days[k]&&S.days[k].workout===true).length;
   countTo($('#kDone'), done);
   $('#kRate').textContent = (tdK.length? Math.min(100,Math.round(done/tdK.length*100)) : 0)+'%';
   $('#kStreak').textContent = streak();
+  const all = eachDay(ra, rangeFor(period)[1]).filter(k => TD.includes(wd(parseKey(k)))), T = today();
+  $('#sDots').innerHTML = all.length > 60 ? '' : all.map(k => { const w = S.days[k] && S.days[k].workout, c = w === true ? 'ok' : k > T ? 'up' : k === T ? 'now' : 'miss';
+    return `<i class="${c}" title="${k}"></i>`; }).join('');
 };
 RENDER.stats = renderStats;
 const streak = () => {
