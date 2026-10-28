@@ -176,6 +176,13 @@ button{border:0;background:none;cursor:pointer}
 .chart .c span{font-size:10px;color:var(--mut);font-weight:800;height:12px}
 .chart.cal .c i.hl{background:var(--cal)}
 .line svg{width:100%;height:160px;margin-top:14px;overflow:visible}
+.wsvg{touch-action:pan-y;display:block}
+.wdot{transform-box:fill-box;transform-origin:center;animation:dotIn .45s var(--spring) both}
+@keyframes dotIn{from{transform:scale(0)}to{transform:scale(1)}}
+#wHi,#wGuide{transition:opacity .15s}
+.whint{color:var(--mut);font-size:12px;text-align:center;margin-top:8px}
+#stW{transition:color .2s}
+#stW.wsel{color:var(--grn)}
 .line path.ln{fill:none;stroke:var(--grn);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2000;stroke-dashoffset:2000;animation:draw 1.6s var(--ease) forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
 .kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px}
@@ -500,6 +507,7 @@ body.lite .trend{font-size:12px;padding:4px 8px}
 body.lite .statsub{font-size:12px}
 body.lite .chart{height:100px;margin-top:12px}
 body.lite .line svg{height:110px;margin-top:10px}
+body.lite .whint{font-size:11px;margin-top:6px}
 body.lite .kpis{gap:8px;margin-top:6px}
 body.lite .kpi{padding:10px;border-radius:12px}
 body.lite .kpi b{font-size:17px}
@@ -527,6 +535,59 @@ body.lite .mini-lbl,body.lite .lbl-s{font-size:12px;margin:10px 0 5px}
 .app,.tabbar{transition:opacity .25s}
 body.switching .app,body.switching .tabbar{opacity:0}
 body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
+/* repas repliables */
+.mtog{width:100%;display:flex;align-items:center;gap:8px;margin-top:14px;padding:0 14px;height:50px;border-radius:15px;background:var(--card2);font-weight:800;font-size:16px;text-align:left;transition:background .25s}
+.mtog small{margin-left:auto;color:var(--mut);font-size:13px}
+.mtog .chev{width:20px;height:20px;color:var(--mut);transition:transform .45s var(--spring)}
+#nutCard.open .mtog .chev{transform:rotate(180deg)}
+.mwrap{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .5s var(--ease),opacity .35s}
+.mwrap>.minner{overflow:hidden;min-height:0}
+#nutCard.open .mwrap{grid-template-rows:1fr;opacity:1}
+#nutCard .slot:first-child{border-top:0;margin-top:4px}
+body.lite .mtog{height:42px;border-radius:12px;font-size:14px;margin-top:10px;padding:0 12px}
+body.lite .mtog small{font-size:12px}
+
+/* ===== Focus Lite : couleurs et animations ===== */
+.card{--tint:140,140,170}
+.c-steps{--tint:215,255,58}.c-wgt{--tint:107,211,110}.c-prog{--tint:184,140,255}.c-wk{--tint:120,150,255}.c-nut{--tint:255,120,74}
+body.lite .card{background:linear-gradient(150deg,rgba(var(--tint),.13) 0%,rgba(var(--tint),.03) 45%,#16161C 100%);border:1px solid rgba(var(--tint),.12);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+body.lite .card::before{content:"";position:absolute;width:190px;height:190px;right:-70px;top:-80px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(var(--tint),.22),rgba(var(--tint),0) 68%);animation:drift 9s ease-in-out infinite alternate}
+body.lite .card:nth-child(even)::before{animation-duration:11s;animation-direction:alternate-reverse}
+body.lite .card>*{position:relative}
+body.lite .card>.badge{position:absolute}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-50px,36px) scale(1.3)}}
+body.lite .screen.on .card{animation:liteIn .65s var(--spring) both}
+body.lite .screen.on .card:nth-child(2){animation-delay:.05s}body.lite .screen.on .card:nth-child(3){animation-delay:.1s}
+body.lite .screen.on .card:nth-child(4){animation-delay:.15s}body.lite .screen.on .card:nth-child(5){animation-delay:.2s}body.lite .screen.on .card:nth-child(6){animation-delay:.25s}
+@keyframes liteIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+body.lite .head h1{background:linear-gradient(90deg,#fff 30%,#D7FF3A 110%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.lite .ring .fgc{stroke:url(#ringGrad)}
+body.lite .ring .glw{stroke:url(#ringGrad);opacity:.35}
+body.lite .wbar i{background:linear-gradient(90deg,#4FCB86,#D7FF3A)}
+body.lite .pgbar i{background:linear-gradient(90deg,#8E6BFF,#D19CFF)}
+body.lite .bar i,body.lite .wbar i,body.lite .pgbar i{position:relative;overflow:hidden}
+body.lite .bar i::after,body.lite .wbar i::after,body.lite .pgbar i::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:sheen 2.8s ease-in-out infinite}
+@keyframes sheen{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+body.lite .mac{border:1px solid transparent}
+body.lite .mac:nth-child(1){background:linear-gradient(160deg,rgba(255,92,138,.16),rgba(255,92,138,.04))}
+body.lite .mac:nth-child(2){background:linear-gradient(160deg,rgba(255,194,74,.16),rgba(255,194,74,.04))}
+body.lite .mac:nth-child(3){background:linear-gradient(160deg,rgba(90,184,255,.16),rgba(90,184,255,.04))}
+body.lite .mtog{background:rgba(255,255,255,.05)}
+body.lite .wk button{background:rgba(255,255,255,.05)}
+body.lite .wk button.yes.sel{background:linear-gradient(150deg,rgba(61,220,132,.28),rgba(61,220,132,.08))}
+body.lite .wk button.no.sel{background:linear-gradient(150deg,rgba(255,77,106,.26),rgba(255,77,106,.08))}
+body.lite .wbtn{background:linear-gradient(135deg,#7BE07E,#4FCB86)}
+body.lite .tab-ind{background:linear-gradient(135deg,#D7FF3A,#7BE07E);box-shadow:0 6px 20px rgba(215,255,58,.35)}
+body.lite .tabbar{background:rgba(22,22,30,.78);border-color:rgba(215,255,58,.08)}
+body.lite .seg .si{background:linear-gradient(135deg,#fff,#E6FF9A)}
+body.lite .kpi,body.lite .field,body.lite .sin,body.lite .days button{background:rgba(255,255,255,.05)}
+body.lite .days button.on{background:linear-gradient(135deg,#D7FF3A,#7BE07E)}
+body.lite .tgl.on{background:linear-gradient(135deg,#D7FF3A,#7BE07E)}
+body.lite .chart .c i.hl{background:linear-gradient(180deg,#D7FF3A,#7BE07E)}
+body.lite .chart.cal .c i.hl{background:linear-gradient(180deg,#FFA24A,#FF5C5C)}
+@media (prefers-reduced-motion: reduce){body.lite .card::before,body.lite .bar i::after,body.lite .wbar i::after,body.lite .pgbar i::after{animation:none}}
 .hidden{display:none!important}
 </style>
 </head>
@@ -556,11 +617,11 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
       <button class="logo-btn press" data-go="settings"><svg style="color:var(--acc)"><use href="#logo"/></svg></button>
     </div>
 
-    <div class="card">
+    <div class="card c-steps">
       <h3><i style="background:var(--acc)"></i>Pas du jour</h3>
       <div class="ring-wrap">
         <div class="ring">
-          <svg viewBox="-12 -12 144 144"><defs><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
+          <svg viewBox="-12 -12 144 144"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5BE39A"/></linearGradient><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
           <circle class="glw" id="ringGl" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7" filter="url(#ringBlur)"/>
           <circle class="fgc" id="ringFg" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
           <div class="mid"><b id="stepsNow">0</b><span>pas</span></div>
@@ -573,7 +634,7 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
       </div>
     </div>
 
-    <div class="card hidden" id="pgCard">
+    <div class="card c-prog hidden" id="pgCard">
       <h3><i style="background:var(--spt)"></i>Programme</h3>
       <div class="pg-top"><b id="pgName"></b><span id="pgWeek"></span></div>
       <div class="pgbar"><i id="pgBar"></i></div>
@@ -581,7 +642,7 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
       <div class="pgnote" id="pgNote"></div>
     </div>
 
-    <div class="card wcard">
+    <div class="card c-wgt wcard">
       <div class="wtop">
         <div>
           <h3>Mon poids</h3>
@@ -598,7 +659,7 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
       </div>
     </div>
 
-    <div class="card" id="wkCard">
+    <div class="card c-wk" id="wkCard">
       <h3><i style="background:var(--spt)"></i><span id="wkH">Séance de sport</span></h3>
       <span class="badge hidden" id="wkBadge">JOUR DE SÉANCE</span>
       <div id="sess"></div>
@@ -613,7 +674,7 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
       </div>
     </div>
 
-    <div class="card">
+    <div class="card c-nut" id="nutCard">
       <h3><i style="background:var(--cal)"></i>Nutrition</h3>
       <div class="kcal"><b id="kNow">0</b><span id="kGoal">/ 2 200 kcal</span></div>
       <div class="bar"><i id="cBar"></i></div>
@@ -622,7 +683,11 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
         <div class="mac"><b id="mC">0 g</b><small><i style="background:var(--carb)"></i>Glucides</small></div>
         <div class="mac"><b id="mF">0 g</b><small><i style="background:var(--fat)"></i>Lipides</small></div>
       </div>
-      <div id="slots"></div>
+      <button class="mtog" id="mTog" aria-expanded="false">
+        <span>Repas du jour</span><small id="mTogInfo"></small>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="mwrap"><div class="minner"><div id="slots"></div></div></div>
     </div>
   </section>
 
@@ -640,25 +705,25 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
     <div class="seg" id="seg"><div class="si"></div>
       <button class="on" data-p="week">Semaine</button><button data-p="month">Mois</button><button data-p="year">Année</button>
     </div>
-    <div class="card">
+    <div class="card c-steps">
       <h3><i style="background:var(--acc)"></i>Pas</h3>
       <div class="statnum"><b id="stSteps">0</b><span class="trend flat" id="trSteps">—</span></div>
       <div class="statsub" id="stStepsSub"></div>
       <div class="chart" id="chSteps"></div>
     </div>
-    <div class="card">
+    <div class="card c-nut">
       <h3><i style="background:var(--cal)"></i>Calories</h3>
       <div class="statnum"><b id="stCal">0</b><span class="trend flat" id="trCal">—</span></div>
       <div class="statsub" id="stCalSub"></div>
       <div class="chart cal" id="chCal"></div>
     </div>
-    <div class="card">
+    <div class="card c-wgt">
       <h3><i style="background:var(--grn)"></i>Poids</h3>
       <div class="statnum"><b id="stW">—</b><span class="trend flat" id="trW">—</span></div>
       <div class="statsub" id="stWSub"></div>
       <div class="line" id="chW"></div>
     </div>
-    <div class="card">
+    <div class="card c-wk">
       <h3><i style="background:var(--spt)"></i>Séances</h3>
       <div class="kpis">
         <div class="kpi"><b id="kDone">0</b><small>faites</small></div>
@@ -721,7 +786,7 @@ body.lite #openRecap,body.lite #newRec{background:var(--card);color:var(--txt)}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.12<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.14<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1209,10 +1274,20 @@ const renderNutrition = () => {
       ${items.map(m=>`<div class="ent"><div class="n"><b>${esc(m.name)}</b><small>${m.grams?`${fmt(m.grams)} g · `:''}${m.portions&&m.portions!==1?`${String(m.portions).replace('.',',')} portions · `:''}P ${Math.round(m.p||0)} · G ${Math.round(m.c||0)} · L ${Math.round(m.f||0)}</small></div>
         <div class="k">${fmt(m.kcal)} kcal</div><button class="del" data-del="${m.id}" aria-label="Retirer">✕</button></div>`).join('')}</div>`;
   }).join('');
+  const n = d.meals.length;
+  $('#mTogInfo').textContent = n ? `${n} aliment${n > 1 ? 's' : ''}` : 'Rien de noté';
   $$('#slots [data-add]').forEach(b => b.onclick = () => openAdd(b.dataset.add));
   $$('#slots [data-del]').forEach(b => b.onclick = () => {
     const d = day(); d.meals = d.meals.filter(m => m.id !== b.dataset.del); syncCalories(d); save(); renderNutrition(); sfx.no(); buzz('medium');
   });
+};
+
+let mealsOpen = false;
+$('#mTog').onclick = () => {
+  mealsOpen = !mealsOpen;
+  $('#nutCard').classList.toggle('open', mealsOpen); $('#mTog').setAttribute('aria-expanded', mealsOpen);
+  sfx.tap(); buzz();
+  if (mealsOpen) setTimeout(() => $('#mTog').scrollIntoView({ behavior:'smooth', block:'start' }), 120);
 };
 
 /* ---------- AJOUT REPAS ---------- */
@@ -1650,15 +1725,48 @@ const renderWeightStats = () => {
   t.textContent = df===0?'= stable':`${df>0?'▲ +':'▼ −'}${f1(Math.abs(df))} kg`;
   const h = S.profile.height, bmi = h ? f1(last/((h/100)**2)) : null;
   $('#stWSub').textContent = `${ks.length} relevé${ks.length>1?'s':''}` + (bmi?` · IMC ${bmi}`:'');
-  const W=320,H=140, mn=Math.min(...vals)-.5, mx=Math.max(...vals)+.5;
-  const pts = vals.map((v,i)=>[ vals.length===1?W/2:i/(vals.length-1)*W, H-(v-mn)/(mx-mn)*H ]);
+  // Courbe avec un point par pesée. Maintiens le doigt dessus pour lire chaque poids.
+  const lite = document.body.classList.contains('lite');
+  const W = Math.max(200, Math.round(el.clientWidth || 320)), H = lite ? 110 : 160, px = 12, pt = 16, pb = 12;
+  const mn = Math.min(...vals) - .4, mx = Math.max(...vals) + .4;
+  const pts = vals.map((v,i) => [ vals.length === 1 ? W/2 : px + i/(vals.length-1)*(W - 2*px), pt + (1 - (v-mn)/(mx-mn))*(H - pt - pb) ]);
   let d = `M${pts[0][0]},${pts[0][1]}`;
   for (let i=1;i<pts.length;i++){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i], cx=(x0+x1)/2; d+=` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-    <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6BD36E" stop-opacity=".35"/><stop offset="1" stop-color="#6BD36E" stop-opacity="0"/></linearGradient></defs>
+  const r = vals.length > 40 ? 3 : vals.length > 15 ? 4 : 5;
+  el.innerHTML = `<svg class="wsvg" viewBox="0 0 ${W} ${H}">
+    <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6BD36E" stop-opacity=".3"/><stop offset="1" stop-color="#6BD36E" stop-opacity="0"/></linearGradient></defs>
     <path d="${d} L${pts.at(-1)[0]},${H} L${pts[0][0]},${H} Z" fill="url(#wg)"/>
     <path class="ln" d="${d}"/>
-    <circle cx="${pts.at(-1)[0]}" cy="${pts.at(-1)[1]}" r="6" fill="#6BD36E" stroke="#18181F" stroke-width="3"/></svg>`;
+    <line id="wGuide" x1="0" x2="0" y1="4" y2="${H}" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0"/>
+    ${pts.map((p,i) => `<circle class="wdot" style="animation-delay:${Math.min(1.2, .3 + i*.03)}s" cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#6BD36E" stroke="#18181F" stroke-width="2"/>`).join('')}
+    <circle id="wHi" cx="0" cy="0" r="8" fill="#6BD36E" stroke="#fff" stroke-width="3" opacity="0"/>
+  </svg><div class="whint">Maintiens ton doigt sur la courbe pour voir chaque pesée</div>`;
+  const svg = el.querySelector('svg'), guide = $('#wGuide'), hi = $('#wHi');
+  const def = { w: $('#stW').textContent, sub: $('#stWSub').textContent };
+  let curI = -1;
+  const show = i => {
+    if (i === curI) return; curI = i;
+    const [x,y] = pts[i];
+    guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('opacity', 1);
+    hi.setAttribute('cx', x); hi.setAttribute('cy', y); hi.setAttribute('opacity', 1);
+    $('#stW').textContent = f1(vals[i]) + ' kg';
+    const lbl = parseKey(ks[i]).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' });
+    $('#stWSub').textContent = lbl.charAt(0).toUpperCase() + lbl.slice(1) + (i > 0 ? ` · ${vals[i] - vals[i-1] > 0 ? '+' : vals[i] - vals[i-1] < 0 ? '−' : '±'}${f1(Math.abs(vals[i] - vals[i-1]))} kg` : '');
+    $('#stW').classList.add('wsel'); buzz();
+  };
+  const hide = () => {
+    if (curI < 0) return; curI = -1;
+    guide.setAttribute('opacity', 0); hi.setAttribute('opacity', 0);
+    $('#stW').textContent = def.w; $('#stWSub').textContent = def.sub; $('#stW').classList.remove('wsel');
+  };
+  const at = e => {
+    const b = svg.getBoundingClientRect(), x = (e.clientX - b.left) * W / b.width;
+    let best = 0; pts.forEach((p,i) => { if (Math.abs(p[0] - x) < Math.abs(pts[best][0] - x)) best = i; });
+    show(best);
+  };
+  svg.addEventListener('pointerdown', at);
+  svg.addEventListener('pointermove', e => { if (curI > -1) at(e); });
+  ['pointerup','pointercancel','pointerleave'].forEach(n => svg.addEventListener(n, hide));
 };
 
 /* ---------- HISTORIQUE ---------- */
