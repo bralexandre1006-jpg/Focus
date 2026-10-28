@@ -750,10 +750,10 @@ body.lite .wb .wl small{font-size:11px}
 /* bouton ? et fenêtre d'explication */
 .qbtn{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--mut);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex-shrink:0;position:relative;line-height:1}
 .qbtn::after{content:"";position:absolute;inset:-12px}
-.c-steps .burn .qbtn{align-self:center;margin-left:2px}
+.qcorner{position:absolute!important;right:12px;bottom:12px;z-index:2}
+body.lite .qcorner{right:10px;bottom:10px;width:18px;height:18px;font-size:11px}
 .c-steps .burn .bw{display:none}
 body.lite .c-steps .burn .bw{display:inline}
-body.lite .c-steps .burn .qbtn{margin:4px 0 0;width:18px;height:18px;font-size:11px}
 .kbonus .qbtn{margin-left:auto;width:18px;height:18px;font-size:11px}
 #infoModal .mbody{padding-bottom:calc(var(--sb) + 24px)}
 .ib-hero{background:linear-gradient(150deg,rgba(255,120,74,.18),rgba(255,120,74,.04));border-radius:20px;padding:16px;margin-bottom:14px}
@@ -829,7 +829,8 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
           <div class="pill" id="pedoPill"><span class="dot"></span><span id="pedoTxt">Capteur…</span></div>
         </div>
       </div>
-      <div class="burn"><svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg><b id="burnK">0</b><small>kcal<span class="bw"> brûlées</span></small><small id="burnD">0 km</small><button class="qbtn" id="burnQ" aria-label="Comment c'est calculé ?">?</button></div>
+      <div class="burn"><svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg><b id="burnK">0</b><small>kcal<span class="bw"> brûlées</span></small><small id="burnD">0 km</small></div>
+      <button class="qbtn qcorner" id="burnQ" aria-label="Comment c'est calculé ?">?</button>
     </div>
 
     <div class="card c-prog hidden" id="pgCard">
@@ -1001,7 +1002,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.24<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.25<br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1527,8 +1528,7 @@ const renderNutrition = () => {
   countTo($('#kNow'), t.kcal);
   $('#kGoal').textContent = '/ ' + fmt(g) + ' kcal';
   const kb = $('#kBonus'); kb.classList.toggle('hidden', !bonus);
-  if (bonus) kb.innerHTML = `${'<svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg>'}<span><b>+${fmt(bonus)} kcal</b> grâce à tes ${fmt((d.steps || 0) - G.steps)} pas en plus</span><button class="qbtn" data-kq="1" aria-label="Comment c'est calculé ?">?</button>`;
-  const kq = kb.querySelector('[data-kq]'); if (kq) kq.onclick = e => { e.stopPropagation(); openBurnInfo(); };
+  if (bonus) kb.innerHTML = `${'<svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg>'}<span><b>+${fmt(bonus)} kcal</b> grâce à tes ${fmt((d.steps || 0) - G.steps)} pas en plus</span>`;
   const bar = $('#cBar'); bar.style.width = Math.min(100, t.kcal/g*100) + '%'; bar.classList.toggle('over', t.kcal > g*1.05);
   $('#mP').textContent = Math.round(t.p) + (G.protein ? ' / ' + G.protein : '') + ' g'; $('#mC').textContent = Math.round(t.c) + ' g'; $('#mF').textContent = Math.round(t.f) + ' g';
   $('#slots').innerHTML = SLOTS.map(([id,lab,ic]) => {
