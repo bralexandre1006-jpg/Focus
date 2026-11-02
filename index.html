@@ -901,7 +901,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .rte-lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 5px 4px}
 .rte-ta,.wcfg-t,.note-ta{width:100%;display:block;resize:none;border:2px solid transparent;outline:0;background:var(--card2);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;color:var(--txt);line-height:1.4;overflow:hidden;min-height:48px;transition:border-color .2s}
 .rte-ta:focus,.wcfg-t:focus,.note-ta:focus{border-color:var(--acc)}
-#catModal,#noteModal,#exModal,#restModal{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
+#catModal,#noteModal,#exModal,#restModal,#rtPick{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
 #catModal,#noteModal,#restModal{top:auto;max-height:calc(100% - var(--st) - 30px)}
 .catlist{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .catit{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 14px;border-radius:14px;background:var(--card);font-size:16px;font-weight:800;text-align:left;color:var(--txt);animation:rise .3s var(--ease) both}
@@ -1057,6 +1057,161 @@ body.lite #s-today>.card.hidden{display:none!important}
 body.lite .card h3 .badge{position:static;margin-left:auto;text-transform:none;letter-spacing:.02em}
 body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom:0}
 .hidden{display:none!important}
+.screen:not(.on),.screen:not(.on) *,.screen:not(.on) *::before,.screen:not(.on) *::after{animation-play-state:paused!important}
+
+/* ===== v1.32 : séance du jour, pilule, muscu ===== */
+.wb .wl{white-space:normal}
+.wb .wl small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
+#wkGym:empty{display:none}
+#wkGym{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.wcta{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;width:100%;min-height:70px;padding:12px 16px;border-radius:20px;text-align:left;color:#0B0B0F;
+  background:linear-gradient(120deg,#D7FF3A 0%,#9BF06A 55%,#5FE3A0 100%);box-shadow:0 10px 30px rgba(215,255,58,.28);animation:ctaIn .6s var(--spring) both;transition:transform .3s var(--spring)}
+.wcta:active{transform:scale(.97)}
+.wcta::after{content:"";position:absolute;top:0;bottom:0;width:60%;left:0;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-120%);animation:ctaSh 3.2s 1s ease-in-out infinite}
+@keyframes ctaSh{0%{transform:translateX(-120%)}45%,100%{transform:translateX(260%)}}
+@keyframes ctaIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+.wcta .ci{width:46px;height:46px;border-radius:15px;background:rgba(11,11,15,.14);display:grid;place-items:center;flex-shrink:0}
+.wcta .ci svg{width:26px;height:26px;fill:none;stroke:#0B0B0F;stroke-width:2.6;stroke-linecap:round;animation:dbw 2.4s ease-in-out infinite}
+@keyframes dbw{0%,70%,100%{transform:rotate(-20deg)}78%{transform:rotate(-38deg) scale(1.08)}86%{transform:rotate(-4deg)}94%{transform:rotate(-26deg)}}
+.wcta .ct{flex:1;min-width:0}
+.wcta .ct b{display:block;font-size:18px;letter-spacing:-.02em}
+.wcta .ct small{display:block;font-size:13px;font-weight:700;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcta .ca{width:34px;height:34px;border-radius:50%;background:#0B0B0F;color:var(--acc);display:grid;place-items:center;flex-shrink:0;animation:caN 1.6s ease-in-out infinite}
+.wcta .ca svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+@keyframes caN{0%,100%{transform:none}50%{transform:translateX(4px)}}
+.wcta.live{background:linear-gradient(120deg,#1E2410,#1A1E14);color:var(--txt);box-shadow:inset 0 0 0 1.5px rgba(215,255,58,.45),0 10px 30px rgba(215,255,58,.12)}
+.wcta.live .ci{background:rgba(215,255,58,.14)}.wcta.live .ci svg{stroke:var(--acc)}
+.wcta.live .ct small{opacity:1;color:var(--acc);font-variant-numeric:tabular-nums}
+.wcta.live .ca{background:var(--acc);color:#0B0B0F}
+.wgym{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:linear-gradient(120deg,rgba(61,220,132,.14),rgba(61,220,132,.04));box-shadow:inset 0 0 0 1px rgba(61,220,132,.22);animation:ctaIn .55s var(--spring) both;text-align:left;width:100%}
+.wgym .gi{width:40px;height:40px;border-radius:13px;background:rgba(61,220,132,.18);display:grid;place-items:center;flex-shrink:0}
+.wgym .gi svg{width:22px;height:22px;fill:none;stroke:var(--ok);stroke-width:2.6;stroke-linecap:round;transform:rotate(-20deg)}
+.wgym .gt{flex:1;min-width:0}
+.wgym .gt b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wgym .gt small{color:var(--mut);font-size:13px}
+.wgym .gv{font-weight:800;color:var(--ok);font-size:15px;white-space:nowrap}
+body.lite .wcta{min-height:58px;padding:9px 12px;border-radius:16px}
+body.lite .wcta .ci{width:38px;height:38px;border-radius:12px}
+body.lite .wcta .ct b{font-size:15px}
+body.lite .wgym{padding:9px 12px;border-radius:14px}
+.rpk{display:flex;align-items:center;gap:14px;width:100%;padding:16px;border-radius:20px;background:var(--card);margin-bottom:10px;text-align:left;position:relative;overflow:hidden;animation:rise .45s var(--ease) both}
+.rpk::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.rpk b{display:block;font-size:18px}.rpk small{color:var(--mut);font-size:13px}
+.rpk div{flex:1;min-width:0}
+.rpk .rtplay{width:46px;height:46px;border-radius:15px}
+
+/* pilule de reprise */
+.wopill{position:fixed;left:14px;right:14px;bottom:calc(var(--sb) + 100px);z-index:48;height:64px;border-radius:21px;padding:0 10px 0 10px;display:flex;align-items:center;gap:12px;overflow:hidden;
+  background:#17191B;color:var(--txt);box-shadow:inset 0 0 0 1.5px rgba(215,255,58,.3),0 14px 36px rgba(0,0,0,.55),0 0 30px rgba(215,255,58,.1);font-weight:800;text-align:left;
+  opacity:0;transform:translate3d(0,30px,0) scale(.92);pointer-events:none;transition:transform .55s var(--spring),opacity .25s,bottom .5s var(--spring)}
+.wopill.on{opacity:1;transform:none;pointer-events:auto}
+.wopill:active{transform:scale(.97)}
+.wp-live{position:relative;width:44px;height:44px;border-radius:14px;background:rgba(215,255,58,.14);display:grid;place-items:center;flex-shrink:0}
+.wp-live svg{width:24px;height:24px;fill:none;stroke:var(--acc);stroke-width:2.6;stroke-linecap:round;transform:rotate(-20deg)}
+.wp-live i{position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 2px var(--acc);animation:wpl 1.8s ease-out infinite}
+@keyframes wpl{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.wp-t{flex:1;min-width:0}
+.wp-t small{display:block;font-size:11px;color:var(--acc);text-transform:uppercase;letter-spacing:.07em}
+.wopill b{background:none;padding:0;border-radius:0}
+.wopill .wp-t b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wopill .wp-clock{font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--acc)}
+.wopill.resting .wp-clock{color:#5AB8FF}.wopill.resting .wp-t small{color:#5AB8FF}
+.wp-go{width:36px;height:36px;border-radius:12px;background:var(--acc);display:grid;place-items:center;flex-shrink:0}
+.wp-go svg{width:18px;height:18px;fill:none;stroke:#0B0B0F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;animation:wpg 1.8s ease-in-out infinite}
+@keyframes wpg{0%,100%{transform:none}50%{transform:translateY(-3px)}}
+.wp-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.06)}
+.wp-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#D7FF3A,#5FE3A0);transform-origin:0 50%;transform:scaleX(0);transition:transform .6s var(--ease)}
+body.gymopen .wopill{bottom:calc(var(--sb) + 172px)}
+body.lite .wopill{bottom:calc(var(--sb) + 80px);left:22px;right:22px;height:56px;border-radius:18px}
+body.lite.gymopen .wopill{bottom:calc(var(--sb) + 146px)}
+
+/* héros muscu */
+.ghero{position:relative;overflow:hidden;border-radius:26px;padding:18px;margin-bottom:12px;background:radial-gradient(120% 140% at 100% 0%,rgba(215,255,58,.22),transparent 55%),linear-gradient(150deg,#1D2016,#141418);
+  box-shadow:inset 0 0 0 1px rgba(215,255,58,.14);display:flex;align-items:center;gap:16px;animation:liteIn .65s var(--spring) both}
+.gh-ring{position:relative;width:92px;height:92px;flex-shrink:0}
+.gh-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gh-ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.gh-ring .b{stroke:rgba(255,255,255,.07)}
+.gh-ring .f{stroke:url(#ghG);stroke-dasharray:232;stroke-dashoffset:232;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.9,.3,1) .15s;filter:drop-shadow(0 0 6px rgba(215,255,58,.5))}
+.gh-ring>div{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1}
+.gh-ring b{font-size:28px;letter-spacing:-.04em}.gh-ring small{display:block;font-size:11px;color:var(--mut);margin-top:3px}
+.gh-t{flex:1;min-width:0}
+.gh-t small{display:block;font-size:11px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+.gh-t b{display:block;font-size:21px;letter-spacing:-.025em;line-height:1.15;margin:4px 0 8px}
+.gh-k{display:flex;gap:6px;flex-wrap:wrap}
+.gh-k span{font-size:12px;font-weight:800;padding:5px 9px;border-radius:9px;background:rgba(255,255,255,.07);color:#D9D9E2}
+.rtc{position:relative;overflow:hidden;transition:transform .35s var(--spring)}
+.rtc::after{content:"";position:absolute;width:220px;height:220px;right:-90px;top:-110px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 30%,transparent),transparent 65%);pointer-events:none}
+.rtc:active{transform:scale(.97)}
+.rtc .rtplay{position:relative;z-index:1}
+.rtc .rtplay::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 2px var(--acc);animation:wpl 2.2s ease-out infinite}
+.rtc .rtplay:active{transform:scale(.9)}
+.rtmeta{display:flex;gap:12px;margin-top:10px;color:var(--mut);font-size:13px;font-weight:700}
+.rtmeta span{display:flex;align-items:center;gap:5px}
+.rtmeta svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+
+/* séance en cours */
+.wo{visibility:hidden;transition:transform .5s var(--ease),visibility 0s .5s}
+.wo.on{visibility:visible;transition:transform .5s var(--ease),visibility 0s}
+.wo-prog{height:3px;background:rgba(255,255,255,.05);flex-shrink:0}
+.wo-prog i{display:block;height:100%;background:linear-gradient(90deg,#D7FF3A,#5FE3A0);transform-origin:0 50%;transform:scaleX(0);transition:transform .7s var(--spring);box-shadow:0 0 10px rgba(215,255,58,.6)}
+#woCnt{color:var(--txt);font-weight:800}
+.wset.just .wrow{animation:setFlash .7s var(--ease)}
+@keyframes setFlash{0%{background:rgba(61,220,132,.35)}100%{background:transparent}}
+.wset .wrow{border-radius:14px}
+.wset.just .wn{animation:ckPop .5s var(--spring)}
+@keyframes ckPop{0%{transform:scale(.5)}60%{transform:scale(1.3)}100%{transform:scale(1.08)}}
+.wex{transition:box-shadow .5s,background .5s}
+.wex.complete{background:linear-gradient(160deg,rgba(61,220,132,.12),var(--card) 45%);box-shadow:inset 0 0 0 1.5px rgba(61,220,132,.35)}
+.wex-h .wdone{display:none;width:26px;height:26px;border-radius:50%;background:var(--ok);color:#06210F;font-size:14px;font-weight:900;place-items:center;flex-shrink:0}
+.wex.complete .wdone{display:grid;animation:ckPop .5s var(--spring)}
+.wex.complete .wcat{display:none}
+.wpr{font-size:11px;font-weight:900;padding:4px 6px;border-radius:8px;color:#0B0B0F;background:linear-gradient(135deg,#FFD54F,#FF9F43);white-space:nowrap;animation:prIn .6s var(--spring)}
+@keyframes prIn{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.25) rotate(6deg)}100%{transform:none}}
+.wo-intro{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,rgba(215,255,58,.25),transparent 60%),#0B0B0F;opacity:0;pointer-events:none;visibility:hidden}
+.wo-intro>div{text-align:center}
+.wo-intro span{display:grid;place-items:center;width:110px;height:110px;margin:0 auto 18px;border-radius:34px;background:var(--acc);box-shadow:0 0 60px rgba(215,255,58,.55)}
+.wo-intro span svg{width:62px;height:62px;fill:none;stroke:#0B0B0F;stroke-width:2.6;stroke-linecap:round}
+.wo-intro b{display:block;font-size:30px;letter-spacing:-.03em;padding:0 24px}
+.wo-intro small{display:block;margin-top:6px;font-size:17px;color:var(--acc);font-weight:800}
+.wo.intro .wo-intro{visibility:visible;animation:intOut 1.5s var(--ease) both}
+.wo.intro .wo-intro span{animation:intIc 1.1s var(--spring) both}
+.wo.intro .wo-intro b{animation:liteIn .6s .15s var(--spring) both}
+.wo.intro .wo-intro small{animation:liteIn .6s .3s var(--spring) both}
+@keyframes intOut{0%{opacity:0}12%,70%{opacity:1}100%{opacity:0}}
+@keyframes intIc{0%{transform:scale(.2) rotate(-90deg)}55%{transform:scale(1.12) rotate(-12deg)}100%{transform:rotate(-20deg)}}
+/* récap fin de séance */
+.wsum{position:fixed;inset:0;z-index:170;background:radial-gradient(circle at 50% 25%,rgba(61,220,132,.22),transparent 60%),#0B0B0F;display:flex;align-items:center;justify-content:center;padding:calc(var(--st) + 20px) 20px calc(var(--sb) + 20px);
+  opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.wsum.on{opacity:1;visibility:visible;transition:opacity .35s}
+.wsum-in{width:100%;max-width:420px;text-align:center}
+.wsum-ck{width:120px;height:120px;margin:0 auto 14px}
+.wsum-ck svg{width:100%;height:100%}
+.wsum-ck .c1{fill:rgba(61,220,132,.12);stroke:var(--ok);stroke-width:6;stroke-dasharray:327;stroke-dashoffset:327}
+.wsum-ck .c2{fill:none;stroke:var(--ok);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:80;stroke-dashoffset:80}
+.wsum.on .c1{animation:dash .8s .1s var(--ease) forwards}.wsum.on .c2{animation:dash .45s .75s var(--ease) forwards}
+.wsum.on .wsum-ck{animation:ckPop .7s .7s var(--spring) both}
+@keyframes dash{to{stroke-dashoffset:0}}
+.wsum h2{font-size:30px;letter-spacing:-.03em}
+.wsum p{color:var(--mut);font-size:15px;margin:4px 0 18px}
+.wsum h2,.wsum p{opacity:0}.wsum.on h2{animation:liteIn .6s .35s var(--spring) both}.wsum.on p{animation:liteIn .6s .45s var(--spring) both}
+.wsum-k{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.wsum-k div{background:rgba(255,255,255,.05);border-radius:18px;padding:14px;text-align:left;opacity:0}
+.wsum.on .wsum-k div{animation:liteIn .6s var(--spring) both}
+.wsum-k b{display:block;font-size:24px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.wsum-k small{color:var(--mut);font-size:12px}
+.wsum-k em{font-style:normal;font-size:12px;font-weight:800;color:var(--ok)}
+.sprl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:linear-gradient(120deg,rgba(255,213,79,.16),rgba(255,159,67,.06));margin-bottom:8px;text-align:left;font-size:14px;opacity:0}
+.wsum.on .sprl{animation:liteIn .6s var(--spring) both}
+.sprl b{flex:1}
+.wsum .btn{margin-top:10px;opacity:0}.wsum.on .btn{animation:liteIn .6s 1s var(--spring) both}
+
+/* fluidité */
+.screen{will-change:auto;contain:layout paint}
+.screen:not(.on) *,.screen:not(.on) *::before,.screen:not(.on) *::after{animation-play-state:paused!important}
+body.lite .card::before{will-change:transform}
+.modal{visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s}
+.modal.on{visibility:visible;transition:transform .55s var(--ease),visibility 0s}
 </style>
 </head>
 <body>
@@ -1142,6 +1297,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
         </button>
       </div>
       <button class="wshift hidden" id="wkShift"><svg viewBox="0 0 24 24"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Décaler la séance</button>
+      <div id="wkGym"></div>
       <div class="restv hidden" id="restV">
         <span class="ico i-rest"></span>
         <div><b>Jour de repos</b><small id="restTxt">Ton corps récupère et progresse aujourd'hui.</small>
@@ -1231,6 +1387,7 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
 
   <section class="screen" id="s-routines">
     <div class="head"><div><div class="sub">Musculation</div><h1>Routines</h1></div></div>
+    <div id="gHero"></div>
     <button class="btn full press" id="rtNew" style="margin-bottom:10px">+ Nouvelle routine</button>
     <div class="rt-io"><button class="press" id="rtImp">⬇︎ Importer</button><button class="press" id="rtExpAll">⬆︎ Tout exporter</button></div>
     <input type="file" id="rtFile" accept="application/json,.json" class="hidden">
@@ -1319,14 +1476,14 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
   <button class="tab" data-go="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</button>
   <button class="tab" data-go="history"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Historique</button>
 </nav>
-<svg class="gneck" id="gneck"><defs><linearGradient id="gnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161D"/><stop offset=".42" stop-color="#1A1C1E"/><stop offset="1" stop-color="#D3FB3F"/></linearGradient></defs><path id="gnP" fill="url(#gnG)"/></svg>
+<svg class="gneck" id="gneck"><defs><linearGradient id="ghG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5FE3A0"/></linearGradient><linearGradient id="gnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161D"/><stop offset=".42" stop-color="#1A1C1E"/><stop offset="1" stop-color="#D3FB3F"/></linearGradient></defs><path id="gnP" fill="url(#gnG)"/></svg>
 <nav class="gymbar" id="gymbar">
   <div class="tab-ind" id="gInd"></div>
   <button class="gtab" data-go="glog"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Historique</button>
   <button class="gtab" data-go="routines"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Routines</button>
   <button class="gtab" data-go="gstats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Statistiques</button>
 </nav>
-<button class="wopill" id="woPill"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reprendre la séance</span><b id="woPillT">0:00</b></button>
+<button class="wopill" id="woPill"><span class="wp-live"><i></i><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span><span class="wp-t"><small id="woPillS">Séance en cours</small><b id="woPillN">Séance</b></span><b class="wp-clock" id="woPillT">0:00</b><span class="wp-go"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span><i class="wp-bar"><i id="woPillP"></i></i></button>
 
 <!-- ONBOARDING -->
 <div class="ob hidden" id="ob">
@@ -1491,10 +1648,12 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
 <div class="wo" id="wo">
   <div class="wo-h">
     <button class="x press" id="woMin" aria-label="Réduire"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div class="wo-t"><b id="woName"></b><small><span id="woDate"></span><span id="woClockW"> · ⏱ <span id="woClock">0:00</span></span></small></div>
+    <div class="wo-t"><b id="woName"></b><small><span id="woDate"></span><span id="woClockW"> · ⏱ <span id="woClock">0:00</span></span> · <span id="woCnt">0/0</span></small></div>
     <button class="btn press" id="woEnd">Terminer</button>
   </div>
+  <div class="wo-prog"><i id="woProg"></i></div>
   <div class="wo-b" id="woBody"></div>
+  <div class="wo-intro" id="woIntro"><div><span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span><b id="woIntroN"></b><small>C'est parti 💪</small></div></div>
   <div class="rest" id="rest"><div class="rest-p" id="restP"></div>
     <div class="rest-i"><small id="restL">Repos</small><b id="restT">0:00</b></div>
     <button class="press" data-r="-15">−15</button><button class="press" data-r="15">+15</button>
@@ -1506,6 +1665,20 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
   <div class="mhead"><h4>Muscle ciblé</h4><button class="x press" data-close>×</button></div>
   <div class="mbody"><label class="field" style="margin-bottom:12px"><input id="catSearch" placeholder="Chercher ou créer un muscle"></label><div id="catList" class="catlist"></div></div>
 </div>
+
+<div class="modal" id="rtPick">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4>Quelle séance ?</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody" id="rtPickL"></div>
+</div>
+
+<div class="wsum" id="woSum"><div class="wsum-in">
+  <div class="wsum-ck"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="c1"/><path d="M38 62l15 15 30-32" class="c2"/></svg></div>
+  <h2>Séance terminée</h2><p id="sumName"></p>
+  <div class="wsum-k" id="sumK"></div>
+  <div id="sumPR"></div>
+  <button class="btn full press" id="sumOk">Continuer</button>
+</div></div>
 
 <div class="modal" id="restModal">
   <div class="mgrab"></div>
@@ -1825,10 +1998,10 @@ const renderSession = () => {
   $('#restTxt').textContent = lg ? `Séance décalée à ${parseKey(lg.to).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric' })}.` : dp && dp.walk ? 'Pas de salle aujourd\'hui. Fais ta marche, puis récupère.' : 'Ton corps récupère et progresse aujourd\'hui.';
   $('#wkUnshift').classList.toggle('hidden', !lg); $('#wkAnyway').classList.toggle('hidden', !!lg);
   $('#wkShift').classList.toggle('hidden', !isTD || d.workout != null);
+  renderWkGym(isTD, d);
   const c = $('#wkBtns');
   c.classList.toggle('is-yes', d.workout === true); c.classList.toggle('is-no', d.workout === false);
-  if (d.workout === true) { const n = streak(), T = today(), gw = (S.workouts || []).filter(w => key(new Date(w.start)) === T);
-    $('#wkYesS').textContent = (gw.length ? gw.map(w => `${w.name} · ${fmtDur(w.min)}`).join(' + ') + ' · ' : '') + (n > 1 ? `${n} d'affilée 🔥` : 'Bien joué 💪'); }
+  if (d.workout === true) { const n = streak(); $('#wkYesS').textContent = n > 1 ? `${n} d'affilée 🔥` : 'Bien joué 💪'; }
 };
 const toggleExo = (i, el) => {
   const d = day(), pi = progInfo(); d.progDone ||= [];
@@ -2904,6 +3077,32 @@ const finishOb = () => {
 };
 
 /* ---------- MUSCULATION ---------- */
+/* séance du jour sur l'accueil */
+const DBI = '<svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>';
+const ARR = '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+const nextRoutine = () => { if (!S.routines.length) return null; const last = [...S.workouts].reverse().find(w => S.routines.some(r => r.id === w.rid));
+  if (!last) return S.routines[0]; const i = S.routines.findIndex(r => r.id === last.rid); return S.routines[(i + 1) % S.routines.length]; };
+const renderWkGym = (isTD, d) => {
+  const el = $('#wkGym'); if (!el || typeof S.routines === 'undefined') return;
+  const T = today(), gw = (S.workouts || []).filter(w => key(new Date(w.start)) === T); let h = '';
+  if (S.activeWo) h += `<button class="wcta live" data-cta="resume"><span class="ci">${DBI}</span><span class="ct"><b>Reprendre ${esc(S.activeWo.name)}</b><small id="ctaT">${fmtClock(Date.now() - S.activeWo.start)} · ${woDoneCount(S.activeWo)}</small></span><span class="ca">${ARR}</span></button>`;
+  gw.forEach((w, i) => h += `<button class="wgym" data-gw="${w.id}" style="animation-delay:${i * .06}s"><span class="gi">${DBI}</span><span class="gt"><b>${esc(w.name)}</b><small>${fmtDur(w.min)} · ${woSets(w)} séries</small></span><span class="gv">${fmtKg(woVol(w))}</span></button>`);
+  const nr = nextRoutine();
+  if (!S.activeWo && !gw.length && nr && (isTD || d.workout !== false)) h += `<button class="wcta" data-cta="start"><span class="ci">${DBI}</span><span class="ct"><b>Lancer ma séance</b><small>${S.routines.length > 1 ? 'Proposée : ' : ''}${esc(nr.name)} · ${nr.ex.length} exos · ~${estMin(nr)} min</small></span><span class="ca">${ARR}</span></button>`;
+  el.innerHTML = h;
+  $$('#wkGym [data-gw]').forEach(b => b.onclick = () => openWoDetail(b.dataset.gw));
+  const r = $('#wkGym [data-cta=resume]'); if (r) r.onclick = () => { woEdit = null; renderWo(); showWo(); sfx.tap(); buzz(); };
+  const st = $('#wkGym [data-cta=start]'); if (st) st.onclick = () => { if (S.routines.length === 1) startWorkout(S.routines[0].id); else openRtPick(); };
+};
+const estMin = r => Math.max(5, Math.round(r.ex.reduce((t, e) => t + e.sets * (45 + (e.rest ?? 90)), 0) / 60 / 5) * 5);
+const woDoneCount = w => { const n = w.ex.reduce((t, e) => t + e.sets.length, 0), dn = w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).length, 0); return `${dn}/${n} séries`; };
+const openRtPick = () => {
+  const nr = nextRoutine();
+  $('#rtPickL').innerHTML = [...S.routines].sort((a, b) => (b === nr) - (a === nr)).map((r, i) => `<button class="rpk" data-pk="${r.id}" style="--c:${catColor(r.ex[0] ? r.ex[0].cat : 'Autre')};animation-delay:${i * .05}s"><div><b>${esc(r.name)}</b><small>${r === nr ? 'Proposée · ' : ''}${r.ex.length} exos · ~${estMin(r)} min</small></div><span class="rtplay"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>`).join('');
+  $$('#rtPickL [data-pk]').forEach(b => b.onclick = () => { closeOv('rtPick'); setTimeout(() => startWorkout(b.dataset.pk), 200); });
+  openOv('rtPick'); sfx.tap(); buzz();
+};
+
 const CATS = ['Pecs','Dos','Trapèzes','Lombaires','Épaules','Biceps','Triceps','Avant-bras','Abdos','Obliques','Quadriceps','Ischios','Fessiers','Adducteurs','Mollets','Jambes','Cardio','Autre'];
 const CATC = { 'Pecs':'#FF6B4A','Dos':'#5AB8FF','Trapèzes':'#4F8DFF','Lombaires':'#7AA7FF','Épaules':'#B88CFF','Biceps':'#FF5C8A','Triceps':'#FFC24A','Avant-bras':'#F59E6B',
   'Abdos':'#D7FF3A','Obliques':'#B8E83A','Quadriceps':'#6BD36E','Ischios':'#3DBE8B','Fessiers':'#3DDC84','Adducteurs':'#5FD3B0','Mollets':'#9BE15D','Jambes':'#6BD36E','Cardio':'#4FD1C5','Autre':'#8E8E9E' };
@@ -2968,14 +3167,28 @@ const renderCats = current => {
 $('#catSearch').addEventListener('input', () => renderCats(null));
 
 /* ROUTINES */
+const weekStreak = () => { const now = new Date(), mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - wd(now)); let n = 0;
+  for (let i = 0; i < 104; i++) { const a = new Date(mon); a.setDate(mon.getDate() - i * 7); const b = new Date(a); b.setDate(a.getDate() + 7);
+    const has = S.workouts.some(w => w.start >= a.getTime() && w.start < b.getTime()); if (has) n++; else if (i) break; } return n; };
+const ago = t => { const d = Math.round((new Date(today()) - new Date(key(new Date(t)))) / 864e5); return d <= 0 ? "aujourd'hui" : d === 1 ? 'hier' : `il y a ${d} j`; };
+const renderGHero = () => {
+  const now = new Date(), mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - wd(now)), ws = S.workouts.filter(w => w.start >= mon.getTime());
+  const goal = Math.max(1, (goals().trainingDays || []).length || 3), n = ws.length, vol = ws.reduce((t, w) => t + woVol(w), 0), st = weekStreak();
+  const msg = S.activeWo ? 'Ta séance t\'attend 🔥' : n >= goal ? 'Objectif de la semaine atteint 🏆' : n === 0 ? 'Prêt à tout casser cette semaine ?' : `Plus que ${goal - n} séance${goal - n > 1 ? 's' : ''} pour l'objectif`;
+  $('#gHero').innerHTML = `<div class="ghero"><div class="gh-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="37" class="b"/><circle cx="50" cy="50" r="37" class="f" id="ghF"/></svg><div><div><b>${n}</b><small>sur ${goal}</small></div></div></div>
+    <div class="gh-t"><small>Cette semaine</small><b>${msg}</b><div class="gh-k"><span>🏋️ ${fmtKg(vol)}</span>${st > 1 ? `<span>🔥 ${st} semaines</span>` : ''}<span>${S.workouts.length} au total</span></div></div></div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => { const f = $('#ghF'); if (f) f.style.strokeDashoffset = 232 * (1 - Math.min(1, n / goal)); }));
+};
 const renderRoutines = () => {
+  renderGHero();
   const el = $('#rtList');
   if (!S.routines.length) { el.innerHTML = `<div class="card"><div class="empty">Crée ta première routine : tes exercices, tes séries, tes répétitions visées et ton temps de repos.<br>Ensuite, un tap pour lancer la séance.</div></div>`; return; }
   el.innerHTML = S.routines.map(r => {
     const cats = [...new Set(r.ex.map(e => e.cat))].slice(0, 5), last = [...S.workouts].reverse().find(w => w.rid === r.id);
-    return `<div class="card rtc" data-rt="${r.id}">
-      <div class="rtc-h"><div class="rtc-t"><b>${esc(r.name)}</b><small>${r.ex.length} exercice${r.ex.length > 1 ? 's' : ''}${last ? ' · dernière fois ' + new Date(last.start).toLocaleDateString('fr-BE', { day:'numeric', month:'short' }) : ''}</small></div>
+    return `<div class="card rtc" data-rt="${r.id}" style="--c:${catColor(cats[0] || 'Autre')}">
+      <div class="rtc-h"><div class="rtc-t"><b>${esc(r.name)}</b><small>${last ? 'Dernière fois ' + ago(last.start) : 'Jamais faite, lance-toi'}</small></div>
         <button class="rtplay press" data-play="${r.id}" aria-label="Lancer"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></button></div>
+      <div class="rtmeta"><span>${DBI}${r.ex.length} exos</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/></svg>~${estMin(r)} min</span>${last ? `<span>${fmtKg(woVol(last))}</span>` : ''}</div>
       <div class="rtcats">${cats.map(c => `<span style="--c:${catColor(c)}">${esc(c)}</span>`).join('')}</div></div>`; }).join('');
   $$('#rtList [data-play]').forEach(b => b.onclick = e => { e.stopPropagation(); startWorkout(b.dataset.play); });
   $$('#rtList [data-rt]').forEach(c => c.onclick = () => openRoutine(c.dataset.rt));
@@ -3081,7 +3294,8 @@ const startWorkout = async rid => {
   woEdit = null;
   S.activeWo = { id: uid(), rid: r.id, name: r.name, start: Date.now(), ex: r.ex.map(e => ({ name: e.name, cat: e.cat, uni: e.uni, repMin: e.repMin, repMax: e.repMax, note: e.note, cfg: e.cfg || '', rest: e.rest ?? 90, target: e.sets,
     sets: Array.from({ length: e.sets }, () => ({ kg:'', reps:'', repsR:'', note:'', done:false })) })) };
-  save(); renderWo(); showWo(); sfx.win(); buzz('success');
+  save(); renderWo(); $('#woIntroN').textContent = r.name; const wo = $('#wo'); wo.classList.remove('intro'); void wo.offsetWidth; wo.classList.add('intro');
+  setTimeout(() => wo.classList.remove('intro'), 1600); showWo(); sfx.win(); buzz('success'); renderSession();
 };
 const editWorkout = id => {
   const w = S.workouts.find(x => x.id === id); if (!w) return;
@@ -3091,10 +3305,14 @@ const editWorkout = id => {
 const showWo = () => { $('#wo').classList.toggle('editing', !!woEdit); $('#wo').classList.add('on'); $('#woPill').classList.remove('on'); startTick(); };
 const closeWo = () => { $('#wo').classList.remove('on'); document.activeElement && document.activeElement.blur(); stopRest(false); woEdit = null; syncPill(); };
 const hideWo = () => { if (woEdit) { closeWo(); sfx.tap(); return; } $('#wo').classList.remove('on'); document.activeElement && document.activeElement.blur(); syncPill(); sfx.tap(); buzz(); };
-const syncPill = () => { $('#woPill').classList.toggle('on', !!S.activeWo && !woOpen()); startTick(); };
+const syncPill = () => { const on = !!S.activeWo && !woOpen(); $('#woPill').classList.toggle('on', on); if (S.activeWo) { $('#woPillN').textContent = S.activeWo.name; woProgress(); } startTick(); };
+const woProgress = () => { const w = woCur(); if (!w) return; const n = w.ex.reduce((t, e) => t + e.sets.length, 0), dn = w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).length, 0), k = n ? dn / n : 0;
+  $('#woProg').style.transform = `scaleX(${k})`; $('#woCnt').textContent = `${dn}/${n}`; if (!woEdit) $('#woPillP').style.transform = `scaleX(${k})`; };
 const startTick = () => { clearInterval(woTick); if (!S.activeWo && !rest) return;
-  const f = () => { if (S.activeWo) { const t = fmtClock(Date.now() - S.activeWo.start); if (!woEdit) $('#woClock').textContent = t; $('#woPillT').textContent = rest ? '⏸ ' + fmtClock(rest.end - Date.now()) : t; } tickRest(); };
-  f(); woTick = setInterval(f, 250); };
+  const f = () => { if (S.activeWo) { const t = fmtClock(Date.now() - S.activeWo.start); if (!woEdit) $('#woClock').textContent = t;
+      $('#woPillT').textContent = rest ? fmtClock(rest.end - Date.now()) : t; $('#woPillS').textContent = rest ? 'Repos en cours' : 'Séance en cours'; $('#woPill').classList.toggle('resting', !!rest);
+      const c = $('#ctaT'); if (c && cur === 'today') c.textContent = `${t} · ${woDoneCount(S.activeWo)}`; } tickRest(); };
+  f(); woTick = setInterval(f, rest ? 250 : 1000); };
 const deltaOf = (st, prev, uni) => {
   const kg = st.kg === '' ? null : num(st.kg), r = uni ? (st.reps === '' && st.repsR === '' ? null : num(st.reps) + num(st.repsR)) : (st.reps === '' ? null : num(st.reps));
   if (kg == null && r == null) return '';
@@ -3116,7 +3334,7 @@ const renderWo = () => {
   $('#woBody').innerHTML = w.ex.map((e, ei) => { const prev = lastSetsFor(e.name, w.id);
     const cols = e.uni ? '<span>Kg</span><span>Gauche</span><span>Droite</span>' : '<span>Kg</span><span>Rép.</span>';
     return `<div class="wex" data-e="${ei}" style="--c:${catColor(e.cat)};animation-delay:${Math.min(ei * .05, .4)}s">
-      <div class="wex-h"><div><b>${esc(e.name)}</b><small>${esc(targetTxt(e))}${e.note ? '<br>' + esc(e.note) : ''}</small></div><span class="wcat">${esc(e.cat)}</span></div>
+      <div class="wex-h"><div><b>${esc(e.name)}</b><small>${esc(targetTxt(e))}${e.note ? '<br>' + esc(e.note) : ''}</small></div><span class="wcat">${esc(e.cat)}</span><span class="wdone">✓</span></div>
       <label class="wcfg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
         <textarea class="wcfg-t" rows="1" placeholder="Réglages machine (siège, dossier…)">${esc(e.cfg || '')}</textarea></label>
       <div class="wrow wlab ${e.uni ? 'uni' : ''}"><span></span>${cols}<span></span><span></span></div>
@@ -3140,7 +3358,7 @@ const renderWo = () => {
         inp.oninput = () => { st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); };
         if (inp.dataset.f === (e.uni ? 'repsR' : 'reps')) inp.onchange = () => { if (inp.value !== '' && !woEdit) markDone(e, st, row, si, p, true); };
       });
-      row.querySelector('.wn').onclick = () => { if (st.done) { st.done = false; row.classList.remove('done'); row.querySelector('.wn').textContent = si + 1; sfx.tap(); buzz(); woSave(); } else markDone(e, st, row, si, p, false); };
+      row.querySelector('.wn').onclick = () => { if (st.done) { st.done = false; row.classList.remove('done'); row.querySelector('.wn').textContent = si + 1; row.closest('.wex').classList.remove('complete'); woProgress(); sfx.tap(); buzz(); woSave(); } else markDone(e, st, row, si, p, false); };
       row.querySelector('.wnb').onclick = () => openNote(st, p, () => {
         row.querySelector('.wnb').classList.toggle('has', !!st.note);
         row.querySelector('.wnt').innerHTML = st.note ? `<span class="me">${esc(st.note)}</span>` : p && p.note ? `<span class="pv">Dernière fois : ${esc(p.note)}</span>` : ''; woSave(); });
@@ -3148,6 +3366,7 @@ const renderWo = () => {
     box.querySelector('[data-add]').onclick = () => { const l = e.sets.at(-1); e.sets.push({ kg: l ? l.kg : '', reps:'', repsR:'', note:'', done:false }); woSave(); renderWo(); sfx.tap(); buzz(); };
     const d = box.querySelector('[data-del]'); if (d) d.onclick = () => { e.sets.pop(); woSave(); renderWo(); sfx.no(); buzz(); };
   });
+  woProgress(); $$('#woBody .wex').forEach(b => b.classList.toggle('complete', w.ex[+b.dataset.e].sets.every(x => x.done)));
   $('#woQuit').onclick = async () => {
     if (woEdit) { closeWo(); sfx.tap(); return; }
     if (!(await confirmSheet('Abandonner la séance ?', 'Rien ne sera enregistré.', { yes:'Abandonner' }))) return;
@@ -3161,10 +3380,20 @@ const markDone = (e, st, row, si, p, fromReps) => {
     row.querySelectorAll('.wi').forEach(inp => { if (document.activeElement !== inp) inp.value = st[inp.dataset.f]; });
     row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni);
     row.classList.add('done'); row.querySelector('.wn').textContent = '✓';
-    tone([660, 880], .07, 'sine', .07); buzz('medium'); woSave();
+    row.classList.remove('just'); void row.offsetWidth; row.classList.add('just');
+    const w = woCur(), pb = bestEver(e.name, w && w.id);
+    if (pb && e1rm({ kg: num(st.kg), reps: num(st.reps), repsR: num(st.repsR) }) > pb + .01 && !woEdit) {
+      row.querySelector('.wdc').innerHTML = '<span class="wpr">🏆 Record</span>'; burst(row.querySelector('.wn'), ['#FFD54F','#FF9F43','#D7FF3A','#fff']);
+      tone([784, 988, 1319], .1, 'triangle', .12); buzz('heavy');
+    } else { tone([660, 880], .07, 'sine', .07); buzz('medium'); }
+    const box = row.closest('.wex');
+    if (e.sets.every(x => x.done) && !box.classList.contains('complete')) { box.classList.add('complete'); setTimeout(() => { tone([523, 659, 784], .09, 'sine', .08); }, 180); }
+    woProgress(); woSave();
   }
   if (e.rest && !woEdit) startRest(e.rest, e.name);
 };
+
+const bestEver = (name, skipId) => { const k = exKey(name); let b = 0; S.workouts.forEach(w => { if (w.id === skipId) return; w.ex.forEach(x => { if (exKey(x.name) === k) x.sets.forEach(st => b = Math.max(b, e1rm(st))); }); }); return b; };
 
 /* minuteur de repos */
 let rest = null;
@@ -3232,11 +3461,23 @@ $('#woEnd').onclick = async () => {
   if (!(await confirmSheet('Terminer la séance ?', `${n} série${n > 1 ? 's' : ''} notée${n > 1 ? 's' : ''} · ${fmtDur(min)}`, { yes:'Terminer', danger:false }))) return;
   S.workouts.push({ id: w.id, rid: w.rid, name: w.name, start: w.start, end: Date.now(), min, ex }); S.activeWo = null;
   day(key(new Date(w.start))).workout = true;
-  save(); closeWo();
-  sfx.win(); buzz('success'); burst($('#woEnd'), ['#3DDC84','#D7FF3A','#ffffff','#5AB8FF']);
-  toast(`Séance terminée en ${fmtDur(min)} 💪`);
+  save(); closeWo(); showSummary(S.workouts.at(-1));
   setGymOpen(true); rendered.glog = null; go('glog'); if (cur === 'glog') renderGlog(); renderSession();
 };
+
+const showSummary = w => {
+  const prev = [...S.workouts].reverse().find(x => x.id !== w.id && x.rid === w.rid && x.start < w.start), vol = woVol(w), pv = prev ? woVol(prev) : 0;
+  const prs = w.ex.map(e => { const pb = bestEver(e.name, w.id), b = bestSet(e.sets); return pb && b.e > pb + .01 ? { n: e.name, b } : null; }).filter(Boolean);
+  const dv = pv ? Math.round((vol - pv) / pv * 100) : null;
+  $('#sumName').textContent = `${w.name} · ${new Date(w.start).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' })}`;
+  $('#sumK').innerHTML = [[fmtDur(w.min), 'durée', ''], [fmtKg(vol), 'volume', dv == null ? '' : `${dv >= 0 ? '+' : ''}${dv} % vs dernière fois`], [woSets(w), 'séries', ''], [prs.length, prs.length > 1 ? 'records' : 'record', '']]
+    .map((k, i) => `<div style="animation-delay:${.55 + i * .08}s"><b>${k[0]}</b><small>${k[1]}</small>${k[2] ? `<br><em style="color:${dv < 0 ? 'var(--bad)' : 'var(--ok)'}">${k[2]}</em>` : ''}</div>`).join('');
+  $('#sumPR').innerHTML = prs.map((p, i) => `<div class="sprl" style="animation-delay:${.9 + i * .08}s">🏆<b>${esc(p.n)}</b><span>${kgTxt(p.b.kg)} kg × ${p.b.reps}</span></div>`).join('');
+  const el = $('#woSum'); el.classList.add('on');
+  setTimeout(() => { burst($('.wsum-ck'), ['#3DDC84','#D7FF3A','#ffffff','#5AB8FF','#FFD54F']); sfx.win(); buzz('success'); }, 800);
+  if (prs.length) setTimeout(() => { burst($('#sumPR'), ['#FFD54F','#FF9F43','#fff']); tone([784, 988, 1319], .1, 'triangle', .12); }, 1300);
+};
+$('#sumOk').onclick = () => { $('#woSum').classList.remove('on'); sfx.tap(); buzz(); };
 
 /* HISTORIQUE MUSCU : glisser à gauche pour modifier ou supprimer */
 const renderGlog = () => {
@@ -3379,7 +3620,8 @@ const boot = () => {
       && Object.keys(S.days).some(k => { const t = parseKey(k); return t >= ra && t <= rb; })) setTimeout(openRecap, 900);
   if (P.App) P.App.addListener('backButton', () => {
     const top = stack.at(-1);
-    if (top==='sheet') endSheet(false); else if (top) closeOv(top);
+    if ($('#woSum').classList.contains('on')) $('#sumOk').click();
+    else if (top==='sheet') endSheet(false); else if (top) closeOv(top);
     else if (woOpen()) hideWo();
     else if (cur!=='today') go('today'); else P.App.minimizeApp && P.App.minimizeApp();
   });
