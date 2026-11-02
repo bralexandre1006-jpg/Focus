@@ -1204,7 +1204,12 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 146px)}
 .wex-f [data-add]{height:40px!important;padding:0 14px!important;border-radius:12px;background:rgba(215,255,58,.1)}
 /* pilule rangée sur le côté */
 .wopill{touch-action:pan-y}
-.wopill.dock{transform:translate3d(calc(100% - 72px),0,0)!important;border-radius:21px 0 0 21px}
+body.pillon .screen{padding-bottom:calc(var(--sb) + 190px)!important}
+body.pillon.gymopen .screen{padding-bottom:calc(var(--sb) + 260px)!important}
+body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
+.wopill.dock .wp-live{margin-left:-6px;transform:scale(.82)}
+.wopill .wp-live{transition:transform .3s var(--spring),margin .3s}
+.wopill.dock{transform:translate3d(calc(100% - 50px),0,0)!important;border-radius:21px 0 0 21px}
 .wopill.dock .wp-t,.wopill.dock .wp-clock,.wopill.dock .wp-go{opacity:0}
 .wopill .wp-t,.wopill .wp-clock,.wopill .wp-go{transition:opacity .25s}
 .wopill::before{content:"";position:absolute;left:4px;top:50%;width:3px;height:22px;margin-top:-11px;border-radius:3px;background:rgba(255,255,255,.18);opacity:0;transition:opacity .25s}
@@ -3152,7 +3157,7 @@ const estMin = r => Math.max(5, Math.round(r.ex.reduce((t, e) => t + e.sets * (4
 const woDoneCount = w => { const n = w.ex.reduce((t, e) => t + e.sets.length, 0), dn = w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).length, 0); return `${dn}/${n} séries`; };
 const openRtPick = () => {
   const nr = nextRoutine();
-  $('#rtPickL').innerHTML = [...S.routines].sort((a, b) => (b === nr) - (a === nr)).map((r, i) => `<button class="rpk" data-pk="${r.id}" style="--c:${catColor(r.ex[0] ? r.ex[0].cat : 'Autre')};animation-delay:${i * .05}s"><div><b>${esc(r.name)}</b><small>${r === nr ? 'Proposée · ' : ''}${r.ex.length} exos · ~${estMin(r)} min</small></div><span class="rtplay"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>`).join('');
+  $('#rtPickL').innerHTML = [...S.routines].sort((a, b) => (b === nr) - (a === nr)).map((r, i) => `<button class="rpk" data-pk="${r.id}" style="--c:${catColor(r.ex[0] ? r.ex[0].cat : 'Autre')};animation-delay:${i * .05}s"><div><b>${esc(r.name)}</b><small>${r === nr ? 'Proposée · ' : ''}${r.ex.length} exos</small></div><span class="rtplay"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span></button>`).join('');
   $$('#rtPickL [data-pk]').forEach(b => b.onclick = () => { closeOv('rtPick'); setTimeout(() => startWorkout(b.dataset.pk), 200); });
   openOv('rtPick'); sfx.tap(); buzz();
 };
@@ -3242,7 +3247,7 @@ const renderRoutines = () => {
     return `<div class="card rtc" data-rt="${r.id}" style="--c:${catColor(cats[0] || 'Autre')}">
       <div class="rtc-h"><div class="rtc-t"><b>${esc(r.name)}</b><small>${last ? 'Dernière fois ' + ago(last.start) : 'Jamais faite, lance-toi'}</small></div>
         <button class="rtplay press" data-play="${r.id}" aria-label="Lancer"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></button></div>
-      <div class="rtmeta"><span>${DBI}${r.ex.length} exos</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/></svg>~${estMin(r)} min</span>${last ? `<span>${fmtKg(woVol(last))}</span>` : ''}</div>
+      <div class="rtmeta"><span>${DBI}${r.ex.length} exos</span>${last ? `<span>${fmtKg(woVol(last))}</span>` : ''}</div>
       <div class="rtcats">${cats.map(c => `<span style="--c:${catColor(c)}">${esc(c)}</span>`).join('')}</div></div>`; }).join('');
   $$('#rtList [data-play]').forEach(b => b.onclick = e => { e.stopPropagation(); startWorkout(b.dataset.play); });
   $$('#rtList [data-rt]').forEach(c => c.onclick = () => openRoutine(c.dataset.rt));
@@ -3359,7 +3364,7 @@ const editWorkout = id => {
 const showWo = () => { $('#wo').classList.toggle('editing', !!woEdit); $('#wo').classList.add('on'); $('#woPill').classList.remove('on'); startTick(); };
 const closeWo = () => { $('#wo').classList.remove('on'); document.activeElement && document.activeElement.blur(); stopRest(false); woEdit = null; syncPill(); };
 const hideWo = () => { if (woEdit) { closeWo(); sfx.tap(); return; } $('#wo').classList.remove('on'); document.activeElement && document.activeElement.blur(); syncPill(); sfx.tap(); buzz(); };
-const syncPill = () => { const on = !!S.activeWo && !woOpen(); $('#woPill').classList.toggle('on', on); if (S.activeWo) { $('#woPillN').textContent = S.activeWo.name; woProgress(); } startTick(); };
+const syncPill = () => { const on = !!S.activeWo && !woOpen(); $('#woPill').classList.toggle('on', on); document.body.classList.toggle('pillon', on); if (S.activeWo) { $('#woPillN').textContent = S.activeWo.name; woProgress(); } startTick(); };
 const woProgress = () => { const w = woCur(); if (!w) return; const n = w.ex.reduce((t, e) => t + e.sets.length, 0), dn = w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).length, 0), k = n ? dn / n : 0;
   $('#woProg').style.transform = `scaleX(${k})`; $('#woCnt').textContent = `${dn}/${n}`;
   $('#woVol').textContent = fmtKg(w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).reduce((u, st) => u + setVol(st, e.uni), 0), 0));
@@ -3512,7 +3517,7 @@ $('#woPill').onclick = () => { if (pillDrag) return; if (pillDock) { setDock(fal
   p.addEventListener('touchmove', e => { const mx = e.touches[0].clientX - x0, my = e.touches[0].clientY - y0;
     if (lock == null && (Math.abs(mx) > 8 || Math.abs(my) > 8)) lock = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
     if (lock !== 'x') return; e.cancelable && e.preventDefault(); pillDrag = true; dx = pillDock ? Math.min(0, mx) : Math.max(0, mx);
-    p.style.transition = 'none'; p.style.transform = pillDock ? `translate3d(calc(100% - 72px + ${dx}px),0,0)` : `translate3d(${dx}px,0,0)`; }, { passive: false });
+    p.style.transition = 'none'; p.style.transform = pillDock ? `translate3d(calc(100% - 50px + ${dx}px),0,0)` : `translate3d(${dx}px,0,0)`; }, { passive: false });
   p.addEventListener('touchend', () => { if (lock !== 'x') return; const W = p.offsetWidth;
     if (!pillDock && dx > Math.min(110, W * .3)) { setDock(true); buzz(); sfx.tap(); } else if (pillDock && dx < -50) { setDock(false); buzz(); sfx.tap(); } else setDock(pillDock);
     setTimeout(() => pillDrag = false, 60); });
