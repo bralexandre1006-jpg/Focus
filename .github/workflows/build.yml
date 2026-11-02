@@ -58,6 +58,10 @@ jobs:
       - name: Synchroniser
         run: npx cap sync android
 
+      - name: Enregistreur de pas Google
+        run: |
+          printf '\ndependencies {\n    implementation "com.google.android.gms:play-services-fitness:21.2.0"\n}\n' >> android/app/build.gradle
+
       - name: Signature fixe
         run: |
           test -f debug.keystore
