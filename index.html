@@ -1159,6 +1159,56 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 146px)}
 .wset.just .wrow{animation:setFlash .7s var(--ease)}
 @keyframes setFlash{0%{background:rgba(61,220,132,.35)}100%{background:transparent}}
 .wset .wrow{border-radius:14px}
+/* v1.33 séance */
+.wo{background:radial-gradient(120% 50% at 50% 0%,rgba(215,255,58,.08),transparent 60%),var(--bg)}
+.wo-h{background:transparent!important;border-bottom:0!important;padding-bottom:6px!important}
+.wo-t small{display:block;font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+.wo.editing .wo-t small{color:var(--wgt);text-transform:capitalize;letter-spacing:0}
+.wo-t b{font-size:22px!important;letter-spacing:-.03em}
+#woEnd{height:46px;padding:0 18px;border-radius:15px;box-shadow:0 8px 22px rgba(215,255,58,.25)}
+.wo-st{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;padding:6px 14px 12px}
+.wst{background:rgba(255,255,255,.045);border-radius:16px;padding:10px 12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);animation:liteIn .5s var(--spring) both}
+.wst:nth-child(2){animation-delay:.05s}.wst:nth-child(3){animation-delay:.1s}
+.wst small{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.wst b{display:block;font-size:22px;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+#woClockW b{color:var(--acc)}
+.wlive{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 0 rgba(215,255,58,.6);animation:wlv 1.6s infinite}
+@keyframes wlv{0%{box-shadow:0 0 0 0 rgba(215,255,58,.6)}100%{box-shadow:0 0 0 8px rgba(215,255,58,0)}}
+.wo.editing .wo-st{grid-template-columns:1fr 1fr}
+.wo-prog{margin:0 14px;border-radius:9px;height:6px!important;background:rgba(255,255,255,.06)!important;overflow:hidden}
+.wo-prog i{border-radius:9px}
+.wo-b{padding-top:14px!important}
+.wex{border-left:0!important;border-radius:24px!important;padding:16px 14px 12px!important;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 9%,var(--card)),var(--card) 40%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);transition:box-shadow .5s,opacity .4s,transform .5s var(--spring)}
+.wex.cur{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 70%,transparent),0 12px 34px color-mix(in srgb,var(--c) 16%,transparent)}
+.wex.complete{opacity:.82}
+.wex-h{align-items:center!important;margin-bottom:10px!important}
+.wex-i{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex-shrink:0;font-size:17px;font-weight:900;color:#0B0B0F;background:var(--c);box-shadow:0 6px 16px color-mix(in srgb,var(--c) 35%,transparent)}
+.wex-h b{font-size:20px!important;line-height:1.15}
+.wex-h .wcat{display:inline-block;margin-top:5px}
+.wex.complete .wcat{display:inline-block!important}
+.wnow{display:none;margin-left:6px;font-style:normal;font-size:11px;font-weight:800;padding:4px 8px;border-radius:8px;background:rgba(215,255,58,.14);color:var(--acc);animation:wdin .4s var(--spring)}
+.wex.cur .wnow{display:inline-block}
+.wex.complete .wex-i{background:var(--ok)}
+.wchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.wchips span{font-size:13px;font-weight:800;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);color:#D9D9E2}
+.wtip{font-size:14px;color:#C9C9D4;background:rgba(255,255,255,.04);border-radius:12px;padding:9px 12px;margin:-2px 0 10px;line-height:1.4}
+.wcfg svg{margin-top:13px}
+.wset{border-radius:16px;padding:4px;margin:0 -4px 4px!important;transition:background .35s}
+.wset.done{background:rgba(61,220,132,.08)}
+.wn{width:38px!important;height:38px!important;font-size:14px!important;background:rgba(255,255,255,.04)}
+.wrow{grid-template-columns:38px 1fr 1fr 44px 50px!important}
+.wrow.uni{grid-template-columns:38px 1fr .85fr .85fr 44px 50px!important}
+.wi{border-radius:13px!important;background:rgba(255,255,255,.06)!important}
+.wset.done .wi{background:rgba(61,220,132,.13)!important;color:#E9FFF2}
+.wex-f{margin-top:6px!important}
+.wex-f [data-add]{height:40px!important;padding:0 14px!important;border-radius:12px;background:rgba(215,255,58,.1)}
+/* pilule rangée sur le côté */
+.wopill{touch-action:pan-y}
+.wopill.dock{transform:translate3d(calc(100% - 72px),0,0)!important;border-radius:21px 0 0 21px}
+.wopill.dock .wp-t,.wopill.dock .wp-clock,.wopill.dock .wp-go{opacity:0}
+.wopill .wp-t,.wopill .wp-clock,.wopill .wp-go{transition:opacity .25s}
+.wopill::before{content:"";position:absolute;left:4px;top:50%;width:3px;height:22px;margin-top:-11px;border-radius:3px;background:rgba(255,255,255,.18);opacity:0;transition:opacity .25s}
+.wopill.dock::before{opacity:1}
 .wset.just .wn{animation:ckPop .5s var(--spring)}
 @keyframes ckPop{0%{transform:scale(.5)}60%{transform:scale(1.3)}100%{transform:scale(1.08)}}
 .wex{transition:box-shadow .5s,background .5s}
@@ -1647,8 +1697,13 @@ body.lite .card::before{will-change:transform}
 <div class="wo" id="wo">
   <div class="wo-h">
     <button class="x press" id="woMin" aria-label="Réduire"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div class="wo-t"><b id="woName"></b><small><span id="woDate"></span><span id="woClockW"> · ⏱ <span id="woClock">0:00</span></span> · <span id="woCnt">0/0</span></small></div>
+    <div class="wo-t"><small id="woDate"></small><b id="woName"></b></div>
     <button class="btn press" id="woEnd">Terminer</button>
+  </div>
+  <div class="wo-st">
+    <div class="wst" id="woClockW"><small><i class="wlive"></i>Durée</small><b id="woClock">0:00</b></div>
+    <div class="wst"><small>Séries</small><b id="woCnt">0/0</b></div>
+    <div class="wst"><small>Volume</small><b id="woVol">0 kg</b></div>
   </div>
   <div class="wo-prog"><i id="woProg"></i></div>
   <div class="wo-b" id="woBody"></div>
@@ -3306,7 +3361,9 @@ const closeWo = () => { $('#wo').classList.remove('on'); document.activeElement 
 const hideWo = () => { if (woEdit) { closeWo(); sfx.tap(); return; } $('#wo').classList.remove('on'); document.activeElement && document.activeElement.blur(); syncPill(); sfx.tap(); buzz(); };
 const syncPill = () => { const on = !!S.activeWo && !woOpen(); $('#woPill').classList.toggle('on', on); if (S.activeWo) { $('#woPillN').textContent = S.activeWo.name; woProgress(); } startTick(); };
 const woProgress = () => { const w = woCur(); if (!w) return; const n = w.ex.reduce((t, e) => t + e.sets.length, 0), dn = w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).length, 0), k = n ? dn / n : 0;
-  $('#woProg').style.transform = `scaleX(${k})`; $('#woCnt').textContent = `${dn}/${n}`; if (!woEdit) $('#woPillP').style.transform = `scaleX(${k})`; };
+  $('#woProg').style.transform = `scaleX(${k})`; $('#woCnt').textContent = `${dn}/${n}`;
+  $('#woVol').textContent = fmtKg(w.ex.reduce((t, e) => t + e.sets.filter(x => x.done).reduce((u, st) => u + setVol(st, e.uni), 0), 0));
+  let cur0 = false; $$('#woBody .wex').forEach(b => { const ex = w.ex[+b.dataset.e], c = !cur0 && !woEdit && !ex.sets.every(x => x.done); if (c) cur0 = true; b.classList.toggle('cur', c); }); if (!woEdit) $('#woPillP').style.transform = `scaleX(${k})`; };
 const startTick = () => { clearInterval(woTick); if (!S.activeWo && !rest) return;
   const f = () => { if (S.activeWo) { const t = fmtClock(Date.now() - S.activeWo.start); if (!woEdit) $('#woClock').textContent = t;
       $('#woPillT').textContent = rest ? fmtClock(rest.end - Date.now()) : t; $('#woPillS').textContent = rest ? 'Repos en cours' : 'Séance en cours'; $('#woPill').classList.toggle('resting', !!rest);
@@ -3327,13 +3384,15 @@ const NOTE_IC = '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.
 const renderWo = () => {
   const w = woCur(); if (!w) return;
   $('#woName').textContent = woEdit ? 'Modifier · ' + w.name : w.name;
-  $('#woDate').textContent = new Date(w.start).toLocaleDateString('fr-BE', { day:'numeric', month:'short' });
+  $('#woDate').textContent = woEdit ? new Date(w.start).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }) : 'Séance en cours';
   $('#woEnd').textContent = woEdit ? 'Enregistrer' : 'Terminer';
   $('#woClockW').classList.toggle('hidden', !!woEdit);
   $('#woBody').innerHTML = w.ex.map((e, ei) => { const prev = lastSetsFor(e.name, w.id);
     const cols = e.uni ? '<span>Kg</span><span>Gauche</span><span>Droite</span>' : '<span>Kg</span><span>Rép.</span>';
     return `<div class="wex" data-e="${ei}" style="--c:${catColor(e.cat)};animation-delay:${Math.min(ei * .05, .4)}s">
-      <div class="wex-h"><div><b>${esc(e.name)}</b><small>${esc(targetTxt(e))}${e.note ? '<br>' + esc(e.note) : ''}</small></div><span class="wcat">${esc(e.cat)}</span><span class="wdone">✓</span></div>
+      <div class="wex-h"><span class="wex-i">${ei + 1}</span><div><b>${esc(e.name)}</b><span class="wcat">${esc(e.cat)}</span><em class="wnow">En cours</em></div><span class="wdone">✓</span></div>
+      <div class="wchips"><span>${e.target} série${e.target > 1 ? 's' : ''}</span><span>${e.repMin && e.repMax && e.repMin !== e.repMax ? `${e.repMin}–${e.repMax}` : (e.repMax || e.repMin || '?')} rép.${e.uni ? ' / côté' : ''}</span>${e.rest ? `<span>⏱ ${fmtRest(e.rest)}</span>` : ''}</div>
+      ${e.note ? `<div class="wtip">${esc(e.note)}</div>` : ''}
       <label class="wcfg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
         <textarea class="wcfg-t" rows="1" placeholder="Réglages machine (siège, dossier…)">${esc(e.cfg || '')}</textarea></label>
       <div class="wrow wlab ${e.uni ? 'uni' : ''}"><span></span>${cols}<span></span><span></span></div>
@@ -3346,7 +3405,7 @@ const renderWo = () => {
           <button class="wnb ${st.note ? 'has' : ''}" aria-label="Note">${NOTE_IC}</button>
           <span class="wdc">${deltaOf(st, p, e.uni)}</span></div>
           <div class="wnt">${st.note ? `<span class="me">${esc(st.note)}</span>` : p && p.note ? `<span class="pv">Dernière fois : ${esc(p.note)}</span>` : ''}</div></div>`; }).join('')}
-      <div class="wex-f"><button data-add="1">+ Ajouter une série</button>${e.sets.length > 1 ? '<button data-del="1">Retirer la dernière</button>' : ''}</div>
+      <div class="wex-f"><button data-add="1">+ Série</button>${e.sets.length > 1 ? '<button data-del="1">Retirer la dernière</button>' : ''}</div>
     </div>`; }).join('') + `<button class="wo-quit" id="woQuit">${woEdit ? 'Annuler les modifications' : 'Abandonner la séance'}</button>`;
   $$('#woBody .wex').forEach(box => { const e = w.ex[+box.dataset.e], prev = lastSetsFor(e.name, w.id);
     const ct = box.querySelector('.wcfg-t'); grow(ct);
@@ -3357,7 +3416,7 @@ const renderWo = () => {
         inp.oninput = () => { st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); };
         if (inp.dataset.f === (e.uni ? 'repsR' : 'reps')) inp.onchange = () => { if (inp.value !== '' && !woEdit) markDone(e, st, row, si, p, true); };
       });
-      row.querySelector('.wn').onclick = () => { if (st.done) { st.done = false; row.classList.remove('done'); row.querySelector('.wn').textContent = si + 1; row.closest('.wex').classList.remove('complete'); woProgress(); sfx.tap(); buzz(); woSave(); } else markDone(e, st, row, si, p, false); };
+      row.querySelector('.wn').onclick = () => { if (st.done && Date.now() - (doneAt.get(st) || 0) < 600) return; if (st.done) { st.done = false; row.classList.remove('done'); row.querySelector('.wn').textContent = si + 1; row.closest('.wex').classList.remove('complete'); woProgress(); sfx.tap(); buzz(); woSave(); } else markDone(e, st, row, si, p, false); };
       row.querySelector('.wnb').onclick = () => openNote(st, p, () => {
         row.querySelector('.wnb').classList.toggle('has', !!st.note);
         row.querySelector('.wnt').innerHTML = st.note ? `<span class="me">${esc(st.note)}</span>` : p && p.note ? `<span class="pv">Dernière fois : ${esc(p.note)}</span>` : ''; woSave(); });
@@ -3372,9 +3431,10 @@ const renderWo = () => {
     S.activeWo = null; save(); closeWo(); sfx.no(); buzz('heavy');
   };
 };
+const doneAt = new WeakMap();
 const markDone = (e, st, row, si, p, fromReps) => {
   if (!st.done) {
-    st.done = true;
+    st.done = true; doneAt.set(st, Date.now());
     if (st.kg === '' && p) st.kg = kgTxt(p.kg); if (st.reps === '' && p) st.reps = String(p.reps); if (e.uni && st.repsR === '' && p) st.repsR = String(p.repsR || p.reps);
     row.querySelectorAll('.wi').forEach(inp => { if (document.activeElement !== inp) inp.value = st[inp.dataset.f]; });
     row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni);
@@ -3444,7 +3504,19 @@ $('#noteTa').addEventListener('input', e => grow(e.target));
 $('#noteSave').onclick = () => { if (noteSt) noteSt.note = $('#noteTa').value.trim(); closeOv('noteModal'); noteCb && noteCb(); sfx.tap(); buzz(); };
 
 $('#woMin').onclick = hideWo;
-$('#woPill').onclick = () => { woEdit = null; renderWo(); showWo(); sfx.tap(); buzz(); };
+let pillDock = false, pillDrag = false;
+const setDock = v => { pillDock = v; const p = $('#woPill'); p.style.transition = ''; p.style.transform = ''; p.classList.toggle('dock', v); };
+$('#woPill').onclick = () => { if (pillDrag) return; if (pillDock) { setDock(false); sfx.tap(); buzz(); return; } woEdit = null; renderWo(); showWo(); sfx.tap(); buzz(); };
+(() => { const p = $('#woPill'); let x0 = 0, y0 = 0, dx = 0, lock = null;
+  p.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; lock = null; pillDrag = false; }, { passive: true });
+  p.addEventListener('touchmove', e => { const mx = e.touches[0].clientX - x0, my = e.touches[0].clientY - y0;
+    if (lock == null && (Math.abs(mx) > 8 || Math.abs(my) > 8)) lock = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+    if (lock !== 'x') return; e.cancelable && e.preventDefault(); pillDrag = true; dx = pillDock ? Math.min(0, mx) : Math.max(0, mx);
+    p.style.transition = 'none'; p.style.transform = pillDock ? `translate3d(calc(100% - 72px + ${dx}px),0,0)` : `translate3d(${dx}px,0,0)`; }, { passive: false });
+  p.addEventListener('touchend', () => { if (lock !== 'x') return; const W = p.offsetWidth;
+    if (!pillDock && dx > Math.min(110, W * .3)) { setDock(true); buzz(); sfx.tap(); } else if (pillDock && dx < -50) { setDock(false); buzz(); sfx.tap(); } else setDock(pillDock);
+    setTimeout(() => pillDrag = false, 60); });
+})();
 $('#woEnd').onclick = async () => {
   const w = woCur(); if (!w) return;
   const ex = w.ex.map(e => ({ name: e.name, cat: e.cat, uni: e.uni, cfg: (e.cfg || '').trim(), rest: e.rest, sets: e.sets.filter(st => st.done || st.kg !== '' || st.reps !== '' || st.repsR !== '')
