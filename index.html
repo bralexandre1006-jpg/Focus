@@ -199,8 +199,15 @@ button{border:0;background:none;cursor:pointer}
 .hd small{font-size:11px;color:var(--mut);text-transform:uppercase}
 .hv{flex:1;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px}
 .hv span{color:var(--mut)}.hv b{color:var(--txt)}
-.hrow{cursor:pointer;transition:background .2s}
-.hrow:active{background:rgba(255,255,255,.03)}
+.hrow{cursor:pointer;transition:transform .45s cubic-bezier(.3,0,.2,1),background .3s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;border-radius:14px}
+.hrow.hold{transform:scale(.96);background:rgba(255,255,255,.04)}
+.hrow.held{animation:glpop .5s var(--spring)}
+.dmb{display:flex;align-items:center;gap:14px;width:100%;min-height:58px;padding:0 16px;border-radius:16px;background:var(--card);font-size:16px;font-weight:800;text-align:left;margin-bottom:8px;animation:rise .35s var(--ease) both}
+.dmb:nth-child(2){animation-delay:.04s}.dmb:nth-child(3){animation-delay:.08s}
+.dmb span{font-size:20px;width:26px;text-align:center}
+.dmdel{color:var(--bad)}
+#deC:disabled{opacity:.45}
+#deWk{margin-bottom:0}
 .hrow.off .hd b{color:#7FD8C4}
 .offb{font-size:12px;font-weight:900;letter-spacing:.06em;padding:6px 10px;border-radius:10px;color:#7FD8C4;background:rgba(79,209,197,.13);white-space:nowrap}
 .offg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
@@ -921,8 +928,8 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .rte-lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 5px 4px}
 .rte-ta,.wcfg-t,.note-ta{width:100%;display:block;resize:none;border:2px solid transparent;outline:0;background:var(--card2);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;color:var(--txt);line-height:1.4;overflow:hidden;min-height:48px;transition:border-color .2s}
 .rte-ta:focus,.wcfg-t:focus,.note-ta:focus{border-color:var(--acc)}
-#catModal,#noteModal,#exModal,#restModal,#rtPick{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
-#catModal,#noteModal,#restModal{top:auto;max-height:calc(100% - var(--st) - 30px)}
+#catModal,#noteModal,#exModal,#restModal,#rtPick,#dayMenu,#dayEdit{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
+#catModal,#noteModal,#restModal,#dayMenu,#dayEdit{top:auto;max-height:calc(100% - var(--st) - 30px)}
 .catlist{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .catit{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 14px;border-radius:14px;background:var(--card);font-size:16px;font-weight:800;text-align:left;color:var(--txt);animation:rise .3s var(--ease) both}
 .catit i{width:12px;height:12px;border-radius:50%;background:var(--c)}
@@ -1452,7 +1459,6 @@ body.lite .card::before{will-change:transform}
   <!-- HISTORIQUE -->
   <section class="screen" id="s-history">
     <div class="head"><div><div class="sub">Jour par jour</div><h1>Historique</h1></div></div>
-    <button class="btn ghost full press" id="offOpen" style="margin-bottom:12px">🌴 Ajouter des jours off</button>
     <div class="card" id="histList"></div>
   </section>
 
@@ -1741,16 +1747,26 @@ body.lite .card::before{will-change:transform}
     <button class="press rest-x" id="restX" aria-label="Passer">×</button></div>
 </div>
 
-<div class="modal" id="offModal">
+<div class="modal dmenu" id="dayMenu">
   <div class="mgrab"></div>
-  <div class="mhead"><h4>Jours off</h4><button class="x press" data-close>×</button></div>
+  <div class="mhead"><h4 id="dmT">Jour</h4><button class="x press" data-close>×</button></div>
   <div class="mbody">
-    <div class="hint" style="margin:0 0 12px">Vacances, maladie, pause : ces jours n'affichent que tes pas et ne cassent pas ta série de séances.</div>
-    <div class="offg"><label><small>Du</small><input type="date" id="offA"></label><label><small>Au</small><input type="date" id="offB"></label></div>
-    <div class="offn" id="offN"></div>
-    <div id="offList"></div>
+    <button class="dmb press" id="dmOff"></button>
+    <button class="dmb press" id="dmEdit"><span>✏️</span>Modifier le jour</button>
+    <button class="dmb dmdel press" id="dmDel"><span>🗑️</span>Supprimer les stats du jour</button>
   </div>
-  <div class="mfoot"><button class="btn full press" id="offSave">Valider</button></div>
+</div>
+
+<div class="modal dmenu" id="dayEdit">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4 id="deT">Modifier</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody">
+    <div class="mini-lbl">Poids</div><label class="field"><input id="deW" type="text" inputmode="decimal" placeholder="—"><span>kg</span></label>
+    <div class="mini-lbl">Pas</div><label class="field"><input id="deS" type="text" inputmode="numeric" placeholder="0"><span>pas</span></label>
+    <div class="mini-lbl">Calories</div><label class="field"><input id="deC" type="text" inputmode="numeric" placeholder="0"><span>kcal</span></label><div class="hint" id="deCH" style="margin:6px 4px 0"></div>
+    <div class="mini-lbl">Séance</div><div class="seg2" id="deWk"><button data-w="true">Faite</button><button data-w="false">Ratée</button><button data-w="null">Rien</button></div>
+  </div>
+  <div class="mfoot"><button class="btn full press" id="deSave">Enregistrer</button></div>
 </div>
 
 <div class="modal" id="catModal">
@@ -2590,7 +2606,7 @@ const pedoState = (txt, live) => { $('#pedoTxt').textContent = txt; $('#pedoPill
 // Si le téléphone a redémarré aujourd'hui, tout son compteur date d'aujourd'hui : la journée vaut au moins ce total.
 // Les pas sont découpés jour par jour grâce aux relevés que le téléphone prend chaque nuit à 00:00.
 // Deux sources : le capteur (ss) et l'enregistreur Google (sr). On affiche la plus haute.
-const mergeSteps = d => { d.steps = Math.max(d.ss ?? d.steps ?? 0, d.sr || 0); };
+const mergeSteps = d => { d.steps = d.sm != null ? d.sm : Math.max(d.ss ?? d.steps ?? 0, d.sr || 0); };
 const addSteps = (k, n) => { if (n > 0 && n < 100000) { const d = day(k); if (d.ss == null) d.ss = d.steps || 0; d.ss += n; mergeSteps(d); } };
 const syncRecording = async () => {
   const pl = P.StepCounter; if (!pl || !pl.getDailySteps) return;
@@ -2867,21 +2883,39 @@ const renderHistory = () => {
   setTimeout(more, 380);
 };
 RENDER.history = renderHistory;
+let dmK = null;
 const dLabel = k => { const l = parseKey(k).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }); return l.charAt(0).toUpperCase() + l.slice(1); };
-$('#histList').addEventListener('click', async e => { const r = e.target.closest('.hrow[data-k]'); if (!r) return; const k = r.dataset.k, d = day(k);
-  sfx.tap(); buzz();
-  if (d.off) { if (!(await confirmSheet(dLabel(k), 'Retirer le JOUR OFF ? Le jour compte de nouveau normalement.', { yes:'Retirer', danger:false }))) return; delete d.off; }
-  else { if (!(await confirmSheet(dLabel(k), 'Mettre ce jour en JOUR OFF ? Seuls tes pas restent affichés et il ne compte pas comme séance ratée.', { yes:'🌴 Jour off', danger:false }))) return; d.off = true; }
-  save(); renderHistory(); sfx.ok(); buzz('success'); });
-const offRange = () => { const a = $('#offA').value, b = $('#offB').value || a; return a ? eachDay(parseKey(a <= b ? a : b), parseKey(a <= b ? b : a)) : []; };
-const renderOffInfo = () => { const n = offRange().length; $('#offN').textContent = n ? `${n} jour${n > 1 ? 's' : ''} en JOUR OFF` : 'Choisis tes dates';
-  const up = Object.keys(S.days).filter(k => S.days[k].off && k >= today()).sort();
-  $('#offList').innerHTML = up.length ? '<div class="mini-lbl">Prévus</div>' + up.map(k => `<div class="offit"><span>🌴 ${dLabel(k)}</span><button class="press" data-rmoff="${k}">Retirer</button></div>`).join('') : '';
-  $$('#offList [data-rmoff]').forEach(b => b.onclick = () => { delete S.days[b.dataset.rmoff].off; save(); renderOffInfo(); renderHistory(); renderSession(); sfx.no(); buzz(); }); };
-$('#offOpen').onclick = () => { $('#offA').value = today(); $('#offB').value = today(); renderOffInfo(); openOv('offModal'); sfx.tap(); buzz(); };
-['offA','offB'].forEach(i => $('#' + i).addEventListener('change', renderOffInfo));
-$('#offSave').onclick = () => { const ks = offRange(); if (!ks.length) { toast('Choisis une date'); return; }
-  ks.forEach(k => day(k).off = true); save(); closeOv('offModal'); renderHistory(); renderSession(); sfx.win(); buzz('success'); toast(`🌴 ${ks.length} jour${ks.length > 1 ? 's' : ''} off`); };
+const openDayMenu = k => { dmK = k; const d = day(k);
+  $('#dmT').textContent = dLabel(k);
+  $('#dmOff').innerHTML = d.off ? '<span>☀️</span>Retirer le JOUR OFF' : '<span>🌴</span>Mettre en JOUR OFF';
+  openOv('dayMenu'); sfx.tap(); buzz('medium'); };
+(() => { const el = $('#histList'); let t = null, r = null, x0 = 0, y0 = 0;
+  const cancel = () => { clearTimeout(t); if (r) r.classList.remove('hold'); r = null; };
+  const start = (tg, x, y) => { const row = tg.closest('.hrow[data-k]'); if (!row) return; cancel(); r = row; x0 = x; y0 = y; row.classList.add('hold');
+    t = setTimeout(() => { const k = row.dataset.k; row.classList.remove('hold'); row.classList.add('held'); setTimeout(() => row.classList.remove('held'), 500); r = null; openDayMenu(k); }, 450); };
+  const move = (x, y) => { if (r && (Math.abs(x - x0) > 8 || Math.abs(y - y0) > 8)) cancel(); };
+  el.addEventListener('touchstart', e => start(e.target, e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  el.addEventListener('touchmove', e => move(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  el.addEventListener('touchend', cancel); el.addEventListener('touchcancel', cancel);
+  el.addEventListener('mousedown', e => start(e.target, e.clientX, e.clientY)); el.addEventListener('mousemove', e => move(e.clientX, e.clientY)); el.addEventListener('mouseup', cancel);
+  el.addEventListener('contextmenu', e => e.preventDefault()); })();
+$('#dmOff').onclick = () => { const d = day(dmK); if (d.off) delete d.off; else d.off = true; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderSession();
+  sfx.ok(); buzz('success'); toast(d.off ? '🌴 Jour off' : 'Jour off retiré'); };
+$('#dmDel').onclick = async () => { if (!(await confirmSheet('Supprimer les stats du jour ?', `${dLabel(dmK)} : poids, pas, repas et séance seront effacés.`, { yes:'Supprimer' }))) return;
+  delete S.days[dmK]; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderToday(); sfx.no(); buzz('heavy'); toast('Jour supprimé'); };
+let deW = null;
+$('#dmEdit').onclick = () => { const d = day(dmK), nm = (d.meals || []).length; closeOv('dayMenu');
+  $('#deT').textContent = dLabel(dmK); $('#deW').value = d.weight ? f1(d.weight) : ''; $('#deS').value = d.steps ? String(d.steps) : '';
+  $('#deC').value = d.calories ? String(d.calories) : ''; $('#deC').disabled = nm > 0; $('#deCH').textContent = nm ? `Calculées depuis ${nm} repas noté${nm > 1 ? 's' : ''}` : '';
+  deW = d.workout ?? null; $$('#deWk button').forEach(b => b.classList.toggle('on', String(deW) === b.dataset.w));
+  setTimeout(() => openOv('dayEdit'), 120); };
+$$('#deWk button').forEach(b => b.onclick = () => { deW = b.dataset.w === 'null' ? null : b.dataset.w === 'true'; $$('#deWk button').forEach(x => x.classList.toggle('on', x === b)); sfx.tap(); buzz(); });
+$('#deSave').onclick = () => { const d = day(dmK), w = num($('#deW').value), st = $('#deS').value.trim();
+  d.weight = w > 0 ? w : null;
+  if (st === '') delete d.sm; else d.sm = Math.max(0, parseInt(st) || 0); mergeSteps(d);
+  if (!(d.meals || []).length) d.calories = Math.max(0, parseInt($('#deC').value) || 0);
+  d.workout = deW; save(); closeOv('dayEdit'); renderHistory(); if (dmK === today()) renderToday(); sfx.ok(); buzz('success'); toast('Jour modifié ✓'); };
+
 
 /* ---------- BILAN DE LA SEMAINE ---------- */
 // Dimanche : semaine en cours. Les autres jours : semaine précédente complète.
