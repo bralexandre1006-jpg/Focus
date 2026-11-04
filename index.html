@@ -204,6 +204,45 @@ button{border:0;background:none;cursor:pointer}
 .dmb:nth-child(2){animation-delay:.04s}.dmb:nth-child(3){animation-delay:.08s}
 .dmb span{font-size:20px;width:26px;text-align:center}
 .dmdel{color:var(--bad)}
+.dmcats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dmc{height:56px;border-radius:16px;font-size:13px;font-weight:900;letter-spacing:.08em;transition:transform .3s var(--spring),box-shadow .2s}
+.dmc:active{transform:scale(.95)}.dmc.on{box-shadow:inset 0 0 0 2px currentColor}
+/* historique v2 */
+.hx-wk{--t:215,255,58;position:relative;overflow:hidden;border-radius:26px;padding:14px 10px 8px;margin-bottom:14px;background:linear-gradient(150deg,rgba(var(--t),.14) 0%,rgba(var(--t),.03) 42%,#15151B 100%);
+  border:1px solid rgba(var(--t),.13);box-shadow:0 12px 30px rgba(0,0,0,.35);animation:rise .55s var(--ease) both}
+.hx-wk::before{content:"";position:absolute;width:220px;height:220px;right:-80px;top:-100px;border-radius:50%;background:radial-gradient(circle,rgba(var(--t),.25),rgba(var(--t),0) 68%);pointer-events:none}
+.hx-wk>*{position:relative}
+.hx-wk.past{--t:150,140,255}
+.hx-h{display:flex;align-items:center;justify-content:space-between;padding:0 6px}
+.hx-h b{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#C9C9D4;display:flex;align-items:center;gap:8px}
+.hx-h b::before{content:"";width:6px;height:6px;border-radius:50%;background:rgb(var(--t));box-shadow:0 0 8px rgb(var(--t))}
+.hx-pill{font-size:11px;font-weight:800;padding:5px 10px;border-radius:99px;letter-spacing:.03em;color:#C9A6FF;background:rgba(184,140,255,.14)}
+.hx-pill.g{color:#0B0B0F;background:linear-gradient(135deg,#D7FF3A,#7BE07E)}
+.hx-hero{display:flex;align-items:flex-end;justify-content:space-between;padding:8px 6px 4px}
+.hx-hero b{font-size:34px;letter-spacing:-.05em;line-height:1;display:block}.hx-hero small{display:block;color:var(--mut);font-size:12px;margin-top:4px}
+.hsp{width:150px;height:46px;overflow:visible}
+.hspl{stroke-dasharray:400;stroke-dashoffset:400;animation:hspd 1.1s .2s var(--ease) forwards}
+@keyframes hspd{to{stroke-dashoffset:0}}
+.hx-mini{display:flex;gap:6px;padding:8px 6px 10px}
+.hx-mini span{flex:1;min-width:0;font-size:12px;color:var(--mut);background:rgba(0,0,0,.22);border-radius:12px;padding:7px 9px;border:1px solid rgba(255,255,255,.04)}
+.hx-mini b{display:block;font-size:15px;color:#fff;margin-top:1px;white-space:nowrap}
+.hx-mini b.wdn{color:var(--ok)}.hx-mini b.wup{color:var(--bad)}
+.hx-r{display:grid;grid-template-columns:44px 1.1fr 1fr .8fr 58px;align-items:center;gap:8px;padding:7px 8px 7px 6px;border-radius:17px;margin-bottom:5px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.035);cursor:pointer}
+.hx-dt{width:44px;height:46px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;background:rgba(255,255,255,.05);flex-shrink:0}
+.hx-dt b{font-size:18px}.hx-dt small{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;opacity:.65}
+.hx-dt.ok{background:linear-gradient(150deg,rgba(61,220,132,.35),rgba(61,220,132,.1));box-shadow:inset 0 0 0 1px rgba(61,220,132,.45);color:#7FF0B0}
+.hx-dt.no{background:linear-gradient(150deg,rgba(255,77,106,.3),rgba(255,77,106,.08));box-shadow:inset 0 0 0 1px rgba(255,77,106,.4);color:#FF8DA0}
+.hx-dt.tdy{background:linear-gradient(135deg,#D7FF3A,#7BE07E);color:#0B0B0F;box-shadow:0 6px 16px rgba(215,255,58,.3)}
+.hx-v{line-height:1.05;min-width:0}.hx-v b{font-size:15.5px;display:block;font-variant-numeric:tabular-nums;white-space:nowrap}.hx-v small{font-size:9.5px;color:#6E6E7E;text-transform:uppercase;letter-spacing:.07em}
+.hx-v.hs b{color:var(--acc);text-shadow:0 0 12px rgba(215,255,58,.35)}.hx-v.hp b{color:var(--pro)}.hx-v.ov b{color:var(--bad)}
+.hx-w{text-align:right;line-height:1.1}.hx-w b{font-size:15px;display:block}.hx-na{color:#555}
+.hx-w small{display:inline-block;font-size:10px;font-weight:800;padding:2px 6px;border-radius:7px;margin-top:3px}
+.hx-w .up{color:var(--bad);background:rgba(255,77,106,.12)}.hx-w .dn{color:var(--ok);background:rgba(61,220,132,.12)}.hx-w .eq{color:var(--mut);background:rgba(255,255,255,.05)}
+.hx-off{display:flex;align-items:center;gap:12px;padding:7px 12px 7px 6px;border-radius:17px;margin-bottom:5px;border:1px solid;cursor:pointer;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 8px,transparent 8px 16px)}
+.hx-off .hx-dt{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
+.hx-s{flex:1;color:#fff}.hx-s b{font-size:15.5px}.hx-s small{font-size:10px;color:var(--mut);margin-left:3px;text-transform:uppercase;letter-spacing:.06em}
+.hx-tag{font-size:11px;font-weight:900;letter-spacing:.1em;padding:6px 10px;border-radius:99px}
+body.lite .hx-wk{border-radius:22px}
 #deC:disabled{opacity:.45}
 #deWk{margin-bottom:0}
 .hrow.off .hd b{color:#7FD8C4}
@@ -1457,7 +1496,7 @@ body.lite .card::before{will-change:transform}
   <!-- HISTORIQUE -->
   <section class="screen" id="s-history">
     <div class="head"><div><div class="sub">Jour par jour</div><h1>Historique</h1></div></div>
-    <div class="card" id="histList"></div>
+    <div id="histList"></div>
   </section>
 
   <!-- REGLAGES -->
@@ -1749,7 +1788,9 @@ body.lite .card::before{will-change:transform}
   <div class="mgrab"></div>
   <div class="mhead"><h4 id="dmT">Jour</h4><button class="x press" data-close>×</button></div>
   <div class="mbody">
-    <button class="dmb press" id="dmOff"></button>
+    <div class="mini-lbl" style="margin-top:0">Mettre en jour off</div>
+    <div class="dmcats" id="dmCats"></div>
+    <button class="dmb press hidden" id="dmOff"><span>☀️</span>Retirer le jour off</button>
     <button class="dmb press" id="dmEdit"><span>✏️</span>Modifier le jour</button>
     <button class="dmb dmdel press" id="dmDel"><span>🗑️</span>Supprimer les stats du jour</button>
   </div>
@@ -2103,7 +2144,7 @@ const renderSession = () => {
   $('#wkBtns').classList.toggle('hidden', rest || (S.routines || []).length > 0);
   $('#restV').classList.toggle('hidden', !rest);
   $('#wkBadge').classList.toggle('hidden', !isTD);
-  $('#restTxt').textContent = d.off ? 'Jour off 🌴 Profite, on reprend après.' : lg ? `Séance décalée à ${parseKey(lg.to).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric' })}.` : dp && dp.walk ? 'Pas de salle aujourd\'hui. Fais ta marche, puis récupère.' : 'Ton corps récupère et progresse aujourd\'hui.';
+  $('#restTxt').textContent = d.off ? `${offCat(d)[0].charAt(0) + offCat(d)[0].slice(1).toLowerCase()} : jour off, on reprend après.` : lg ? `Séance décalée à ${parseKey(lg.to).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric' })}.` : dp && dp.walk ? 'Pas de salle aujourd\'hui. Fais ta marche, puis récupère.' : 'Ton corps récupère et progresse aujourd\'hui.';
   $('#wkUnshift').classList.toggle('hidden', !lg); $('#wkAnyway').classList.toggle('hidden', !!lg || d.workout === true || !!S.activeWo);
   $('#wkAnyway').textContent = (S.routines || []).length ? 'Lancer quand même une séance' : 'J\'ai quand même fait une séance';
   $('#wkShift').classList.toggle('hidden', !isTD || d.workout != null);
@@ -2863,33 +2904,62 @@ const wkTag = (k, d) => {
   if (!planned) return '<span><i class="ico hico i-rest"></i><b>Repos</b></span>';
   return d.workout === false ? '<span><i class="ico hico i-no"></i><b>Ratée</b></span>' : '';
 };
+const OFFC = { vac:['VACANCES','#5FE0D2','79,209,197'], mal:['MALADE','#FFB46B','255,159,67'], occ:['TROP OCCUPÉ','#7CC6FF','90,184,255'], fei:['FEIGNANT','#C8A6FF','184,140,255'] };
+const offCat = d => OFFC[d.off] || ['JOUR OFF','#5FE0D2','79,209,197'];
+const hSpark = (vals, col, id) => { const pts0 = vals.map((v, i) => v == null ? null : [6 + i * 138 / 6, 0, v]).filter(Boolean); if (pts0.length < 2) return '';
+  const mx = Math.max(1, ...pts0.map(p => p[2])), pts = pts0.map(p => [p[0], 40 - (p[2] / mx) * 32]);
+  let d = `M${pts[0][0]},${pts[0][1]}`; for (let i = 1; i < pts.length; i++) { const [a, b] = pts[i - 1], [c, e] = pts[i], m = (a + c) / 2; d += ` C${m},${b} ${m},${e} ${c},${e}`; }
+  return `<svg class="hsp" viewBox="0 0 150 46"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <path d="${d} L${pts.at(-1)[0]},46 L${pts[0][0]},46 Z" fill="url(#${id})"/><path class="hspl" d="${d}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round"/>
+    ${pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="${i === pts.length - 1 ? 3.5 : 2}" fill="${col}"/>`).join('')}</svg>`; };
 const renderHistory = () => {
   const T0 = today(), ks = Object.keys(S.days).filter(k=>{const d=S.days[k]; return d.weight||d.calories||d.steps||d.workout!=null||(d.off&&k<=T0);}).sort().reverse();
   const el = $('#histList');
-  if (!ks.length) { el.innerHTML = '<div class="empty">Rien pour l\'instant. Remplis ta première journée.</div>'; return; }
-  const row = k => { const d=S.days[k], dt=parseKey(k), t = sumMeals(d.meals||[]);
-    if (d.off) return `<div class="hrow off" data-k="${k}"><div class="hd"><b>${dt.getDate()}</b><small>${dt.toLocaleDateString('fr-BE',{month:'short'}).replace('.','')}</small></div>
-    <div class="hv"><span>👟 <b>${fmt(d.steps||0)}</b></span></div><span class="offb">🌴 JOUR OFF</span></div>`;
-    return `<div class="hrow" data-k="${k}"><div class="hd"><b>${dt.getDate()}</b><small>${dt.toLocaleDateString('fr-BE',{month:'short'}).replace('.','')}</small></div>
-    <div class="hv"><span>👟 <b>${fmt(d.steps||0)}</b></span>${d.weight?`<span>⚖️ <b>${f1(d.weight)} kg</b></span>`:''}
-    ${d.calories?`<span>🔥 <b>${fmt(d.calories)}</b></span>`:''}${t.p?`<span>🥩 <b>${Math.round(t.p)} g</b></span>`:''}${wkTag(k, d)}</div></div>`; };
-  const all = ks.slice(0, 365), tok = (renderHistory.tok = (renderHistory.tok || 0) + 1);
-  el.innerHTML = all.slice(0, 20).map(row).join('');
-  let i = 20;
+  if (!ks.length) { el.innerHTML = '<div class="card"><div class="empty">Rien pour l\'instant. Remplis ta première journée.</div></div>'; return; }
+  const G = goals(), wkOf = k => { const d = parseKey(k); d.setDate(d.getDate() - wd(d)); return key(d); }, curW = wkOf(T0);
+  const lastW = before => { const w = Object.keys(S.days).filter(k => k < before && S.days[k].weight).sort().pop(); return w ? S.days[w].weight : null; };
+  const weeks = []; ks.forEach(k => { const w = wkOf(k); if (!weeks.length || weeks.at(-1).w !== w) weeks.push({ w, ks: [] }); weeks.at(-1).ks.push(k); });
+  const row = k => { const d = S.days[k], dt = parseKey(k), wdn = dt.toLocaleDateString('fr-BE', { weekday:'short' }).replace('.', '');
+    if (d.off) { const o = offCat(d); return `<div class="hx-off" data-k="${k}" style="color:${o[1]};background-color:rgba(${o[2]},.1);border-color:rgba(${o[2]},.25)"><div class="hx-dt"><b>${dt.getDate()}</b><small>${wdn}</small></div>
+      <div class="hx-s"><b>${fmt(d.steps || 0)}</b><small>pas</small></div><span class="hx-tag" style="background:rgba(${o[2]},.18)">${o[0]}</span></div>`; }
+    const t = sumMeals(d.meals || []), p = Math.round(t.p || 0), pw = d.weight ? lastW(k) : null, dk = pw != null ? Math.round((d.weight - pw) * 10) / 10 : null;
+    const st = k === T0 ? 'tdy' : d.workout === true ? 'ok' : d.workout === false ? 'no' : '';
+    return `<div class="hx-r" data-k="${k}"><div class="hx-dt ${st}"><b>${dt.getDate()}</b><small>${wdn}</small></div>
+      <div class="hx-v ${(d.steps || 0) >= G.steps ? 'hs' : ''}"><b>${fmt(d.steps || 0)}</b><small>pas</small></div>
+      <div class="hx-v ${d.calories > G.kcal * 1.05 ? 'ov' : ''}"><b>${d.calories ? fmt(d.calories) : '—'}</b><small>kcal</small></div>
+      <div class="hx-v ${G.protein && p >= G.protein ? 'hp' : ''}"><b>${p ? p + ' g' : '—'}</b><small>prot</small></div>
+      <div class="hx-w">${d.weight ? `<b>${f1(d.weight)}</b>${dk != null ? `<small class="${dk > 0 ? 'up' : dk < 0 ? 'dn' : 'eq'}">${dk > 0 ? '+' : dk < 0 ? '−' : '±'}${f1(Math.abs(dk))}</small>` : ''}` : '<b class="hx-na">—</b>'}</div></div>`; };
+  const week = (W, wi) => { const a = parseKey(W.w), b = new Date(a), cur = W.w === curW; b.setDate(a.getDate() + 6);
+    const kk = W.ks.filter(k => !S.days[k].off), stp = kk.map(k => S.days[k].steps || 0), cal = kk.map(k => S.days[k].calories).filter(Boolean), pr = kk.map(k => sumMeals(S.days[k].meals || []).p).filter(Boolean);
+    const avg = v => v.length ? v.reduce((x, y) => x + y, 0) / v.length : 0;
+    const days7 = eachDay(a, b), done = days7.filter(k => k <= T0 && S.days[k] && S.days[k].workout === true).length, plan = Math.max(done, days7.filter(k => isTDay(k)).length);
+    const wk = W.ks.filter(k => S.days[k].weight).sort(), w0 = wk.length ? lastW(wk[0]) ?? S.days[wk[0]].weight : null, wd0 = wk.length && w0 != null ? Math.round((S.days[wk.at(-1)].weight - w0) * 10) / 10 : null;
+    const sv = Array.from({ length: 7 }, (_, i) => { const x = new Date(a); x.setDate(a.getDate() + i); const k = key(x); return k > T0 || !S.days[k] ? null : S.days[k].steps || 0; });
+    const lbl = cur ? 'Cette semaine' : W.w === wkOf(addDays(curW, -1)) ? 'Semaine passée' : `${a.getDate()} ${a.toLocaleDateString('fr-BE', { month:'short' }).replace('.', '')} – ${b.getDate()} ${b.toLocaleDateString('fr-BE', { month:'short' }).replace('.', '')}`;
+    const ok = plan && done >= plan;
+    return `<div class="hx-wk ${cur ? '' : 'past'}" style="animation-delay:${Math.min(wi, 4) * .06}s"><div class="hx-h"><b>${lbl}</b><span class="hx-pill ${ok ? 'g' : ''}">${plan ? `${done}/${plan} SÉANCE${plan > 1 ? 'S' : ''}` : 'REPOS'}</span></div>
+      <div class="hx-hero"><div><b>${fmt(avg(stp))}</b><small>pas / jour</small></div>${hSpark(sv, cur ? '#D7FF3A' : '#A99BFF', 'hsg' + W.w)}</div>
+      <div class="hx-mini"><span>Kcal / jour<b>${cal.length ? fmt(avg(cal)) : '—'}</b></span><span>Prot / jour<b>${pr.length ? Math.round(avg(pr)) + ' g' : '—'}</b></span>
+        <span>Poids<b class="${wd0 > 0 ? 'wup' : wd0 < 0 ? 'wdn' : ''}">${wd0 == null ? '—' : (wd0 > 0 ? '+' : wd0 < 0 ? '−' : '±') + f1(Math.abs(wd0)) + ' kg'}</b></span></div>
+      ${W.ks.map(row).join('')}</div>`; };
+  const tok = (renderHistory.tok = (renderHistory.tok || 0) + 1), all = weeks.slice(0, 60);
+  el.innerHTML = all.slice(0, 4).map(week).join('');
+  let i = 4;
   const more = () => { if (tok !== renderHistory.tok || i >= all.length) return;
-    el.insertAdjacentHTML('beforeend', all.slice(i, i + 40).map(row).join('')); i += 40; setTimeout(more, 60); };
-  setTimeout(more, 380);
+    el.insertAdjacentHTML('beforeend', all.slice(i, i + 6).map((w, j) => week(w, i + j)).join('')); i += 6; setTimeout(more, 80); };
+  setTimeout(more, 400);
 };
 RENDER.history = renderHistory;
 let dmK = null;
 const dLabel = k => { const l = parseKey(k).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }); return l.charAt(0).toUpperCase() + l.slice(1); };
 const openDayMenu = k => { dmK = k; const d = day(k);
   $('#dmT').textContent = dLabel(k);
-  $('#dmOff').innerHTML = d.off ? '<span>☀️</span>Retirer le JOUR OFF' : '<span>🌴</span>Mettre en JOUR OFF';
+  $('#dmOff').classList.toggle('hidden', !d.off);
+  $('#dmCats').innerHTML = Object.entries(OFFC).map(([id, o]) => `<button class="dmc ${d.off === id ? 'on' : ''}" data-c="${id}" style="color:${o[1]};background:rgba(${o[2]},.13)">${o[0]}</button>`).join('');
+  $$('#dmCats [data-c]').forEach(b => b.onclick = () => { const dd = day(dmK); dd.off = b.dataset.c; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderSession(); sfx.ok(); buzz('success'); toast(OFFC[b.dataset.c][0]); });
   openOv('dayMenu'); sfx.tap(); buzz('medium'); };
-$('#histList').addEventListener('click', e => { const row = e.target.closest('.hrow[data-k]'); if (row) openDayMenu(row.dataset.k); });
-$('#dmOff').onclick = () => { const d = day(dmK); if (d.off) delete d.off; else d.off = true; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderSession();
-  sfx.ok(); buzz('success'); toast(d.off ? '🌴 Jour off' : 'Jour off retiré'); };
+$('#histList').addEventListener('click', e => { const row = e.target.closest('[data-k]'); if (row) openDayMenu(row.dataset.k); });
+$('#dmOff').onclick = () => { const d = day(dmK); delete d.off; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderSession(); sfx.ok(); buzz('success'); toast('Jour off retiré'); };
 $('#dmDel').onclick = async () => { if (!(await confirmSheet('Supprimer les stats du jour ?', `${dLabel(dmK)} : poids, pas, repas et séance seront effacés.`, { yes:'Supprimer' }))) return;
   delete S.days[dmK]; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderToday(); sfx.no(); buzz('heavy'); toast('Jour supprimé'); };
 let deW = null;
