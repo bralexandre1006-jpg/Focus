@@ -1254,6 +1254,9 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 146px)}
 .wex.cur .wnow{display:inline-block}
 .wex.complete .wex-i{background:var(--ok)}
 .wchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.wchips .wcfgc{color:#9FD4FF;background:rgba(90,184,255,.12)}
+.wset.done .wnb{background:rgba(61,220,132,.13)!important;color:var(--ok)}
+.wset.done .wnb.has{color:var(--acc)}
 .wchips span{font-size:13px;font-weight:800;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06);color:#D9D9E2}
 .wtip{font-size:14px;color:#C9C9D4;background:rgba(255,255,255,.04);border-radius:12px;padding:9px 12px;margin:-2px 0 10px;line-height:1.4}
 .wcfg svg{margin-top:13px}
@@ -2437,7 +2440,7 @@ const renderQuick = () => {
   const shown = qAll || q ? mine.slice(0, 30) : mine.slice(0, 5);
   let html = '';
   if (shown.length) html += `<div class="flist"><div class="fh">${q ? 'Tes aliments' : 'Tes derniers aliments'}</div>${shown.map(([k, f]) => `<div class="fitem">
-      <button class="fpick" data-f="${esc(k)}"><b>${esc(f.name)}</b><small>${fmt(f.kcal)} kcal / 100 g${f.lastG ? ` · la dernière fois ${fmt(f.lastG)} g` : ''}</small></button>
+      <button class="fpick" data-f="${esc(k)}"><b>${esc(f.name)}</b><small>${f.tot ? `${fmt(f.kcal)} kcal · repas entier` : `${fmt(f.kcal)} kcal / 100 g${f.lastG ? ` · la dernière fois ${fmt(f.lastG)} g` : ''}`}</small></button>
       <button class="fdel" data-fd="${esc(k)}" aria-label="Retirer de la liste">✕</button></div>`).join('')}
     ${!q && !qAll && mine.length > 5 ? `<button class="fmore" id="qMore">Voir les ${mine.length} aliments</button>` : ''}</div>`;
   if (base.length) html += `<div class="flist"><div class="fh">Base Focus</div>${base.map(b => `<div class="fitem">
@@ -2457,9 +2460,9 @@ const renderQuick = () => {
   renderQRes();
 };
 const fillFood = f => {
-  setQMode(false); $('#qName').value = f.name; $('#qKcal').value = s1(f.kcal); $('#qP').value = s1(f.p); $('#qC').value = s1(f.c); $('#qF').value = s1(f.f);
+  setQMode(!!f.tot); $('#qName').value = f.name; $('#qKcal').value = s1(f.kcal); $('#qP').value = s1(f.p); $('#qC').value = s1(f.c); $('#qF').value = s1(f.f);
   $('#qGrams').value = f.lastG ? String(f.lastG).replace('.', ',') : '100';
-  renderQuick(); setTimeout(() => { $('#qGrams').focus(); $('#qGrams').select(); }, 250);
+  renderQuick(); if (!f.tot) setTimeout(() => { $('#qGrams').focus(); $('#qGrams').select(); }, 250);
 };
 const pickFood = k => { const f = S.foods[k]; if (!f) return; fillFood(f); sfx.tap(); buzz(); };
 $('#qName').addEventListener('input', () => { qAll = false; renderQuick(); });
@@ -2489,8 +2492,8 @@ $('#addConfirm').onclick = e => {
     if (!num($('#qKcal').value)) { sfx.no(); buzz('medium'); toast(qTot ? 'Indique les calories du repas' : 'Indique les calories pour 100 g'); $('#qKcal').focus(); return; }
     const name = $('#qName').value.trim() || (qTot ? 'Repas' : 'Aliment'), t = qTotals(), key = name.toLowerCase();
     entry = { id:uid(), slot:addSlot, name, portions:1, grams:t.g, kcal:t.kcal, p:t.p, c:t.c, f:t.f };
-    if (!qTot)
-    S.foods[key] = Object.assign({}, S.foods[key] || {}, { name, kcal:num($('#qKcal').value), p:num($('#qP').value), c:num($('#qC').value), f:num($('#qF').value), last:Date.now(), lastG:t.g });
+    S.foods[key] = qTot ? { ...(S.foods[key] || {}), name, kcal:t.kcal, p:t.p, c:t.c, f:t.f, tot:true, last:Date.now(), lastG:null }
+      : Object.assign({}, S.foods[key] || {}, { name, kcal:num($('#qKcal').value), p:num($('#qP').value), c:num($('#qC').value), f:num($('#qF').value), tot:false, last:Date.now(), lastG:t.g });
   }
   d.meals.push(entry); syncCalories(d); save();
   closeOv('addModal'); renderNutrition(); sfx.ok(); buzz('success'); toast(`+${fmt(entry.kcal)} kcal`);
@@ -2509,7 +2512,7 @@ const renderFoods = () => {
   if (!list.length) { el.innerHTML = '<div class="empty">Aucun aliment trouvé</div>'; return; }
   el.innerHTML = list.map(([k,f]) => `<div class="fitem2">
       <div class="fi"><b>${esc(f.name)}${scanned.has(k) ? '<span class="tag">Scanné</span>' : ''}</b>
-      <small>${fmt(f.kcal)} kcal · P ${f1(f.p || 0)} · G ${f1(f.c || 0)} · L ${f1(f.f || 0)} <em>/ 100 g</em>${f.pw ? ` · 1 pièce = ${fmt(f.pw)} g` : ''}</small></div>
+      <small>${fmt(f.kcal)} kcal · P ${f1(f.p || 0)} · G ${f1(f.c || 0)} · L ${f1(f.f || 0)} <em>${f.tot ? 'repas entier' : '/ 100 g'}</em>${f.pw ? ` · 1 pièce = ${fmt(f.pw)} g` : ''}</small></div>
       <button class="fdel" data-fk="${esc(k)}" aria-label="Supprimer">✕</button></div>`).join('');
   $$('#foodList2 [data-fk]').forEach(b => b.onclick = async () => {
     const f = S.foods[b.dataset.fk]; if (!f) return;
@@ -3300,7 +3303,7 @@ const renderWkGym = (isTD, d) => {
   const el = $('#wkGym'); if (!el || typeof S.routines === 'undefined') return;
   const T = today(), gw = (S.workouts || []).filter(w => key(new Date(w.start)) === T); let h = '';
   if (S.activeWo) h += `<button class="wcta live" data-cta="resume"><span class="ci">${DBI}</span><span class="ct"><b>Reprendre ${esc(S.activeWo.name)}</b><small id="ctaT">${fmtClock(Date.now() - S.activeWo.start)} · ${woDoneCount(S.activeWo)}</small></span><span class="ca">${ARR}</span></button>`;
-  gw.forEach((w, i) => h += `<button class="wgym" data-gw="${w.id}" style="animation-delay:${i * .06}s"><span class="gi">${DBI}</span><span class="gt"><b>${esc(w.name)}</b><small>${fmtDur(w.min)} · ${woSets(w)} séries</small></span><span class="gv">${fmtKg(woVol(w))}</span></button>`);
+  gw.forEach((w, i) => h += `<button class="wgym" data-gw="${w.id}" style="animation-delay:${i * .06}s"><span class="gi">${DBI}</span><span class="gt"><b>${esc(w.name)}</b><small>${fmtDur(w.min)} · ${woSets(w)} séries</small></span></button>`);
   const nr = nextRoutine();
   if (!S.activeWo && !gw.length && nr && isTD && !d.off) h += `<button class="wcta" data-cta="start"><span class="ci">${DBI}</span><span class="ct"><b>Lancer ma séance</b></span><span class="ca">${ARR}</span></button>`;
   el.innerHTML = h;
@@ -3532,7 +3535,7 @@ const startTick = () => { clearInterval(woTick); if (!S.activeWo && !rest) retur
 const deltaOf = (st, prev, uni) => {
   const kg = st.kg === '' ? null : num(st.kg), r = uni ? (st.reps === '' && st.repsR === '' ? null : num(st.reps) + num(st.repsR)) : (st.reps === '' ? null : num(st.reps));
   if (kg == null && r == null) return '';
-  if (!prev) return '<span class="wd nw">Nouveau</span>';
+  if (!prev) return '';
   const pk = num(prev.kg), pr = uni ? num(prev.reps) + num(prev.repsR) : num(prev.reps), k = kg ?? pk, rr = r ?? pr;
   if (k !== pk) return `<span class="wd ${k > pk ? 'up' : 'dn'}">${k > pk ? '+' : '−'}${kgTxt(Math.abs(k - pk))} kg</span>`;
   if (rr !== pr) return `<span class="wd ${rr > pr ? 'up' : 'dn'}">${rr > pr ? '+' : '−'}${Math.abs(rr - pr)} rép</span>`;
@@ -3551,10 +3554,8 @@ const renderWo = () => {
     const cols = e.uni ? '<span>Kg</span><span>Gauche</span><span>Droite</span>' : '<span>Kg</span><span>Rép.</span>';
     return `<div class="wex" data-e="${ei}" style="--c:${catColor(e.cat)};animation-delay:${Math.min(ei * .05, .4)}s">
       <div class="wex-h"><span class="wex-i">${ei + 1}</span><div><b>${esc(e.name)}</b><span class="wcat">${esc(e.cat)}</span><em class="wnow">En cours</em></div><span class="wdone">✓</span></div>
-      <div class="wchips"><span>${e.target} série${e.target > 1 ? 's' : ''}</span><span>${e.repMin && e.repMax && e.repMin !== e.repMax ? `${e.repMin}–${e.repMax}` : (e.repMax || e.repMin || '?')} rép.${e.uni ? ' / côté' : ''}</span>${e.rest ? `<span>⏱ ${fmtRest(e.rest)}</span>` : ''}</div>
+      <div class="wchips"><span>${e.target} série${e.target > 1 ? 's' : ''}</span><span>${e.repMin && e.repMax && e.repMin !== e.repMax ? `${e.repMin}–${e.repMax}` : (e.repMax || e.repMin || '?')} rép.${e.uni ? ' / côté' : ''}</span>${e.rest ? `<span>⏱ ${fmtRest(e.rest)}</span>` : ''}${e.cfg ? `<span class="wcfgc">⚙ ${esc(e.cfg)}</span>` : ''}</div>
       ${e.note ? `<div class="wtip">${esc(e.note)}</div>` : ''}
-      <label class="wcfg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
-        <textarea class="wcfg-t" rows="1" placeholder="Réglages machine (siège, dossier…)">${esc(e.cfg || '')}</textarea></label>
       <div class="wrow wlab ${e.uni ? 'uni' : ''}"><span></span>${cols}<span></span><span></span></div>
       ${e.sets.map((st, si) => { const p = prev && prev[si];
         return `<div class="wset ${st.done ? 'done' : ''}" data-s="${si}"><div class="wrow ${e.uni ? 'uni' : ''}">
@@ -3568,9 +3569,6 @@ const renderWo = () => {
       <div class="wex-f"><button data-add="1">+ Série</button>${e.sets.length > 1 ? '<button data-del="1">Retirer la dernière</button>' : ''}</div>
     </div>`; }).join('') + `<button class="wo-quit" id="woQuit">${woEdit ? 'Annuler les modifications' : 'Abandonner la séance'}</button>`;
   $$('#woBody .wex').forEach(box => { const e = w.ex[+box.dataset.e], prev = lastSetsFor(e.name, w.id);
-    const ct = box.querySelector('.wcfg-t'); grow(ct);
-    ct.oninput = () => { e.cfg = ct.value; grow(ct); woSave(); };
-    ct.onchange = () => { if (woEdit) return; const r = S.routines.find(x => x.id === w.rid), re = r && r.ex.find(x => exKey(x.name) === exKey(e.name)); if (re) { re.cfg = ct.value.trim(); save(); } };
     box.querySelectorAll('.wset').forEach(row => { const si = +row.dataset.s, st = e.sets[si], p = prev && prev[si];
       row.querySelectorAll('.wi').forEach(inp => {
         inp.oninput = () => { st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); autoNext(inp, p, e); };
@@ -3825,7 +3823,7 @@ const renderGstats = () => {
   const rows = Object.entries(exs).map(([k, x]) => { const bn = bestSet(x.sets), bp = before[k] ? bestSet(before[k]) : null; return { k, ...x, bn, d: bp ? bn.e - bp.e : null }; })
     .sort((x, y) => (y.d ?? -999) - (x.d ?? -999));
   $('#gsEx').innerHTML = rows.length ? rows.map(r => `<button class="gex" data-x="${esc(r.k)}"><i style="background:${catColor(r.cat)}"></i><div class="gex-n"><b>${esc(r.name)}</b><small>Meilleure série ${kgTxt(r.bn.kg)} kg × ${r.bn.reps} · 1RM estimé ${kgTxt(r.bn.e)} kg</small></div>
-      ${r.d == null ? '<span class="wd nw">Nouveau</span>' : Math.abs(r.d) < .05 ? '<span class="wd eq">=</span>' : `<span class="wd ${r.d > 0 ? 'up' : 'dn'}">${r.d > 0 ? '+' : '−'}${kgTxt(Math.abs(r.d))} kg</span>`}</button>`).join('')
+      ${r.d == null ? '' : Math.abs(r.d) < .05 ? '<span class="wd eq">=</span>' : `<span class="wd ${r.d > 0 ? 'up' : 'dn'}">${r.d > 0 ? '+' : '−'}${kgTxt(Math.abs(r.d))} kg</span>`}</button>`).join('')
     : '<div class="empty" style="padding:12px 0">Lance une routine pour suivre ta progression</div>';
   $$('#gsEx [data-x]').forEach(b => b.onclick = () => openExStats(b.dataset.x));
 };
