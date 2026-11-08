@@ -1,0 +1,97 @@
+name: Construire APK Focus
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Preparer le projet
+        run: |
+          mkdir -p www assets
+          cp index.html www/index.html
+          npm init -y
+          npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app @capacitor-mlkit/barcode-scanning
+          npx cap init Focus com.alexandre.focus --web-dir www
+          npx cap add android
+          cp StepCounterPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
+          if [ -f MidnightReceiver.java ]; then cp MidnightReceiver.java android/app/src/main/java/com/alexandre/focus/; fi
+          cp FocusWidget.java android/app/src/main/java/com/alexandre/focus/
+
+      - name: Permissions Android
+        run: |
+          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />\n    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />\n</manifest>#' android/app/src/main/AndroidManifest.xml
+          sed -i 's#</application>#    <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />\n    </application>#' android/app/src/main/AndroidManifest.xml
+          if [ -f MidnightReceiver.java ]; then sed -i 's#</application>#    <receiver android:name=".MidnightReceiver" android:exported="false">\n            <intent-filter>\n                <action android:name="android.intent.action.BOOT_COMPLETED" />\n                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />\n            </intent-filter>\n        </receiver>\n    </application>#' android/app/src/main/AndroidManifest.xml; fi
+
+      - name: Widget ecran d'accueil
+        run: |
+          unzip -o widget-res.zip -d android/app/src/main/
+          sed -i 's#</application>#    <receiver android:name=".FocusWidget" android:exported="true" android:label="Focus">\n            <intent-filter>\n                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />\n            </intent-filter>\n            <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_widget_info" />\n        </receiver>\n    </application>#' android/app/src/main/AndroidManifest.xml
+
+      - name: Icone de l'app
+        continue-on-error: true
+        run: |
+          if [ -f icones-focus.zip ]; then
+            unzip -o icones-focus.zip -d assets/
+          elif [ -f icon-foreground.png ]; then
+            cp icon-only.png icon-foreground.png icon-background.png splash.png splash-dark.png assets/
+          else
+            cp icon.png assets/logo.png
+          fi
+          npx --yes @capacitor/assets generate --android --iconBackgroundColor '#0B0B0F' --iconBackgroundColorDark '#0B0B0F' --splashBackgroundColor '#0B0B0F' --splashBackgroundColorDark '#0B0B0F'
+
+      - name: Icone Android (taille finale)
+        run: |
+          if [ -f icones-android.zip ]; then
+            rm -rf android/app/src/main/res/mipmap-ldpi
+            unzip -o icones-android.zip -d android/app/src/main/
+          fi
+
+      - name: Synchroniser
+        run: npx cap sync android
+
+      - name: Enregistreur de pas Google
+        run: |
+          printf '\ndependencies {\n    implementation "com.google.android.gms:play-services-fitness:21.2.0"\n}\n' >> android/app/build.gradle
+
+      - name: Signature fixe
+        run: |
+          test -f debug.keystore
+          cat >> android/app/build.gradle <<'EOF'
+
+          android {
+              signingConfigs {
+                  debug {
+                      storeFile file("../../debug.keystore")
+                      storePassword "android"
+                      keyAlias "androiddebugkey"
+                      keyPassword "android"
+                  }
+              }
+          }
+          EOF
+
+      - name: Compiler l'APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Focus-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk

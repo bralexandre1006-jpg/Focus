@@ -148,7 +148,7 @@ button{border:0;background:none;cursor:pointer}
 
 /* tab bar */
 .tabbar{position:fixed;left:14px;right:14px;bottom:calc(var(--sb) + 14px);height:74px;border-radius:28px;
-  background:rgba(26,26,34,.84);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);
+  background:rgba(24,24,31,.97);
   border:1px solid rgba(255,255,255,.07);box-shadow:0 20px 50px rgba(0,0,0,.55);display:flex;padding:6px;z-index:50;
   transition:transform .6s var(--spring),opacity .4s}
 .tabbar.hide{transform:translateY(140%);opacity:0}
@@ -213,6 +213,7 @@ button{border:0;background:none;cursor:pointer}
 .hx-wk::before{content:"";position:absolute;width:220px;height:220px;right:-80px;top:-100px;border-radius:50%;background:radial-gradient(circle,rgba(var(--t),.25),rgba(var(--t),0) 68%);pointer-events:none}
 .hx-wk>*{position:relative}
 .hx-wk.past{--t:150,140,255}
+.hx-wk:nth-child(n+3){content-visibility:auto;contain-intrinsic-size:auto 640px;animation:none}
 .hx-h{display:flex;align-items:center;justify-content:space-between;padding:0 6px}
 .hx-h b{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#C9C9D4;display:flex;align-items:center;gap:8px}
 .hx-h b::before{content:"";width:6px;height:6px;border-radius:50%;background:rgb(var(--t));box-shadow:0 0 8px rgb(var(--t))}
@@ -243,6 +244,29 @@ button{border:0;background:none;cursor:pointer}
 .hx-s{flex:1;color:#fff}.hx-s b{font-size:15.5px}.hx-s small{font-size:10px;color:var(--mut);margin-left:3px;text-transform:uppercase;letter-spacing:.06em}
 .hx-tag{font-size:11px;font-weight:900;letter-spacing:.1em;padding:6px 10px;border-radius:99px}
 body.lite .hx-wk{border-radius:22px}
+.hx-wse{position:relative}.hx-wse em{font-style:normal;font-size:10.5px;font-weight:800;margin-left:3px}
+.hx-wse em.wdn{color:var(--ok)}.hx-wse em.wup{color:var(--bad)}
+.hx-mini .hx-wse b{font-size:13.5px;letter-spacing:-.02em}
+.strec{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:-2px 0 10px;padding:9px 12px;border-radius:14px;background:rgba(215,255,58,.08);border:1px solid rgba(215,255,58,.15)}
+.strec span{font-size:11px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+.strec b{font-size:17px}.strec small{color:var(--mut);font-size:12px;margin-left:auto}
+.wsug{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin:0 0 10px;padding:10px 12px;border-radius:14px;background:linear-gradient(120deg,rgba(215,255,58,.14),rgba(215,255,58,.04));border:1px solid rgba(215,255,58,.2)}
+.wsug span{font-size:11px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+.wsug b{font-size:17px}.wsug small{flex-basis:100%;font-size:12px;color:var(--mut)}
+.lnsm{fill:none;stroke:#fff;stroke-opacity:.55;stroke-width:2;stroke-dasharray:5 5;stroke-linecap:round}
+.weta{font-size:13px;color:var(--mut);margin:4px 0 10px;line-height:1.4}.weta b{color:#fff}
+.recbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.recbtns .btn{font-size:14px;padding:0 8px}
+.accents{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.accents button{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--a1),var(--a2));transition:transform .3s var(--spring),box-shadow .2s}
+.accents button.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--a1);transform:scale(1.06)}
+.bkinfo{font-size:13px;color:var(--mut);margin-top:12px;line-height:1.4}.bkinfo b{color:#fff}
+.nv{margin-bottom:14px}.nv h5{font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.nv li{list-style:none;position:relative;padding:9px 12px 9px 30px;margin-bottom:6px;border-radius:13px;background:var(--card);font-size:15px;line-height:1.35;animation:rise .4s var(--ease) both}
+.nv li::before{content:"";position:absolute;left:12px;top:15px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.mo-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.mo-g div{background:var(--card);border-radius:16px;padding:11px 13px}.mo-g small{display:block;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}.mo-g b{font-size:21px;letter-spacing:-.03em}.mo-g em{font-style:normal;font-size:12px;color:var(--mut);display:block}
+.mo-pr{background:var(--card);border-radius:16px;padding:10px 13px}.mo-pr h5{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.mo-pr div{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line);font-size:14px}.mo-pr div:first-of-type{border-top:0}
 #deC:disabled{opacity:.45}
 #deWk{margin-bottom:0}
 .hrow.off .hd b{color:#7FD8C4}
@@ -621,8 +645,7 @@ body.lite .mtog .chev{width:17px;height:17px}
 .c-steps{--tint:215,255,58}.c-wgt{--tint:107,211,110}.c-prog{--tint:184,140,255}.c-wk{--tint:120,150,255}.c-nut{--tint:255,120,74}
 body.lite .card{background:linear-gradient(150deg,rgba(var(--tint),.13) 0%,rgba(var(--tint),.03) 45%,#16161C 100%);border:1px solid rgba(var(--tint),.12);box-shadow:0 8px 24px rgba(0,0,0,.25)}
 body.lite .card::before{content:"";position:absolute;width:190px;height:190px;right:-70px;top:-80px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(var(--tint),.22),rgba(var(--tint),0) 68%);animation:drift 9s ease-in-out infinite alternate}
-body.lite .card:nth-child(even)::before{animation-duration:11s;animation-direction:alternate-reverse}
+  background:radial-gradient(circle,rgba(var(--tint),.22),rgba(var(--tint),0) 68%)}
 body.lite .card>*{position:relative}
 body.lite .card>.badge{position:absolute}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-50px,36px) scale(1.3)}}
@@ -965,7 +988,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .rte-lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 5px 4px}
 .rte-ta,.wcfg-t,.note-ta{width:100%;display:block;resize:none;border:2px solid transparent;outline:0;background:var(--card2);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;color:var(--txt);line-height:1.4;overflow:hidden;min-height:48px;transition:border-color .2s}
 .rte-ta:focus,.wcfg-t:focus,.note-ta:focus{border-color:var(--acc)}
-#catModal,#noteModal,#exModal,#restModal,#rtPick,#dayMenu,#dayEdit{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
+#catModal,#noteModal,#exModal,#restModal,#rtPick,#dayMenu,#dayEdit,#newsModal,#monthModal{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
 #catModal,#noteModal,#restModal,#dayMenu,#dayEdit{top:auto;max-height:calc(100% - var(--st) - 30px)}
 .catlist{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .catit{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 14px;border-radius:14px;background:var(--card);font-size:16px;font-weight:800;text-align:left;color:var(--txt);animation:rise .3s var(--ease) both}
@@ -1462,7 +1485,7 @@ body.lite .card::before{will-change:transform}
   <!-- STATS -->
   <section class="screen" id="s-stats">
     <div class="head"><div><div class="sub">Ta progression</div><h1>Stats</h1></div></div>
-    <button class="btn full press" id="openRecap" style="margin-bottom:14px">📊 Bilan de la semaine</button>
+    <div class="recbtns"><button class="btn full press" id="openRecap">📊 Bilan de la semaine</button><button class="btn ghost full press" id="openMonth">🗓 Bilan du mois</button></div>
     <div class="seg" id="seg"><div class="si"></div>
       <button class="on" data-p="week">Semaine</button><button data-p="month">Mois</button><button data-p="year">Année</button>
     </div>
@@ -1471,6 +1494,7 @@ body.lite .card::before{will-change:transform}
       <h3><i style="background:var(--acc)"></i>Pas</h3>
       <div class="statnum"><b id="stSteps">0</b><span class="trend flat" id="trSteps">—</span></div>
       <div class="statsub" id="stStepsSub"></div>
+      <div class="strec hidden" id="stStepsRec"></div>
       <div class="chart" id="chSteps"></div>
     </div>
     <div class="card c-nut">
@@ -1483,6 +1507,7 @@ body.lite .card::before{will-change:transform}
       <h3><i style="background:var(--grn)"></i>Poids</h3>
       <div class="statnum"><b id="stW">—</b><span class="trend flat" id="trW">—</span></div>
       <div class="statsub" id="stWSub"></div>
+      <div class="weta hidden" id="stWEta"></div>
       <div class="line" id="chW"></div>
     </div>
     <div class="card c-wk">
@@ -1576,6 +1601,16 @@ body.lite .card::before{will-change:transform}
       <div class="srow"><div class="l">Focus Lite<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Interface épurée et compacte</small></div><button class="tgl" id="tLite"></button></div>
       <div class="srow" id="gradRow"><div class="l">Couleurs des cartes<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Dégradés et halos en mode Lite</small></div><button class="tgl" id="tGrad"></button></div>
     </div></div></div>
+<div class="card acc" id="accFeat">
+      <button class="acc-h"><h3><i style="background:var(--acc)"></i>Fonctionnalités</h3><small id="accFeatI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="acc-b"><div class="acc-i">
+      <div class="lbl-s" style="margin-top:0">Couleur de l'app</div>
+      <div class="accents" id="accents"></div>
+      <div id="featList"></div>
+      <div class="bkinfo" id="bkInfo"></div>
+      <button class="btn ghost full press" id="bkNow" style="margin-top:10px">Sauvegarder maintenant</button>
+      <button class="btn ghost full press" id="newsOpen" style="margin-top:10px">Voir les nouveautés</button>
+    </div></div></div>
     <div class="card">
       <h3><i style="background:var(--cal)"></i>Données</h3>
       <button class="btn ghost full press" id="exp" style="margin-bottom:10px">⬆︎ Exporter en JSON</button>
@@ -1584,7 +1619,7 @@ body.lite .card::before{will-change:transform}
       <button class="btn danger full press" id="wipe">Tout effacer</button>
     </div>
     <div style="text-align:center;color:var(--mut);font-size:13px;padding:10px 0">
-      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v1.29<br><span style="font-size:11px">Icônes : Flaticon</span>
+      <svg style="width:28px;height:28px;color:var(--mut);margin-bottom:6px"><use href="#logo"/></svg><br>Focus · v<span id="verTxt"></span><br><span style="font-size:11px">Icônes : Flaticon</span>
     </div>
   </section>
 </div>
@@ -1598,7 +1633,7 @@ body.lite .card::before{will-change:transform}
   <button class="tab" data-go="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</button>
   <button class="tab" data-go="history"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Historique</button>
 </nav>
-<svg class="gneck" id="gneck"><defs><linearGradient id="ghG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5FE3A0"/></linearGradient><linearGradient id="gnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161D"/><stop offset=".42" stop-color="#1A1C1E"/><stop offset="1" stop-color="#D3FB3F"/></linearGradient></defs><path id="gnP" fill="url(#gnG)"/></svg>
+<svg class="gneck" id="gneck"><defs><linearGradient id="ghG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#7BE07E"/></linearGradient><linearGradient id="gnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161D"/><stop offset=".42" stop-color="#1A1C1E"/><stop offset="1" stop-color="#D3FB3F"/></linearGradient></defs><path id="gnP" fill="url(#gnG)"/></svg>
 <nav class="gymbar" id="gymbar">
   <div class="tab-ind" id="gInd"></div>
   <button class="gtab" data-go="glog"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Historique</button>
@@ -1787,6 +1822,23 @@ body.lite .card::before{will-change:transform}
     <button class="press rest-x" id="restX" aria-label="Passer">×</button></div>
 </div>
 
+<div class="modal" id="newsModal">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4 id="newsT">Nouveautés</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody" id="newsBody"></div>
+  <div class="mfoot"><button class="btn full press" id="newsOk">C'est parti</button></div>
+</div>
+
+<div class="modal" id="monthModal">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4>Bilan du mois</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody">
+    <div class="pnav" style="margin:0 0 12px"><button id="mPrev" aria-label="Mois précédent"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><b id="mLbl"></b><button id="mNext" aria-label="Mois suivant"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>
+    <div id="monthBody"></div>
+  </div>
+  <div class="mfoot"><button class="btn full press" id="mShare">Partager le bilan</button></div>
+</div>
+
 <div class="modal dmenu" id="dayMenu">
   <div class="mgrab"></div>
   <div class="mhead"><h4 id="dmT">Jour</h4><button class="x press" data-close>×</button></div>
@@ -1862,7 +1914,6 @@ body.lite .card::before{will-change:transform}
     <label class="field" style="margin-bottom:12px"><input id="rtName" placeholder="Nom (ex : Séance Hypertrophie)"></label>
     <div id="rtEx"></div>
     <button class="btn ghost full press" id="rtAddEx">+ Ajouter un exercice</button>
-    <datalist id="exNames"></datalist>
   </div>
   <div class="mfoot"><div style="display:flex;gap:10px">
     <button class="btn danger press hidden" id="rtDel">Supprimer</button>
@@ -1920,7 +1971,8 @@ const load = raw => {
 };
 try { S = load(JSON.parse(localStorage.getItem(SK))); } catch(e){ S = load(null); }
 let dataVer = 0;
-const save = () => { dataVer++; try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} };
+let ACC1 = '#D7FF3A';
+const save = () => { dataVer++; try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} window.__qw && window.__qw(); };
 const day = (k = today()) => (S.days[k] ||= { weight:null, workout:null, calories:0, steps:0, meals:[] });
 
 /* ---------- programme : semaine en cours et objectifs effectifs ---------- */
@@ -2024,7 +2076,7 @@ document.addEventListener('touchmove', up, {passive:true});
 /* ---------- toast / burst / confirm ---------- */
 let tt;
 const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),1800); };
-const burst = (el, colors=['#D7FF3A','#3DDC84','#5AB8FF','#FF6B4A','#B88CFF']) => {
+const burst = (el, colors=[ACC1,'#3DDC84','#5AB8FF','#FF6B4A','#B88CFF']) => {
   const r = el.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
   for (let i=0;i<26;i++){
     const p = document.createElement('i'); p.className='burst';
@@ -2260,7 +2312,7 @@ $('#wDel').onclick = () => {
 /* séance : un tap sur vert ou rouge, un second tap sur le même bouton annule */
 const setWorkout = (val, el) => {
   const d = day(); d.workout = d.workout === val ? null : val; save(); renderSession();
-  if (d.workout === true) { sfx.win(); buzz('success'); burst(el || $('#wkCard'), ['#3DDC84','#D7FF3A','#ffffff','#6BD36E']); }
+  if (d.workout === true) { sfx.win(); buzz('success'); burst(el || $('#wkCard'), ['#3DDC84',ACC1,'#ffffff','#6BD36E']); }
   else if (d.workout === false) { sfx.no(); buzz('medium'); }
   else { sfx.tap(); buzz(); }
 };
@@ -2816,6 +2868,9 @@ const renderStats = () => {
   countTo($('#stSteps'), st); trendEl($('#trSteps'), st, stP);
   const G = goals(), stHit = curK.filter(k => (S.days[k] && S.days[k].steps || 0) >= G.steps).length;
   $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · objectif atteint ${stHit} j`;
+  { const rk = Object.keys(S.days).reduce((m, k) => (S.days[k].steps || 0) > (m ? S.days[m].steps || 0 : 0) ? k : m, null), el = $('#stStepsRec');
+    el.classList.toggle('hidden', !feat('stepRec') || !rk);
+    if (rk) el.innerHTML = `<span>Record perso</span><b>${fmt(S.days[rk].steps)} pas</b><small>${parseKey(rk).toLocaleDateString('fr-BE', { day:'numeric', month:'long', year:'numeric' })}</small>`; }
   const sS = series(period,'steps');
   bars($('#chSteps'), { ...sS, goal: period === 'year' ? null : G.steps, kind:'steps', period, restore: fmt(st), numEl:$('#stSteps'), subEl:$('#stStepsSub'), trEl:$('#trSteps') });
   const ca = sumField(curK,'calories'), caP = sumField(prevK,'calories');
@@ -2861,10 +2916,29 @@ const renderWeightStats = () => {
   let d = `M${pts[0][0]},${pts[0][1]}`;
   for (let i=1;i<pts.length;i++){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i], cx=(x0+x1)/2; d+=` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
   const r = vals.length > 40 ? 3 : vals.length > 15 ? 4 : 5;
+  let smD = '';
+  { const allW = Object.keys(S.days).filter(k => S.days[k].weight).sort(), eta = $('#stWEta');
+    const avg7 = k => { const t = parseKey(k).getTime(), v = allW.filter(x => { const u = parseKey(x).getTime(); return u <= t && u > t - 7 * 864e5; }).map(x => S.days[x].weight); return v.reduce((a, b) => a + b, 0) / v.length; };
+    if (feat('smooth') && vals.length >= 3) {
+      const sp = ks.map((k, i) => [pts[i][0], pt + (1 - (avg7(k) - mn) / (mx - mn)) * (H - pt - pb)]);
+      smD = `M${sp[0][0]},${sp[0][1]}`; for (let i = 1; i < sp.length; i++) { const [x0, y0] = sp[i - 1], [x1, y1] = sp[i], cx = (x0 + x1) / 2; smD += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
+    }
+    const G2 = goals(), rec = allW.filter(k => parseKey(k).getTime() > Date.now() - 35 * 864e5);
+    let txt = '';
+    if (feat('smooth') && G2.target && rec.length >= 4) {
+      const xs = rec.map(k => parseKey(k).getTime() / 864e5), ys = rec.map(avg7), mxx = xs.reduce((a, b) => a + b) / xs.length, myy = ys.reduce((a, b) => a + b) / ys.length;
+      const sl = xs.reduce((a, x, i) => a + (x - mxx) * (ys[i] - myy), 0) / Math.max(1e-9, xs.reduce((a, x) => a + (x - mxx) ** 2, 0)), curV = ys.at(-1), gap = G2.target - curV;
+      if (Math.abs(gap) < .15) txt = `<b>Objectif ${f1(G2.target)} kg atteint</b>`;
+      else if (sl && Math.sign(sl) === Math.sign(gap)) { const dd = gap / sl; if (dd < 730) { const dt = new Date(Date.now() + dd * 864e5);
+        txt = `Moyenne 7 j : <b>${f1(curV)} kg</b> · à ce rythme, <b>${f1(G2.target)} kg vers le ${dt.toLocaleDateString('fr-BE', { day:'numeric', month:'long', year: dt.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined })}</b>`; } }
+      else txt = `Moyenne 7 j : <b>${f1(curV)} kg</b> · pas encore de tendance vers ${f1(G2.target)} kg`;
+    }
+    eta.innerHTML = txt; eta.classList.toggle('hidden', !txt);
+  }
   el.innerHTML = `<svg class="wsvg" viewBox="0 0 ${W} ${H}">
     <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6BD36E" stop-opacity=".3"/><stop offset="1" stop-color="#6BD36E" stop-opacity="0"/></linearGradient></defs>
     <path d="${d} L${pts.at(-1)[0]},${H} L${pts[0][0]},${H} Z" fill="url(#wg)"/>
-    <path class="ln" d="${d}"/>
+    <path class="ln" d="${d}"/>${smD ? `<path class="lnsm" d="${smD}"/>` : ''}
     <line id="wGuide" x1="0" x2="0" y1="4" y2="${H}" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0"/>
     ${pts.map((p,i) => `<circle class="wdot" style="animation-delay:${Math.min(1.2, .3 + i*.03)}s" cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#6BD36E" stroke="#18181F" stroke-width="2"/>`).join('')}
     <circle id="wHi" cx="0" cy="0" r="8" fill="#6BD36E" stroke="#fff" stroke-width="3" opacity="0"/>
@@ -2941,9 +3015,11 @@ const renderHistory = () => {
     const lbl = cur ? 'Cette semaine' : W.w === wkOf(addDays(curW, -1)) ? 'Semaine passée' : `${a.getDate()} ${a.toLocaleDateString('fr-BE', { month:'short' }).replace('.', '')} – ${b.getDate()} ${b.toLocaleDateString('fr-BE', { month:'short' }).replace('.', '')}`;
     const ok = plan && done >= plan;
     return `<div class="hx-wk ${cur ? '' : 'past'}" style="animation-delay:${Math.min(wi, 4) * .06}s"><div class="hx-h"><b>${lbl}</b><span class="hx-pill ${ok ? 'g' : ''}">${plan ? `${done}/${plan} SÉANCE${plan > 1 ? 'S' : ''}` : 'REPOS'}</span></div>
-      <div class="hx-hero"><div><b>${fmt(avg(stp))}</b><small>pas / jour</small></div>${hSpark(sv, cur ? '#D7FF3A' : '#A99BFF', 'hsg' + W.w)}</div>
+      <div class="hx-hero"><div><b>${fmt(avg(stp))}</b><small>pas / jour</small></div>${hSpark(sv, cur ? ACC1 : '#A99BFF', 'hsg' + W.w)}</div>
       <div class="hx-mini"><span>Kcal / jour<b>${cal.length ? fmt(avg(cal)) : '—'}</b></span><span>Prot / jour<b>${pr.length ? Math.round(avg(pr)) + ' g' : '—'}</b></span>
-        <span>Poids<b class="${wd0 > 0 ? 'wup' : wd0 < 0 ? 'wdn' : ''}">${wd0 == null ? '—' : (wd0 > 0 ? '+' : wd0 < 0 ? '−' : '±') + f1(Math.abs(wd0)) + ' kg'}</b></span></div>
+        ${feat('hxW') && wk.length > 1 ? (() => { const a0 = S.days[wk[0]].weight, a1 = S.days[wk.at(-1)].weight, dd = Math.round((a1 - a0) * 10) / 10;
+          return `<span class="hx-wse">Poids <em class="${dd > 0 ? 'wup' : dd < 0 ? 'wdn' : ''}">${dd > 0 ? '+' : dd < 0 ? '−' : '±'}${f1(Math.abs(dd))}</em><b>${f1(a0)} → ${f1(a1)}</b></span>`; })()
+        : `<span>Poids<b class="${wd0 > 0 ? 'wup' : wd0 < 0 ? 'wdn' : ''}">${wd0 == null ? '—' : (wd0 > 0 ? '+' : wd0 < 0 ? '−' : '±') + f1(Math.abs(wd0)) + ' kg'}</b></span>`}</div>
       ${W.ks.map(row).join('')}</div>`; };
   const tok = (renderHistory.tok = (renderHistory.tok || 0) + 1), all = weeks.slice(0, 60);
   el.innerHTML = all.slice(0, 4).map(week).join('');
@@ -3338,6 +3414,14 @@ const woSets = w => w.ex.reduce((t, e) => t + e.sets.length, 0);
 const e1rm = st => { const r = Math.max(st.reps || 0, st.repsR || 0), k = num(st.kg); return r ? k * (1 + r / 30) : k; };
 const fmtKg = v => v >= 1000 ? f1(v / 1000) + ' t' : fmt(v) + ' kg';
 const kgTxt = v => String(Math.round(num(v) * 10) / 10).replace('.', ',');
+const suggestFor = (e, skipId) => {
+  const prev = lastSetsFor(e.name, skipId); if (!prev || !prev.length) return null;
+  const top = e.repMax || e.repMin, lo = e.repMin || top; if (!top) return null;
+  const kg = Math.max(...prev.map(st => num(st.kg))), at = prev.filter(st => num(st.kg) === kg), reps = st => e.uni ? Math.min(num(st.reps), num(st.repsR || st.reps)) : num(st.reps);
+  if (!kg) return null;
+  if (at.every(st => reps(st) >= top)) { const inc = kg >= 10 ? 2.5 : 1; return { kg: kg + inc, reps: lo, up: true, inc }; }
+  return { kg, reps: Math.min(top, Math.max(...at.map(reps)) + 1), up: false };
+};
 const lastSetsFor = (name, skipId) => {
   const k = exKey(name);
   for (let i = S.workouts.length - 1; i >= 0; i--) { const w = S.workouts[i]; if (w.id === skipId) continue;
@@ -3420,15 +3504,13 @@ const openRoutine = id => {
   rdraft.ex.forEach(e => { if (e.rest == null) e.rest = 90; if (e.cfg == null) e.cfg = ''; });
   $('#rtTitle').textContent = r ? 'Modifier la routine' : 'Nouvelle routine';
   $('#rtName').value = rdraft.name; $('#rtDel').classList.toggle('hidden', !r); $('#rtExp').classList.toggle('hidden', !r);
-  const names = new Set(); S.workouts.forEach(w => w.ex.forEach(e => names.add(e.name))); S.routines.forEach(x => x.ex.forEach(e => names.add(e.name)));
-  $('#exNames').innerHTML = [...names].map(n => `<option value="${esc(n)}"></option>`).join('');
   renderRtEx(); openOv('rtModal'); sfx.tap(); buzz();
 };
 const CHEV = '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const renderRtEx = () => {
   $('#rtEx').innerHTML = rdraft.ex.map((e, i) => `<div class="rte" data-i="${i}">
     <div class="rte-top"><span class="rte-n">${i + 1}</span>
-      <label class="field"><input data-k="name" list="exNames" placeholder="Exercice (ex : Développé couché)" value="${esc(e.name)}"></label></div>
+      <label class="field"><input data-k="name" autocomplete="off" placeholder="Exercice (ex : Développé couché)" value="${esc(e.name)}"></label></div>
     <button class="rte-cat" data-catbtn="1" style="--c:${catColor(e.cat)}"><i></i><span>${esc(e.cat)}</span>${CHEV}</button>
     <div class="rte-row">
       <div class="rte-f"><small>Séries</small><div class="stp"><button data-st="-1">−</button><b>${e.sets}</b><button data-st="1">+</button></div></div>
@@ -3445,9 +3527,6 @@ const renderRtEx = () => {
   $$('#rtEx .rte').forEach(box => { const i = +box.dataset.i, e = rdraft.ex[i];
     box.querySelectorAll('input,textarea').forEach(inp => inp.oninput = () => { e[inp.dataset.k] = inp.dataset.k.startsWith('rep') ? (parseInt(inp.value) || null) : inp.value; if (inp.tagName === 'TEXTAREA') grow(inp); });
     box.querySelectorAll('textarea').forEach(grow);
-    box.querySelector('[data-k="name"]').onchange = ev => { const n = ev.target.value.trim(); let src = null;
-      S.routines.forEach(r => r.ex.forEach(x => { if (exKey(x.name) === exKey(n)) src = x; }));
-      if (src && src !== e) { e.cat = src.cat; e.uni = src.uni; e.cfg = e.cfg || src.cfg || ''; e.rest = src.rest ?? e.rest; renderRtEx(); } };
     box.querySelector('[data-catbtn]').onclick = () => openCatPicker(e.cat, c => { e.cat = c; renderRtEx(); });
     box.querySelectorAll('[data-st]').forEach(b => b.onclick = () => { e.sets = Math.max(1, Math.min(12, e.sets + +b.dataset.st)); b.parentNode.querySelector('b').textContent = e.sets; sfx.tap(); buzz(); });
     box.querySelector('[data-rs]').onclick = () => openRestPick(e.rest || 0, v => { e.rest = v; box.querySelector('[data-rs] b').textContent = v ? fmtRest(v) : 'Aucun'; });
@@ -3554,6 +3633,7 @@ const renderWo = () => {
     const cols = e.uni ? '<span>Kg</span><span>Gauche</span><span>Droite</span>' : '<span>Kg</span><span>Rép.</span>';
     return `<div class="wex" data-e="${ei}" style="--c:${catColor(e.cat)};animation-delay:${Math.min(ei * .05, .4)}s">
       <div class="wex-h"><span class="wex-i">${ei + 1}</span><div><b>${esc(e.name)}</b><span class="wcat">${esc(e.cat)}</span><em class="wnow">En cours</em></div><span class="wdone">✓</span></div>
+      ${(() => { const sg = !woEdit && feat('overload') ? suggestFor(e, w.id) : null; return sg ? `<div class="wsug"><span>Objectif du jour</span><b>${kgTxt(sg.kg)} kg × ${sg.reps}</b><small>${sg.up ? '+' + kgTxt(sg.inc) + ' kg : tu as atteint le haut de ta fourchette' : '+1 rép. par rapport à la dernière fois'}</small></div>` : ''; })()}
       <div class="wchips"><span>${e.target} série${e.target > 1 ? 's' : ''}</span><span>${e.repMin && e.repMax && e.repMin !== e.repMax ? `${e.repMin}–${e.repMax}` : (e.repMax || e.repMin || '?')} rép.${e.uni ? ' / côté' : ''}</span>${e.rest ? `<span>⏱ ${fmtRest(e.rest)}</span>` : ''}${e.cfg ? `<span class="wcfgc">⚙ ${esc(e.cfg)}</span>` : ''}</div>
       ${e.note ? `<div class="wtip">${esc(e.note)}</div>` : ''}
       <div class="wrow wlab ${e.uni ? 'uni' : ''}"><span></span>${cols}<span></span><span></span></div>
@@ -3598,12 +3678,12 @@ const autoNext = (inp, p, e) => {
   if (f === 'kg') {
     if (!p) return; const pk = num(p.kg), pd = /[.,]/.test(kgTxt(pk)), m = v.match(/^(\d+)(?:[.,](\d*))?$/); if (!m) return;
     if (m[2]) { go(); return; } if (/[.,]$/.test(v)) return;
-    if (m[1].length >= String(Math.floor(pk)).length) { if (pd) anT = setTimeout(go, 900); else go(); }
+    if (m[1].length >= String(Math.floor(pk)).length) { if (pd || +m[1] * 10 <= Math.max(pk * 2.5, 20)) anT = setTimeout(go, 1200); else go(); }
     return;
   }
   if (!/^\d+$/.test(v)) return;
   const pr = p ? num(f === 'repsR' ? (p.repsR || p.reps) : p.reps) : 0, ref = pr || e.repMax || e.repMin || 10;
-  if (v.length >= String(ref).length || +v * 10 > Math.max(ref * 1.6, 30)) go(); else anT = setTimeout(go, 1300);
+  if (v.length >= 2 || +v >= 3) go(); else anT = setTimeout(go, 1500);
 };
 const markDone = (e, st, row, si, p, fromReps) => {
   if (!st.done) {
@@ -3718,7 +3798,7 @@ const showSummary = w => {
     .map((k, i) => `<div style="animation-delay:${.55 + i * .08}s"><b>${k[0]}</b><small>${k[1]}</small>${k[2] ? `<br><em style="color:${dv < 0 ? 'var(--bad)' : 'var(--ok)'}">${k[2]}</em>` : ''}</div>`).join('');
   $('#sumPR').innerHTML = prs.map((p, i) => `<div class="sprl" style="animation-delay:${.9 + i * .08}s">🏆<b>${esc(p.n)}</b><span>${kgTxt(p.b.kg)} kg × ${p.b.reps}</span></div>`).join('');
   const el = $('#woSum'); el.classList.add('on');
-  setTimeout(() => { burst($('.wsum-ck'), ['#3DDC84','#D7FF3A','#ffffff','#5AB8FF','#FFD54F']); sfx.win(); buzz('success'); }, 800);
+  setTimeout(() => { burst($('.wsum-ck'), ['#3DDC84',ACC1,'#ffffff','#5AB8FF','#FFD54F']); sfx.win(); buzz('success'); }, 800);
   if (prs.length) setTimeout(() => { burst($('#sumPR'), ['#FFD54F','#FF9F43','#fff']); tone([784, 988, 1319], .1, 'triangle', .12); }, 1300);
 };
 $('#sumOk').onclick = () => { $('#woSum').classList.remove('on'); sfx.tap(); buzz(); };
@@ -3847,6 +3927,151 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
   const byCat = {}; ws.forEach(w => w.ex.forEach(e => byCat[e.cat] = (byCat[e.cat] || 0) + e.sets.length));
   return { n: ws.length, min: ws.reduce((t, w) => t + w.min, 0), vol: ws.reduce((t, w) => t + woVol(w), 0), cats: Object.entries(byCat).sort((x, y) => y[1] - x[1]).slice(0, 3) }; };
 
+/* ---------- v1.37 : fonctionnalités ---------- */
+const APP_VER = '1.37';
+const CHANGELOG = [
+  { v:'1.37', items:[
+    'Historique : tes poids du début et de la fin de semaine dans chaque carte',
+    'Stats : ton record personnel de pas en un jour',
+    'Widget Android avec tes pas et tes calories du jour',
+    'Sauvegarde automatique de tes données chaque semaine dans Documents/Focus',
+    'Séance : l\'app te propose le poids et les reps à tenter',
+    'Poids : moyenne sur 7 jours et date estimée pour ton objectif',
+    'Bilan du mois partageable en image',
+    'Choix de la couleur de l\'app',
+    'Cette fenêtre des nouveautés à chaque mise à jour',
+    'Tout s\'active ou se désactive dans Réglages › Fonctionnalités' ] },
+  { v:'1.36', items:['Nouvel Historique par semaine avec la courbe des pas','Jours off par catégorie : vacances, malade, trop occupé, feignant','Clavier qui ne se ferme plus trop tôt pour les reps'] },
+];
+const FEATS = [
+  ['hxW','Poids début → fin','Dans les cartes des semaines de l\'historique'],
+  ['stepRec','Record de pas','Dans les stats de pas'],
+  ['widget','Widget Android','Pas et calories sur l\'écran d\'accueil'],
+  ['backup','Sauvegarde hebdo','Un fichier par semaine dans Documents/Focus'],
+  ['overload','Objectif en séance','Poids et reps proposés pour chaque exo'],
+  ['smooth','Moyenne 7 j du poids','Courbe lissée et date estimée'],
+  ['monthRec','Bilan du mois','Ouvert au début de chaque mois'],
+  ['news','Nouveautés','Fenêtre après chaque mise à jour'] ];
+function feat(k) { return !S.settings.f || S.settings.f[k] !== false; }
+const ACCENTS = { lime:['#D7FF3A','#7BE07E'], bleu:['#5AB8FF','#7C8CFF'], violet:['#B88CFF','#FF7AD9'], orange:['#FFB347','#FF6B4A'], rose:['#FF7AB8','#FFB86B'], cyan:['#4FE3D0','#5AB8FF'] };
+const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
+let accOrig = null;
+const applyAccent = () => {
+  const k = ACCENTS[S.settings.accent] ? S.settings.accent : 'lime', [c1, c2] = ACCENTS[k];
+  ACC1 = c1;
+  if (!accOrig) { if (k === 'lime') return; accOrig = { st: $$('style').map(el => [el, el.textContent]), at: [] };
+    $$('[fill],[stroke],[stop-color],[style]').forEach(el => ['fill', 'stroke', 'stop-color', 'style'].forEach(a => { const v = el.getAttribute(a); if (v && /d7ff3a|215,\s*255,\s*58|7be07e/i.test(v)) accOrig.at.push([el, a, v]); })); }
+  const rep = t => t.replace(/#d7ff3a/gi, c1).replace(/215,\s*255,\s*58/g, hexRgb(c1)).replace(/#7be07e/gi, c2).replace(/123,\s*224,\s*126/g, hexRgb(c2));
+  accOrig.st.forEach(([el, t]) => el.textContent = rep(t)); accOrig.at.forEach(([el, a, v]) => el.setAttribute(a, rep(v)));
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', '#0B0B0F');
+};
+/* widget */
+let qwT = null;
+const pushWidget = () => { if (!feat('widget') || !P.StepCounter || !P.StepCounter.setWidget) return; const d = day(), G = goals();
+  P.StepCounter.setWidget({ steps: Math.round(d.steps || 0), stepGoal: Math.round(G.steps || 0), kcal: Math.round(d.calories || 0), kcalGoal: Math.round(G.kcal || 0), date: today() }).catch(() => {}); };
+window.__qw = () => { clearTimeout(qwT); qwT = setTimeout(pushWidget, 1500); };
+/* sauvegarde hebdo */
+const doBackup = async (force) => {
+  if (!P.Filesystem) { if (force) toast('Sauvegarde disponible dans l\'app Android'); return; }
+  const name = `focus-sauvegarde-${today()}.json`, data = JSON.stringify(S);
+  for (const dir of ['DOCUMENTS', 'EXTERNAL', 'DATA']) {
+    try { await P.Filesystem.writeFile({ path: 'Focus/' + name, data, directory: dir, encoding: 'utf8', recursive: true });
+      S.backup = { at: Date.now(), dir, name }; save();
+      try { const ls = (await P.Filesystem.readdir({ path: 'Focus', directory: dir })).files.map(f => f.name || f).filter(n => /^focus-sauvegarde-/.test(n)).sort();
+        for (const old of ls.slice(0, Math.max(0, ls.length - 8))) await P.Filesystem.deleteFile({ path: 'Focus/' + old, directory: dir }); } catch(e) {}
+      if (force) { toast('Sauvegarde faite ✓'); sfx.ok(); buzz('success'); } renderFeat(); return;
+    } catch(e) {}
+  }
+  if (force) { toast('Sauvegarde impossible'); sfx.no(); }
+};
+const autoBackup = () => { if (feat('backup') && S.onboarded && (!S.backup || Date.now() - S.backup.at > 7 * 864e5)) doBackup(false); };
+/* nouveautés */
+const cmpV = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; };
+const openNews = all => { const seen = S.seenVer, list = CHANGELOG.filter(c => all || !seen || cmpV(c.v, seen) > 0).slice(0, all ? 99 : (seen ? 99 : 1));
+  $('#newsT').textContent = all ? 'Nouveautés' : `Nouveau dans la v${APP_VER}`;
+  $('#newsBody').innerHTML = list.map(c => `<div class="nv"><h5>Version ${c.v}</h5><ul>${c.items.map((t, i) => `<li style="animation-delay:${Math.min(i, 10) * .04}s">${esc(t)}</li>`).join('')}</ul></div>`).join('');
+  openOv('newsModal'); };
+$('#newsOk').onclick = () => { closeOv('newsModal'); S.seenVer = APP_VER; save(); sfx.tap(); };
+$('#newsOpen').onclick = () => openNews(true);
+/* bilan du mois */
+let moOff = 0;
+const monthData = off => {
+  const n = new Date(), a = new Date(n.getFullYear(), n.getMonth() - off, 1), b = new Date(a.getFullYear(), a.getMonth() + 1, 0), ks = eachDay(a, b).filter(k => S.days[k]);
+  const stp = ks.map(k => S.days[k].steps || 0), tot = stp.reduce((x, y) => x + y, 0), best = ks.reduce((m, k) => (S.days[k].steps || 0) > (m ? S.days[m].steps : -1) ? k : m, null);
+  const wk = ks.filter(k => S.days[k].weight), done = ks.filter(k => S.days[k].workout === true).length;
+  const aT = a.getTime(), bT = b.getTime() + 864e5, ws = (S.workouts || []).filter(w => w.start >= aT && w.start < bT);
+  const prs = []; const seen = new Set();
+  ws.forEach(w => w.ex.forEach(e => { const k = exKey(e.name); if (seen.has(k)) return; seen.add(k);
+    const inM = ws.flatMap(x => x.ex.filter(y => exKey(y.name) === k).flatMap(y => y.sets)), bef = S.workouts.filter(x => x.start < aT).flatMap(x => x.ex.filter(y => exKey(y.name) === k).flatMap(y => y.sets));
+    const bm = bestSet(inM), bb = bef.length ? bestSet(bef) : null; if (!bb || bm.e > bb.e + .05) prs.push({ name: e.name, kg: bm.kg, reps: bm.reps }); }));
+  return { a, ks, tot, avg: ks.length ? tot / ks.length : 0, best, w0: wk.length ? S.days[wk[0]].weight : null, w1: wk.length ? S.days[wk.at(-1)].weight : null, done, nWo: ws.length, prs, cal: ks.map(k => S.days[k].calories).filter(Boolean) };
+};
+const moLbl = a => { const l = a.toLocaleDateString('fr-BE', { month:'long', year:'numeric' }); return l.charAt(0).toUpperCase() + l.slice(1); };
+const renderMonth = () => { const m = monthData(moOff);
+  $('#mLbl').textContent = moLbl(m.a); $('#mNext').disabled = !moOff;
+  const dw = m.w0 != null ? Math.round((m.w1 - m.w0) * 10) / 10 : null;
+  $('#monthBody').innerHTML = !m.ks.length ? '<div class="empty">Aucune donnée ce mois-là</div>' : `<div class="mo-g">
+    <div><small>Pas</small><b>${fmt(m.tot)}</b><em>${fmt(m.avg)} / jour</em></div>
+    <div><small>Meilleur jour</small><b>${m.best ? fmt(S.days[m.best].steps) : '—'}</b><em>${m.best ? parseKey(m.best).toLocaleDateString('fr-BE', { day:'numeric', month:'long' }) : ''}</em></div>
+    <div><small>Séances</small><b>${Math.max(m.done, m.nWo)}</b><em>${m.nWo} en muscu</em></div>
+    <div><small>Poids</small><b style="color:${dw > 0 ? 'var(--bad)' : dw < 0 ? 'var(--ok)' : '#fff'}">${dw == null ? '—' : (dw > 0 ? '+' : dw < 0 ? '−' : '±') + f1(Math.abs(dw)) + ' kg'}</b><em>${m.w0 != null ? `${f1(m.w0)} → ${f1(m.w1)} kg` : ''}</em></div>
+    <div><small>Kcal / jour</small><b>${m.cal.length ? fmt(m.cal.reduce((x, y) => x + y, 0) / m.cal.length) : '—'}</b><em>${m.cal.length} jours notés</em></div>
+    <div><small>Records</small><b>${m.prs.length}</b><em>en muscu</em></div></div>
+    ${m.prs.length ? `<div class="mo-pr"><h5>Records du mois</h5>${m.prs.slice(0, 8).map(r => `<div><span>${esc(r.name)}</span><b>${kgTxt(r.kg)} kg × ${r.reps}</b></div>`).join('')}</div>` : ''}`;
+  $('#mShare').disabled = !m.ks.length; };
+const openMonth = off => { moOff = off; renderMonth(); openOv('monthModal'); sfx.tap(); buzz(); };
+$('#mPrev').onclick = () => { moOff++; renderMonth(); sfx.tap(); buzz(); };
+$('#mNext').onclick = () => { moOff = Math.max(0, moOff - 1); renderMonth(); sfx.tap(); buzz(); };
+$('#openMonth').onclick = () => openMonth(period === 'month' ? pOff : 0);
+$('#mShare').onclick = async () => {
+  const m = monthData(moOff), c = document.createElement('canvas'), W = 1080, H = 1350; c.width = W; c.height = H; const x = c.getContext('2d');
+  try { await document.fonts.ready; } catch(e) {}
+  const F = (sz, w = 800) => `${w} ${sz}px Jakarta, Roboto, sans-serif`;
+  x.fillStyle = '#0B0B0F'; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W * .85, 80, 10, W * .85, 80, 700); g.addColorStop(0, ACC1 + '55'); g.addColorStop(1, '#0B0B0F00'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = ACC1; x.font = F(34); x.fillText('FOCUS · BILAN DU MOIS', 80, 130);
+  x.fillStyle = '#fff'; x.font = F(88); x.fillText(moLbl(m.a), 80, 240);
+  const dw = m.w0 != null ? Math.round((m.w1 - m.w0) * 10) / 10 : null;
+  const tiles = [['PAS', fmt(m.tot), `${fmt(m.avg)} / jour`], ['MEILLEUR JOUR', m.best ? fmt(S.days[m.best].steps) : '—', m.best ? parseKey(m.best).toLocaleDateString('fr-BE', { day:'numeric', month:'long' }) : ''],
+    ['SÉANCES', String(Math.max(m.done, m.nWo)), `${m.nWo} en muscu`], ['POIDS', dw == null ? '—' : (dw > 0 ? '+' : dw < 0 ? '−' : '±') + f1(Math.abs(dw)) + ' kg', m.w0 != null ? `${f1(m.w0)} → ${f1(m.w1)} kg` : '']];
+  tiles.forEach((t, i) => { const tx = 80 + (i % 2) * 470, ty = 320 + Math.floor(i / 2) * 260;
+    x.fillStyle = '#18181F'; x.beginPath(); x.roundRect(tx, ty, 440, 230, 40); x.fill();
+    x.fillStyle = '#8E8E9E'; x.font = F(28); x.fillText(t[0], tx + 40, ty + 64);
+    x.fillStyle = i === 3 && dw != null ? (dw > 0 ? '#FF4D6A' : '#3DDC84') : '#fff'; x.font = F(74); x.fillText(t[1], tx + 40, ty + 150);
+    x.fillStyle = '#8E8E9E'; x.font = F(28, 700); x.fillText(t[2], tx + 40, ty + 196); });
+  x.fillStyle = '#fff'; x.font = F(40); x.fillText(m.prs.length ? `${m.prs.length} record${m.prs.length > 1 ? 's' : ''} en muscu` : 'Continue comme ça', 80, 900);
+  m.prs.slice(0, 5).forEach((r, i) => { x.fillStyle = '#C9C9D4'; x.font = F(32, 700); x.fillText(r.name.slice(0, 26), 80, 970 + i * 62); x.fillStyle = ACC1; x.textAlign = 'right'; x.fillText(`${kgTxt(r.kg)} kg × ${r.reps}`, W - 80, 970 + i * 62); x.textAlign = 'left'; });
+  const url = c.toDataURL('image/png'), name = `focus-bilan-${m.a.getFullYear()}-${String(m.a.getMonth() + 1).padStart(2, '0')}.png`;
+  try {
+    if (P.Filesystem && P.Share) { const r = await P.Filesystem.writeFile({ path: name, data: url.split(',')[1], directory: 'CACHE' }); await P.Share.share({ title: 'Mon bilan Focus', url: r.uri }); }
+    else { const a = document.createElement('a'); a.href = url; a.download = name; a.click(); }
+    sfx.ok(); buzz('success');
+  } catch(e) {}
+};
+/* réglages */
+const renderFeat = () => {
+  S.settings.f ||= {};
+  $('#accents').innerHTML = Object.entries(ACCENTS).map(([k, c]) => `<button data-a="${k}" class="${(S.settings.accent || 'lime') === k ? 'on' : ''}" style="--a1:${c[0]};--a2:${c[1]}" aria-label="${k}"></button>`).join('');
+  $$('#accents [data-a]').forEach(b => b.onclick = () => { S.settings.accent = b.dataset.a; save(); applyAccent(); renderFeat(); sfx.tap(); buzz(); rendered.history = rendered.stats = null; });
+  $('#featList').innerHTML = FEATS.map(([k, t, d]) => `<div class="srow"><div class="l">${t}<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">${d}</small></div><button class="tgl ${feat(k) ? 'on' : ''}" data-ft="${k}"></button></div>`).join('');
+  $$('#featList [data-ft]').forEach(b => b.onclick = () => { const k = b.dataset.ft; S.settings.f[k] = !feat(k); save(); b.classList.toggle('on', feat(k)); sfx.tap(); buzz();
+    if (k === 'widget' && feat(k)) pushWidget(); if (k === 'backup' && feat(k)) autoBackup(); for (const r in rendered) rendered[r] = null; });
+  $('#bkInfo').innerHTML = S.backup ? `Dernière sauvegarde : <b>${new Date(S.backup.at).toLocaleDateString('fr-BE', { day:'numeric', month:'long' })}</b> dans ${S.backup.dir === 'DATA' ? 'les données de l\'app' : 'Documents/Focus'}` : 'Aucune sauvegarde pour l\'instant';
+  $('#accFeatI').textContent = FEATS.filter(([k]) => feat(k)).length + '/' + FEATS.length;
+};
+$('#bkNow').onclick = () => doBackup(true);
+$('#verTxt').textContent = APP_VER;
+{ const rs = RENDER.settings; RENDER.settings = () => { rs(); renderFeat(); }; }
+applyAccent();
+const launchExtras = () => {
+  autoBackup(); pushWidget();
+  const prevM = (() => { const n = new Date(), a = new Date(n.getFullYear(), n.getMonth() - 1, 1); return a.getFullYear() + '-' + a.getMonth(); })();
+  if (feat('news') && S.seenVer !== APP_VER) setTimeout(() => openNews(false), 1100);
+  else if (!S.seenVer) S.seenVer = APP_VER;
+  if (feat('monthRec') && S.monthSeen !== prevM && monthData(1).ks.length >= 5 && new Date().getDate() <= 7 && !(feat('news') && S.seenVer !== APP_VER)) { S.monthSeen = prevM; save(); setTimeout(() => openMonth(1), 1300); }
+};
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { autoBackup(); pushWidget(); } });
+
 /* ---------- boot ---------- */
 let lastDay = today();
 setInterval(()=>{ if (today()!==lastDay){ lastDay=today(); RENDER[cur](); } }, 20000);
@@ -3856,7 +4081,7 @@ let booted = false;
 const boot = () => {
   if (booted) return; booted = true;
   $('#tabbar').classList.remove('hide');
-  setTimeout(moveInd, 60); renderToday(); startSteps(); scheduleAll(); syncPill(); placeBridge();
+  setTimeout(moveInd, 60); renderToday(); startSteps(); scheduleAll(); syncPill(); placeBridge(); launchExtras();
   if (LN) LN.addListener('localNotificationActionPerformed', e => { if (e && e.notification && e.notification.id === 9000) setTimeout(openRecap, 400); });
   // Ouvre le bilan une fois, le dimanche soir ou le lundi
   const n = new Date(), [ra, rb] = recapRange();

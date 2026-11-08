@@ -152,6 +152,19 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         }
     }
 
+    @PluginMethod
+    public void setWidget(PluginCall call) {
+        android.content.SharedPreferences.Editor e = getContext().getSharedPreferences(FocusWidget.PREFS, Context.MODE_PRIVATE).edit();
+        e.putInt("steps", call.getInt("steps", 0));
+        e.putInt("stepGoal", call.getInt("stepGoal", 8000));
+        e.putInt("kcal", call.getInt("kcal", 0));
+        e.putInt("kcalGoal", call.getInt("kcalGoal", 2000));
+        e.putString("date", call.getString("date", ""));
+        e.apply();
+        try { FocusWidget.push(getContext()); } catch (Throwable t) {}
+        call.resolve();
+    }
+
     /** Valeurs du compteur relevees chaque nuit a 00:00, par jour (yyyy-MM-dd). */
     @PluginMethod
     public void getSnapshots(PluginCall call) {
