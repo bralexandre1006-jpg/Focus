@@ -315,6 +315,10 @@ body.lite .hx-wk{border-radius:22px}
 .sb-prs{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:6px 16px}
 .sb-prs div{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);font-size:15px}.sb-prs div:first-child{border-top:0}
 .sb-prs b{color:#FFC44A;white-space:nowrap}
+.sb-gym{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sb-gym div{padding:14px 10px;border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.14);text-align:center}
+.sb-gym b{display:block;font-size:24px;letter-spacing:-.04em;white-space:nowrap}
+.sb-gym small{display:block;margin-top:4px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .sb-hint{text-align:center;font-size:13px;color:var(--mut);animation:sbHint 1.8s ease-in-out infinite}
 @keyframes sbHint{50%{opacity:.35}}
 .sb-sumh small{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
@@ -3998,6 +4002,7 @@ const openExStats = k => {
 };
 
 /* bilan de la semaine : partie muscu */
+const gymTiles = g => `<div class="sb-gym"><div><b>${g.n}</b><small>fois</small></div><div><b>${fmtDur(g.min)}</b><small>temps</small></div><div><b>${fmtKg(g.vol)}</b><small>volume</small></div></div>`;
 const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws = S.workouts.filter(w => w.start >= aT && w.start < bT);
   const byCat = {}; ws.forEach(w => w.ex.forEach(e => byCat[e.cat] = (byCat[e.cat] || 0) + e.sets.length));
   return { n: ws.length, min: ws.reduce((t, w) => t + w.min, 0), vol: ws.reduce((t, w) => t + woVol(w), 0), cats: Object.entries(byCat).sort((x, y) => y[1] - x[1]).slice(0, 3) }; };
@@ -4169,7 +4174,7 @@ const sbRender = () => {
   $$('#sbBars i').forEach((b, j) => b.className = j < SB.i ? 'done' : j === SB.i ? 'cur' : '');
   $('#sbHint').classList.toggle('hidden', last);
   const c = $('#sbC'); c.classList.remove('in'); void c.offsetWidth;
-  c.innerHTML = s.sum ? s.sum : `<div class="sb-wm">${s.wm || s.k}</div>${s.ic ? `<div class="sa sb-ico" style="--d:0s"><span>${s.ic}</span></div>` : ''}<div class="sa sb-k" style="--d:.04s">${s.k}</div>
+  c.innerHTML = s.sum ? s.sum : `${s.ic ? `<div class="sa sb-ico" style="--d:0s"><span>${s.ic}</span></div>` : ''}<div class="sa sb-k" style="--d:.04s">${s.k}</div>
     <h2 class="sa sb-t" style="--d:.08s">${s.t}</h2>
     ${s.big != null ? `<div class="sa sb-big" style="--d:.2s"><b data-count="${s.big}" data-dec="${s.dec || 0}" data-sign="${s.sign ? 1 : 0}">0</b><span>${s.u || ''}</span></div>` : ''}
     ${s.sub ? `<p class="sa sb-s" style="--d:.42s">${s.sub}</p>` : ''}
@@ -4238,12 +4243,12 @@ const weekStory = () => {
     sub: pwAvg ? `${wAvg < pwAvg ? '−' : wAvg > pwAvg ? '+' : '±'}${f1(Math.abs(wAvg - pwAvg))} kg par rapport à la semaine dernière` : `${ws.length} pesée${ws.length > 1 ? 's' : ''} cette semaine` });
   if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t: calHit >= calK.length * .7 ? 'Assiette maîtrisée' : 'Tes calories', big: Math.round(calAvg), u:'kcal par jour', sub:`Dans ton objectif <em class="up">${calHit} jour${calHit > 1 ? 's' : ''} sur ${calK.length}</em>.${protAvg ? ` Protéines : ${Math.round(protAvg)} g par jour${pg ? ` pour ${pg} g visés` : ''}.` : ''}` });
   if (planned || done) slides.push({ c:'184,140,255', ic:'💪', party: done >= planned && planned > 0, k:'Séances', t: done >= planned && planned ? 'Toutes faites' : done ? 'Tu t\'es entraîné' : 'Pas de séance', big: done, u:`séance${done > 1 ? 's' : ''} sur ${Math.max(planned, done)} prévue${Math.max(planned, done) > 1 ? 's' : ''}`,
-    sub: gw.n ? `${fmtDur(gw.min)} de muscu${gw.cats.length ? `, surtout ${gw.cats.slice(0, 2).map(c => esc(c[0])).join(' et ')}` : ''}.` : (planned > done ? 'On se rattrape la semaine prochaine.' : '') });
+    x: gw.n ? gymTiles(gw) : '', sub: gw.n ? (gw.cats.length ? `Surtout ${gw.cats.slice(0, 2).map(c => esc(c[0])).join(' et ')}.` : '') : (planned > done ? 'On se rattrape la semaine prochaine.' : '') });
   const tiles = [['Pas / jour', fmt(avgS), pavgS ? `${avgS >= pavgS ? '+' : '−'}${Math.abs(Math.round((avgS - pavgS) / pavgS * 100))} % vs sem. passée` : '', ACC1],
     ['Poids moyen', wAvg ? f1(wAvg) + ' kg' : '—', pwAvg && wAvg ? `${wAvg <= pwAvg ? '−' : '+'}${f1(Math.abs(wAvg - pwAvg))} kg` : '', '#6BD36E'],
     ['Kcal / jour', calAvg ? fmt(calAvg) : '—', calK.length ? `objectif ${calHit}/${calK.length} j` : '', '#FF6B4A'],
     ['Protéines', protAvg ? Math.round(protAvg) + ' g' : '—', pg ? `visé ${pg} g` : '', '#FF5C8A'],
-    ['Séances', `${done}/${Math.max(planned, done)}`, gw.n ? fmtDur(gw.min) + ' de muscu' : '', '#B88CFF'],
+    ['Séances', `${done}/${Math.max(planned, done)}`, gw.n ? `${fmtDur(gw.min)} · ${fmtKg(gw.vol)}` : '', '#B88CFF'],
     ['Meilleur jour', best ? fmt(D(best).steps) : '—', best ? parseKey(best).toLocaleDateString('fr-BE', { weekday:'long' }) : '', '#5AB8FF']];
   const title = `${a.getDate()} – ${b.getDate()} ${b.toLocaleDateString('fr-BE', { month:'long' })}`;
   slides.push({ c:'sum', sum: sumPage('Ta semaine en un coup d\'œil', title, tiles) });
@@ -4259,14 +4264,12 @@ const monthStory = off => {
   if (m.best) slides.push({ c:'90,184,255', ic:'⚡', k:'Ta meilleure journée', t: parseKey(m.best).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }).replace(/^./, x => x.toUpperCase()), big: S.days[m.best].steps, u:'pas' });
   if (dw != null) slides.push({ c:'107,211,110', ic:'⚖️', party: dw < 0, k:'Poids', t: dw < 0 ? 'Le compteur baisse' : dw > 0 ? 'Petite remontée' : 'Stable', big: dw, dec:1, sign:true, u:'kg sur le mois', sub:`${f1(m.w0)} kg → ${f1(m.w1)} kg` });
   if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t:'Ton assiette', big: Math.round(calAvg), u:'kcal par jour', sub:`${m.cal.length} jours notés ce mois-ci.` });
-  const nS = Math.max(m.done, m.nWo); if (nS) slides.push({ c:'184,140,255', ic:'💪', k:'Séances', t: nS >= 8 ? 'Machine' : 'Tes séances', big: nS, u:`séance${nS > 1 ? 's' : ''}`, sub: m.nWo ? `${m.nWo} en musculation.` : '' });
-  if (m.prs.length) slides.push({ c:'255,196,74', ic:'🏆', party: true, k:'Records', t:`${m.prs.length} record${m.prs.length > 1 ? 's' : ''} battu${m.prs.length > 1 ? 's' : ''}`, x:`<div class="sb-prs">${m.prs.slice(0, 5).map(r => `<div><span>${esc(r.name)}</span><b>${kgTxt(r.kg)} kg × ${r.reps}</b></div>`).join('')}</div>` });
+  const nS = Math.max(m.done, m.nWo), gm = gymWeek(m.a, new Date(m.a.getFullYear(), m.a.getMonth() + 1, 0)); if (nS) slides.push({ c:'184,140,255', ic:'💪', k:'Séances', t: nS >= 8 ? 'Machine' : 'Tes séances', big: nS, u:`séance${nS > 1 ? 's' : ''} ce mois-ci`, x: gm.n ? gymTiles(gm) : '' });
   const tiles = [['Pas', fmt(m.tot), `${fmt(m.avg)} / jour`, ACC1], ['Meilleur jour', m.best ? fmt(S.days[m.best].steps) : '—', m.best ? parseKey(m.best).toLocaleDateString('fr-BE', { day:'numeric', month:'long' }) : '', '#5AB8FF'],
     ['Poids', dw == null ? '—' : (dw > 0 ? '+' : dw < 0 ? '−' : '±') + f1(Math.abs(dw)) + ' kg', m.w0 != null ? `${f1(m.w0)} → ${f1(m.w1)} kg` : '', '#6BD36E'],
-    ['Séances', String(nS), m.nWo ? `${m.nWo} en muscu` : '', '#B88CFF'], ['Kcal / jour', calAvg ? fmt(calAvg) : '—', `${m.cal.length} jours notés`, '#FF6B4A'], ['Records', String(m.prs.length), 'en muscu', '#FFC44A']];
-  const extra = m.prs.length ? `<div class="sb-prs">${m.prs.slice(0, 4).map(r => `<div><span>${esc(r.name)}</span><b>${kgTxt(r.kg)} kg × ${r.reps}</b></div>`).join('')}</div>` : '';
-  slides.push({ c:'sum', sum: sumPage('Ton mois en un coup d\'œil', lbl, tiles, extra) });
-  story(slides, { share: { kicker:'Bilan du mois', title: lbl, tiles, lines: m.prs.map(r => [r.name, `${kgTxt(r.kg)} kg × ${r.reps}`]), file:'mois-' + m.a.getFullYear() + '-' + (m.a.getMonth() + 1) } });
+    ['Séances', String(nS), m.nWo ? `${m.nWo} en muscu` : '', '#B88CFF'], ['Kcal / jour', calAvg ? fmt(calAvg) : '—', `${m.cal.length} jours notés`, '#FF6B4A'], ['Muscu', gm.n ? fmtKg(gm.vol) : '—', gm.n ? `${gm.n} fois · ${fmtDur(gm.min)}` : '', '#FFC44A']];
+  slides.push({ c:'sum', sum: sumPage('Ton mois en un coup d\'œil', lbl, tiles) });
+  story(slides, { share: { kicker:'Bilan du mois', title: lbl, tiles, file:'mois-' + m.a.getFullYear() + '-' + (m.a.getMonth() + 1) } });
 };
 $('#openRecap').onclick = weekStory;
 $('#openMonth').onclick = () => monthStory(period === 'month' ? pOff : 0);
