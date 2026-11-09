@@ -29,7 +29,7 @@ jobs:
           npx cap add android
           cp StepCounterPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
           if [ -f MidnightReceiver.java ]; then cp MidnightReceiver.java android/app/src/main/java/com/alexandre/focus/; fi
-          cp FocusWidget.java android/app/src/main/java/com/alexandre/focus/
+          cp FocusWidget.java WidgetConfigActivity.java android/app/src/main/java/com/alexandre/focus/
 
       - name: Permissions Android
         run: |
@@ -40,7 +40,40 @@ jobs:
       - name: Widget ecran d'accueil
         run: |
           unzip -o widget-res.zip -d android/app/src/main/
-          sed -i 's#</application>#    <receiver android:name=".FocusWidget" android:exported="true" android:label="Focus">\n            <intent-filter>\n                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />\n            </intent-filter>\n            <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_widget_info" />\n        </receiver>\n    </application>#' android/app/src/main/AndroidManifest.xml
+          python3 - <<'PY'
+          p='android/app/src/main/AndroidManifest.xml'; s=open(p).read()
+          s=s.replace('</application>', """    <receiver android:name=".FocusWidget" android:exported="true" android:label="Focus · Carré">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_widget_m" />
+                  </receiver>
+              <receiver android:name=".FocusWidget$Small" android:exported="true" android:label="Focus · Petit">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_widget_s" />
+                  </receiver>
+              <receiver android:name=".FocusWidget$Wide" android:exported="true" android:label="Focus · Large">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_widget_w" />
+                  </receiver>
+              <receiver android:name=".FocusWidget$Large" android:exported="true" android:label="Focus · Grand">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_widget_l" />
+                  </receiver>
+              <activity android:name=".WidgetConfigActivity" android:exported="true" android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+                  </activity>
+              </application>""", 1)
+          open(p,'w').write(s)
+          PY
 
       - name: Icone de l'app
         continue-on-error: true
