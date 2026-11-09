@@ -122,7 +122,8 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          sed -i 's/networkTimeout=[0-9]*/networkTimeout=120000/' gradle/wrapper/gradle-wrapper.properties
+          for i in 1 2 3; do ./gradlew assembleDebug && exit 0; echo "Essai $i raté, nouvel essai"; sleep 20; done; exit 1
 
       - uses: actions/upload-artifact@v4
         with:
