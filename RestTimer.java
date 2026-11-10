@@ -74,9 +74,8 @@ public class RestTimer {
             .setContentIntent(openApp(c)).setColor(0xFFD7FF3A).setVisibility(Notification.VISIBILITY_PUBLIC);
         if (Build.VERSION.SDK_INT >= 24) b.setChronometerCountDown(true);
         if (Build.VERSION.SDK_INT >= 31) b.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
-        // Android 16 : demande l'affichage en Live Update (barre d'état / île)
+        // Android 16 : Live Update ; sans texte court, la pastille affiche le compte à rebours
         call(b, "setRequestPromotedOngoing", boolean.class, true);
-        call(b, "setShortCriticalText", String.class, "Repos");
         Notification n = b.build();
         n.extras.putBoolean("android.requestPromotedOngoing", true);
         try { nm(c).notify(LIVE_ID, n); } catch (SecurityException ignored) {}

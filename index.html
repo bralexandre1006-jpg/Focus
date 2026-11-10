@@ -321,6 +321,8 @@ body.lite .hx-wk{border-radius:22px}
 .sb-gym small{display:block;margin-top:4px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .sb-hint{text-align:center;font-size:13px;color:var(--mut);animation:sbHint 1.8s ease-in-out infinite}
 @keyframes sbHint{50%{opacity:.35}}
+.sb-c.sum>.sb-sum{margin:auto 0}
+.sb-sumh{text-align:center}
 .sb-sumh small{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
 .sb-sumh h2{font-size:36px;letter-spacing:-.05em;margin:6px 0 18px}
 .sb-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -922,25 +924,51 @@ body.lite .wb .wl small{font-size:11px}
 /* bouton ? et fenêtre d'explication */
 .qbtn{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--mut);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex-shrink:0;position:relative;line-height:1}
 .qbtn::after{content:"";position:absolute;inset:-12px}
-.qcorner{position:absolute!important;right:12px;bottom:12px;z-index:2}
-.qcorner::after{content:"";position:absolute;inset:-8px}
-.qbadge{right:46px!important;color:#FFC44A}
-body.lite .qbadge{right:40px!important}
-.bgs h5{font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 10px}.bgs h5:first-child{margin-top:4px}
-.bgs h5 span{float:right;color:var(--mut);letter-spacing:.04em}
-.bgg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.bg{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;animation:rise .4s var(--ease) both}
-.bg i{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:15px;letter-spacing:-.03em;background:var(--card2);color:#5A5A66;border:2px dashed rgba(255,255,255,.08)}
-.bg.on i{color:#1A1206;border:0;background:radial-gradient(circle at 30% 25%,#FFF6C8,#FFD54F 35%,#E8A21C 75%,#A8690E);box-shadow:0 6px 18px rgba(255,180,60,.3),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.6)}
-.bg.on.t2 i{background:radial-gradient(circle at 30% 25%,#FFFFFF,#D8DEE8 35%,#9AA4B4 75%,#5E6878);box-shadow:0 6px 18px rgba(170,190,220,.25),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.7)}
-.bg.on.t3 i{background:radial-gradient(circle at 30% 25%,#F4FFE0,var(--acc) 40%,#7BB51A 80%,#3F6A08);box-shadow:0 6px 18px rgba(180,255,60,.25),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.6)}
-.bg.on.t4 i{background:radial-gradient(circle at 30% 25%,#F0E6FF,#B88CFF 40%,#7A4FE0 80%,#3E2390);color:#fff;box-shadow:0 6px 18px rgba(184,140,255,.3),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.5)}
-.bg small{font-size:11px;color:var(--mut);text-align:center;line-height:1.2}
+.qcorner{position:absolute!important;right:12px;bottom:12px;z-index:2;width:32px!important;height:32px!important;font-size:16px!important;font-weight:900!important;background:rgba(255,255,255,.1)!important}
+.qcorner svg{width:17px;height:17px}
+.qcorner::after{content:"";position:absolute;inset:-6px}
+.qbadge{right:52px!important;color:#FFC44A!important;background:rgba(255,196,74,.14)!important}
+body.lite .qbadge{right:50px!important}
+.bgs{padding-bottom:calc(var(--sb) + 28px)!important}
+@property --bp{syntax:'<number>';inherits:true;initial-value:0}
+.bgh{position:relative;overflow:hidden;border-radius:26px;padding:20px 18px;margin:4px 0 6px;display:flex;align-items:center;gap:16px;background:radial-gradient(120% 140% at 0% 0%,rgba(255,196,74,.28),transparent 55%),radial-gradient(100% 120% at 100% 100%,rgba(184,140,255,.22),transparent 60%),var(--card);border:1px solid rgba(255,214,120,.18);animation:rise .5s var(--ease) both}
+.bgh::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,rgba(255,214,120,.14),transparent 30%);animation:bgSpin 7s linear infinite}
+.bgh>*{position:relative}
+.bgh .rg{width:86px;height:86px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:conic-gradient(#FFD54F calc(var(--bp)*1%),rgba(255,255,255,.08) 0);transition:--bp 1.4s cubic-bezier(.2,.8,.2,1);-webkit-mask:radial-gradient(circle,transparent 33px,#000 34px);mask:radial-gradient(circle,transparent 33px,#000 34px)}
+.bgh .rgw{position:relative;width:86px;height:86px;flex-shrink:0}
+.bgh .rgw span{position:absolute;inset:0;display:grid;place-items:center;font-size:30px;animation:bgFloat 3s ease-in-out infinite}
+.bgh b{display:block;font-size:40px;font-weight:900;letter-spacing:-.05em;line-height:1}
+.bgh b em{font-style:normal;font-size:20px;color:var(--mut)}
+.bgh b u{text-decoration:none}
+.bgh small{display:block;font-size:13px;font-weight:800;color:var(--mut);margin-top:6px;text-transform:uppercase;letter-spacing:.08em}
+.bgsec{margin-top:18px;animation:rise .5s var(--ease) both}
+.bgsec h5{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900;letter-spacing:-.03em;margin:0 0 4px}
+.bgsec h5 i{width:10px;height:10px;border-radius:50%;background:var(--bc);box-shadow:0 0 12px var(--bc)}
+.bgsec h5 span{margin-left:auto;font-size:13px;font-weight:900;color:var(--bc);background:color-mix(in srgb,var(--bc) 16%,transparent);padding:5px 10px;border-radius:10px;letter-spacing:0}
+.bgsec>p{font-size:13px;font-weight:700;color:var(--mut);margin:0 0 12px}
+.bgsec>p b{color:var(--txt)}
+.bgg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px}
+.bg{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;opacity:0;animation:bgPop .6s cubic-bezier(.2,1.4,.4,1) both;animation-delay:var(--d)}
+.bg i{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:23px;letter-spacing:-.05em;color:#6A6A78}
+.bg i::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--bc) calc(var(--bp)*1%),rgba(255,255,255,.07) 0);transition:--bp 1.3s cubic-bezier(.2,.8,.2,1) .3s;-webkit-mask:radial-gradient(circle,transparent 37px,#000 38px);mask:radial-gradient(circle,transparent 37px,#000 38px)}
+.bg i::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--card2);z-index:-1}
+.bg i u{position:relative;text-decoration:none}
+.bg small{font-size:12px;font-weight:800;color:var(--mut);text-align:center;line-height:1.15}
+.bg.on i{color:#1A1206;animation:bgFloat 3.4s ease-in-out infinite;animation-delay:calc(var(--d) + .6s)}
+.bg.on i::before{-webkit-mask:none;mask:none;background:radial-gradient(circle at 32% 24%,#fff 0,var(--b1) 22%,var(--b2) 62%,var(--b3) 100%);box-shadow:0 8px 24px color-mix(in srgb,var(--bc) 40%,transparent),inset 0 -5px 10px rgba(0,0,0,.28),inset 0 3px 4px rgba(255,255,255,.7)}
+.bg.on i::after{inset:0;z-index:1;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 60%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:bgShine 3.2s ease-in-out infinite;animation-delay:calc(var(--d) + 1s);mix-blend-mode:overlay}
+.bg.on i u{z-index:2;text-shadow:0 1px 0 rgba(255,255,255,.45)}
 .bg.on small{color:var(--txt)}
-.bg b{position:absolute;top:-4px;right:2px;min-width:24px;height:20px;padding:0 6px;border-radius:10px;background:#FF4D6A;color:#fff;font-size:11px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
-.bgp{margin:12px 0 2px;padding:12px 14px;border-radius:16px;background:var(--card)}
-.bgp div{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}.bgp div b{color:var(--txt)}
-.bgp em{display:block;height:6px;border-radius:3px;background:var(--card2);margin-top:8px;overflow:hidden}.bgp em s{display:block;height:100%;background:linear-gradient(90deg,#FFD54F,#FF9F43);border-radius:3px}
+.bg.lock i u{opacity:.9}
+.bg b{position:absolute;top:-2px;right:6px;z-index:3;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:linear-gradient(180deg,#FF6A85,#E8304F);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center;box-shadow:0 3px 10px rgba(232,48,79,.5);animation:bgPop .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--d) + .45s)}
+.bg.tap i{animation:bgTap .55s cubic-bezier(.2,1.5,.4,1)}
+.bgtip{position:fixed;left:50%;bottom:calc(var(--sb) + 22px);transform:translate(-50%,30px);opacity:0;z-index:200;padding:13px 18px;border-radius:18px;background:rgba(30,30,36,.96);border:1px solid rgba(255,255,255,.1);font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:.35s var(--spring);pointer-events:none}
+.bgtip.on{transform:translate(-50%,0);opacity:1}
+@keyframes bgPop{0%{opacity:0;transform:scale(.3) rotate(-25deg)}100%{opacity:1;transform:none}}
+@keyframes bgFloat{50%{transform:translateY(-4px)}}
+@keyframes bgShine{0%,55%{background-position:150% 0}100%{background-position:-60% 0}}
+@keyframes bgSpin{to{transform:rotate(360deg)}}
+@keyframes bgTap{0%{transform:scale(1)}40%{transform:scale(1.18) rotate(-8deg)}100%{transform:none}}
 body.lite .qcorner{right:10px;bottom:10px;width:18px;height:18px;font-size:11px}
 .c-steps .burn .bw{display:none}
 body.lite .c-steps .burn .bw{display:inline}
@@ -1152,12 +1180,13 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .rest .rest-x{min-width:44px;font-size:0;color:var(--mut)}
 .wo.on .wo-b{padding-bottom:calc(var(--sb) + 100px)}
 .wrow.done .wi{background:rgba(61,220,132,.1)}
-.wdc{display:flex;justify-content:center}
-.wd{font-size:11px;font-weight:800;padding:4px 6px;border-radius:8px;white-space:nowrap;animation:wdin .3s var(--spring)}
+.wdc{display:flex;justify-content:center;align-items:center;align-self:stretch}
+.wd{width:100%;min-height:44px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:11px;font-weight:900;line-height:1.1;padding:3px 2px;border-radius:12px;white-space:nowrap;letter-spacing:-.03em;animation:wdin .3s var(--spring)}
+.wd span{display:block}
 @keyframes wdin{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
 .wd.up{color:var(--ok);background:rgba(61,220,132,.14)}
 .wd.dn{color:var(--bad);background:rgba(255,77,106,.14)}
-.wd.eq{color:var(--txt,#fff);background:var(--card2);font-size:18px;line-height:1;padding:1px 9px 3px;opacity:.75}
+.wd.eq{color:var(--txt,#fff);background:var(--card2);font-size:22px;line-height:1;padding:0;opacity:.75}
 .wd.nw{color:var(--wgt);background:rgba(90,184,255,.14)}
 .wex-f{display:flex;justify-content:space-between;margin-top:4px}
 .wex-f button{height:36px;padding:0 4px;color:var(--acc);font-size:14px;font-weight:800}
@@ -1406,7 +1435,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
 .wex.complete .wdone{display:grid;animation:ckPop .5s var(--spring)}
 .wex.complete .wcat{display:none}
 .wpr img{width:30px;height:30px;display:block;filter:drop-shadow(0 2px 8px rgba(255,180,60,.55))}
-.wd.pr{font-size:10px;padding:4px 5px}
+.wd.pr{font-size:10.5px}
 .wpr{font-size:22px;line-height:1;display:inline-block;filter:drop-shadow(0 2px 8px rgba(255,180,60,.5));animation:prIn .6s var(--spring)}
 @keyframes prIn{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.25) rotate(6deg)}100%{transform:none}}
 .wo-intro{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,rgba(215,255,58,.25),transparent 60%),#0B0B0F;opacity:0;pointer-events:none;visibility:hidden}
@@ -3357,19 +3386,37 @@ $('#burnQ').onclick = e => { e.stopPropagation(); openBurnInfo(); };
 const kTxt = n => n >= 1e6 ? (n / 1e6).toLocaleString('fr-BE', { maximumFractionDigits: 1 }) + 'M' : Math.round(n / 1000) + 'k';
 const openBadges = () => {
   const ks = Object.keys(S.days).filter(k => (S.days[k].steps || 0) > 0).sort(), st = k => S.days[k].steps || 0;
-  const tot = ks.reduce((t, k) => t + st(k), 0), by = (f) => { const o = {}; ks.forEach(k => { const g = f(k); o[g] = (o[g] || 0) + st(k); }); return o; };
-  const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), cy = String(new Date().getFullYear()), cyv = yr[cy] || 0;
-  let d = 0; const med = (v, lbl, n, t) => `<div class="bg ${n ? 'on' : ''} ${t}" style="animation-delay:${Math.min(d++, 30) * .02}s"><i>${v}</i><small>${lbl}</small>${n > 1 ? `<b>×${n}</b>` : ''}</div>`;
-  const prog = (lbl, v, goal) => goal ? `<div class="bgp"><div><span>${lbl}</span><b>${fmt(v)} / ${kTxt(goal)}</b></div><em><s style="width:${Math.min(100, v / goal * 100)}%"></s></em></div>` : '';
-  const TOT = [25e3, 50e3, 75e3, 1e5, 125e3, 15e4, 2e5, 25e4, 5e5, 75e4, 1e6, 15e5, 2e6, 3e6, 5e6, 75e5, 1e7];
-  const DAY = [1e4, 15e3, 2e4, 25e3, 3e4, 4e4], MON = [1e5, 15e4, 2e5, 25e4, 3e5, 4e5], YR = [1e6, 2e6, 3e6, 4e6, 5e6];
-  const cnt = (o, g) => Object.values(o).filter(v => v >= g).length, dayN = g => ks.filter(k => st(k) >= g).length;
-  const won = TOT.filter(g => tot >= g).length + DAY.filter(g => dayN(g)).length + MON.filter(g => cnt(mo, g)).length + YR.filter(g => cnt(yr, g)).length, all = TOT.length + DAY.length + MON.length + YR.length;
-  $('#badgeBody').innerHTML = `<h5>Au total <span>${won}/${all} débloqués</span></h5><div class="bgg">${TOT.map(g => med(kTxt(g), 'pas', tot >= g ? 1 : 0, 't1')).join('')}</div>${prog('Total', tot, TOT.find(g => tot < g))}
-    <h5>En une journée</h5><div class="bgg">${DAY.map(g => med(kTxt(g), 'en 1 jour', dayN(g), 't3')).join('')}</div>
-    <h5>En un mois</h5><div class="bgg">${MON.map(g => med(kTxt(g), 'en 1 mois', cnt(mo, g), 't2')).join('')}</div>${prog('Ce mois-ci', mo[key(new Date()).slice(0, 7)] || 0, MON.find(g => (mo[key(new Date()).slice(0, 7)] || 0) < g))}
-    <h5>En une année</h5><div class="bgg">${YR.map(g => med(kTxt(g), 'en 1 an', cnt(yr, g), 't4')).join('')}</div>${prog('En ' + cy, cyv, YR.find(g => cyv < g))}`;
+  const tot = ks.reduce((t, k) => t + st(k), 0), by = f => { const o = {}; ks.forEach(k => { const g = f(k); o[g] = (o[g] || 0) + st(k); }); return o; };
+  const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), dayV = ks.map(st);
+  const best = a => a.length ? Math.max(...a) : 0, cnt = (a, g) => a.filter(v => v >= g).length;
+  const G = [
+    { t:'Au total', c:'#FFC44A', m:['#FFE58A','#F2A91E','#9A5E0A'], u:'pas', list:[1e6, 2e6, 3e6, 4e6, 5e6, 6e6, 7e6, 8e6, 9e6, 1e7], v:[tot], once:true, lbl:'Depuis le début' },
+    { t:'En une journée', c:'#C9F23A', m:['#F0FFB0','#A8D81E','#4F7008'], u:'en 1 jour', list:[25e3, 5e4, 75e3, 1e5, 125e3, 15e4], v:dayV, lbl:'Ton record' },
+    { t:'En un mois', c:'#9EC5FF', m:['#FFFFFF','#B8C8E0','#5C6B85'], u:'en 1 mois', list:[25e4, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5], v:Object.values(mo), lbl:'Ton meilleur mois' },
+    { t:'En une année', c:'#C49BFF', m:['#F3E8FF','#A77BFF','#4C2A9E'], u:'en 1 an', list:[1e6, 15e5, 2e6, 25e5, 3e6], v:Object.values(yr), lbl:'Ta meilleure année' } ];
+  let won = 0, all = 0, d = 0;
+  const secs = G.map((g, gi) => {
+    const bv = best(g.v); let w = 0;
+    const cells = g.list.map(x => { const n = g.once ? (bv >= x ? 1 : 0) : cnt(g.v, x); all++; if (n) { won++; w++; }
+      return `<div class="bg ${n ? 'on' : 'lock'}" data-g="${gi}" data-x="${x}" data-n="${n}" data-p="${Math.min(100, bv / x * 100).toFixed(1)}" style="--d:${(.15 + d++ * .045).toFixed(2)}s"><i><u>${kTxt(x)}</u></i><small>${g.u}</small>${n > 1 ? `<b>×${n}</b>` : ''}</div>`; }).join('');
+    const nx = g.list.find(x => bv < x);
+    return `<div class="bgsec" style="--bc:${g.c};--b1:${g.m[0]};--b2:${g.m[1]};--b3:${g.m[2]};animation-delay:${.1 + gi * .08}s"><h5><i></i>${g.t}<span>${w}/${g.list.length}</span></h5><p>${g.lbl} : <b>${fmt(bv)}</b> pas${nx ? ` · encore <b>${fmt(nx - bv)}</b> pour ${kTxt(nx)}` : ' · tout débloqué 🔥'}</p><div class="bgg">${cells}</div></div>`;
+  }).join('');
+  $('#badgeBody').innerHTML = `<div class="bgh"><div class="rgw"><div class="rg"></div><span>🏆</span></div><div><b><u data-bc="${won}">0</u><em> / ${all}</em></b><small>badges débloqués</small></div></div>${secs}`;
   openOv('badgeModal');
+  const bd = $('#badgeBody'), num0 = bd.querySelector('[data-bc]');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    bd.querySelector('.rg').style.setProperty('--bp', all ? won / all * 100 : 0);
+    bd.querySelectorAll('.bg').forEach(x => x.querySelector('i').style.setProperty('--bp', x.dataset.p));
+    const t0 = performance.now(), go = t => { const k = Math.min(1, (t - t0) / 1100); num0.textContent = Math.round(won * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(go); }; requestAnimationFrame(go);
+  }));
+  let tipT; bd.querySelectorAll('.bg').forEach(x => x.onclick = () => {
+    const g = G[x.dataset.g], n = +x.dataset.n, gx = +x.dataset.x; x.classList.remove('tap'); void x.offsetWidth; x.classList.add('tap');
+    let tip = $('.bgtip'); if (!tip) { tip = document.createElement('div'); tip.className = 'bgtip'; document.body.appendChild(tip); }
+    tip.innerHTML = n ? `${kTxt(gx)} ${g.u} · débloqué${n > 1 ? ` ${n} fois` : ''} ✨` : `🔒 Encore ${fmt(Math.max(0, gx - best(g.v)))} pas`;
+    tip.classList.add('on'); clearTimeout(tipT); tipT = setTimeout(() => tip.classList.remove('on'), 1800);
+    if (n) { burst(x.querySelector('i'), [g.c, ...g.m, '#fff']); sfx.win && sfx.win(); buzz('success'); } else { sfx.tap(); buzz(); }
+  });
 };
 $('#badgeBtn').onclick = e => { e.stopPropagation(); openBadges(); sfx.tap(); buzz(); };
 const applyLite = () => {
@@ -3746,7 +3793,7 @@ const prDelta = (st, prev, uni) => {
   if (!prev) return '<span class="wd up pr">PR</span>';
   const dk = num(st.kg) - num(prev.kg), dr = (uni ? num(st.reps) + num(st.repsR) - num(prev.reps) - num(prev.repsR) : num(st.reps) - num(prev.reps)), t = [];
   if (dk) t.push(`${dk > 0 ? '+' : '−'}${kgTxt(Math.abs(dk))} kg`); if (dr) t.push(`${dr > 0 ? '+' : '−'}${Math.abs(dr)} rép`);
-  return `<span class="wd up pr">${t.join(' ') || 'PR'}</span>`;
+  return `<span class="wd up pr">${t.map(x => `<span>${x}</span>`).join('') || 'PR'}</span>`;
 };
 const deltaOf = (st, prev, uni) => {
   const kg = st.kg === '' ? null : num(st.kg), r = uni ? (st.reps === '' && st.repsR === '' ? null : num(st.reps) + num(st.repsR)) : (st.reps === '' ? null : num(st.reps));
@@ -4314,7 +4361,7 @@ const weekStory = () => {
   if (on.length) { const up = pavgS && avgS > pavgS;
     slides.push({ c:'215,255,58', ic:'👟', party: up, k:'Pas', t: up ? `Félicitations ${esc(nm())} !` : avgS >= goals().steps ? 'Objectif tenu' : 'Tes pas', big: Math.round(avgS), u:'pas par jour en moyenne',
       x: `<div class="sb-b7">${eachDay(a, b).map(k => { const v = D(k).steps || 0, mx = Math.max(1, ...st); return `<div><i style="height:${Math.max(4, v / mx * 100)}%" class="${v >= goals().steps ? 'ok' : ''}"></i><small>${parseKey(k).toLocaleDateString('fr-BE', { weekday:'narrow' })}</small></div>`; }).join('')}</div>` });
-    if (best) slides.push({ c:'90,184,255', ic:'⚡', k:'Meilleur jour', t: parseKey(best).toLocaleDateString('fr-BE', { weekday:'long' }).replace(/^./, m => m.toUpperCase()), big: D(best).steps, u:'pas en une journée', sub: D(best).steps >= goals().steps ? 'Ton objectif explosé ce jour-là.' : 'Ta journée la plus active.' }); }
+    if (best) slides.push({ c:'90,184,255', ic:'⚡', k:'Meilleur jour', t: parseKey(best).toLocaleDateString('fr-BE', { weekday:'long' }).replace(/^./, m => m.toUpperCase()), big: D(best).steps, u:'pas en une journée' }); }
   if (wAvg) slides.push({ c:'107,211,110', ic:'⚖️', party: pwAvg && wAvg < pwAvg, k:'Poids', t: pwAvg && wAvg < pwAvg ? 'Ça descend' : pwAvg && wAvg > pwAvg ? 'Petite remontée' : 'Ton poids', big: wAvg, dec:1, u:'kg en moyenne',
     sub: pwAvg ? `${wAvg < pwAvg ? '−' : wAvg > pwAvg ? '+' : '±'}${f1(Math.abs(wAvg - pwAvg))} kg par rapport à la semaine dernière` : `${ws.length} pesée${ws.length > 1 ? 's' : ''} cette semaine` });
   if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t: calHit >= calK.length * .7 ? 'Assiette maîtrisée' : 'Tes calories', big: Math.round(calAvg), u:'kcal par jour' });

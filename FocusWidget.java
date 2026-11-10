@@ -116,7 +116,7 @@ public class FocusWidget extends AppWidgetProvider {
         int kind = kindOfId(m, id);
         int[] s = sizeDp(m, id, kind);
         float d = c.getResources().getDisplayMetrics().density;
-        float k = Math.min(d, 640f / Math.max(s[0], s[1]));
+        float k = Math.min(d * 1.15f, 1500f / Math.max(s[0], s[1]));
         Bitmap b = draw(Cfg.load(c, id, kind), data(c), Math.round(s[0] * k), Math.round(s[1] * k), k);
         RemoteViews v = new RemoteViews(c.getPackageName(), R.layout.focus_widget_img);
         v.setImageViewBitmap(R.id.w_img, b);
