@@ -54,7 +54,8 @@ public class WidgetTicker extends BroadcastReceiver {
         } else if (refT < 0) steps = refS;
         else if (total >= refT) steps = refS + (int) (total - refT);
         else steps = refS + (int) total;
-        e.putInt("steps", Math.max(0, steps)).putLong("refTotal", total).apply();
+        steps = Math.max(0, steps);
+        e.putInt("steps", steps).putLong("refTotal", total).apply();
         FocusWidget.push(c);
     }
 

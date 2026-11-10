@@ -259,6 +259,8 @@ body.lite .hx-wk{border-radius:22px}
 .recbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.recbtns .btn{font-size:14px;padding:0 8px}
 .accents{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:6px}
 .accents button{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--a1),var(--a2));transition:transform .3s var(--spring),box-shadow .2s}
+.accents button[data-a=mono]{background:linear-gradient(135deg,#fff 50%,#0B0B0F 50%);border:1.5px solid rgba(255,255,255,.35)}
+html.mono body{filter:grayscale(1)}
 .accents button.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--a1);transform:scale(1.06)}
 .bkinfo{font-size:13px;color:var(--mut);margin-top:12px;line-height:1.4}.bkinfo b{color:#fff}
 .story{position:fixed;inset:0;z-index:300;background:#0B0B0F;display:flex;flex-direction:column;padding:calc(var(--st) + 10px) 22px calc(var(--sb) + 22px);opacity:0;pointer-events:none;transform:scale(1.04);transition:opacity .35s,transform .45s var(--ease);-webkit-user-select:none;user-select:none}
@@ -4205,7 +4207,8 @@ const CHANGELOG = [
     'Après un record, le trophée laisse place à ton gain (+kg, +rép)',
     'Signe = plus visible, et 1,5 s de délai sur le poids pour taper la virgule',
     'Fin de séance : les records s\'appellent PR',
-    'Un easter egg caché dans les réglages 🎮' ] },
+    'Un easter egg caché dans les réglages 🎮',
+    'Nouveau thème noir et blanc dans Réglages › Fonctionnalités' ] },
   { v:'1.38', items:[
     'Bilans de la semaine et du mois en mode histoire : page par page, avec animations et un récap final à partager',
     'Nouveaux widgets en 4 tailles : 7 styles et 16 thèmes (Chrome, Cartoon, Futuriste, Rétro, iOS, noir et blanc…). Appui long sur le widget pour le modifier',
@@ -4236,12 +4239,12 @@ const FEATS = [
   ['fnTok','Easter egg 🎮','Le token Fortnite à la place du trophée'] ];
 const FEAT_OFF = ['fnTok'];
 function feat(k) { const v = S.settings.f && S.settings.f[k]; return v === undefined ? !FEAT_OFF.includes(k) : v !== false; }
-const ACCENTS = { lime:['#D7FF3A','#7BE07E'], bleu:['#5AB8FF','#7C8CFF'], violet:['#B88CFF','#FF7AD9'], orange:['#FFB347','#FF6B4A'], rose:['#FF7AB8','#FFB86B'], cyan:['#4FE3D0','#5AB8FF'] };
+const ACCENTS = { lime:['#D7FF3A','#7BE07E'], bleu:['#5AB8FF','#7C8CFF'], violet:['#B88CFF','#FF7AD9'], orange:['#FFB347','#FF6B4A'], rose:['#FF7AB8','#FFB86B'], cyan:['#4FE3D0','#5AB8FF'], mono:['#FFFFFF','#BDBDC6'] };
 const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
 let accOrig = null;
 const applyAccent = () => {
   const k = ACCENTS[S.settings.accent] ? S.settings.accent : 'lime', [c1, c2] = ACCENTS[k];
-  ACC1 = c1;
+  ACC1 = c1; document.documentElement.classList.toggle('mono', k === 'mono');
   if (!accOrig) { if (k === 'lime') return; accOrig = { st: $$('style').map(el => [el, el.textContent]), at: [] };
     $$('[fill],[stroke],[stop-color],[style]').forEach(el => ['fill', 'stroke', 'stop-color', 'style'].forEach(a => { const v = el.getAttribute(a); if (v && /d7ff3a|215,\s*255,\s*58|7be07e/i.test(v)) accOrig.at.push([el, a, v]); })); }
   const rep = t => t.replace(/#d7ff3a/gi, c1).replace(/215,\s*255,\s*58/g, hexRgb(c1)).replace(/#7be07e/gi, c2).replace(/123,\s*224,\s*126/g, hexRgb(c2));
@@ -4252,7 +4255,7 @@ const applyAccent = () => {
 let qwT = null;
 const pushWidget = () => { if (!feat('widget') || !P.StepCounter || !P.StepCounter.setWidget) return; const d = day(), G = goals();
   const n = new Date(), mon = new Date(n.getFullYear(), n.getMonth(), n.getDate() - wd(n)), ks = Array.from({ length: 7 }, (_, i) => key(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i)));
-  P.StepCounter.setWidget({ steps: Math.round(d.steps || 0), stepGoal: Math.round(G.steps || 0), kcal: Math.round(d.calories || 0), kcalGoal: Math.round(G.kcal || 0), date: today(),
+  P.StepCounter.setWidget({ steps: Math.round(d.steps || 0), stepGoal: Math.round(G.steps || 0), kcal: Math.round(d.calories || 0), kcalGoal: Math.round(G.kcal || 0), kpp: stepKcal(1000) / 1000, date: today(),
     s7: ks.map(k => Math.round((S.days[k] || {}).steps || 0)).join(','), k7: ks.map(k => Math.round((S.days[k] || {}).calories || 0)).join(','), w7d: ks[0] }).catch(() => {}); };
 window.__qw = () => { clearTimeout(qwT); qwT = setTimeout(pushWidget, 1500); };
 /* sauvegarde hebdo */

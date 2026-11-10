@@ -64,7 +64,7 @@ public class WidgetConfigActivity extends Activity {
         root.addView(box, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, px(kind == 2 ? 130 : kind == 0 ? 150 : 220)));
 
         section("Données");
-        choices(new String[] { "Pas", "Calories", "Les deux" }, cfg.metric, i -> cfg.metric = i);
+        choices(new String[] { "Pas", "Repas", "Pas + brûlées" }, cfg.metric, i -> cfg.metric = i);
         section("Style");
         int[][] sm = { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
         String[][] sn = { { "Cadran", "Jauge", "Chiffre" }, { "Semaine", "Batterie", "Points" }, { "Gros chiffre" } };

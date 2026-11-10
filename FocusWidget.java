@@ -84,7 +84,8 @@ public class FocusWidget extends AppWidgetProvider {
         SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
         boolean fresh = today.equals(p.getString("date", ""));
-        int[] r = new int[19];
+        int[] r = new int[28];
+        float kpp = p.getFloat("kpp", 0.04f);
         r[0] = fresh ? p.getInt("steps", 0) : 0; r[1] = Math.max(1, p.getInt("stepGoal", 8000)); r[2] = fresh ? p.getInt("kcal", 0) : 0; r[3] = Math.max(1, p.getInt("kcalGoal", 2000));
         java.util.Calendar cal = java.util.Calendar.getInstance(); r[4] = (cal.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7;
         int[] s7 = parse7(p.getString("s7", "")), k7 = parse7(p.getString("k7", ""));
@@ -92,6 +93,9 @@ public class FocusWidget extends AppWidgetProvider {
         if (!p.getString("w7d", "").equals(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(mon.getTime()))) { s7 = new int[7]; k7 = new int[7]; }
         s7[r[4]] = r[0]; k7[r[4]] = r[2];
         System.arraycopy(s7, 0, r, 5, 7); System.arraycopy(k7, 0, r, 12, 7);
+        // calories brûlées par la marche, pour l'affichage « Pas + kcal »
+        r[19] = Math.round(r[0] * kpp); r[20] = Math.max(1, Math.round(r[1] * kpp));
+        for (int i = 0; i < 7; i++) r[21 + i] = Math.round(s7[i] * kpp);
         return r;
     }
 
@@ -440,8 +444,8 @@ public class FocusWidget extends AppWidgetProvider {
         float pad2 = (A.T.bg.equals("cartoon") || A.T.bg.equals("brutal")) ? pad + 3 * dp : pad; A.pad2 = pad2;
         Th T = A.T;
         M ms = new M(); ms.v = v[0]; ms.g = Math.max(1, v[1]); ms.l = "PAS"; ms.u = "pas"; ms.c0 = T.s0; ms.c1 = T.s1; ms.kd = 's'; ms.w7 = java.util.Arrays.copyOfRange(v, 5, 12);
-        M mk = new M(); mk.v = v[2]; mk.g = Math.max(1, v[3]); mk.l = "KCAL"; mk.u = "kcal"; mk.c0 = T.k0; mk.c1 = T.k1; mk.kd = 'k'; mk.w7 = java.util.Arrays.copyOfRange(v, 12, 19);
         boolean both = f.metric == 2, small = u < 95 * dp;
+        M mk = new M(); mk.v = both ? v[19] : v[2]; mk.g = Math.max(1, both ? v[20] : v[3]); mk.l = both ? "BRÛLÉES" : "KCAL"; mk.u = "kcal"; mk.c0 = T.k0; mk.c1 = T.k1; mk.kd = 'k'; mk.w7 = both ? java.util.Arrays.copyOfRange(v, 21, 28) : java.util.Arrays.copyOfRange(v, 12, 19);
         float iw = W - pad2 * 2, ih = H - pad2 * 2;
         if (!both) A.one(pad2, pad2, iw, ih, f.metric == 1 ? mk : ms, small);
         else if (f.style == 0 && W < H * 1.45f) {
@@ -451,7 +455,7 @@ public class FocusWidget extends AppWidgetProvider {
             float w2 = (r1 - sw) * 1.7f; String t = small ? compact(v[0]) : fmt(v[0]);
             if (small) { float s = A.fit(t, r1 * .6f, w2, true); A.text(t, cx, cy + s * .36f, s, T.fg, Paint.Align.CENTER, true, 0); }
             else { A.icon('s', cx, cy - r1 * .44f, r1 * .28f, ms.c0); float s = A.fit(t, r1 * .44f, w2, true); A.text(t, cx, cy + s * .22f, s, T.fg, Paint.Align.CENTER, true, 0);
-                String kt = fmt(v[2]) + " kcal"; float ks = r1 * .14f, tw = A.pt(ks, 0, false, T.ls).measureText(kt) + ks * 1.5f;
+                String kt = fmt(v[19]) + " kcal"; float ks = r1 * .14f, tw = A.pt(ks, 0, false, T.ls).measureText(kt) + ks * 1.5f;
                 A.icon('k', cx - tw / 2 + ks * .6f, cy + s * .22f + r1 * .3f - ks * .36f, ks * 1.3f, mk.c0); A.text(kt, cx - tw / 2 + ks * 1.5f, cy + s * .22f + r1 * .3f, ks, T.mut, Paint.Align.LEFT, false, 0); }
         } else {
             boolean side = W > H * 1.15f; float g = pad * .7f;

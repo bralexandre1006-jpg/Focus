@@ -58,6 +58,21 @@ public class RestTimer {
         return r != 0 ? r : c.getApplicationInfo().icon;
     }
 
+    static android.graphics.Bitmap LOGO;
+    /** Logo vert sur fond transparent : sans ça, HyperOS met l'icône de l'app avec son fond gris dans l'île. */
+    static android.graphics.Bitmap logo(Context c) {
+        if (LOGO != null) return LOGO;
+        try {
+            android.graphics.drawable.Drawable d = c.getDrawable(icon(c)).mutate();
+            d.setTint(0xFFD7FF3A);
+            int n = 128;
+            LOGO = android.graphics.Bitmap.createBitmap(n, n, android.graphics.Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas cv = new android.graphics.Canvas(LOGO);
+            d.setBounds(8, 8, n - 8, n - 8); d.draw(cv);
+        } catch (Throwable t) { LOGO = null; }
+        return LOGO;
+    }
+
     static void call(Object o, String m, Class<?> t, Object v) {
         try { o.getClass().getMethod(m, t).invoke(o, v); } catch (Throwable ignored) {}
     }
@@ -81,6 +96,7 @@ public class RestTimer {
             .setContentIntent(openApp(c)).setColor(0xFFD7FF3A).setVisibility(Notification.VISIBILITY_PUBLIC);
         if (Build.VERSION.SDK_INT >= 24) b.setChronometerCountDown(true);
         if (Build.VERSION.SDK_INT >= 31) b.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+        if (logo(c) != null) b.setLargeIcon(logo(c));
         call(b, "setRequestPromotedOngoing", boolean.class, true);
         call(b, "setShortCriticalText", String.class, left);
         Notification n = b.build();
