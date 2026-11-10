@@ -29,11 +29,11 @@ jobs:
           npx cap add android
           cp StepCounterPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
           if [ -f MidnightReceiver.java ]; then cp MidnightReceiver.java android/app/src/main/java/com/alexandre/focus/; fi
-          cp FocusWidget.java WidgetConfigActivity.java android/app/src/main/java/com/alexandre/focus/
+          cp FocusWidget.java WidgetConfigActivity.java RestTimer.java WidgetTicker.java android/app/src/main/java/com/alexandre/focus/
 
       - name: Permissions Android
         run: |
-          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />\n    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />\n</manifest>#' android/app/src/main/AndroidManifest.xml
+          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />\n    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />\n</manifest>#' android/app/src/main/AndroidManifest.xml
           sed -i 's#</application>#    <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />\n    </application>#' android/app/src/main/AndroidManifest.xml
           if [ -f MidnightReceiver.java ]; then sed -i 's#</application>#    <receiver android:name=".MidnightReceiver" android:exported="false">\n            <intent-filter>\n                <action android:name="android.intent.action.BOOT_COMPLETED" />\n                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />\n            </intent-filter>\n        </receiver>\n    </application>#' android/app/src/main/AndroidManifest.xml; fi
 
@@ -71,6 +71,8 @@ jobs:
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
                   </activity>
+              <receiver android:name=".RestTimer$End" android:exported="false" />
+              <receiver android:name=".WidgetTicker" android:exported="false" />
               </application>""", 1)
           open(p,'w').write(s)
           PY
