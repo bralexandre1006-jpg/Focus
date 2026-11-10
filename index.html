@@ -35,7 +35,7 @@ button{border:0;background:none;cursor:pointer}
 .screen::-webkit-scrollbar,.mbody::-webkit-scrollbar{display:none}
 
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px}
-.head h1{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.05}
+.head h1{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.12}
 .head .sub{color:var(--mut);font-size:16px;margin-bottom:6px;text-transform:capitalize}
 .logo-btn{width:52px;height:52px;border-radius:18px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
 .logo-btn svg{width:32px;height:32px}
@@ -731,7 +731,7 @@ body.lite .screen.on .card{animation:liteIn .65s var(--spring) both}
 body.lite .screen.on .card:nth-child(2){animation-delay:.05s}body.lite .screen.on .card:nth-child(3){animation-delay:.1s}
 body.lite .screen.on .card:nth-child(4){animation-delay:.15s}body.lite .screen.on .card:nth-child(5){animation-delay:.2s}body.lite .screen.on .card:nth-child(6){animation-delay:.25s}
 @keyframes liteIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
-body.lite .head h1{background:linear-gradient(90deg,#fff 30%,#D7FF3A 110%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.lite .head h1{padding:0 .06em .12em 0;margin-bottom:-.12em;background:linear-gradient(90deg,#fff 30%,#D7FF3A 110%);-webkit-background-clip:text;background-clip:text;color:transparent}
 body.lite .ring .fgc{stroke:url(#ringGrad)}
 body.lite .ring .glw{stroke:url(#ringGrad);opacity:.35}
 body.lite .wbar i{background:linear-gradient(90deg,#4FCB86,#D7FF3A)}
@@ -947,20 +947,17 @@ body.lite .qbadge{right:50px!important}
 .bgsec h5 span{margin-left:auto;font-size:13px;font-weight:900;color:var(--bc);background:color-mix(in srgb,var(--bc) 16%,transparent);padding:5px 10px;border-radius:10px;letter-spacing:0}
 .bgsec>p{font-size:13px;font-weight:700;color:var(--mut);margin:0 0 12px}
 .bgsec>p b{color:var(--txt)}
-.bgg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px}
+.bgg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 6px}
 .bg{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;opacity:0;animation:bgPop .6s cubic-bezier(.2,1.4,.4,1) both;animation-delay:var(--d)}
-.bg i{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:23px;letter-spacing:-.05em;color:#6A6A78}
-.bg i::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--bc) calc(var(--bp)*1%),rgba(255,255,255,.07) 0);transition:--bp 1.3s cubic-bezier(.2,.8,.2,1) .3s;-webkit-mask:radial-gradient(circle,transparent 37px,#000 38px);mask:radial-gradient(circle,transparent 37px,#000 38px)}
-.bg i::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--card2);z-index:-1}
-.bg i u{position:relative;text-decoration:none}
-.bg small{font-size:12px;font-weight:800;color:var(--mut);text-align:center;line-height:1.15}
-.bg.on i{color:#1A1206;animation:bgFloat 3.4s ease-in-out infinite;animation-delay:calc(var(--d) + .6s)}
-.bg.on i::before{-webkit-mask:none;mask:none;background:radial-gradient(circle at 32% 24%,#fff 0,var(--b1) 22%,var(--b2) 62%,var(--b3) 100%);box-shadow:0 8px 24px color-mix(in srgb,var(--bc) 40%,transparent),inset 0 -5px 10px rgba(0,0,0,.28),inset 0 3px 4px rgba(255,255,255,.7)}
-.bg.on i::after{inset:0;z-index:1;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 60%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:bgShine 3.2s ease-in-out infinite;animation-delay:calc(var(--d) + 1s);mix-blend-mode:overlay}
-.bg.on i u{z-index:2;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.bg i{position:relative;width:100px;height:100px;display:block;font-style:normal}
+.bg i svg{position:relative;z-index:1;display:block;overflow:visible}
+.bg.lock i::before{content:"";position:absolute;left:10px;top:8px;width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--bc) calc(var(--bp)*1%),rgba(255,255,255,.06) 0);transition:--bp 1.3s cubic-bezier(.2,.8,.2,1) .3s;-webkit-mask:radial-gradient(circle,transparent 36px,#000 37px);mask:radial-gradient(circle,transparent 36px,#000 37px);z-index:0}
+.bg small{margin-top:-4px;font-size:12px;font-weight:800;color:var(--mut);text-align:center;line-height:1.15}
+.bg.on i{animation:bgFloat 3.4s ease-in-out infinite;animation-delay:calc(var(--d) + .6s)}
+.bg.on i svg{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--bc) 35%,transparent))}
+.bg.on i::after{content:"";position:absolute;left:14px;top:9px;width:72px;height:72px;border-radius:50%;z-index:2;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 60%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:bgShine 3.2s ease-in-out infinite;animation-delay:calc(var(--d) + 1s);mix-blend-mode:overlay}
 .bg.on small{color:var(--txt)}
-.bg.lock i u{opacity:.9}
-.bg b{position:absolute;top:-2px;right:6px;z-index:3;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:linear-gradient(180deg,#FF6A85,#E8304F);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center;box-shadow:0 3px 10px rgba(232,48,79,.5);animation:bgPop .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--d) + .45s)}
+.bg b{position:absolute;top:0;right:0;z-index:3;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:linear-gradient(180deg,#FF6A85,#E8304F);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center;box-shadow:0 3px 10px rgba(232,48,79,.5);animation:bgPop .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--d) + .45s)}
 .bg.tap i{animation:bgTap .55s cubic-bezier(.2,1.5,.4,1)}
 .bgtip{position:fixed;left:50%;bottom:calc(var(--sb) + 22px);transform:translate(-50%,30px);opacity:0;z-index:200;padding:13px 18px;border-radius:18px;background:rgba(30,30,36,.96);border:1px solid rgba(255,255,255,.1);font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:.35s var(--spring);pointer-events:none}
 .bgtip.on{transform:translate(-50%,0);opacity:1}
@@ -987,8 +984,9 @@ body.lite .c-steps .burn .bw{display:inline}
 .ib-row>span{width:24px;height:24px;border-radius:8px;background:var(--card2);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--mut);flex-shrink:0}
 .ib-row p b:first-child{display:block;font-size:15px;margin-bottom:2px}
 .ib-n{color:var(--cal)!important}
-.ib-tbl{margin-top:10px;border-radius:12px;background:var(--card2);padding:4px 12px}
-.ib-tbl div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:14px}
+.ib-tbl{margin-top:12px;border-radius:16px;background:var(--card2);padding:4px 16px}
+.ib-tbl div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;font-size:14px}
+.ib-tbl b{white-space:nowrap}
 .ib-tbl div+div{border-top:1px solid var(--line)}
 .ib-tbl span{color:var(--mut)}
 .ib-tbl .tot b{color:var(--cal)}
@@ -1213,7 +1211,6 @@ body.lite .glsw{border-radius:20px}
 .ga-del{background:rgba(255,77,106,.16);color:var(--bad)}
 .wd-cfg{color:var(--mut);font-size:13px;margin:-2px 0 6px}
 .wd-note{color:#A9A9B6;font-size:13px;padding:0 0 6px 28px;white-space:pre-wrap}
-.gex{width:100%;text-align:left}
 .ex-hero{margin-bottom:12px}
 .ex-hero b{display:block;font-size:34px;letter-spacing:-.04em}
 .ex-hero span{color:var(--mut);font-size:14px}
@@ -1247,12 +1244,19 @@ body.lite .glsw{border-radius:20px}
 .gcat i{display:block;height:100%;border-radius:99px;width:0;transition:width .8s var(--ease)}
 .gcat i.in{width:var(--w)}
 .gcat b{text-align:right}
-.gex{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
-.gex:first-child{border-top:0}
-.gex>i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.gex-n{flex:1;min-width:0}
-.gex-n b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gex-n small{color:var(--mut);font-size:12px}
+.gex{display:block;width:100%;text-align:left;padding:14px;margin-top:10px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--gc) 12%,var(--card2)),var(--card2) 60%);border:1px solid color-mix(in srgb,var(--gc) 18%,transparent);animation:rise .45s var(--ease) both}
+.gex:first-child{margin-top:0}
+.gex-t{display:flex;align-items:center;gap:9px}
+.gex-t i{width:9px;height:9px;border-radius:50%;background:var(--gc);box-shadow:0 0 10px var(--gc);flex-shrink:0}
+.gex-t b{flex:1;min-width:0;font-size:16px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gex-c{flex-shrink:0;font-size:12px;font-weight:900;padding:6px 9px;border-radius:10px;white-space:nowrap}
+.gex-c.up{color:var(--ok);background:rgba(61,220,132,.14)}.gex-c.dn{color:var(--bad);background:rgba(255,77,106,.14)}
+.gex-c.eq{color:var(--mut);background:rgba(255,255,255,.06)}.gex-c.nw{color:var(--wgt);background:rgba(90,184,255,.14)}
+.gex-m{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:10px}
+.gex-m small{display:block;font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.07em}
+.gex-m strong{display:block;font-size:24px;font-weight:900;letter-spacing:-.04em;margin-top:2px;white-space:nowrap}
+.gex-m strong em{font-style:normal;font-size:14px;color:var(--mut);font-weight:800}
+.gex-sp{flex-shrink:0;overflow:visible}
 .rc-gym{background:var(--card);border-radius:20px;padding:14px;margin-top:10px;animation:rise .5s .15s var(--ease) both}
 .rc-gym>small{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
 .rc-gk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
@@ -1678,7 +1682,7 @@ body.lite .card::before{will-change:transform}
     </div>
     <div class="card"><h3><i style="background:var(--wgt)"></i>Volume par semaine</h3><div class="statsub" id="gsWkL"></div><div class="chart" id="gsWeeks"></div></div>
     <div class="card"><h3><i style="background:var(--cal)"></i>Séries par muscle</h3><div id="gsCats"></div></div>
-    <div class="card"><h3><i style="background:var(--acc)"></i>Progression</h3><div class="statsub" style="margin:-4px 0 6px;font-size:13px">Touche un exercice pour voir son évolution</div><div id="gsEx"></div></div>
+    <div class="card"><h3><i style="background:var(--acc)"></i>Progression</h3><div class="statsub" style="margin:-4px 0 10px;font-size:13px">Ta meilleure série et ton évolution séance après séance</div><div id="gsEx"></div></div>
   </section>
 
   <section class="screen" id="s-settings">
@@ -1716,7 +1720,6 @@ body.lite .card::before{will-change:transform}
       <h3><i style="background:var(--acc)"></i>Podomètre</h3>
       <div class="srow"><div class="l">État</div><span class="sval" id="pdState">—</span></div>
       <div class="srow"><div class="l">Aujourd'hui</div><span class="sval" id="pdToday">—</span></div>
-      <button class="btn ghost full press hidden" id="pdSync" style="margin-top:12px"></button>
     </div>
 <div class="card acc" id="accExp">
       <button class="acc-h"><h3><i style="background:var(--spt)"></i>Expérience</h3><small id="accExpI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -3365,16 +3368,8 @@ const renderProgSettings = () => {
 const renderPedo = () => {
   const pd = S.pedo;
   $('#pdState').textContent = S.pedo.rec ? 'Capteur + Google' : ($('#pedoTxt').textContent || '—');
-  const t = day().steps || 0, btn = $('#pdSync');
+  const t = day().steps || 0;
   $('#pdToday').textContent = fmt(t) + ' pas';
-  const show = pd.last != null && pd.last > t;
-  btn.classList.toggle('hidden', !show);
-  if (show) btn.textContent = `Prendre les ${fmt(pd.last)} pas du téléphone`;
-};
-$('#pdSync').onclick = async () => {
-  const raw = S.pedo.last; if (raw == null) return;
-  if (!(await confirmSheet(`Passer à ${fmt(raw)} pas aujourd'hui ?`, 'Ce chiffre inclut tous les pas faits depuis que ton téléphone est allumé, y compris les jours d\'avant s\'il n\'a pas redémarré.', { yes:'Utiliser', danger:false }))) return;
-  { const d = day(); d.ss = raw; mergeSteps(d); } save(); renderPedo(); sfx.ok(); buzz('success'); toast(`${fmt(raw)} pas aujourd'hui ✓`);
 };
 const tgl = (id,f) => { const el=$(id); el.onclick=()=>{ S.settings[f]=!S.settings[f]; save(); el.classList.toggle('on',S.settings[f]); sfx.tap(); buzz(); }; };
 tgl('#tSound','sound'); tgl('#tHaptic','haptic');
@@ -3384,21 +3379,93 @@ bindSex($('#oSex'));
 bindSex($('#pSex'), x => { S.profile.sex = x; save(); toast('Profil mis à jour'); });
 $('#burnQ').onclick = e => { e.stopPropagation(); openBurnInfo(); };
 const kTxt = n => n >= 1e6 ? (n / 1e6).toLocaleString('fr-BE', { maximumFractionDigits: 1 }) + 'M' : Math.round(n / 1000) + 'k';
+/* badges à paliers dessinés en SVG */
+const BMAT = [
+  ['#FFD9B0','#C9803F','#7A4518','#3A1E08'],  // 1 bronze
+  ['#FFFFFF','#C9D0DA','#7D8796','#3A414C'],  // 2 argent
+  ['#FFF4B8','#F5C13A','#B57A0C','#5A3A02'],  // 3 or
+  ['#FFF4B8','#F5C13A','#B57A0C','#5A3A02'],  // 4 or + lauriers
+  ['#D8FFE9','#3DDC84','#118A4B','#04381D'],  // 5 émeraude
+  ['#D6ECFF','#4DA3FF','#1F5FC4','#0A2557'],  // 6 saphir
+  ['#FFD6DE','#FF4D6A','#B5122F','#4F0412'],  // 7 rubis
+  ['#EFE2FF','#B88CFF','#6B3FD6','#2A1066'],  // 8 améthyste
+  ['#FFFFFF','#BFF4FF','#5CC8E8','#14546B'],  // 9 diamant
+  ['#FFF6C8','#FFD54F','#FF6B4A','#3A0A2A'],  // 10 légendaire
+];
+const BGLYPH = {
+  shoe:'M3 15.5C3 12 5 11 7.5 11L10 8.5C11 7.5 12.5 8 13 9L14.5 11.5C17 12.5 21 13.5 21 16V17.5H3Z M8 14H10 M11 12.5H12.5',
+  bolt:'M13 2L4 14h7l-1 8 9-12h-7z',
+  cal:'M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v12a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z M4 10h16 M8.5 3v4 M15.5 3v4 M8 14h2 M14 14h2 M8 17h2',
+  peak:'M2 20L9 8l4 6 2-3 7 9z M9 8l2 3.5 M15 11l1.5 2.5',
+  lock:'M6 11h12v9H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3',
+};
+function bStar(cx, cy, n, R, r, rot = -90) {
+  let d = ''; for (let i = 0; i < n * 2; i++) { const a = (rot + i * 180 / n) * Math.PI / 180, rr = i % 2 ? r : R; d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rr).toFixed(2) + ' ' + (cy + Math.sin(a) * rr).toFixed(2); } return d + 'Z';
+}
+function bPoly(cx, cy, n, R, rot = -90) { return bStar(cx, cy, n / 2, R, R, rot); }
+function bLaurel(side, col) {
+  let s = ''; const sg = side;
+  for (let i = 0; i < 6; i++) {
+    const a = (120 + i * 22) * Math.PI / 180, r = 47, x = 60 + sg * Math.cos(a) * r * -1, y = 62 + Math.sin(a) * r * -1;
+    const rot = sg * (-(30 + i * 22));
+    s += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4" ry="8.5" transform="rotate(${rot} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${col}"/>`;
+  }
+  return s;
+}
+let BUID = 0;
+function badgeSvg({ tier = 1, glyph = 'shoe', label = '', locked = false, size = 120 }) {
+  const id = 'bd' + (BUID++), m = locked ? ['#5A5A66','#3A3A44','#26262E','#141418'] : BMAT[tier - 1];
+  const g = `<defs>
+    <linearGradient id="${id}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${m[0]}"/><stop offset=".45" stop-color="${m[1]}"/><stop offset="1" stop-color="${m[2]}"/></linearGradient>
+    <linearGradient id="${id}r" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m[0]}"/><stop offset=".5" stop-color="${m[2]}"/><stop offset="1" stop-color="${m[1]}"/></linearGradient>
+    <radialGradient id="${id}i" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="${m[2]}"/><stop offset="1" stop-color="${m[3]}"/></radialGradient>
+    ${tier === 10 && !locked ? `<linearGradient id="${id}x" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE58A"/><stop offset=".3" stop-color="#FF8A5C"/><stop offset=".6" stop-color="#FF4DA6"/><stop offset="1" stop-color="#7C5CFF"/></linearGradient>` : ''}
+    <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>`;
+  const M = tier === 10 && !locked ? `url(#${id}x)` : `url(#${id}m)`;
+  let back = '', shape, inner;
+  if (locked || tier <= 5) { shape = `<circle cx="60" cy="58" r="40"/>`; inner = `<circle cx="60" cy="58" r="30"/>`; }
+  else if (tier <= 7) { shape = `<path d="${bPoly(60, 58, 6, 44, -90)}" stroke-linejoin="round"/>`; inner = `<path d="${bPoly(60, 58, 6, 33, -90)}"/>`; }
+  else if (tier === 8) { shape = `<path d="${bStar(60, 58, 8, 46, 38)}" stroke-linejoin="round"/>`; inner = `<circle cx="60" cy="58" r="30"/>`; }
+  else { shape = `<path d="${bStar(60, 58, 12, 47, 40)}" stroke-linejoin="round"/>`; inner = `<circle cx="60" cy="58" r="30"/>`; }
+  if (!locked && tier >= 4 && tier <= 5) back += bLaurel(1, m[1]) + bLaurel(-1, m[1]);
+  if (!locked && tier >= 7) {
+    const w = s => `<path transform="translate(60 0) scale(${s} 1) translate(-60 0)" d="M30 50C14 44 6 30 4 20c8 6 16 8 24 9-6-4-9-9-10-14 8 6 15 9 22 10" fill="url(#${id}r)" stroke="${m[3]}" stroke-width="1.5" stroke-linejoin="round"/>`;
+    back += w(1) + w(-1);
+  }
+  let front = '';
+  if (!locked && tier >= 9) {
+    front += `<path d="M42 16l6 8 6-12 6 12 6-12 6 12 6-8-3 14H45z" fill="${tier === 10 ? '#FFD54F' : m[1]}" stroke="${m[3]}" stroke-width="1.5" stroke-linejoin="round" transform="translate(-6 -12)" filter="drop-shadow(0 2px 2px rgba(0,0,0,.4))"/>`;
+  }
+  if (!locked && tier === 10) back = `<circle cx="60" cy="58" r="56" fill="url(#${id}x)" opacity=".25"/>` + back;
+  const sh = (el, fill, extra = '') => el.replace('/>', ` fill="${fill}" ${extra}/>`);
+  const rays = !locked && tier >= 6 ? Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180; return `<line x1="${60 + Math.cos(a) * 34}" y1="${58 + Math.sin(a) * 34}" x2="${60 + Math.cos(a) * 52}" y2="${58 + Math.sin(a) * 52}" stroke="${m[1]}" stroke-opacity=".25" stroke-width="3" stroke-linecap="round"/>`; }).join('') : '';
+  const dots = false ? Array.from({ length: Math.min(tier, 5) }, (_, i) => { const n = Math.min(tier, 5), x = 60 + (i - (n - 1) / 2) * 7; return `<circle cx="${x}" cy="80" r="1.8" fill="${m[0]}"/>`; }).join('') : '';
+  const glyphSvg = `<g transform="translate(42.6 38.6) scale(1.45)" fill="none" stroke="${locked ? '#8A8A96' : '#fff'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ${locked ? '' : 'filter="drop-shadow(0 1.5px 1px rgba(0,0,0,.45))"'}><path d="${BGLYPH[locked ? 'lock' : glyph]}"/></g>`;
+  const rib = label ? `<g><path d="M24 92h72l-6 8 6 8H24l6-8z" fill="${locked ? '#2A2A32' : m[3]}"/><path d="M30 88h60v16H30z" fill="${M}" stroke="${m[3]}" stroke-width="1.2"/><text x="60" y="100.3" text-anchor="middle" font-family="Jakarta,sans-serif" font-weight="800" font-size="12" fill="${locked ? '#9A9AA6' : m[3]}" letter-spacing="-.3">${label}</text></g>` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="${size}" height="${size}">${g}
+    ${rays}${back}
+    <g filter="drop-shadow(0 4px 6px rgba(0,0,0,.45))">${sh(shape, M, `stroke="${m[3]}" stroke-width="2"`)}</g>
+    ${sh(inner, `url(#${id}i)`, `stroke="url(#${id}r)" stroke-width="3"`)}
+    ${dots}${glyphSvg}
+    ${sh(shape, `url(#${id}s)`, 'opacity=".6"')}
+    ${front}${rib}</svg>`;
+}
 const openBadges = () => {
   const ks = Object.keys(S.days).filter(k => (S.days[k].steps || 0) > 0).sort(), st = k => S.days[k].steps || 0;
   const tot = ks.reduce((t, k) => t + st(k), 0), by = f => { const o = {}; ks.forEach(k => { const g = f(k); o[g] = (o[g] || 0) + st(k); }); return o; };
   const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), dayV = ks.map(st);
   const best = a => a.length ? Math.max(...a) : 0, cnt = (a, g) => a.filter(v => v >= g).length;
   const G = [
-    { t:'Au total', c:'#FFC44A', m:['#FFE58A','#F2A91E','#9A5E0A'], u:'pas', list:[1e6, 2e6, 3e6, 4e6, 5e6, 6e6, 7e6, 8e6, 9e6, 1e7], v:[tot], once:true, lbl:'Depuis le début' },
-    { t:'En une journée', c:'#C9F23A', m:['#F0FFB0','#A8D81E','#4F7008'], u:'en 1 jour', list:[25e3, 5e4, 75e3, 1e5, 125e3, 15e4], v:dayV, lbl:'Ton record' },
-    { t:'En un mois', c:'#9EC5FF', m:['#FFFFFF','#B8C8E0','#5C6B85'], u:'en 1 mois', list:[25e4, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5], v:Object.values(mo), lbl:'Ton meilleur mois' },
-    { t:'En une année', c:'#C49BFF', m:['#F3E8FF','#A77BFF','#4C2A9E'], u:'en 1 an', list:[1e6, 15e5, 2e6, 25e5, 3e6], v:Object.values(yr), lbl:'Ta meilleure année' } ];
+    { t:'Au total', gl:'shoe', c:'#FFC44A', m:['#FFE58A','#F2A91E','#9A5E0A'], u:'pas', list:[1e6, 2e6, 3e6, 4e6, 5e6, 6e6, 7e6, 8e6, 9e6, 1e7], v:[tot], once:true, lbl:'Depuis le début' },
+    { t:'En une journée', gl:'bolt', c:'#C9F23A', m:['#F0FFB0','#A8D81E','#4F7008'], u:'en 1 jour', list:[25e3, 5e4, 75e3, 1e5, 125e3, 15e4], v:dayV, lbl:'Ton record' },
+    { t:'En un mois', gl:'cal', c:'#9EC5FF', m:['#FFFFFF','#B8C8E0','#5C6B85'], u:'en 1 mois', list:[25e4, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5], v:Object.values(mo), lbl:'Ton meilleur mois' },
+    { t:'En une année', gl:'peak', c:'#C49BFF', m:['#F3E8FF','#A77BFF','#4C2A9E'], u:'en 1 an', list:[1e6, 15e5, 2e6, 25e5, 3e6], v:Object.values(yr), lbl:'Ta meilleure année' } ];
   let won = 0, all = 0, d = 0;
   const secs = G.map((g, gi) => {
     const bv = best(g.v); let w = 0;
-    const cells = g.list.map(x => { const n = g.once ? (bv >= x ? 1 : 0) : cnt(g.v, x); all++; if (n) { won++; w++; }
-      return `<div class="bg ${n ? 'on' : 'lock'}" data-g="${gi}" data-x="${x}" data-n="${n}" data-p="${Math.min(100, bv / x * 100).toFixed(1)}" style="--d:${(.15 + d++ * .045).toFixed(2)}s"><i><u>${kTxt(x)}</u></i><small>${g.u}</small>${n > 1 ? `<b>×${n}</b>` : ''}</div>`; }).join('');
+    const cells = g.list.map((x, xi) => { const n = g.once ? (bv >= x ? 1 : 0) : cnt(g.v, x); all++; if (n) { won++; w++; }
+      return `<div class="bg ${n ? 'on' : 'lock'}" data-g="${gi}" data-x="${x}" data-n="${n}" data-p="${Math.min(100, bv / x * 100).toFixed(1)}" style="--d:${(.15 + d++ * .045).toFixed(2)}s"><i>${badgeSvg({ tier: Math.round(xi * 9 / (g.list.length - 1)) + 1, glyph: g.gl, label: kTxt(x), locked: !n, size: 100 })}</i><small>${g.u}</small>${n > 1 ? `<b>×${n}</b>` : ''}</div>`; }).join('');
     const nx = g.list.find(x => bv < x);
     return `<div class="bgsec" style="--bc:${g.c};--b1:${g.m[0]};--b2:${g.m[1]};--b3:${g.m[2]};animation-delay:${.1 + gi * .08}s"><h5><i></i>${g.t}<span>${w}/${g.list.length}</span></h5><p>${g.lbl} : <b>${fmt(bv)}</b> pas${nx ? ` · encore <b>${fmt(nx - bv)}</b> pour ${kTxt(nx)}` : ' · tout débloqué 🔥'}</p><div class="bgg">${cells}</div></div>`;
   }).join('');
@@ -4090,10 +4157,20 @@ const renderGstats = () => {
   // progression (1RM estimé)
   const exs = {}; ws.forEach(w => w.ex.forEach(e => { const k = exKey(e.name); (exs[k] ||= { name: e.name, cat: e.cat, sets: [] }).sets.push(...e.sets); }));
   const before = {}; S.workouts.filter(w => w.start < aT).forEach(w => w.ex.forEach(e => { const k = exKey(e.name); (before[k] ||= []).push(...e.sets); }));
-  const rows = Object.entries(exs).map(([k, x]) => { const bn = bestSet(x.sets), bp = before[k] ? bestSet(before[k]) : null; return { k, ...x, bn, d: bp ? bn.e - bp.e : null }; })
+  const rows = Object.entries(exs).map(([k, x]) => { const bn = bestSet(x.sets), bp = before[k] ? bestSet(before[k]) : null; return { k, ...x, bn, bp, d: bp ? bn.e - bp.e : null }; })
     .sort((x, y) => (y.d ?? -999) - (x.d ?? -999));
-  $('#gsEx').innerHTML = rows.length ? rows.map(r => `<button class="gex" data-x="${esc(r.k)}"><i style="background:${catColor(r.cat)}"></i><div class="gex-n"><b>${esc(r.name)}</b><small>Meilleure série ${kgTxt(r.bn.kg)} kg × ${r.bn.reps} · 1RM estimé ${kgTxt(r.bn.e)} kg</small></div>
-      ${r.d == null ? '' : Math.abs(r.d) < .05 ? '<span class="wd eq">=</span>' : `<span class="wd ${r.d > 0 ? 'up' : 'dn'}">${r.d > 0 ? '+' : '−'}${kgTxt(Math.abs(r.d))} kg</span>`}</button>`).join('')
+  const hist = k => S.workouts.filter(w => w.start < bT).sort((x, y) => x.start - y.start).map(w => { const e = w.ex.find(z => exKey(z.name) === k); return e && e.sets.length ? bestSet(e.sets).e : null; }).filter(v => v > 0).slice(-8);
+  const spark = (v, col) => { if (v.length < 2) return ''; const lo = Math.min(...v), hi = Math.max(...v), r = hi - lo || 1, W = 92, H = 34;
+    const pts = v.map((x, i) => [i / (v.length - 1) * (W - 6) + 3, H - 5 - (x - lo) / r * (H - 10)]), d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(''), l = pts.at(-1), id = 'sp' + Math.random().toString(36).slice(2, 7);
+    return `<svg class="gex-sp" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${d}L${l[0]} ${H}L${pts[0][0]} ${H}Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${l[0]}" cy="${l[1]}" r="3.5" fill="${col}" stroke="var(--card)" stroke-width="2"/></svg>`; };
+  const chip = r => { if (!r.bp) return '<span class="gex-c nw">Nouveau</span>';
+    const dk = r.bn.kg - r.bp.kg, dr = r.bn.reps - r.bp.reps;
+    if (Math.abs(dk) >= .05) return `<span class="gex-c ${dk > 0 ? 'up' : 'dn'}">${dk > 0 ? '▲ +' : '▼ −'}${kgTxt(Math.abs(dk))} kg</span>`;
+    if (dr) return `<span class="gex-c ${dr > 0 ? 'up' : 'dn'}">${dr > 0 ? '▲ +' : '▼ −'}${Math.abs(dr)} rép</span>`;
+    return '<span class="gex-c eq">= stable</span>'; };
+  $('#gsEx').innerHTML = rows.length ? rows.map((r, i) => { const col = catColor(r.cat), h = hist(r.k);
+    return `<button class="gex press" data-x="${esc(r.k)}" style="--gc:${col};animation-delay:${i * 40}ms"><div class="gex-t"><i></i><b>${esc(r.name)}</b>${chip(r)}</div>
+      <div class="gex-m"><div><small>Meilleure série</small><strong>${kgTxt(r.bn.kg)}<em> kg</em> × ${r.bn.reps}</strong></div>${spark(h, col)}</div></button>`; }).join('')
     : '<div class="empty" style="padding:12px 0">Lance une routine pour suivre ta progression</div>';
   $$('#gsEx [data-x]').forEach(b => b.onclick = () => openExStats(b.dataset.x));
 };

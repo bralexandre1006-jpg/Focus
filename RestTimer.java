@@ -62,23 +62,42 @@ public class RestTimer {
         try { o.getClass().getMethod(m, t).invoke(o, v); } catch (Throwable ignored) {}
     }
 
-    static void start(Context c, long end, String label, String sound) {
+    static android.os.Handler H;
+    static Runnable tick;
+
+    static String clock(long ms) { long t = Math.max(0, (ms + 999) / 1000); return (t / 60) + ":" + (t % 60 < 10 ? "0" : "") + (t % 60); }
+
+    /** HyperOS affiche le titre dans l'île : on le remet à jour chaque seconde avec le temps restant. */
+    static void post(Context c, long end, String label) {
         if (Build.VERSION.SDK_INT >= 26 && nm(c).getNotificationChannel(LIVE_CH) == null) {
             NotificationChannel ch = new NotificationChannel(LIVE_CH, "Minuteur de repos", NotificationManager.IMPORTANCE_DEFAULT);
             ch.setSound(null, null); ch.enableVibration(false); ch.setShowBadge(false);
             nm(c).createNotificationChannel(ch);
         }
+        String left = clock(end - System.currentTimeMillis());
         Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, LIVE_CH) : new Notification.Builder(c);
-        b.setSmallIcon(icon(c)).setContentTitle("Repos").setContentText(label).setOngoing(true).setOnlyAlertOnce(true)
+        b.setSmallIcon(icon(c)).setContentTitle(left).setContentText("Repos · " + label).setOngoing(true).setOnlyAlertOnce(true)
             .setWhen(end).setShowWhen(true).setUsesChronometer(true).setCategory(Notification.CATEGORY_STOPWATCH)
             .setContentIntent(openApp(c)).setColor(0xFFD7FF3A).setVisibility(Notification.VISIBILITY_PUBLIC);
         if (Build.VERSION.SDK_INT >= 24) b.setChronometerCountDown(true);
         if (Build.VERSION.SDK_INT >= 31) b.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
-        // Android 16 : Live Update ; sans texte court, la pastille affiche le compte à rebours
         call(b, "setRequestPromotedOngoing", boolean.class, true);
+        call(b, "setShortCriticalText", String.class, left);
         Notification n = b.build();
         n.extras.putBoolean("android.requestPromotedOngoing", true);
         try { nm(c).notify(LIVE_ID, n); } catch (SecurityException ignored) {}
+    }
+
+    static void start(Context c, long end, String label, String sound) {
+        final Context app = c.getApplicationContext();
+        if (H == null) H = new android.os.Handler(android.os.Looper.getMainLooper());
+        if (tick != null) H.removeCallbacks(tick);
+        tick = new Runnable() { public void run() {
+            if (System.currentTimeMillis() >= end) { tick = null; return; }
+            post(app, end, label);
+            H.postDelayed(this, 1000 - (System.currentTimeMillis() % 1000) + 20);
+        } };
+        tick.run();
 
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pi = endIntent(c, label, sound);
@@ -89,6 +108,8 @@ public class RestTimer {
     }
 
     static void stop(Context c) {
+        if (H != null && tick != null) H.removeCallbacks(tick);
+        tick = null;
         nm(c).cancel(LIVE_ID);
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         am.cancel(endIntent(c, "", ""));
@@ -115,6 +136,8 @@ public class RestTimer {
             String sound = i.getStringExtra("sound");
             if (sound == null) sound = "bip";
             String label = i.getStringExtra("label");
+            if (H != null && tick != null) H.removeCallbacks(tick);
+            tick = null;
             nm(c).cancel(LIVE_ID);
             Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, endChannel(c, sound)) : new Notification.Builder(c);
             b.setSmallIcon(icon(c)).setContentTitle("Repos terminé 💪").setContentText(label == null ? "On repart" : "On repart : " + label)
