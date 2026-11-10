@@ -362,6 +362,9 @@ body.lite .hx-wk{border-radius:22px}
 @keyframes pnsw{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* settings */
+.sndl{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 14px;border-bottom:1px solid var(--line)}
+.sndl button{min-height:44px;padding:0 15px;border-radius:14px;background:var(--card2);color:var(--txt);font-weight:800;font-size:14px}
+.sndl button.on{background:var(--acc);color:#0B0B0F}
 .srow{display:flex;align-items:center;justify-content:space-between;min-height:60px;gap:12px;border-bottom:1px solid var(--line)}
 .srow:last-child{border:0}
 .srow .l{font-size:17px;font-weight:800}
@@ -920,6 +923,24 @@ body.lite .wb .wl small{font-size:11px}
 .qbtn{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--mut);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex-shrink:0;position:relative;line-height:1}
 .qbtn::after{content:"";position:absolute;inset:-12px}
 .qcorner{position:absolute!important;right:12px;bottom:12px;z-index:2}
+.qcorner::after{content:"";position:absolute;inset:-8px}
+.qbadge{right:46px!important;color:#FFC44A}
+body.lite .qbadge{right:40px!important}
+.bgs h5{font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 10px}.bgs h5:first-child{margin-top:4px}
+.bgs h5 span{float:right;color:var(--mut);letter-spacing:.04em}
+.bgg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.bg{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;animation:rise .4s var(--ease) both}
+.bg i{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:15px;letter-spacing:-.03em;background:var(--card2);color:#5A5A66;border:2px dashed rgba(255,255,255,.08)}
+.bg.on i{color:#1A1206;border:0;background:radial-gradient(circle at 30% 25%,#FFF6C8,#FFD54F 35%,#E8A21C 75%,#A8690E);box-shadow:0 6px 18px rgba(255,180,60,.3),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.6)}
+.bg.on.t2 i{background:radial-gradient(circle at 30% 25%,#FFFFFF,#D8DEE8 35%,#9AA4B4 75%,#5E6878);box-shadow:0 6px 18px rgba(170,190,220,.25),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.7)}
+.bg.on.t3 i{background:radial-gradient(circle at 30% 25%,#F4FFE0,var(--acc) 40%,#7BB51A 80%,#3F6A08);box-shadow:0 6px 18px rgba(180,255,60,.25),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.6)}
+.bg.on.t4 i{background:radial-gradient(circle at 30% 25%,#F0E6FF,#B88CFF 40%,#7A4FE0 80%,#3E2390);color:#fff;box-shadow:0 6px 18px rgba(184,140,255,.3),inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.5)}
+.bg small{font-size:11px;color:var(--mut);text-align:center;line-height:1.2}
+.bg.on small{color:var(--txt)}
+.bg b{position:absolute;top:-4px;right:2px;min-width:24px;height:20px;padding:0 6px;border-radius:10px;background:#FF4D6A;color:#fff;font-size:11px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.bgp{margin:12px 0 2px;padding:12px 14px;border-radius:16px;background:var(--card)}
+.bgp div{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}.bgp div b{color:var(--txt)}
+.bgp em{display:block;height:6px;border-radius:3px;background:var(--card2);margin-top:8px;overflow:hidden}.bgp em s{display:block;height:100%;background:linear-gradient(90deg,#FFD54F,#FF9F43);border-radius:3px}
 body.lite .qcorner{right:10px;bottom:10px;width:18px;height:18px;font-size:11px}
 .c-steps .burn .bw{display:none}
 body.lite .c-steps .burn .bw{display:inline}
@@ -1061,7 +1082,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .rte-lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 5px 4px}
 .rte-ta,.wcfg-t,.note-ta{width:100%;display:block;resize:none;border:2px solid transparent;outline:0;background:var(--card2);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;color:var(--txt);line-height:1.4;overflow:hidden;min-height:48px;transition:border-color .2s}
 .rte-ta:focus,.wcfg-t:focus,.note-ta:focus{border-color:var(--acc)}
-#catModal,#noteModal,#exModal,#restModal,#rtPick,#dayMenu,#dayEdit,#newsModal,#monthModal{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
+#catModal,#noteModal,#exModal,#restModal,#rtPick,#dayMenu,#dayEdit,#newsModal,#badgeModal,#monthModal{z-index:140;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
 #catModal,#noteModal,#restModal,#dayMenu,#dayEdit{top:auto;max-height:calc(100% - var(--st) - 30px)}
 .catlist{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .catit{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 14px;border-radius:14px;background:var(--card);font-size:16px;font-weight:800;text-align:left;color:var(--txt);animation:rise .3s var(--ease) both}
@@ -1136,7 +1157,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 @keyframes wdin{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
 .wd.up{color:var(--ok);background:rgba(61,220,132,.14)}
 .wd.dn{color:var(--bad);background:rgba(255,77,106,.14)}
-.wd.eq{color:var(--mut);background:var(--card2)}
+.wd.eq{color:var(--txt,#fff);background:var(--card2);font-size:18px;line-height:1;padding:1px 9px 3px;opacity:.75}
 .wd.nw{color:var(--wgt);background:rgba(90,184,255,.14)}
 .wex-f{display:flex;justify-content:space-between;margin-top:4px}
 .wex-f button{height:36px;padding:0 4px;color:var(--acc);font-size:14px;font-weight:800}
@@ -1384,6 +1405,8 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
 .wex-h .wdone{display:none;width:26px;height:26px;border-radius:50%;background:var(--ok);color:#06210F;font-size:14px;font-weight:900;place-items:center;flex-shrink:0}
 .wex.complete .wdone{display:grid;animation:ckPop .5s var(--spring)}
 .wex.complete .wcat{display:none}
+.wpr img{width:30px;height:30px;display:block;filter:drop-shadow(0 2px 8px rgba(255,180,60,.55))}
+.wd.pr{font-size:10px;padding:4px 5px}
 .wpr{font-size:22px;line-height:1;display:inline-block;filter:drop-shadow(0 2px 8px rgba(255,180,60,.5));animation:prIn .6s var(--spring)}
 @keyframes prIn{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.25) rotate(6deg)}100%{transform:none}}
 .wo-intro{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,rgba(215,255,58,.25),transparent 60%),#0B0B0F;opacity:0;pointer-events:none;visibility:hidden}
@@ -1476,6 +1499,7 @@ body.lite .card::before{will-change:transform}
       </div>
       <div class="burn"><svg class="bfl" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 2.6-.6 4.3-2 5.9-1.5 1.7-3.6 3.5-3.6 6.9A5 5 0 0 0 12 20a5 5 0 0 0 5-5c0-1.6-.6-2.9-1.4-3.9-.2 1.2-.8 2.1-1.8 2.6.5-3-1-6.6-1.2-11.5zM12 22a7 7 0 0 1-7-7c0-4.2 2.6-6.5 4.1-8.2C10.6 5.2 11.5 4 11.2 1.4L11 0l1.3.6c3.9 1.9 7.7 6.8 7.7 14.4a7 7 0 0 1-8 7z" opacity="0"/><path fill="currentColor" d="M13 1.5c.6 3.2-.9 5-2.3 6.6C9 10 7 11.8 7 15a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.4-.1 1.4-.8 2.4-1.9 3 .6-3.5-.6-7.2-.3-12.1z"/></svg><b id="burnK">0</b><small>kcal<span class="bw"> brûlées</span></small><small id="burnD">0 km</small></div>
       <button class="qbtn qcorner" id="burnQ" aria-label="Comment c'est calculé ?">?</button>
+      <button class="qbtn qcorner qbadge" id="badgeBtn" aria-label="Badges"><svg viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M7 3h10v2h3v3a4 4 0 0 1-4 4h-.3A5 5 0 0 1 13 14.9V17h3v3H8v-3h3v-2.1A5 5 0 0 1 8.3 12H8a4 4 0 0 1-4-4V5h3V3zm0 4H6v1a2 2 0 0 0 1 1.7V7zm10 0v2.7A2 2 0 0 0 18 8V7h-1z"/></svg></button>
     </div>
 
     <div class="card c-prog hidden" id="pgCard">
@@ -1670,6 +1694,8 @@ body.lite .card::before{will-change:transform}
       <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Sons</div><button class="tgl" id="tSound"></button></div>
       <div class="srow"><div class="l">Vibrations</div><button class="tgl" id="tHaptic"></button></div>
+      <div class="lbl-s">Son de fin du minuteur</div>
+      <div class="sndl" id="sndList"></div>
       <div class="srow"><div class="l">Bilan du dimanche à 19 h</div><button class="tgl" id="tRecap"></button></div>
       <div class="srow"><div class="l">Focus Lite<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Interface épurée et compacte</small></div><button class="tgl" id="tLite"></button></div>
       <div class="srow" id="gradRow"><div class="l">Couleurs des cartes<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Dégradés et halos en mode Lite</small></div><button class="tgl" id="tGrad"></button></div>
@@ -1902,6 +1928,11 @@ body.lite .card::before{will-change:transform}
   <div class="sb-hint" id="sbHint">Touche pour continuer</div>
 </div>
 
+<div class="modal" id="badgeModal">
+  <div class="mgrab"></div>
+  <div class="mhead"><h4>Badges</h4><button class="x press" data-close>×</button></div>
+  <div class="mbody bgs" id="badgeBody"></div>
+</div>
 <div class="modal" id="newsModal">
   <div class="mgrab"></div>
   <div class="mhead"><h4 id="newsT">Nouveautés</h4><button class="x press" data-close>×</button></div>
@@ -3323,6 +3354,24 @@ const bindSex = (el, onPick) => el.querySelectorAll('button').forEach(b => b.onc
 bindSex($('#oSex'));
 bindSex($('#pSex'), x => { S.profile.sex = x; save(); toast('Profil mis à jour'); });
 $('#burnQ').onclick = e => { e.stopPropagation(); openBurnInfo(); };
+const kTxt = n => n >= 1e6 ? (n / 1e6).toLocaleString('fr-BE', { maximumFractionDigits: 1 }) + 'M' : Math.round(n / 1000) + 'k';
+const openBadges = () => {
+  const ks = Object.keys(S.days).filter(k => (S.days[k].steps || 0) > 0).sort(), st = k => S.days[k].steps || 0;
+  const tot = ks.reduce((t, k) => t + st(k), 0), by = (f) => { const o = {}; ks.forEach(k => { const g = f(k); o[g] = (o[g] || 0) + st(k); }); return o; };
+  const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), cy = String(new Date().getFullYear()), cyv = yr[cy] || 0;
+  let d = 0; const med = (v, lbl, n, t) => `<div class="bg ${n ? 'on' : ''} ${t}" style="animation-delay:${Math.min(d++, 30) * .02}s"><i>${v}</i><small>${lbl}</small>${n > 1 ? `<b>×${n}</b>` : ''}</div>`;
+  const prog = (lbl, v, goal) => goal ? `<div class="bgp"><div><span>${lbl}</span><b>${fmt(v)} / ${kTxt(goal)}</b></div><em><s style="width:${Math.min(100, v / goal * 100)}%"></s></em></div>` : '';
+  const TOT = [25e3, 50e3, 75e3, 1e5, 125e3, 15e4, 2e5, 25e4, 5e5, 75e4, 1e6, 15e5, 2e6, 3e6, 5e6, 75e5, 1e7];
+  const DAY = [1e4, 15e3, 2e4, 25e3, 3e4, 4e4], MON = [1e5, 15e4, 2e5, 25e4, 3e5, 4e5], YR = [1e6, 2e6, 3e6, 4e6, 5e6];
+  const cnt = (o, g) => Object.values(o).filter(v => v >= g).length, dayN = g => ks.filter(k => st(k) >= g).length;
+  const won = TOT.filter(g => tot >= g).length + DAY.filter(g => dayN(g)).length + MON.filter(g => cnt(mo, g)).length + YR.filter(g => cnt(yr, g)).length, all = TOT.length + DAY.length + MON.length + YR.length;
+  $('#badgeBody').innerHTML = `<h5>Au total <span>${won}/${all} débloqués</span></h5><div class="bgg">${TOT.map(g => med(kTxt(g), 'pas', tot >= g ? 1 : 0, 't1')).join('')}</div>${prog('Total', tot, TOT.find(g => tot < g))}
+    <h5>En une journée</h5><div class="bgg">${DAY.map(g => med(kTxt(g), 'en 1 jour', dayN(g), 't3')).join('')}</div>
+    <h5>En un mois</h5><div class="bgg">${MON.map(g => med(kTxt(g), 'en 1 mois', cnt(mo, g), 't2')).join('')}</div>${prog('Ce mois-ci', mo[key(new Date()).slice(0, 7)] || 0, MON.find(g => (mo[key(new Date()).slice(0, 7)] || 0) < g))}
+    <h5>En une année</h5><div class="bgg">${YR.map(g => med(kTxt(g), 'en 1 an', cnt(yr, g), 't4')).join('')}</div>${prog('En ' + cy, cyv, YR.find(g => cyv < g))}`;
+  openOv('badgeModal');
+};
+$('#badgeBtn').onclick = e => { e.stopPropagation(); openBadges(); sfx.tap(); buzz(); };
 const applyLite = () => {
   document.body.classList.toggle('lite', !!S.settings.lite);
   document.body.classList.toggle('nograd', S.settings.grad === false);
@@ -3691,6 +3740,14 @@ const startTick = () => { clearInterval(woTick); if (!S.activeWo && !rest) retur
       $('#woPillT').textContent = rest ? fmtClock(rest.end - Date.now()) : t; $('#woPillS').textContent = rest ? 'Repos en cours' : 'Séance en cours'; $('#woPill').classList.toggle('resting', !!rest);
       const c = $('#ctaT'); if (c && cur === 'today') c.textContent = `${t} · ${woDoneCount(S.activeWo)}`; } tickRest(); };
   f(); woTick = setInterval(f, rest ? 250 : 1000); };
+const FN_TOK = 'data:image/webp;base64,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';
+const prIcon = () => feat('fnTok') ? `<img src="${FN_TOK}" alt="">` : '🏆';
+const prDelta = (st, prev, uni) => {
+  if (!prev) return '<span class="wd up pr">PR</span>';
+  const dk = num(st.kg) - num(prev.kg), dr = (uni ? num(st.reps) + num(st.repsR) - num(prev.reps) - num(prev.repsR) : num(st.reps) - num(prev.reps)), t = [];
+  if (dk) t.push(`${dk > 0 ? '+' : '−'}${kgTxt(Math.abs(dk))} kg`); if (dr) t.push(`${dr > 0 ? '+' : '−'}${Math.abs(dr)} rép`);
+  return `<span class="wd up pr">${t.join(' ') || 'PR'}</span>`;
+};
 const deltaOf = (st, prev, uni) => {
   const kg = st.kg === '' ? null : num(st.kg), r = uni ? (st.reps === '' && st.repsR === '' ? null : num(st.reps) + num(st.repsR)) : (st.reps === '' ? null : num(st.reps));
   if (kg == null && r == null) return '';
@@ -3757,7 +3814,7 @@ const autoNext = (inp, p, e) => {
   if (f === 'kg') {
     if (!p) return; const pk = num(p.kg), pd = /[.,]/.test(kgTxt(pk)), m = v.match(/^(\d+)(?:[.,](\d*))?$/); if (!m) return;
     if (m[2]) { go(); return; } if (/[.,]$/.test(v)) return;
-    if (m[1].length >= String(Math.floor(pk)).length) { if (pd || +m[1] * 10 <= Math.max(pk * 2.5, 20)) anT = setTimeout(go, 1200); else go(); }
+    if (m[1].length >= String(Math.floor(pk)).length) anT = setTimeout(go, 1500);
     return;
   }
   if (!/^\d+$/.test(v)) return;
@@ -3774,7 +3831,8 @@ const markDone = (e, st, row, si, p, fromReps) => {
     row.classList.remove('just'); void row.offsetWidth; row.classList.add('just');
     const w = woCur(), pb = bestEver(e.name, w && w.id);
     if (pb && e1rm({ kg: num(st.kg), reps: num(st.reps), repsR: num(st.repsR) }) > pb + .01 && !woEdit) {
-      row.querySelector('.wdc').innerHTML = '<span class="wpr">🏆</span>'; burst(row.querySelector('.wn'), ['#FFD54F','#FF9F43','#D7FF3A','#fff']);
+      const wdc = row.querySelector('.wdc'); wdc.innerHTML = `<span class="wpr">${prIcon()}</span>`; burst(row.querySelector('.wn'), ['#FFD54F','#FF9F43','#D7FF3A','#fff']);
+      setTimeout(() => { if (wdc.isConnected && st.done) wdc.innerHTML = prDelta(st, p, e.uni); }, 3000);
       tone([784, 988, 1319], .1, 'triangle', .12); buzz('heavy');
     } else { tone([660, 880], .07, 'sine', .07); buzz('medium'); }
     const box = row.closest('.wex');
@@ -3794,7 +3852,7 @@ const startRest = (sec, label) => {
 };
 const stopRest = (done) => {
   if (!rest) return; rest = null; $('#rest').classList.remove('on'); cancelRestNotif();
-  if (done) { tone([784, 988, 1175], .14, 'triangle', .14); buzz('success'); if (navigator.vibrate) navigator.vibrate([200, 100, 200]); toast('Repos terminé 💪'); }
+  if (done) { if (!nativeRest()) tone([784, 988, 1175], .14, 'triangle', .14); buzz('success'); if (navigator.vibrate) navigator.vibrate([200, 100, 200]); toast('Repos terminé 💪'); }
   startTick();
 };
 const tickRest = () => { if (!rest) return; const left = rest.end - Date.now();
@@ -3802,8 +3860,14 @@ const tickRest = () => { if (!rest) return; const left = rest.end - Date.now();
   $('#restT').textContent = fmtClock(left); $('#restP').style.transform = `scaleX(${Math.max(0, left / rest.dur)})`; };
 $$('#rest [data-r]').forEach(b => b.onclick = () => { if (!rest) return; const d = +b.dataset.r * 1000; rest.end = Math.max(Date.now() + 1000, rest.end + d); rest.dur = Math.max(rest.dur, rest.end - Date.now()); scheduleRestNotif(); tickRest(); sfx.tap(); buzz(); });
 $('#restX').onclick = () => { stopRest(false); sfx.tap(); buzz(); };
-const scheduleRestNotif = async () => { if (!LN || !rest) return; try { await LN.cancel({ notifications:[{ id: 9500 }] }); await LN.schedule({ notifications:[{ id: 9500, title:'Repos terminé', body:`On repart : ${rest.label}`, schedule:{ at: new Date(rest.end), allowWhileIdle:true }, smallIcon:'ic_stat_focus', iconColor:'#D7FF3A' }] }); } catch(e) {} };
-const cancelRestNotif = async () => { if (!LN) return; try { await LN.cancel({ notifications:[{ id: 9500 }] }); } catch(e) {} };
+const RSND = [['bip','Bip'],['cloche','Cloche'],['gong','Gong'],['sifflet','Sifflet'],['arcade','Arcade'],['systeme','Système'],['vibre','Vibreur']];
+const restSnd = () => S.settings.restSnd || 'bip';
+const nativeRest = () => P.StepCounter && P.StepCounter.restStart;
+const scheduleRestNotif = async () => { if (!rest) return;
+  if (nativeRest()) { try { await P.StepCounter.restStart({ end: rest.end, label: rest.label, sound: restSnd() }); return; } catch(e) {} }
+  if (!LN) return; try { await LN.cancel({ notifications:[{ id: 9500 }] }); await LN.schedule({ notifications:[{ id: 9500, title:'Repos terminé', body:`On repart : ${rest.label}`, schedule:{ at: new Date(rest.end), allowWhileIdle:true }, smallIcon:'ic_stat_focus', iconColor:'#D7FF3A' }] }); } catch(e) {} };
+const cancelRestNotif = async () => { if (nativeRest()) { try { await P.StepCounter.restStop(); } catch(e) {} }
+  if (!LN) return; try { await LN.cancel({ notifications:[{ id: 9500 }] }); } catch(e) {} };
 
 /* choix du temps de repos */
 const RP_STEP = 15, RP_MAX = 360, RP_N = RP_MAX / RP_STEP + 1, RP_W = 14;
@@ -3873,9 +3937,9 @@ const showSummary = w => {
   const prs = w.ex.map(e => { const pb = bestEver(e.name, w.id), b = bestSet(e.sets); return pb && b.e > pb + .01 ? { n: e.name, b } : null; }).filter(Boolean);
   const dv = pv ? Math.round((vol - pv) / pv * 100) : null;
   $('#sumName').textContent = `${w.name} · ${new Date(w.start).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' })}`;
-  $('#sumK').innerHTML = [[fmtDur(w.min), 'durée', ''], [fmtKg(vol), 'volume', dv == null ? '' : `${dv >= 0 ? '+' : ''}${dv} % vs dernière fois`], [woSets(w), 'séries', ''], [prs.length, prs.length > 1 ? 'records' : 'record', '']]
+  $('#sumK').innerHTML = [[fmtDur(w.min), 'durée', ''], [fmtKg(vol), 'volume', dv == null ? '' : `${dv >= 0 ? '+' : ''}${dv} % vs dernière fois`], [woSets(w), 'séries', ''], [prs.length, 'PR', '']]
     .map((k, i) => `<div style="animation-delay:${.55 + i * .08}s"><b>${k[0]}</b><small>${k[1]}</small>${k[2] ? `<br><em style="color:${dv < 0 ? 'var(--bad)' : 'var(--ok)'}">${k[2]}</em>` : ''}</div>`).join('');
-  $('#sumPR').innerHTML = prs.map((p, i) => `<div class="sprl" style="animation-delay:${.9 + i * .08}s">🏆<b>${esc(p.n)}</b><span>${kgTxt(p.b.kg)} kg × ${p.b.reps}</span></div>`).join('');
+  $('#sumPR').innerHTML = prs.map((p, i) => `<div class="sprl" style="animation-delay:${.9 + i * .08}s">${feat('fnTok') ? `<img src="${FN_TOK}" alt="" style="width:20px;height:20px">` : '🏆'}<b>${esc(p.n)}</b><span>${kgTxt(p.b.kg)} kg × ${p.b.reps}</span></div>`).join('');
   const el = $('#woSum'); el.classList.add('on');
   setTimeout(() => { burst($('.wsum-ck'), ['#3DDC84',ACC1,'#ffffff','#5AB8FF','#FFD54F']); sfx.win(); buzz('success'); }, 800);
   if (prs.length) setTimeout(() => { burst($('#sumPR'), ['#FFD54F','#FF9F43','#fff']); tone([784, 988, 1319], .1, 'triangle', .12); }, 1300);
@@ -4008,8 +4072,16 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
   return { n: ws.length, min: ws.reduce((t, w) => t + w.min, 0), vol: ws.reduce((t, w) => t + woVol(w), 0), cats: Object.entries(byCat).sort((x, y) => y[1] - x[1]).slice(0, 3) }; };
 
 /* ---------- v1.37 : fonctionnalités ---------- */
-const APP_VER = '1.38';
+const APP_VER = '1.39';
 const CHANGELOG = [
+  { v:'1.39', items:[
+    'Badges de pas : au total, en un jour, en un mois et en un an (bouton trophée sur la carte Pas)',
+    'Minuteur de repos dans les notifications et la barre d\'état, avec le son de fin au choix dans les réglages',
+    'Le widget se met à jour tout seul, même app fermée',
+    'Après un record, le trophée laisse place à ton gain (+kg, +rép)',
+    'Signe = plus visible, et 1,5 s de délai sur le poids pour taper la virgule',
+    'Fin de séance : les records s\'appellent PR',
+    'Un easter egg caché dans les réglages 🎮' ] },
   { v:'1.38', items:[
     'Bilans de la semaine et du mois en mode histoire : page par page, avec animations et un récap final à partager',
     'Nouveaux widgets en 4 tailles : 7 styles et 16 thèmes (Chrome, Cartoon, Futuriste, Rétro, iOS, noir et blanc…). Appui long sur le widget pour le modifier',
@@ -4036,8 +4108,10 @@ const FEATS = [
   ['backup','Sauvegarde hebdo','Un fichier par semaine dans Documents/Focus'],
   ['smooth','Moyenne 7 j du poids','Courbe lissée et date estimée'],
   ['monthRec','Bilan du mois','Ouvert au début de chaque mois'],
-  ['news','Nouveautés','Fenêtre après chaque mise à jour'] ];
-function feat(k) { return !S.settings.f || S.settings.f[k] !== false; }
+  ['news','Nouveautés','Fenêtre après chaque mise à jour'],
+  ['fnTok','Easter egg 🎮','Le token Fortnite à la place du trophée'] ];
+const FEAT_OFF = ['fnTok'];
+function feat(k) { const v = S.settings.f && S.settings.f[k]; return v === undefined ? !FEAT_OFF.includes(k) : v !== false; }
 const ACCENTS = { lime:['#D7FF3A','#7BE07E'], bleu:['#5AB8FF','#7C8CFF'], violet:['#B88CFF','#FF7AD9'], orange:['#FFB347','#FF6B4A'], rose:['#FF7AB8','#FFB86B'], cyan:['#4FE3D0','#5AB8FF'] };
 const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
 let accOrig = null;
@@ -4140,6 +4214,9 @@ const renderFeat = () => {
   S.settings.f ||= {};
   $('#accents').innerHTML = Object.entries(ACCENTS).map(([k, c]) => `<button data-a="${k}" class="${(S.settings.accent || 'lime') === k ? 'on' : ''}" style="--a1:${c[0]};--a2:${c[1]}" aria-label="${k}"></button>`).join('');
   $$('#accents [data-a]').forEach(b => b.onclick = () => { S.settings.accent = b.dataset.a; save(); applyAccent(); renderFeat(); sfx.tap(); buzz(); rendered.history = rendered.stats = null; });
+  $('#sndList').innerHTML = RSND.map(([k, t]) => `<button class="press ${restSnd() === k ? 'on' : ''}" data-snd="${k}">${t}</button>`).join('');
+  $$('#sndList [data-snd]').forEach(b => b.onclick = () => { S.settings.restSnd = b.dataset.snd; save(); $$('#sndList button').forEach(x => x.classList.toggle('on', x === b));
+    if (P.StepCounter && P.StepCounter.restPreview) P.StepCounter.restPreview({ sound: b.dataset.snd }).catch(() => {}); else buzz(); });
   $('#featList').innerHTML = FEATS.map(([k, t, d]) => `<div class="srow"><div class="l">${t}<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">${d}</small></div><button class="tgl ${feat(k) ? 'on' : ''}" data-ft="${k}"></button></div>`).join('');
   $$('#featList [data-ft]').forEach(b => b.onclick = () => { const k = b.dataset.ft; S.settings.f[k] = !feat(k); save(); b.classList.toggle('on', feat(k)); sfx.tap(); buzz();
     if (k === 'widget' && feat(k)) pushWidget(); if (k === 'backup' && feat(k)) autoBackup(); for (const r in rendered) rendered[r] = null; });
@@ -4236,14 +4313,13 @@ const weekStory = () => {
   const slides = [{ c:'intro', ic:'📊', wm:'SEMAINE', k:`${a.getDate()} – ${b.getDate()} ${b.toLocaleDateString('fr-BE', { month:'long' })}`, t:`Voici ta semaine,<br><span class="sb-grad">${esc(nm())}</span>`, sub:'Touche l\'écran pour découvrir tes chiffres.' }];
   if (on.length) { const up = pavgS && avgS > pavgS;
     slides.push({ c:'215,255,58', ic:'👟', party: up, k:'Pas', t: up ? `Félicitations ${esc(nm())} !` : avgS >= goals().steps ? 'Objectif tenu' : 'Tes pas', big: Math.round(avgS), u:'pas par jour en moyenne',
-      sub: pctTxt(avgS, pavgS, 'la semaine dernière') || `${fmt(st.reduce((x, y) => x + y, 0))} pas au total`,
       x: `<div class="sb-b7">${eachDay(a, b).map(k => { const v = D(k).steps || 0, mx = Math.max(1, ...st); return `<div><i style="height:${Math.max(4, v / mx * 100)}%" class="${v >= goals().steps ? 'ok' : ''}"></i><small>${parseKey(k).toLocaleDateString('fr-BE', { weekday:'narrow' })}</small></div>`; }).join('')}</div>` });
     if (best) slides.push({ c:'90,184,255', ic:'⚡', k:'Meilleur jour', t: parseKey(best).toLocaleDateString('fr-BE', { weekday:'long' }).replace(/^./, m => m.toUpperCase()), big: D(best).steps, u:'pas en une journée', sub: D(best).steps >= goals().steps ? 'Ton objectif explosé ce jour-là.' : 'Ta journée la plus active.' }); }
   if (wAvg) slides.push({ c:'107,211,110', ic:'⚖️', party: pwAvg && wAvg < pwAvg, k:'Poids', t: pwAvg && wAvg < pwAvg ? 'Ça descend' : pwAvg && wAvg > pwAvg ? 'Petite remontée' : 'Ton poids', big: wAvg, dec:1, u:'kg en moyenne',
     sub: pwAvg ? `${wAvg < pwAvg ? '−' : wAvg > pwAvg ? '+' : '±'}${f1(Math.abs(wAvg - pwAvg))} kg par rapport à la semaine dernière` : `${ws.length} pesée${ws.length > 1 ? 's' : ''} cette semaine` });
-  if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t: calHit >= calK.length * .7 ? 'Assiette maîtrisée' : 'Tes calories', big: Math.round(calAvg), u:'kcal par jour', sub:`Dans ton objectif <em class="up">${calHit} jour${calHit > 1 ? 's' : ''} sur ${calK.length}</em>.${protAvg ? ` Protéines : ${Math.round(protAvg)} g par jour${pg ? ` pour ${pg} g visés` : ''}.` : ''}` });
+  if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t: calHit >= calK.length * .7 ? 'Assiette maîtrisée' : 'Tes calories', big: Math.round(calAvg), u:'kcal par jour' });
   if (planned || done) slides.push({ c:'184,140,255', ic:'💪', party: done >= planned && planned > 0, k:'Séances', t: done >= planned && planned ? 'Toutes faites' : done ? 'Tu t\'es entraîné' : 'Pas de séance', big: done, u:`séance${done > 1 ? 's' : ''} sur ${Math.max(planned, done)} prévue${Math.max(planned, done) > 1 ? 's' : ''}`,
-    x: gw.n ? gymTiles(gw) : '', sub: gw.n ? (gw.cats.length ? `Surtout ${gw.cats.slice(0, 2).map(c => esc(c[0])).join(' et ')}.` : '') : (planned > done ? 'On se rattrape la semaine prochaine.' : '') });
+    x: gw.n ? gymTiles(gw) : '' });
   const tiles = [['Pas / jour', fmt(avgS), pavgS ? `${avgS >= pavgS ? '+' : '−'}${Math.abs(Math.round((avgS - pavgS) / pavgS * 100))} % vs sem. passée` : '', ACC1],
     ['Poids moyen', wAvg ? f1(wAvg) + ' kg' : '—', pwAvg && wAvg ? `${wAvg <= pwAvg ? '−' : '+'}${f1(Math.abs(wAvg - pwAvg))} kg` : '', '#6BD36E'],
     ['Kcal / jour', calAvg ? fmt(calAvg) : '—', calK.length ? `objectif ${calHit}/${calK.length} j` : '', '#FF6B4A'],
@@ -4260,10 +4336,10 @@ const monthStory = off => {
   if (!m.ks.length) { toast('Aucune donnée ce mois-là'); return; }
   const pavg = pm.ks.length ? pm.avg : null, dw = m.w0 != null ? Math.round((m.w1 - m.w0) * 10) / 10 : null, calAvg = m.cal.length ? m.cal.reduce((x, y) => x + y, 0) / m.cal.length : null;
   const slides = [{ c:'intro', ic:'🗓️', wm: mn.toUpperCase(), k: lbl, t:`Voici ton mois de ${mn},<br><span class="sb-grad">${esc(nm())}</span>`, sub:'Touche l\'écran pour découvrir tes chiffres.' }];
-  slides.push({ c:'215,255,58', ic:'👟', party: pavg && m.avg > pavg, k:'Pas', t: pavg && m.avg > pavg ? `Félicitations ${esc(nm())} !` : 'Tes pas du mois', big: m.tot, u:'pas ce mois-ci', sub:`${fmt(m.avg)} par jour, ${pctTxt(m.avg, pavg, 'le mois dernier') || 'continue comme ça'}` });
+  slides.push({ c:'215,255,58', ic:'👟', party: pavg && m.avg > pavg, k:'Pas', t: pavg && m.avg > pavg ? `Félicitations ${esc(nm())} !` : 'Tes pas du mois', big: m.tot, u:'pas ce mois-ci' });
   if (m.best) slides.push({ c:'90,184,255', ic:'⚡', k:'Ta meilleure journée', t: parseKey(m.best).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }).replace(/^./, x => x.toUpperCase()), big: S.days[m.best].steps, u:'pas' });
   if (dw != null) slides.push({ c:'107,211,110', ic:'⚖️', party: dw < 0, k:'Poids', t: dw < 0 ? 'Le compteur baisse' : dw > 0 ? 'Petite remontée' : 'Stable', big: dw, dec:1, sign:true, u:'kg sur le mois', sub:`${f1(m.w0)} kg → ${f1(m.w1)} kg` });
-  if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t:'Ton assiette', big: Math.round(calAvg), u:'kcal par jour', sub:`${m.cal.length} jours notés ce mois-ci.` });
+  if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t:'Ton assiette', big: Math.round(calAvg), u:'kcal par jour' });
   const nS = Math.max(m.done, m.nWo), gm = gymWeek(m.a, new Date(m.a.getFullYear(), m.a.getMonth() + 1, 0)); if (nS) slides.push({ c:'184,140,255', ic:'💪', k:'Séances', t: nS >= 8 ? 'Machine' : 'Tes séances', big: nS, u:`séance${nS > 1 ? 's' : ''} ce mois-ci`, x: gm.n ? gymTiles(gm) : '' });
   const tiles = [['Pas', fmt(m.tot), `${fmt(m.avg)} / jour`, ACC1], ['Meilleur jour', m.best ? fmt(S.days[m.best].steps) : '—', m.best ? parseKey(m.best).toLocaleDateString('fr-BE', { day:'numeric', month:'long' }) : '', '#5AB8FF'],
     ['Poids', dw == null ? '—' : (dw > 0 ? '+' : dw < 0 ? '−' : '±') + f1(Math.abs(dw)) + ' kg', m.w0 != null ? `${f1(m.w0)} → ${f1(m.w1)} kg` : '', '#6BD36E'],

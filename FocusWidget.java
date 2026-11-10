@@ -46,6 +46,7 @@ public class FocusWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context c, AppWidgetManager m, int[] ids) {
         for (int id : ids) render(c, m, id);
+        WidgetTicker.schedule(c);
     }
 
     @Override
@@ -260,6 +261,14 @@ public class FocusWidget extends AppWidgetProvider {
                     for (int i = 0; i < 700; i++) { float px = (i * 131.7f) % W, py = (i * 71.3f) % H; x.drawRect(px, py, px + dp, py + dp, i % 2 == 1 ? a1 : a2); }
                     x.restore(); Paint s2 = stroke(0, Math.max(1, dp)); s2.setShader(lin(0x59FFFFFF, 0x0DFFFFFF, 0, 0, W, H)); x.drawPath(shapeP(.5f), s2); break; }
                 case "ios": x.drawPath(shapeP(0), fill(rgba(28, 28, 30, Math.max(.85f, A)))); break;
+                case "glass":
+                    if (f.bg > 0) {
+                        float lw = Math.max(1, dp * .8f), i = lw / 2; Path p = shapeP(i);
+                        x.drawPath(p, fill(rgba(34, 34, 36, .62f * A)));
+                        Paint bd = stroke(0, lw); bd.setShader(new LinearGradient(0, 0, W * .5f, H, new int[] { rgba(255, 255, 255, .26f * A), rgba(255, 255, 255, .12f * A), rgba(255, 255, 255, .16f * A) }, new float[] { 0, .6f, 1 }, Shader.TileMode.CLAMP));
+                        x.drawPath(p, bd);
+                    }
+                    break;
                 default:
                     if (f.bg > 0) {
                         float lw = Math.max(1.2f, 1.4f * dp), i = lw / 2; Path p = shapeP(i);
@@ -426,7 +435,7 @@ public class FocusWidget extends AppWidgetProvider {
         Art A = new Art(); A.x = new Canvas(bm); A.f = f; A.d = v; A.W = Wi; A.H = Hi; A.dp = dp; A.T = theme(f.col);
         float W = Wi, H = Hi, u = Math.min(W, H), pad = Math.max(8 * dp, u * .1f); A.u = u; A.pad = pad;
         A.sh = f.bg < 25 && (A.T.bg.equals("glass") || A.T.bg.equals("chrome"));
-        A.circle = f.shape == 1 && W < H * 1.3f && H < W * 1.3f; A.rad = Math.min(u * .26f, 30 * dp);
+        A.circle = f.shape == 1 && W < H * 1.3f && H < W * 1.3f; A.rad = A.T.bg.equals("glass") ? Math.min(u * .32f, 26 * dp) : Math.min(u * .26f, 30 * dp);
         A.background();
         float pad2 = (A.T.bg.equals("cartoon") || A.T.bg.equals("brutal")) ? pad + 3 * dp : pad; A.pad2 = pad2;
         Th T = A.T;

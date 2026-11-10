@@ -41,6 +41,7 @@ public class MidnightReceiver extends BroadcastReceiver {
         // Redemarrage ou mise a jour de l'app : on reprogramme simplement l'alarme
         if (!ACTION.equals(action)) {
             schedule(app);
+            try { WidgetTicker.schedule(app); } catch (Throwable t) {}
             return;
         }
 

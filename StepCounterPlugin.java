@@ -48,6 +48,7 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor stepSensor;
     private boolean listening = false;
+    private long lastTotal = -1;
 
     @Override
     public void load() {
@@ -55,6 +56,25 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         if (sensorManager != null) {
             stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         }
+        try { WidgetTicker.schedule(getContext()); } catch (Throwable t) {}
+    }
+
+    @PluginMethod
+    public void restStart(PluginCall call) {
+        RestTimer.start(getContext(), call.getData().optLong("end", System.currentTimeMillis()), call.getString("label", ""), call.getString("sound", "bip"));
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void restStop(PluginCall call) {
+        RestTimer.stop(getContext());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void restPreview(PluginCall call) {
+        RestTimer.preview(getContext(), call.getString("sound", "bip"));
+        call.resolve();
     }
 
     @PluginMethod
@@ -160,8 +180,12 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         e.putInt("kcal", call.getInt("kcal", 0));
         e.putInt("kcalGoal", call.getInt("kcalGoal", 2000));
         e.putString("date", call.getString("date", ""));
+        e.putString("s7", call.getString("s7", ""));
+        e.putString("k7", call.getString("k7", ""));
+        e.putString("w7d", call.getString("w7d", ""));
+        e.putLong("refTotal", lastTotal);
         e.apply();
-        try { FocusWidget.push(getContext()); } catch (Throwable t) {}
+        try { FocusWidget.push(getContext()); WidgetTicker.schedule(getContext()); } catch (Throwable t) {}
         call.resolve();
     }
 
@@ -183,6 +207,7 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() != Sensor.TYPE_STEP_COUNTER) return;
+        lastTotal = (long) event.values[0];
         JSObject ret = new JSObject();
         ret.put("total", (long) event.values[0]);
         // Heure du dernier demarrage du telephone (le compteur repart de 0 a ce moment-la)
