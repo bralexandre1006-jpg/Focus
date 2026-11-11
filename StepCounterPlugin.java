@@ -183,6 +183,8 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         e.putString("s7", call.getString("s7", ""));
         e.putString("k7", call.getString("k7", ""));
         e.putString("w7d", call.getString("w7d", ""));
+        e.putString("mo", call.getString("mo", ""));
+        e.putString("moKey", call.getString("moKey", ""));
         e.putLong("refTotal", lastTotal);
         e.putFloat("kpp", (float) call.getData().optDouble("kpp", 0.04));
         e.apply();

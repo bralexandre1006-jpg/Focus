@@ -68,7 +68,7 @@ public class FocusWidget extends AppWidgetProvider {
             SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             Cfg f = new Cfg();
             f.metric = p.getInt("m_" + id, kind == 0 ? 0 : 2);
-            f.style = Math.max(0, Math.min(34, p.getInt("s_" + id, kind == 3 ? 3 : 0)));
+            f.style = Math.max(0, Math.min(49, p.getInt("s_" + id, kind == 3 ? 3 : 0)));
             f.col = Math.max(0, Math.min(15, p.getInt("c2_" + id, 3)));
             f.bg = p.getInt("b_" + id, 85);
             f.shape = p.getInt("h_" + id, 0);
@@ -84,7 +84,7 @@ public class FocusWidget extends AppWidgetProvider {
         SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
         boolean fresh = today.equals(p.getString("date", ""));
-        int[] r = new int[28];
+        int[] r = new int[60];
         float kpp = p.getFloat("kpp", 0.04f);
         r[0] = fresh ? p.getInt("steps", 0) : 0; r[1] = Math.max(1, p.getInt("stepGoal", 8000)); r[2] = fresh ? p.getInt("kcal", 0) : 0; r[3] = Math.max(1, p.getInt("kcalGoal", 2000));
         java.util.Calendar cal = java.util.Calendar.getInstance(); r[4] = (cal.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7;
@@ -96,6 +96,11 @@ public class FocusWidget extends AppWidgetProvider {
         // calories brûlées par la marche, pour l'affichage « Pas + kcal »
         r[19] = Math.round(r[0] * kpp); r[20] = Math.max(1, Math.round(r[1] * kpp));
         for (int i = 0; i < 7; i++) r[21 + i] = Math.round(s7[i] * kpp);
+        int dom = cal.get(java.util.Calendar.DAY_OF_MONTH); r[28] = dom;
+        String moKey = new SimpleDateFormat("yyyy-MM", Locale.US).format(cal.getTime());
+        String[] mo = moKey.equals(p.getString("moKey", "")) ? p.getString("mo", "").split(",") : new String[0];
+        for (int i = 0; i < dom && i < 31; i++) try { r[29 + i] = i < mo.length ? Integer.parseInt(mo[i].trim()) : 0; } catch (Exception e) {}
+        r[28 + dom] = r[0];
         return r;
     }
 
@@ -438,11 +443,12 @@ public class FocusWidget extends AppWidgetProvider {
     /* ---------- designs supplémentaires (styles 7 à 34) ---------- */
     static final String[] DESIGN_NAMES = { "Orbite", "Segments", "Compteur", "Sommet", "Empreintes", "Minimal", "Barres", "Odomètre", "Sablier", "Aiguille",
         "Montre", "3 anneaux", "Matrice", "Vague", "Spirale", "Route", "Escalier", "Vertical", "Pourcent", "Tachymètre", "Étoiles", "Code-barres", "Ticket",
-        "Semaine +", "Thermomètre", "Piste", "Règle", "Onde" };
-    static boolean wideDesign(int id) { return id == 6 || id == 7 || id >= 25; }
+        "Semaine +", "Thermomètre", "Piste", "Règle", "Onde",
+        "Saturne", "Lune", "Soleil", "Mois", "Courbe", "Chrono", "Boussole", "Chargement", "Terminal", "Sonar", "Vinyle", "Flip", "Galaxie", "Saturne long", "Semaine long" };
+    static boolean wideDesign(int id) { return id == 6 || id == 7 || (id >= 25 && id <= 27) || id >= 41; }
 
     static class Dz {
-        boolean small; Canvas x; float W, H, k, f; int v, g, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
+        int[] mo = new int[0]; boolean small; Canvas x; float W, H, k, f; int v, g, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
         int a(float al) { return T.a(al); }
         Paint fill(int c) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(c); return p; }
         Paint stroke(int c, float w) { Paint p = fill(c); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(w); return p; }
@@ -463,6 +469,10 @@ public class FocusWidget extends AppWidgetProvider {
             Path q = new Path(); q.moveTo(3, 15.5f); q.cubicTo(3, 12, 5, 11, 7.5f, 11); q.lineTo(10, 8.5f); q.cubicTo(11, 7.5f, 12.5f, 8, 13, 9); q.lineTo(14.5f, 11.5f); q.cubicTo(17, 12.5f, 21, 13.5f, 21, 16); q.lineTo(21, 17.5f); q.lineTo(3, 17.5f); q.close();
             q.moveTo(8, 14); q.lineTo(10, 14); q.moveTo(11, 12.5f); q.lineTo(12.5f, 12.5f);
             x.drawPath(q, round(stroke(col, lw))); x.restore();
+        }
+        void planet(float px, float py, float R) {
+            Paint g = fill(0); g.setShader(new android.graphics.RadialGradient(px - R * .4f, py - R * .5f, R * 1.3f, new int[] { 0xFFFFFFFF, 0xFF9A9AA2, 0xFF2A2A30 }, new float[] { 0, .5f, 1 }, Shader.TileMode.CLAMP));
+            x.drawCircle(px, py, R, g);
         }
         String digits() { String d = String.valueOf(v); while (d.length() < 5) d = "0" + d; return d; }
         void odoCell(float xx, float y0, float cw, float ch, String c, boolean lead) {
@@ -667,6 +677,115 @@ public class FocusWidget extends AppWidgetProvider {
                         if (big) t(compact(Math.round(g * i / 80f)), xx, y + 12 * k, 8.5f * k, mut, Paint.Align.CENTER, false, 0, 0); }
                     float mx = p + L * f; Path tri = new Path(); tri.moveTo(mx, y - 16 * k); tri.lineTo(mx - 5 * k, y - 24 * k); tri.lineTo(mx + 5 * k, y - 24 * k); tri.close(); x.drawPath(tri, fill(fg));
                     t(fmt(v) + " " + unit, p, 28 * k, 16 * k, fg, Paint.Align.LEFT, true, 0, W * .7f); t(pct, W - p, 28 * k, 12 * k, mut, Paint.Align.RIGHT, true, 0, 0); break; }
+                case 28: { // Saturne
+                    float sy = H * .46f, R = W * .2f; RectF o = ov(0, 0, R * 2, R * .55f);
+                    x.save(); x.translate(cx, sy); x.rotate(-20f); x.drawArc(o, 180, 180, false, stroke(a(.12f), 5 * k));
+                    if (f > 0) x.drawArc(o, 180, Math.min(f, .5f) * 360, false, glow(round(stroke(fg, 5 * k)), 6)); x.restore();
+                    planet(cx, sy, R);
+                    x.save(); x.translate(cx, sy); x.rotate(-20f); x.drawArc(o, 0, 180, false, stroke(a(.12f), 5 * k));
+                    if (f > .5f) x.drawArc(o, 0, (f - .5f) * 360, false, glow(round(stroke(fg, 5 * k)), 6)); x.restore();
+                    t(fmt(v), cx, H - 26 * k, 22 * k, fg); t(lbl + " · " + pct, cx, H - 12 * k, 9 * k, mut, Paint.Align.CENTER, true, 2 * k, W * .9f); break; }
+                case 29: { // Lune
+                    float my = H * .42f, R = W * .25f; x.drawCircle(cx, my, R, fill(a(.07f)));
+                    Path c0 = new Path(); c0.addCircle(cx, my, R, Path.Direction.CW); x.save(); x.clipPath(c0);
+                    float ex = R * (1 - 2 * f); Path lit = new Path(); lit.arcTo(ov(cx, my, R, R), -90, 180); lit.arcTo(ov(cx, my, Math.max(.5f, Math.abs(ex)), R), 90, ex > 0 ? -180 : 180); lit.close();
+                    Paint lp = fill(0); lp.setShader(new android.graphics.RadialGradient(cx - R * .3f, my - R * .3f, R, fg, a(.75f), Shader.TileMode.CLAMP)); x.drawPath(lit, lp);
+                    Paint cr = fill(0x1F000000); x.drawCircle(cx + .3f * R, my - .2f * R, .16f * R, cr); x.drawCircle(cx - .1f * R, my + .3f * R, .1f * R, cr); x.drawCircle(cx + .1f * R, my + .05f * R, .07f * R, cr); x.restore();
+                    x.drawCircle(cx, my, R, glow(stroke(a(.2f), k), 14));
+                    t(fmt(v), cx, H - 26 * k, 22 * k, fg); t(f >= 1 ? "PLEINE LUNE" : "LUNE À " + pct, cx, H - 12 * k, 9 * k, mut, Paint.Align.CENTER, true, 2 * k, W * .9f); break; }
+                case 30: { // Soleil
+                    float hz = H * .66f, R = W * .17f, sy = hz + R - (R * 2.3f) * f;
+                    for (int i = 0; i < 12; i++) { double a = Math.PI + i * Math.PI / 11; x.drawLine(cx + (float) Math.cos(a) * R * 1.35f, sy + (float) Math.sin(a) * R * 1.35f, cx + (float) Math.cos(a) * R * 1.75f, sy + (float) Math.sin(a) * R * 1.75f, round(stroke(a(.12f + .25f * f), 2 * k))); }
+                    x.save(); x.clipRect(0, 0, W, hz); x.drawCircle(cx, sy, R, glow(fill(fg), 18)); x.restore();
+                    x.drawRect(14 * k, hz, W - 14 * k, hz + 1.5f * k, fill(a(.5f)));
+                    for (int i = 1; i < 4; i++) x.drawRect(W * (.2f + i * .06f), hz + i * 5 * k, W * (.2f + i * .06f) + W * (.6f - i * .12f), hz + i * 5 * k + 1.2f * k, fill(a(.25f - i * .06f)));
+                    t(fmt(v), cx, H - 16 * k, 20 * k, fg); t(pct, W - 14 * k, 24 * k, 11 * k, mut, Paint.Align.RIGHT, true, 0, 0); break; }
+                case 31: { // Mois
+                    float p = 16 * k, top = 44 * k; int n = Math.max(1, mo.length); float cs = Math.min((W - 2 * p) / 7, (H - top - 10 * k) / 5);
+                    tl(fmt(v), p, 30 * k, 18 * k, fg, true);
+                    t(new SimpleDateFormat("MMM", Locale.FRANCE).format(new Date()).toUpperCase(Locale.FRANCE), W - p, 30 * k, 10 * k, mut, Paint.Align.RIGHT, true, 2 * k, 0);
+                    for (int i = 0; i < n; i++) { float q = Math.min(1, mo[i] / (float) g), l = p + (i % 7) * cs + 1.5f * k, tp = top + (i / 7) * cs + 1.5f * k;
+                        rr(l, tp, cs - 3 * k, cs - 3 * k, 3 * k, fill(mo[i] >= g ? fg : a(.07f + .45f * q))); if (i == n - 1) rr(l, tp, cs - 3 * k, cs - 3 * k, 3 * k, stroke(fg, 1.5f * k)); }
+                    break; }
+                case 32: { // Courbe semaine
+                    float p = 18 * k, top = 52 * k, bot = H - 28 * k; int mx = g; for (int q : w7) mx = Math.max(mx, q); float m = mx * 1.1f; int n = ti + 1;
+                    tl(fmt(v), p, 32 * k, 20 * k, fg, true);
+                    Paint ds = stroke(a(.25f), k); ds.setPathEffect(new DashPathEffect(new float[] { 2 * k, 3 * k }, 0)); float gy = bot - (bot - top) * g / m; x.drawLine(p, gy, W - p, gy, ds);
+                    Path ln = new Path(); float[][] P = new float[n][2];
+                    for (int i = 0; i < n; i++) { P[i][0] = p + i * (W - 2 * p) / 6; P[i][1] = bot - (bot - top) * w7[i] / m; if (i == 0) ln.moveTo(P[i][0], P[i][1]); else ln.lineTo(P[i][0], P[i][1]); }
+                    Path ar = new Path(ln); ar.lineTo(P[n - 1][0], bot); ar.lineTo(p, bot); ar.close(); Paint ap = fill(0); ap.setShader(new LinearGradient(0, top, 0, bot, a(.22f), a(0), Shader.TileMode.CLAMP)); x.drawPath(ar, ap);
+                    if (n > 1) x.drawPath(ln, glow(round(stroke(fg, 2.4f * k)), 6));
+                    for (int i = 0; i < n; i++) x.drawCircle(P[i][0], P[i][1], (i == ti ? 4.5f : 2.5f) * k, fill(i == ti ? fg : a(.4f)));
+                    String days = "LMMJVSD"; for (int i = 0; i < 7; i++) t(days.substring(i, i + 1), p + i * (W - 2 * p) / 6, H - 12 * k, 9 * k, i == ti ? fg : mut, Paint.Align.CENTER, true, 0, 0);
+                    break; }
+                case 33: { // Chrono
+                    float sy = H * .56f, r = W * .34f;
+                    rr(cx - 7 * k, sy - r - 16 * k, 14 * k, 8 * k, 2 * k, fill(fg)); x.drawRect(cx - 2 * k, sy - r - 9 * k, cx + 2 * k, sy - r, fill(fg));
+                    x.drawCircle(cx, sy, r, stroke(a(.3f), 2 * k)); x.drawArc(ov(cx, sy, r - 5 * k, r - 5 * k), -90, f * 360, true, fill(a(.14f)));
+                    for (int i = 0; i < 60; i++) { double a = i * Math.PI / 30; float L = (i % 5 != 0 ? 3 : 6) * k, r0 = r - 4 * k;
+                        x.drawLine(cx + (float) Math.cos(a) * r0, sy + (float) Math.sin(a) * r0, cx + (float) Math.cos(a) * (r0 - L), sy + (float) Math.sin(a) * (r0 - L), stroke(i % 5 != 0 ? a(.3f) : fg, k)); }
+                    t(fmt(v), cx, sy + 6 * k, 18 * k, fg); t(pct, cx, sy + 20 * k, 9 * k, mut, Paint.Align.CENTER, true, 0, 0); break; }
+                case 34: { // Boussole
+                    float sy = H * .46f, r = W * .32f; x.drawCircle(cx, sy, r, stroke(a(.25f), 1.5f * k)); String[] C = { "N", "E", "S", "O" };
+                    for (int i = 0; i < 4; i++) { double a = -Math.PI / 2 + i * Math.PI / 2; t(C[i], cx + (float) Math.cos(a) * (r - 11 * k), sy + (float) Math.sin(a) * (r - 11 * k) + 3.5f * k, 9 * k, i == 0 ? fg : mut, Paint.Align.CENTER, true, 0, 0); }
+                    x.save(); x.translate(cx, sy); x.rotate(f * 360);
+                    Path nd = new Path(); nd.moveTo(0, -r * .62f); nd.lineTo(5 * k, 0); nd.lineTo(-5 * k, 0); nd.close(); x.drawPath(nd, glow(fill(fg), 8));
+                    Path sd = new Path(); sd.moveTo(0, r * .62f); sd.lineTo(5 * k, 0); sd.lineTo(-5 * k, 0); sd.close(); x.drawPath(sd, fill(a(.25f))); x.restore();
+                    x.drawCircle(cx, sy, 3 * k, fill(inv)); t(fmt(v) + " " + unit, cx, H - 14 * k, 14 * k, fg); break; }
+                case 35: { // Chargement
+                    float p = 18 * k; t("CHARGEMENT…", p, 34 * k, 10 * k, mut, Paint.Align.LEFT, true, 2.5f * k, 0);
+                    int n = 10, on = Math.round(f * n); float cw = (W - 2 * p) / n, by = H * .44f;
+                    for (int i = 0; i < n; i++) rr(p + i * cw + 1.5f * k, by, cw - 3 * k, 26 * k, 3 * k, fill(i < on ? fg : a(.1f)));
+                    rr(p - 3 * k, by - 3 * k, W - 2 * p + 6 * k, 32 * k, 6 * k, stroke(a(.35f), 1.2f * k));
+                    tl(pct, p, H - 18 * k, 22 * k, fg, true); t(fmt(v), W - p, H - 18 * k, 12 * k, mut, Paint.Align.RIGHT, false, 0, 0); break; }
+                case 36: { // Terminal
+                    float p = 16 * k; int on = Math.round(f * 8); StringBuilder bar = new StringBuilder("  "); for (int i = 0; i < 8; i++) bar.append(i < on ? '█' : '░');
+                    String[] L = { "> focus --" + unit, "  " + fmt(v), bar.toString(), "  " + pct + " · " + sub, "> _" }; float[] Y = { 32, 64, 88, 108, 134 };
+                    for (int i = 0; i < 5; i++) { Paint tp = new Paint(Paint.ANTI_ALIAS_FLAG); tp.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)); tp.setTextSize((i == 1 ? 22 : 11) * k);
+                        tp.setColor(i == 0 || i == 4 ? mut : fg); while (tp.getTextSize() > 4 && tp.measureText(L[i]) > W - 2 * p) tp.setTextSize(tp.getTextSize() * .94f); x.drawText(L[i], p, Y[i] * k, tp); }
+                    break; }
+                case 37: { // Sonar
+                    for (int i = 1; i <= 4; i++) x.drawCircle(cx, cy, W * .1f * i, stroke(a(.06f + i * .04f), k));
+                    Paint cl = stroke(a(.08f), k); x.drawLine(cx - W * .4f, cy, cx + W * .4f, cy, cl); x.drawLine(cx, cy - W * .4f, cx, cy + W * .4f, cl);
+                    double a = -Math.PI / 2 + f * Math.PI * 2; android.graphics.SweepGradient sw = new android.graphics.SweepGradient(cx, cy, new int[] { a(0), a(.35f), a(0), a(0) }, new float[] { 0, .14f, .15f, 1 });
+                    Matrix mx = new Matrix(); mx.setRotate((float) Math.toDegrees(a - .9), cx, cy); sw.setLocalMatrix(mx); Paint sp = fill(0); sp.setShader(sw); x.drawCircle(cx, cy, W * .4f, sp);
+                    x.drawLine(cx, cy, cx + (float) Math.cos(a) * W * .4f, cy + (float) Math.sin(a) * W * .4f, glow(stroke(fg, 2 * k), 6));
+                    t(fmt(v), cx, H - 12 * k, 13 * k, fg); break; }
+                case 38: { // Vinyle
+                    float sy = H * .48f, r = W * .36f; x.drawCircle(cx, sy, r, fill(T.light ? 0xFF1A1A1E : 0xFF0A0A0C));
+                    for (int i = 0; i < 9; i++) x.drawCircle(cx, sy, r * (.45f + i * .06f), stroke(0x0FFFFFFF, k));
+                    if (f > 0) x.drawArc(ov(cx, sy, r * .97f, r * .97f), -90, Math.max(1, f * 360), false, glow(round(stroke(T.light ? Color.WHITE : fg, 3 * k)), 6));
+                    x.drawCircle(cx, sy, r * .36f, fill(T.light ? Color.WHITE : fg)); int lc = 0xFF111111;
+                    t(compact(v), cx, sy + 4 * k, 13 * k, lc, Paint.Align.CENTER, true, 0, r * .6f); t(lbl, cx, sy + 14 * k, 6.5f * k, 0xFF555555, Paint.Align.CENTER, true, k, 0);
+                    x.drawCircle(cx, sy - 12 * k, 1.5f * k, fill(lc)); break; }
+                case 39: { // Flip
+                    String d = String.valueOf(v); int n = d.length(); float gap = 4 * k, cw = (W - 28 * k - gap * (n - 1)) / n, ch = H * .5f, y0 = H * .2f, ts = Math.min(ch * .7f, cw * 1.2f);
+                    for (int i = 0; i < n; i++) { float xx = 14 * k + i * (cw + gap);
+                        rr(xx, y0, cw, ch / 2 - k, 5 * k, fill(a(.1f))); rr(xx, y0 + ch / 2 + k, cw, ch / 2 - k, 5 * k, fill(a(.07f)));
+                        t(d.substring(i, i + 1), xx + cw / 2, y0 + ch * .5f + ts * .36f, ts, fg, Paint.Align.CENTER, true, 0, 0);
+                        x.drawRect(xx, y0 + ch / 2 - k, xx + cw, y0 + ch / 2 + k, fill(0x99000000)); }
+                    t(lbl + " AUJOURD'HUI", cx, H - 22 * k, 9 * k, mut, Paint.Align.CENTER, true, 2.5f * k, W * .9f); break; }
+                case 40: { // Galaxie
+                    float gy = H * .45f; int N = 140, on = Math.round(f * N);
+                    for (int i = 0; i < N; i++) { float tt = i / (float) N; double a = tt * 9 + (i % 2) * Math.PI; float r = W * (.04f + .36f * tt);
+                        x.drawCircle(cx + (float) Math.cos(a) * r, gy + (float) Math.sin(a) * r * .6f, (i < on ? 1.6f : 1.1f) * k, fill(i < on ? a(.5f + .5f * (1 - tt)) : a(.08f))); }
+                    x.drawCircle(cx, gy, 3.5f * k, glow(fill(fg), 14));
+                    t(fmt(v), cx, H - 22 * k, 20 * k, fg); t(pct + " DE LA GALAXIE", cx, H - 9 * k, 8 * k, mut, Paint.Align.CENTER, true, 1.5f * k, W * .9f); break; }
+                case 41: { // Saturne long
+                    float p = 18 * k, sx = W - p - H * .55f, R = H * .2f; RectF o = ov(0, 0, R * 2.6f, R * .6f);
+                    x.save(); x.translate(sx, cy); x.rotate(-14.3f); x.drawOval(o, stroke(a(.12f), 4 * k)); x.restore();
+                    planet(sx, cy, R);
+                    x.save(); x.translate(sx, cy); x.rotate(-14.3f); if (f > 0) x.drawArc(o, 180, Math.max(1, f * 360), false, glow(round(stroke(fg, 4 * k)), 6)); x.restore();
+                    x.save(); x.clipRect(0, 0, W, cy); planet(sx, cy, R); x.restore();
+                    t(fmt(v), p, cy + 6 * k, 28 * k, fg, Paint.Align.LEFT, true, 0, sx - R * 2.8f - p);
+                    t(unit + " · " + pct + " · " + sub, p, cy + 22 * k, 10.5f * k, mut, Paint.Align.LEFT, false, 0, sx - R * 2.8f - p); break; }
+                case 42: { // Semaine long
+                    float p = 18 * k, bx = W * .42f, bw = W - bx - p, cw = bw / 7, top = 14 * k, bot = H - 24 * k; int mx = g; for (int q : w7) mx = Math.max(mx, q);
+                    t(fmt(v), p, cy + 4 * k, 28 * k, fg, Paint.Align.LEFT, true, 0, bx - p - 8 * k); t(unit + " aujourd'hui", p, cy + 20 * k, 10 * k, mut, Paint.Align.LEFT, false, 0, bx - p - 8 * k);
+                    String days = "LMMJVSD";
+                    for (int i = 0; i < 7; i++) { float h = Math.max(3 * k, (bot - top) * w7[i] / mx); rr(bx + i * cw + cw * .25f, bot - h, cw * .5f, h, cw * .25f, fill(i == ti ? fg : i > ti ? a(.07f) : w7[i] >= g ? a(.55f) : a(.25f)));
+                        t(days.substring(i, i + 1), bx + i * cw + cw / 2, H - 9 * k, 8.5f * k, i == ti ? fg : mut, Paint.Align.CENTER, true, 0, 0); }
+                    break; }
                 default: { // Onde (long)
                     float p = 18 * k, lw = W * f;
                     for (int j = 0; j < 2; j++) { float o = j == 0 ? 0 : 2; Path wv = new Path(); wv.moveTo(0, H);

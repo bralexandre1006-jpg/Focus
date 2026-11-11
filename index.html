@@ -4206,7 +4206,7 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
 const APP_VER = '1.40';
 const CHANGELOG = [
   { v:'1.40', items:[
-    '28 nouveaux styles de widget : Orbite, Compteur, Sommet, Montre, Vague, Piste… (appui long sur le widget)',
+    '43 nouveaux styles de widget : Orbite, Saturne, Lune, Sommet, Montre, Vinyle, Piste… (appui long sur le widget)',
     'Badges en médailles à paliers, de bronze à légendaire',
     'Thème noir et blanc, et « kg » dans l\'historique',
     'Widget « Pas + brûlées » et widget « Repas » séparés',
@@ -4267,7 +4267,8 @@ let qwT = null;
 const pushWidget = () => { if (!feat('widget') || !P.StepCounter || !P.StepCounter.setWidget) return; const d = day(), G = goals();
   const n = new Date(), mon = new Date(n.getFullYear(), n.getMonth(), n.getDate() - wd(n)), ks = Array.from({ length: 7 }, (_, i) => key(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i)));
   P.StepCounter.setWidget({ steps: Math.round(d.steps || 0), stepGoal: Math.round(G.steps || 0), kcal: Math.round(d.calories || 0), kcalGoal: Math.round(G.kcal || 0), kpp: stepKcal(1000) / 1000, date: today(),
-    s7: ks.map(k => Math.round((S.days[k] || {}).steps || 0)).join(','), k7: ks.map(k => Math.round((S.days[k] || {}).calories || 0)).join(','), w7d: ks[0] }).catch(() => {}); };
+    s7: ks.map(k => Math.round((S.days[k] || {}).steps || 0)).join(','), k7: ks.map(k => Math.round((S.days[k] || {}).calories || 0)).join(','), w7d: ks[0],
+    moKey: today().slice(0, 7), mo: Array.from({ length: new Date().getDate() }, (_, i) => Math.round((S.days[today().slice(0, 8) + String(i + 1).padStart(2, '0')] || {}).steps || 0)).join(',') }).catch(() => {}); };
 window.__qw = () => { clearTimeout(qwT); qwT = setTimeout(pushWidget, 1500); };
 /* sauvegarde hebdo */
 const doBackup = async (force) => {
