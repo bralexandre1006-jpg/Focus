@@ -17,7 +17,7 @@ import android.os.Build;
 /** Minuteur de repos : notification en cours (Live Update / Dynamic Island) et alerte sonore à la fin. */
 public class RestTimer {
     static final int LIVE_ID = 9501, END_ID = 9502;
-    static final String LIVE_CH = "rest_live";
+    static final String LIVE_CH = "rest_live2";
     static final String[] SOUNDS = { "bip", "cloche", "gong", "sifflet", "arcade" };
 
     static NotificationManager nm(Context c) { return (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE); }
@@ -87,13 +87,15 @@ public class RestTimer {
         if (Build.VERSION.SDK_INT >= 26 && nm(c).getNotificationChannel(LIVE_CH) == null) {
             NotificationChannel ch = new NotificationChannel(LIVE_CH, "Minuteur de repos", NotificationManager.IMPORTANCE_DEFAULT);
             ch.setSound(null, null); ch.enableVibration(false); ch.setShowBadge(false);
+            ch.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
             nm(c).createNotificationChannel(ch);
+            try { nm(c).deleteNotificationChannel("rest_live"); } catch (Throwable ignored) {}
         }
         String left = clock(end - System.currentTimeMillis());
         Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, LIVE_CH) : new Notification.Builder(c);
         b.setSmallIcon(icon(c)).setContentTitle(left).setContentText("Repos · " + label).setOngoing(true).setOnlyAlertOnce(true)
             .setWhen(end).setShowWhen(true).setUsesChronometer(true).setCategory(Notification.CATEGORY_STOPWATCH)
-            .setContentIntent(openApp(c)).setColor(0xFFD7FF3A).setVisibility(Notification.VISIBILITY_PUBLIC);
+            .setContentIntent(openApp(c)).setColor(0xFFD7FF3A).setVisibility(Notification.VISIBILITY_SECRET);
         if (Build.VERSION.SDK_INT >= 24) b.setChronometerCountDown(true);
         if (Build.VERSION.SDK_INT >= 31) b.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         if (logo(c) != null) b.setLargeIcon(logo(c));

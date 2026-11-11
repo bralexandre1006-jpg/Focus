@@ -31,7 +31,7 @@ button{border:0;background:none;cursor:pointer}
   padding:calc(var(--st) + 18px) 16px calc(var(--sb) + 132px);
   opacity:0;transform:translate3d(0,14px,0);pointer-events:none;visibility:hidden;will-change:opacity,transform;
   transition:opacity .24s var(--ease),transform .32s var(--ease),visibility 0s linear .32s}
-.screen.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .24s var(--ease),transform .32s var(--ease),visibility 0s}
+.screen.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .2s var(--ease),transform .26s var(--ease),visibility 0s}
 .screen::-webkit-scrollbar,.mbody::-webkit-scrollbar{display:none}
 
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px}
@@ -733,7 +733,8 @@ body.lite .card::before{content:"";position:absolute;width:190px;height:190px;ri
 body.lite .card>*{position:relative}
 body.lite .card>.badge{position:absolute}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-50px,36px) scale(1.3)}}
-body.lite .screen.on .card{animation:liteIn .65s var(--spring) both}
+body.lite .screen.on.fresh .card{animation:liteIn .5s var(--spring) both}
+body.lite .screen.on:not(.fresh) .card{animation:none}
 body.lite .screen.on .card:nth-child(2){animation-delay:.05s}body.lite .screen.on .card:nth-child(3){animation-delay:.1s}
 body.lite .screen.on .card:nth-child(4){animation-delay:.15s}body.lite .screen.on .card:nth-child(5){animation-delay:.2s}body.lite .screen.on .card:nth-child(6){animation-delay:.25s}
 @keyframes liteIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
@@ -1005,7 +1006,7 @@ html,body,button,input,textarea{touch-action:manipulation}
 .tabbar{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(22,22,29,.97)!important}
 .screen:not(.on) *,.screen:not(.on) *::before,.screen:not(.on) *::after{animation-play-state:paused!important}
 .card{contain:layout style}
-body.lite .card::before{will-change:transform}
+
 .modal,.sheet,.dim,.tab-ind,.toast{will-change:transform,opacity}
 .mbody,.screen{overscroll-behavior:contain}
 body.lite .card{box-shadow:none}
@@ -1024,8 +1025,8 @@ body.lite .wshift{height:30px;margin-top:7px;font-size:12px}
   box-shadow:0 16px 44px rgba(0,0,0,.55);display:flex;padding:5px;z-index:52;opacity:0;pointer-events:none;will-change:transform,opacity;
   transform:translate3d(-50%,26px,0) scale(.42,.3);transform-origin:50% 100%;transition:transform .26s cubic-bezier(.5,0,.75,0),opacity .2s .04s}
 body.gymopen .gymbar{opacity:1;pointer-events:auto;transform:translate3d(-50%,0,0);transition:transform .62s cubic-bezier(.22,1.35,.42,1) .07s,opacity .16s .05s}
-.gneck{position:fixed;left:0;top:0;z-index:51;pointer-events:none;overflow:visible;transform-origin:50% 100%;transform:scaleY(0);opacity:0;transition:transform .2s cubic-bezier(.5,0,.75,0) .12s,opacity .15s .15s;will-change:transform}
-body.gymopen .gneck{transform:none;opacity:1;transition:transform .34s cubic-bezier(.2,1.2,.4,1),opacity .1s}
+.gneck{position:fixed;left:0;top:0;z-index:51;pointer-events:none;overflow:visible;transform-origin:50% 100%;transform:scaleY(0);opacity:0;transition:transform .18s cubic-bezier(.5,0,.75,0),opacity .12s .04s;will-change:transform}
+body.gymopen .gneck{transform:none;opacity:1;transition:transform .5s cubic-bezier(.22,1.35,.42,1) .04s,opacity .12s .04s}
 .gymbar .tab-ind{top:5px;bottom:5px;left:5px;border-radius:13px}
 body:not(.gymopen) #gInd{opacity:0!important;transition:opacity .1s}
 body.gymopen #gInd{transition:transform .5s var(--spring),width .5s var(--spring),opacity .3s .18s}
@@ -1193,7 +1194,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 @keyframes wdin{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
 .wd.up{color:var(--ok);background:rgba(61,220,132,.14)}
 .wd.dn{color:var(--bad);background:rgba(255,77,106,.14)}
-.wd.eq{color:var(--txt,#fff);background:var(--card2);font-size:22px;line-height:1;padding:0;opacity:.75}
+.wd.eq{color:var(--ok);background:rgba(61,220,132,.14);font-size:22px;line-height:1;padding:0}
 .wd.nw{color:var(--wgt);background:rgba(90,184,255,.14)}
 .wex-f{display:flex;justify-content:space-between;margin-top:4px}
 .wex-f button{height:36px;padding:0 4px;color:var(--acc);font-size:14px;font-weight:800}
@@ -1218,6 +1219,25 @@ body.lite .glsw{border-radius:20px}
 .glacts button{width:78px;border-radius:18px;font-size:13px;font-weight:800}
 .ga-ed{background:rgba(90,184,255,.16);color:var(--wgt)}
 .ga-del{background:rgba(255,77,106,.16);color:var(--bad)}
+.wdc-top>span{font-size:13px;font-weight:800;color:var(--mut);text-transform:capitalize}
+.wdc-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 12px}
+.wdc-k div{background:var(--card);border-radius:14px;padding:9px 10px}
+.wdc-k b{display:block;font-size:17px;font-weight:900;letter-spacing:-.03em;white-space:nowrap}
+.wdc-k small{color:var(--mut);font-size:11px;font-weight:700}
+.wdc-k em{font-style:normal;font-weight:900}.wdc-k em.up{color:var(--ok)}.wdc-k em.dn{color:var(--bad)}
+.wdc-ex{background:var(--card);border-radius:16px;padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--gc)}
+.wdc-h{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.wdc-h i{display:none}
+.wdc-h b{flex:1;min-width:0;font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wdc-c{flex-shrink:0;font-size:11px;font-weight:900;padding:4px 8px;border-radius:8px;white-space:nowrap}
+.wdc-c.up{color:var(--ok);background:rgba(61,220,132,.14)}.wdc-c.dn{color:var(--bad);background:rgba(255,77,106,.14)}
+.wdc-c.eq{color:var(--ok);background:rgba(61,220,132,.1)}.wdc-c.nw{color:var(--wgt);background:rgba(90,184,255,.14)}
+.wdc-s{display:grid;grid-template-columns:18px 1fr 1fr auto;align-items:center;gap:6px;padding:4px 0;border-top:1px solid var(--line);font-size:14px}
+.wdc-s>span{color:var(--mut);font-size:12px;font-weight:800}
+.wdc-s b{font-weight:800;white-space:nowrap}.wdc-s b small{color:var(--mut);font-size:11px}
+.wdc-s em{font-style:normal;display:flex;gap:4px;justify-content:flex-end}
+.wdc-s em i{font-style:normal;font-size:11px;font-weight:900;padding:2px 6px;border-radius:6px;white-space:nowrap}
+.wdc-s em i.up{color:var(--ok);background:rgba(61,220,132,.14)}.wdc-s em i.dn{color:var(--bad);background:rgba(255,77,106,.14)}.wdc-s em i.eq{color:var(--ok);background:rgba(61,220,132,.1)}
 .wd-cfg{color:var(--mut);font-size:13px;margin:-2px 0 6px}
 .wd-note{color:#A9A9B6;font-size:13px;padding:0 0 6px 28px;white-space:pre-wrap}
 .ex-hero{margin-bottom:12px}
@@ -1493,7 +1513,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
 /* fluidité */
 .screen{will-change:auto;contain:layout paint}
 .screen:not(.on) *,.screen:not(.on) *::before,.screen:not(.on) *::after{animation-play-state:paused!important}
-body.lite .card::before{will-change:transform}
+
 .modal{visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s}
 .modal.on{visibility:visible;transition:transform .55s var(--ease),visibility 0s}
 </style>
@@ -1774,7 +1794,7 @@ body.lite .card::before{will-change:transform}
   <button class="tab" data-go="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</button>
   <button class="tab" data-go="history"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Historique</button>
 </nav>
-<svg class="gneck" id="gneck"><defs><linearGradient id="ghG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#7BE07E"/></linearGradient><linearGradient id="gnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161D"/><stop offset=".42" stop-color="#1A1C1E"/><stop offset="1" stop-color="#D3FB3F"/></linearGradient></defs><path id="gnP" fill="url(#gnG)"/></svg>
+<svg class="gneck" id="gneck"><defs><linearGradient id="ghG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#7BE07E"/></linearGradient><linearGradient id="gnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161D"/><stop offset=".42" stop-color="#1A1C1E"/><stop offset="1" stop-color="#D7FF3A"/></linearGradient></defs><path id="gnP" fill="url(#gnG)"/></svg>
 <nav class="gymbar" id="gymbar">
   <div class="tab-ind" id="gInd"></div>
   <button class="gtab" data-go="glog"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Historique</button>
@@ -2290,7 +2310,8 @@ const go = id => {
     if (cur !== id) return;
     const el = $('#s-'+id); el.scrollTop = 0;
     const sig = dataVer + '|' + today() + '|' + document.body.className;
-    if (id === 'today' || rendered[id] !== sig) { RENDER[id](); rendered[id] = sig; }
+    if (id === 'today' || GYM.includes(id) || id === 'stats' || rendered[id] !== sig) { RENDER[id](); rendered[id] = sig; }
+    if (!el.dataset.seen) { el.dataset.seen = 1; el.classList.add('fresh'); setTimeout(() => el.classList.remove('fresh'), 900); }
     requestAnimationFrame(() => { if (cur === id) $$('.screen').forEach(s => s.classList.toggle('on', s === el)); });
   });
 };
@@ -4131,11 +4152,19 @@ const openWoDetail = id => {
   const w = S.workouts.find(x => x.id === id); if (!w) return; woDetailId = id;
   const d = new Date(w.start), vol = woVol(w);
   $('#wdTitle').textContent = w.name;
-  $('#wdBody').innerHTML = `<div class="wd-top"><span>${d.toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' })}</span>
-      <div class="wd-k"><div><b>${fmtDur(w.min)}</b><small>durée</small></div><div><b>${woSets(w)}</b><small>séries</small></div><div><b>${fmtKg(vol)}</b><small>volume</small></div></div></div>
-    ${w.ex.map(e => `<div class="ib-sec"><h5 style="color:${catColor(e.cat)}">${esc(e.cat)}</h5><b class="wd-n">${esc(e.name)}</b>${e.cfg ? `<div class="wd-cfg">⚙ ${esc(e.cfg)}</div>` : ''}
-      ${e.sets.map((st, i) => `<div class="wd-s"><span>${i + 1}</span><b>${kgTxt(st.kg)} kg</b><span>× ${e.uni ? `${st.reps} G / ${st.repsR} D` : st.reps}</span></div>${st.note ? `<div class="wd-note">${esc(st.note)}</div>` : ''}`).join('')}</div>`).join('')}
-    <div style="display:flex;gap:10px;margin-top:6px"><button class="btn ghost press" id="wdEd" style="flex:1">Modifier</button><button class="btn danger press" id="wdDel" style="flex:1">Supprimer</button></div>`;
+  const prevOf = k => { for (const o of [...S.workouts].sort((x, y) => y.start - x.start)) { if (o.start >= w.start || o.id === w.id) continue; const e = o.ex.find(x => exKey(x.name) === k); if (e && e.sets.length) return e.sets; } return null; };
+  const pw = [...S.workouts].filter(o => o.start < w.start && o.name === w.name).sort((x, y) => y.start - x.start)[0], pvol = pw ? woVol(pw) : 0;
+  const chip = (dk, dr) => { const t = []; if (Math.abs(dk) >= .05) t.push(`<i class="${dk > 0 ? 'up' : 'dn'}">${dk > 0 ? '+' : '−'}${kgTxt(Math.abs(dk))} kg</i>`); if (dr) t.push(`<i class="${dr > 0 ? 'up' : 'dn'}">${dr > 0 ? '+' : '−'}${Math.abs(dr)} rép</i>`); return t.join('') || '<i class="eq">=</i>'; };
+  const reps = (st, uni) => uni ? num(st.reps) + num(st.repsR) : num(st.reps);
+  $('#wdBody').innerHTML = `<div class="wdc-top"><span>${d.toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' })}</span>
+      <div class="wdc-k"><div><b>${fmtDur(w.min)}</b><small>durée</small></div><div><b>${woSets(w)}</b><small>séries</small></div><div><b>${fmtKg(vol)}</b><small>volume${pvol ? ` <em class="${vol >= pvol ? 'up' : 'dn'}">${vol >= pvol ? '▲' : '▼'} ${Math.abs(Math.round((vol - pvol) / pvol * 100))} %</em>` : ''}</small></div></div></div>
+    ${w.ex.map(e => { const pv = prevOf(exKey(e.name)), bn = bestSet(e.sets), bp = pv ? bestSet(pv) : null;
+      const head = !bp ? '<span class="wdc-c nw">Nouveau</span>' : bn.kg - bp.kg >= .05 ? `<span class="wdc-c up">▲ +${kgTxt(bn.kg - bp.kg)} kg</span>` : bp.kg - bn.kg >= .05 ? `<span class="wdc-c dn">▼ −${kgTxt(bp.kg - bn.kg)} kg</span>` : bn.reps > bp.reps ? `<span class="wdc-c up">▲ +${bn.reps - bp.reps} rép</span>` : bn.reps < bp.reps ? `<span class="wdc-c dn">▼ −${bp.reps - bn.reps} rép</span>` : '<span class="wdc-c eq">= stable</span>';
+      return `<div class="wdc-ex" style="--gc:${catColor(e.cat)}"><div class="wdc-h"><i></i><b>${esc(e.name)}</b>${head}</div>
+        <div class="wdc-sets">${e.sets.map((st, i) => { const p = pv && pv[i];
+          return `<div class="wdc-s"><span>${i + 1}</span><b>${kgTxt(st.kg)}<small> kg</small></b><b>× ${e.uni ? `${st.reps}/${st.repsR}` : st.reps}</b><em>${p ? chip(num(st.kg) - num(p.kg), reps(st, e.uni) - reps(p, e.uni)) : ''}</em></div>`; }).join('')}</div>
+        ${e.sets.filter(st => st.note).map(st => `<div class="wd-note">${esc(st.note)}</div>`).join('')}</div>`; }).join('')}
+    <div style="display:flex;gap:10px;margin-top:10px"><button class="btn ghost press" id="wdEd" style="flex:1">Modifier</button><button class="btn danger press" id="wdDel" style="flex:1">Supprimer</button></div>`;
   $('#wdEd').onclick = () => { closeOv('woModal'); editWorkout(woDetailId); };
   $('#wdDel').onclick = async () => {
     if (!(await confirmSheet('Supprimer cette séance ?', 'Elle disparaît de l\'historique et des stats.'))) return;
