@@ -17,9 +17,9 @@ import android.os.SystemClock;
 
 import java.util.Date;
 
-/** Met à jour les widgets toutes les 2 minutes avec le compteur de pas du téléphone, même app fermée. */
+/** Met à jour les widgets toutes les 5 minutes avec le compteur de pas du téléphone, même app fermée. */
 public class WidgetTicker extends BroadcastReceiver {
-    static final long EVERY = 2 * 60 * 1000L;
+    static final long EVERY = 5 * 60 * 1000L;
 
     static boolean hasWidgets(Context c) {
         android.appwidget.AppWidgetManager m = android.appwidget.AppWidgetManager.getInstance(c);
@@ -55,8 +55,9 @@ public class WidgetTicker extends BroadcastReceiver {
         else if (total >= refT) steps = refS + (int) (total - refT);
         else steps = refS + (int) total;
         steps = Math.max(0, steps);
+        boolean same = steps == p.getInt("steps", -1) && today.equals(p.getString("date", ""));
         e.putInt("steps", steps).putLong("refTotal", total).apply();
-        FocusWidget.push(c);
+        if (!same) FocusWidget.push(c);
     }
 
     /** Repli : l'enregistreur de pas Google Play, qui compte aussi en arrière-plan. */
@@ -93,6 +94,8 @@ public class WidgetTicker extends BroadcastReceiver {
     public void onReceive(Context ctx, Intent intent) {
         final Context app = ctx.getApplicationContext();
         schedule(app);
+        android.os.PowerManager pm = (android.os.PowerManager) app.getSystemService(Context.POWER_SERVICE);
+        if (pm != null && !pm.isInteractive()) return;
         final SensorManager sm = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
         final Sensor sensor = sm != null ? sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) : null;
         if (sensor == null) { FocusWidget.push(app); return; }

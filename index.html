@@ -64,7 +64,9 @@ button{border:0;background:none;cursor:pointer}
 .ring-info .val{font-size:28px;font-weight:800;margin-bottom:12px;letter-spacing:-.03em}
 .pill{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;background:var(--card2);font-size:14px;font-weight:800}
 .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--mut);flex-shrink:0}
-.pill.live .dot{background:var(--ok);animation:pulse 1.6s infinite}
+.pill.live .dot{background:var(--ok);position:relative}
+.pill.live .dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:dotP 1.6s ease-out infinite}
+@keyframes dotP{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.6);opacity:0}}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(61,220,132,.6)}100%{box-shadow:0 0 0 10px rgba(61,220,132,0)}}
 
 /* inputs */
@@ -228,7 +230,7 @@ button{border:0;background:none;cursor:pointer}
 .hx-mini span{flex:1;min-width:0;font-size:12px;color:var(--mut);background:rgba(0,0,0,.22);border-radius:12px;padding:7px 9px;border:1px solid rgba(255,255,255,.04)}
 .hx-mini b{display:block;font-size:15px;color:#fff;margin-top:1px;white-space:nowrap}
 .hx-mini b.wdn{color:var(--ok)}.hx-mini b.wup{color:var(--bad)}
-.hx-r{display:grid;grid-template-columns:44px 1.1fr 1fr .8fr 58px;align-items:center;gap:8px;padding:7px 8px 7px 6px;border-radius:17px;margin-bottom:5px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.035);cursor:pointer}
+.hx-r{display:grid;grid-template-columns:44px 1.1fr 1fr .8fr 64px;align-items:center;gap:8px;padding:7px 8px 7px 6px;border-radius:17px;margin-bottom:5px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.035);cursor:pointer}
 .hx-dt{width:44px;height:46px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;background:rgba(255,255,255,.05);flex-shrink:0}
 .hx-dt b{font-size:18px}.hx-dt small{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;opacity:.65}
 .hx-dt.ok{background:linear-gradient(150deg,rgba(61,220,132,.35),rgba(61,220,132,.1));box-shadow:inset 0 0 0 1px rgba(61,220,132,.45);color:#7FF0B0}
@@ -236,7 +238,8 @@ button{border:0;background:none;cursor:pointer}
 .hx-dt.tdy{background:linear-gradient(135deg,#D7FF3A,#7BE07E);color:#0B0B0F;box-shadow:0 6px 16px rgba(215,255,58,.3)}
 .hx-v{line-height:1.05;min-width:0}.hx-v b{font-size:15.5px;display:block;font-variant-numeric:tabular-nums;white-space:nowrap}.hx-v small{font-size:9.5px;color:#6E6E7E;text-transform:uppercase;letter-spacing:.07em}
 .hx-v.hs b{color:var(--acc);text-shadow:0 0 12px rgba(215,255,58,.35)}.hx-v.hp b{color:var(--pro)}.hx-v.ov b{color:var(--bad)}
-.hx-w{text-align:right;line-height:1.1}.hx-w b{font-size:15px;display:block}.hx-na{color:#555}
+.hx-w{text-align:right;line-height:1.1;min-width:0}.hx-w b{font-size:15px;display:block;white-space:nowrap;letter-spacing:-.03em}
+.hx-w b i,.hx-wse b i{font-style:normal;font-size:.68em;font-weight:800;color:var(--mut);margin-left:2px;letter-spacing:0}.hx-na{color:#555}
 .hx-w small{display:inline-block;font-size:10px;font-weight:800;padding:2px 6px;border-radius:7px;margin-top:3px}
 .hx-w .up{color:var(--bad);background:rgba(255,77,106,.12)}.hx-w .dn{color:var(--ok);background:rgba(61,220,132,.12)}.hx-w .eq{color:var(--mut);background:rgba(255,255,255,.05)}
 .hx-off{display:flex;align-items:center;gap:12px;padding:7px 12px 7px 6px;border-radius:17px;margin-bottom:5px;border:1px solid;cursor:pointer;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 8px,transparent 8px 16px)}
@@ -265,6 +268,7 @@ html.mono body{filter:grayscale(1)}
 .bkinfo{font-size:13px;color:var(--mut);margin-top:12px;line-height:1.4}.bkinfo b{color:#fff}
 .story{position:fixed;inset:0;z-index:300;background:#0B0B0F;display:flex;flex-direction:column;padding:calc(var(--st) + 10px) 22px calc(var(--sb) + 22px);opacity:0;pointer-events:none;transform:scale(1.04);transition:opacity .35s,transform .45s var(--ease);-webkit-user-select:none;user-select:none}
 .story.on{opacity:1;pointer-events:auto;transform:none}
+.story:not(.on) *,.story:not(.on) *::before,.story:not(.on) *::after,.modal:not(.on) *,.modal:not(.on) *::before,.modal:not(.on) *::after{animation:none!important}
 @property --c1{syntax:'<color>';inherits:true;initial-value:#D7FF3A}
 @property --c2{syntax:'<color>';inherits:true;initial-value:#3DDC84}
 @property --c3{syntax:'<color>';inherits:true;initial-value:#5AB8FF}
@@ -1388,7 +1392,8 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 146px)}
 .wst small{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
 .wst b{display:block;font-size:22px;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
 #woClockW b{color:var(--acc)}
-.wlive{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 0 rgba(215,255,58,.6);animation:wlv 1.6s infinite}
+.wlive{width:7px;height:7px;border-radius:50%;background:var(--acc);position:relative}
+.wlive::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--acc);animation:dotP 1.6s ease-out infinite}
 @keyframes wlv{0%{box-shadow:0 0 0 0 rgba(215,255,58,.6)}100%{box-shadow:0 0 0 8px rgba(215,255,58,0)}}
 .wo.editing .wo-st{grid-template-columns:1fr 1fr}
 .wo-prog{margin:0 14px;border-radius:9px;height:6px!important;background:rgba(255,255,255,.06)!important;overflow:hidden}
@@ -3150,7 +3155,7 @@ const renderHistory = () => {
       <div class="hx-v ${(d.steps || 0) >= G.steps ? 'hs' : ''}"><b>${fmt(d.steps || 0)}</b><small>pas</small></div>
       <div class="hx-v ${d.calories > G.kcal * 1.05 ? 'ov' : ''}"><b>${d.calories ? fmt(d.calories) : '—'}</b><small>kcal</small></div>
       <div class="hx-v ${G.protein && p >= G.protein ? 'hp' : ''}"><b>${p ? p + ' g' : '—'}</b><small>prot</small></div>
-      <div class="hx-w">${d.weight ? `<b>${f1(d.weight)}</b>${dk != null ? `<small class="${dk > 0 ? 'up' : dk < 0 ? 'dn' : 'eq'}">${dk > 0 ? '+' : dk < 0 ? '−' : '±'}${f1(Math.abs(dk))}</small>` : ''}` : '<b class="hx-na">—</b>'}</div></div>`; };
+      <div class="hx-w">${d.weight ? `<b>${f1(d.weight)}<i>kg</i></b>${dk != null ? `<small class="${dk > 0 ? 'up' : dk < 0 ? 'dn' : 'eq'}">${dk > 0 ? '+' : dk < 0 ? '−' : '±'}${f1(Math.abs(dk))}</small>` : ''}` : '<b class="hx-na">—</b>'}</div></div>`; };
   const week = (W, wi) => { const a = parseKey(W.w), b = new Date(a), cur = W.w === curW; b.setDate(a.getDate() + 6);
     const kk = W.ks.filter(k => !S.days[k].off), stp = kk.map(k => S.days[k].steps || 0), cal = kk.map(k => S.days[k].calories).filter(Boolean), pr = kk.map(k => sumMeals(S.days[k].meals || []).p).filter(Boolean);
     const avg = v => v.length ? v.reduce((x, y) => x + y, 0) / v.length : 0;
@@ -3163,7 +3168,7 @@ const renderHistory = () => {
       <div class="hx-hero"><div><b>${fmt(avg(stp))}</b><small>pas / jour</small></div>${hSpark(sv, cur ? ACC1 : '#A99BFF', 'hsg' + W.w)}</div>
       <div class="hx-mini"><span>Kcal / jour<b>${cal.length ? fmt(avg(cal)) : '—'}</b></span><span>Prot / jour<b>${pr.length ? Math.round(avg(pr)) + ' g' : '—'}</b></span>
         ${feat('hxW') && wk.length > 1 ? (() => { const a0 = S.days[wk[0]].weight, a1 = S.days[wk.at(-1)].weight, dd = Math.round((a1 - a0) * 10) / 10;
-          return `<span class="hx-wse">Poids <em class="${dd > 0 ? 'wup' : dd < 0 ? 'wdn' : ''}">${dd > 0 ? '+' : dd < 0 ? '−' : '±'}${f1(Math.abs(dd))}</em><b>${f1(a0)} → ${f1(a1)}</b></span>`; })()
+          return `<span class="hx-wse">Poids <em class="${dd > 0 ? 'wup' : dd < 0 ? 'wdn' : ''}">${dd > 0 ? '+' : dd < 0 ? '−' : '±'}${f1(Math.abs(dd))}</em><b>${f1(a0)} → ${f1(a1)}<i>kg</i></b></span>`; })()
         : `<span>Poids<b class="${wd0 > 0 ? 'wup' : wd0 < 0 ? 'wdn' : ''}">${wd0 == null ? '—' : (wd0 > 0 ? '+' : wd0 < 0 ? '−' : '±') + f1(Math.abs(wd0)) + ' kg'}</b></span>`}</div>
       ${W.ks.map(row).join('')}</div>`; };
   const tok = (renderHistory.tok = (renderHistory.tok || 0) + 1), all = weeks.slice(0, 60);
