@@ -3077,7 +3077,7 @@ const renderStats = () => {
   const st = sumField(curK,'steps'), stP = sumField(prevK,'steps');
   countTo($('#stSteps'), st); trendEl($('#trSteps'), st, stP);
   const G = goals(), stHit = curK.filter(k => (S.days[k] && S.days[k].steps || 0) >= G.steps).length;
-  $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · objectif atteint ${stHit} j`;
+  $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · ${fmt(monthAvgSteps())} / mois · objectif atteint ${stHit} j`;
   { const rk = Object.keys(S.days).reduce((m, k) => (S.days[k].steps || 0) > (m ? S.days[m].steps || 0 : 0) ? k : m, null), el = $('#stStepsRec');
     el.classList.toggle('hidden', !feat('stepRec') || !rk);
     if (rk) el.innerHTML = `<small>🏆 Record</small><b>${fmt(S.days[rk].steps)}</b><em>${parseKey(rk).toLocaleDateString('fr-BE', { day:'numeric', month:'short' }).replace('.', '')}</em>`; }
@@ -4279,6 +4279,9 @@ const openExStats = k => {
 };
 
 /* bilan de la semaine : partie muscu */
+/* moyenne des pas par mois (mois terminés, sinon le mois en cours) */
+const monthAvgSteps = () => { const cm = today().slice(0, 7), o = {}; Object.keys(S.days).forEach(k => { const v = S.days[k].steps || 0; if (v) o[k.slice(0, 7)] = (o[k.slice(0, 7)] || 0) + v; });
+  const full = Object.keys(o).filter(m => m !== cm), l = full.length ? full : Object.keys(o); return l.length ? Math.round(l.reduce((t, m) => t + o[m], 0) / l.length) : 0; };
 const gymTiles = g => `<div class="sb-gym"><div><b>${g.n}</b><small>fois</small></div><div><b>${fmtDur(g.min)}</b><small>temps</small></div><div><b>${fmtKg(g.vol)}</b><small>volume</small></div></div>`;
 const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws = S.workouts.filter(w => w.start >= aT && w.start < bT);
   const byCat = {}; ws.forEach(w => w.ex.forEach(e => byCat[e.cat] = (byCat[e.cat] || 0) + e.sets.length));
@@ -4557,7 +4560,7 @@ const monthStory = off => {
   if (!m.ks.length) { toast('Aucune donnée ce mois-là'); return; }
   const pavg = pm.ks.length ? pm.avg : null, dw = m.w0 != null ? Math.round((m.w1 - m.w0) * 10) / 10 : null, calAvg = m.cal.length ? m.cal.reduce((x, y) => x + y, 0) / m.cal.length : null;
   const slides = [{ c:'intro', ic:'🗓️', wm: mn.toUpperCase(), k: lbl, t:`Voici ton mois de ${mn},<br><span class="sb-grad">${esc(nm())}</span>`, sub:'Touche l\'écran pour découvrir tes chiffres.' }];
-  slides.push({ c:'215,255,58', ic:'👟', party: pavg && m.avg > pavg, k:'Pas', t: pavg && m.avg > pavg ? `Félicitations ${esc(nm())} !` : 'Tes pas du mois', big: m.tot, u:'pas ce mois-ci' });
+  slides.push({ c:'215,255,58', ic:'👟', party: pavg && m.avg > pavg, k:'Pas', t: pavg && m.avg > pavg ? `Félicitations ${esc(nm())} !` : 'Tes pas du mois', big: m.tot, u:'pas ce mois-ci', x:`<div class="sb-gym" style="grid-template-columns:1fr 1fr"><div><b>${fmt(m.avg)}</b><small>par jour</small></div><div><b>${fmt(monthAvgSteps())}</b><small>moy. par mois</small></div></div>` });
   if (m.best) slides.push({ c:'90,184,255', ic:'⚡', k:'Ta meilleure journée', t: parseKey(m.best).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }).replace(/^./, x => x.toUpperCase()), big: S.days[m.best].steps, u:'pas' });
   if (dw != null) slides.push({ c:'107,211,110', ic:'⚖️', party: dw < 0, k:'Poids', t: dw < 0 ? 'Le compteur baisse' : dw > 0 ? 'Petite remontée' : 'Stable', big: dw, dec:1, sign:true, u:'kg sur le mois', sub:`${f1(m.w0)} kg → ${f1(m.w1)} kg` });
   if (calAvg) slides.push({ c:'255,107,74', ic:'🔥', k:'Calories', t:'Ton assiette', big: Math.round(calAvg), u:'kcal par jour' });
