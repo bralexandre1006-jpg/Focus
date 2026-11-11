@@ -1191,6 +1191,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .wdc{display:flex;justify-content:center;align-items:center;align-self:stretch}
 .wd{width:100%;min-height:44px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:11px;font-weight:900;line-height:1.1;padding:3px 2px;border-radius:12px;white-space:nowrap;letter-spacing:-.03em;animation:wdin .3s var(--spring)}
 .wd span{display:block}
+.wdc{min-width:0;overflow:hidden}.wd{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 @keyframes wdin{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
 .wd.up{color:var(--ok);background:rgba(61,220,132,.14)}
 .wd.dn{color:var(--bad);background:rgba(255,77,106,.14)}
@@ -3899,7 +3900,7 @@ const FN_TOK = 'data:image/webp;base64,UklGRrgcAABXRUJQVlA4WAoAAAAQAAAAfwAAfwAAQ
 const prIcon = () => feat('fnTok') ? `<img src="${FN_TOK}" alt="">` : '🏆';
 const prDelta = (st, prev, uni) => {
   if (!prev) return '<span class="wd up pr">PR</span>';
-  const dk = num(st.kg) - num(prev.kg), dr = (uni ? num(st.reps) + num(st.repsR) - num(prev.reps) - num(prev.repsR) : num(st.reps) - num(prev.reps)), t = [];
+  const dk = num(st.kg) - num(prev.kg), dr = Math.round(uni ? num(st.reps) + num(st.repsR) - num(prev.reps) - num(prev.repsR) : num(st.reps) - num(prev.reps)), t = [];
   if (dk) t.push(`${dk > 0 ? '+' : '−'}${kgTxt(Math.abs(dk))} kg`); if (dr) t.push(`${dr > 0 ? '+' : '−'}${Math.abs(dr)} rép`);
   return `<span class="wd up pr">${t.map(x => `<span>${x}</span>`).join('') || 'PR'}</span>`;
 };
@@ -3908,8 +3909,8 @@ const deltaOf = (st, prev, uni) => {
   if (kg == null && r == null) return '';
   if (!prev) return '';
   const pk = num(prev.kg), pr = uni ? num(prev.reps) + num(prev.repsR) : num(prev.reps), k = kg ?? pk, rr = r ?? pr;
-  if (k !== pk) return `<span class="wd ${k > pk ? 'up' : 'dn'}">${k > pk ? '+' : '−'}${kgTxt(Math.abs(k - pk))} kg</span>`;
-  if (rr !== pr) return `<span class="wd ${rr > pr ? 'up' : 'dn'}">${rr > pr ? '+' : '−'}${Math.abs(rr - pr)} rép</span>`;
+  if (Math.abs(k - pk) >= .05) return `<span class="wd ${k > pk ? 'up' : 'dn'}">${k > pk ? '+' : '−'}${kgTxt(Math.abs(k - pk))} kg</span>`;
+  if (Math.round(rr) !== Math.round(pr)) return `<span class="wd ${rr > pr ? 'up' : 'dn'}">${rr > pr ? '+' : '−'}${Math.round(Math.abs(rr - pr))} rép</span>`;
   return '<span class="wd eq">=</span>';
 };
 let woSaveT = null;
@@ -3942,7 +3943,7 @@ const renderWo = () => {
   $$('#woBody .wex').forEach(box => { const e = w.ex[+box.dataset.e], prev = lastSetsFor(e.name, w.id);
     box.querySelectorAll('.wset').forEach(row => { const si = +row.dataset.s, st = e.sets[si], p = prev && prev[si];
       row.querySelectorAll('.wi').forEach(inp => {
-        inp.oninput = () => { st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); autoNext(inp, p, e); };
+        inp.oninput = () => { if (inp.dataset.f !== 'kg') { const c = inp.value.replace(/\D/g, '').slice(0, 3); if (c !== inp.value) inp.value = c; } st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); autoNext(inp, p, e); };
         if (inp.dataset.f === (e.uni ? 'repsR' : 'reps')) inp.onchange = () => { if (inp.value !== '' && !woEdit) markDone(e, st, row, si, p, true); };
       });
       row.querySelector('.wn').onclick = () => { if (st.done && Date.now() - (doneAt.get(st) || 0) < 600) return; if (st.done) { st.done = false; row.classList.remove('done'); row.querySelector('.wn').textContent = si + 1; row.closest('.wex').classList.remove('complete'); woProgress(); sfx.tap(); buzz(); woSave(); } else markDone(e, st, row, si, p, false); };
@@ -4155,7 +4156,7 @@ const openWoDetail = id => {
   const prevOf = k => { for (const o of [...S.workouts].sort((x, y) => y.start - x.start)) { if (o.start >= w.start || o.id === w.id) continue; const e = o.ex.find(x => exKey(x.name) === k); if (e && e.sets.length) return e.sets; } return null; };
   const pw = [...S.workouts].filter(o => o.start < w.start && o.name === w.name).sort((x, y) => y.start - x.start)[0], pvol = pw ? woVol(pw) : 0;
   const chip = (dk, dr) => { const t = []; if (Math.abs(dk) >= .05) t.push(`<i class="${dk > 0 ? 'up' : 'dn'}">${dk > 0 ? '+' : '−'}${kgTxt(Math.abs(dk))} kg</i>`); if (dr) t.push(`<i class="${dr > 0 ? 'up' : 'dn'}">${dr > 0 ? '+' : '−'}${Math.abs(dr)} rép</i>`); return t.join('') || '<i class="eq">=</i>'; };
-  const reps = (st, uni) => uni ? num(st.reps) + num(st.repsR) : num(st.reps);
+  const reps = (st, uni) => Math.round(uni ? num(st.reps) + num(st.repsR) : num(st.reps));
   $('#wdBody').innerHTML = `<div class="wdc-top"><span>${d.toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' })}</span>
       <div class="wdc-k"><div><b>${fmtDur(w.min)}</b><small>durée</small></div><div><b>${woSets(w)}</b><small>séries</small></div><div><b>${fmtKg(vol)}</b><small>volume${pvol ? ` <em class="${vol >= pvol ? 'up' : 'dn'}">${vol >= pvol ? '▲' : '▼'} ${Math.abs(Math.round((vol - pvol) / pvol * 100))} %</em>` : ''}</small></div></div></div>
     ${w.ex.map(e => { const pv = prevOf(exKey(e.name)), bn = bestSet(e.sets), bp = pv ? bestSet(pv) : null;
