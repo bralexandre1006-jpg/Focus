@@ -2279,7 +2279,7 @@ const confirmSheet = (t, p, o = {}) => new Promise(res => {
 const endSheet = v => { closeOv('sheet'); $('#dim').style.zIndex = ''; if (sheetRes) { sheetRes(v); sheetRes = null; } };
 $('#shYes').onclick = () => endSheet(true);
 $('#shNo').onclick = () => endSheet(false);
-$('#dim').onclick = () => { const top = stack.at(-1); if (top==='sheet') endSheet(false); else if (top) { closeOv(top); sfx.tap(); } };
+$('#dim').onclick = () => { if (Date.now() - woOpenedAt < 600) return; const top = stack.at(-1); if (top==='sheet') endSheet(false); else if (top) { closeOv(top); sfx.tap(); } };
 $$('[data-close]').forEach(b => b.onclick = () => { closeOv(b.closest('.modal').id); sfx.tap(); buzz(); });
 
 /* ---------- count-up ---------- */
@@ -4143,14 +4143,17 @@ const bindSwipe = sw => {
     else if (lock === 'y') setSw(sw, sw.classList.contains('open')); };
   sw.addEventListener('touchstart', e => { const t = e.touches[0]; start(t.clientX, t.clientY, e.target); }, { passive: true });
   sw.addEventListener('touchmove', e => { const t = e.touches[0]; if (move(t.clientX, t.clientY) && e.cancelable) e.preventDefault(); }, { passive: false });
-  sw.addEventListener('touchend', end); sw.addEventListener('touchcancel', end);
-  sw.addEventListener('mousedown', e => { if (!start(e.clientX, e.clientY, e.target)) return;
+  let lastTouch = 0;
+  sw.addEventListener('touchend', e => { lastTouch = Date.now(); if (on && lock == null && e.cancelable) e.preventDefault(); end(); }, { passive: false }); sw.addEventListener('touchcancel', end);
+  sw.addEventListener('mousedown', e => { if (Date.now() - lastTouch < 800) return; if (!start(e.clientX, e.clientY, e.target)) return;
     const mm = ev => move(ev.clientX, ev.clientY), mu = () => { end(); removeEventListener('mousemove', mm); removeEventListener('mouseup', mu); };
     addEventListener('mousemove', mm); addEventListener('mouseup', mu); });
   sw.addEventListener('contextmenu', e => e.preventDefault());
 };
 let woDetailId = null;
+let woOpenedAt = 0;
 const openWoDetail = id => {
+  woOpenedAt = Date.now();
   const w = S.workouts.find(x => x.id === id); if (!w) return; woDetailId = id;
   const d = new Date(w.start), vol = woVol(w);
   $('#wdTitle').textContent = w.name;
