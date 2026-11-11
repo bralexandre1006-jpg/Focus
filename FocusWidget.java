@@ -442,7 +442,7 @@ public class FocusWidget extends AppWidgetProvider {
     static boolean wideDesign(int id) { return id == 6 || id == 7 || id >= 25; }
 
     static class Dz {
-        Canvas x; float W, H, k, f; int v, g, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
+        boolean small; Canvas x; float W, H, k, f; int v, g, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
         int a(float al) { return T.a(al); }
         Paint fill(int c) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(c); return p; }
         Paint stroke(int c, float w) { Paint p = fill(c); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(w); return p; }
@@ -510,7 +510,9 @@ public class FocusWidget extends AppWidgetProvider {
                     x.drawPath(done, glow(round(stroke(fg, 3 * k)), 8)); x.drawCircle(ex, ey, 5 * k, fill(fg));
                     float[] pk = P[peak]; x.drawLine(pk[0], pk[1], pk[0], pk[1] - 16 * k, stroke(fg, 1.5f * k));
                     Path fl = new Path(); fl.moveTo(pk[0], pk[1] - 16 * k); fl.lineTo(pk[0] + 10 * k, pk[1] - 12 * k); fl.lineTo(pk[0], pk[1] - 8 * k); fl.close(); x.drawPath(fl, fill(fg));
-                    tl(fmt(v), 16 * k, 34 * k, 24 * k, fg, true); tl(unit + " · " + sub, 16 * k, 49 * k, 10.5f * k, mut, false); break; }
+                    if (small) t(compact(v), 14 * k, 46 * k, 40 * k, fg, Paint.Align.LEFT, true, -k, W * .58f);
+                    else { tl(fmt(v), 16 * k, 34 * k, 24 * k, fg, true); tl(unit + " · " + sub, 16 * k, 49 * k, 10.5f * k, mut, false); }
+                    break; }
                 case 4: { // Empreintes
                     int n = 10, on = Math.round(f * n);
                     for (int i = 0; i < n; i++) { float tt = i / (float) (n - 1), px = W * (.16f + .68f * tt), py = H * (.78f - .2f * (float) Math.sin(tt * Math.PI)) + (i % 2 == 1 ? -7 : 7) * k;
@@ -623,7 +625,13 @@ public class FocusWidget extends AppWidgetProvider {
                     for (int i = 0; i < n; i++) { float w = ws[(i * 7 + 3) % 4] * bw; x.drawRect(p + i * bw, 24 * k, p + i * bw + w, 24 * k + H * .5f, fill(i / (float) n < f ? fg : a(.14f))); }
                     t(fmt(v), cx, H * .5f + 48 * k, 18 * k, fg, Paint.Align.CENTER, true, 4 * k, W * .9f); break; }
                 case 22: { // Ticket
-                    float p = 18 * k; t("TICKET DU JOUR", cx, 30 * k, 9 * k, mut, Paint.Align.CENTER, true, 2.5f * k, 0);
+                    float p = 18 * k;
+                    if (small) {
+                        t("TICKET", cx, 40 * k, 20 * k, mut, Paint.Align.CENTER, true, 3 * k, W * .8f);
+                        Paint ds = stroke(a(.3f), 2 * k); ds.setPathEffect(new DashPathEffect(new float[] { 6 * k, 5 * k }, 0));
+                        x.drawLine(p, 56 * k, W - p, 56 * k, ds); x.drawLine(p, H - 44 * k, W - p, H - 44 * k, ds);
+                        t(compact(v), cx, cy + 16 * k, 48 * k, fg, Paint.Align.CENTER, true, -k, W - 2 * p);
+                        t(pct, cx, H - 16 * k, 20 * k, fg, Paint.Align.CENTER, true, 0, W * .8f); break; } t("TICKET DU JOUR", cx, 30 * k, 9 * k, mut, Paint.Align.CENTER, true, 2.5f * k, 0);
                     Paint ds = stroke(a(.25f), k); ds.setPathEffect(new DashPathEffect(new float[] { 3 * k, 3 * k }, 0));
                     x.drawLine(p, 42 * k, W - p, 42 * k, ds); x.drawLine(p, H - 46 * k, W - p, H - 46 * k, ds);
                     String[][] rows = { { unit.equals("pas") ? "Pas" : "Kcal", fmt(v) }, { unit.equals("pas") ? "Distance" : "Objectif", sub }, { "Progression", pct } };
@@ -676,7 +684,7 @@ public class FocusWidget extends AppWidgetProvider {
         z.f = Math.max(0, Math.min(1, z.v / (float) z.g)); z.pct = Math.round(z.f * 100) + " %";
         z.lbl = kc ? "KCAL" : "PAS"; z.unit = kc ? "kcal" : "pas";
         z.sub = kc ? "/ " + fmt(z.g) : String.format(Locale.FRANCE, "%.1f km", z.v * 0.00075f);
-        z.fg = T.fg; z.mut = T.mut; z.inv = T.light ? Color.WHITE : 0xFF0B0B0F; z.glowC = al(T.fg, .7f);
+        z.small = Math.min(A.W, A.H) < 100 * A.dp; z.fg = T.fg; z.mut = T.mut; z.inv = T.light ? Color.WHITE : 0xFF0B0B0F; z.glowC = al(T.fg, .7f);
         Canvas c = A.x; c.save(); c.clipPath(A.shapeP(0));
         if (wideDesign(id)) { z.W = A.W; z.H = A.H; z.k = Math.min(A.H / 84f, A.W / 360f); }
         else { float s = Math.min(A.W, A.H); c.translate((A.W - s) / 2, (A.H - s) / 2); z.W = s; z.H = s; z.k = s / 170f; }
