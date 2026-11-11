@@ -3996,16 +3996,17 @@ const markDone = (e, st, row, si, p, fromReps) => {
     if (e.sets.every(x => x.done) && !box.classList.contains('complete')) { box.classList.add('complete'); setTimeout(() => { tone([523, 659, 784], .09, 'sine', .08); }, 180); }
     woProgress(); woSave();
   }
-  if (e.rest && !woEdit) startRest(e.rest, e.name);
+  if (e.rest && !woEdit) { const w2 = woCur(), i2 = w2 ? w2.ex.indexOf(e) : -1, nx = e.sets.every(x => x.done) && w2 ? w2.ex.slice(i2 + 1).concat(w2.ex.slice(0, Math.max(0, i2))).find(x => x.sets.some(y => !y.done)) : null;
+    startRest(e.rest, nx ? nx.name : e.name, !!nx); }
 };
 
 const bestEver = (name, skipId) => { const k = exKey(name); let b = 0; S.workouts.forEach(w => { if (w.id === skipId) return; w.ex.forEach(x => { if (exKey(x.name) === k) x.sets.forEach(st => b = Math.max(b, e1rm(st))); }); }); return b; };
 
 /* minuteur de repos */
 let rest = null;
-const startRest = (sec, label) => {
+const startRest = (sec, label, isNext) => {
   rest = { end: Date.now() + sec * 1000, dur: sec * 1000, label };
-  $('#restL').textContent = 'Repos · ' + label; $('#rest').classList.add('on'); scheduleRestNotif(); startTick();
+  $('#restL').textContent = (isNext ? 'Repos · ensuite ' : 'Repos · ') + label; $('#rest').classList.add('on'); scheduleRestNotif(); startTick();
 };
 const stopRest = (done) => {
   if (!rest) return; rest = null; $('#rest').classList.remove('on'); cancelRestNotif();
