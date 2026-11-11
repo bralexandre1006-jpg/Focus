@@ -3698,7 +3698,7 @@ const woVol = w => w.ex.reduce((t, e) => t + e.sets.reduce((u, st) => u + setVol
 const woSets = w => w.ex.reduce((t, e) => t + e.sets.length, 0);
 const e1rm = st => { const r = Math.max(st.reps || 0, st.repsR || 0), k = num(st.kg); return r ? k * (1 + r / 30) : k; };
 const fmtKg = v => v >= 1000 ? f1(v / 1000) + ' t' : fmt(v) + ' kg';
-const kgTxt = v => String(Math.round(num(v) * 10) / 10).replace('.', ',');
+const kgTxt = v => String(Math.round(num(v) * 100) / 100).replace('.', ',');
 const suggestFor = (e, skipId) => {
   const prev = lastSetsFor(e.name, skipId); if (!prev || !prev.length) return null;
   const top = e.repMax || e.repMin, lo = e.repMin || top; if (!top) return null;
@@ -3943,7 +3943,7 @@ const renderWo = () => {
   $$('#woBody .wex').forEach(box => { const e = w.ex[+box.dataset.e], prev = lastSetsFor(e.name, w.id);
     box.querySelectorAll('.wset').forEach(row => { const si = +row.dataset.s, st = e.sets[si], p = prev && prev[si];
       row.querySelectorAll('.wi').forEach(inp => {
-        inp.oninput = () => { if (inp.dataset.f !== 'kg') { const c = inp.value.replace(/\D/g, '').slice(0, 3); if (c !== inp.value) inp.value = c; } st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); autoNext(inp, p, e); };
+        inp.oninput = () => { if (inp.dataset.f === 'kg') { const c = inp.value.replace(/[^\d.,]/g, '').replace(/^(\d*[.,]\d{0,2}).*$/, '$1'); if (c !== inp.value) inp.value = c; } else { const c = inp.value.replace(/\D/g, '').slice(0, 3); if (c !== inp.value) inp.value = c; } st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); autoNext(inp, p, e); };
         if (inp.dataset.f === (e.uni ? 'repsR' : 'reps')) inp.onchange = () => { if (inp.value !== '' && !woEdit) markDone(e, st, row, si, p, true); };
       });
       row.querySelector('.wn').onclick = () => { if (st.done && Date.now() - (doneAt.get(st) || 0) < 600) return; if (st.done) { st.done = false; row.classList.remove('done'); row.querySelector('.wn').textContent = si + 1; row.closest('.wex').classList.remove('complete'); woProgress(); sfx.tap(); buzz(); woSave(); } else markDone(e, st, row, si, p, false); };
@@ -3969,7 +3969,7 @@ const autoNext = (inp, p, e) => {
     if (nx && !nx.value) { nx.focus(); } else inp.blur(); };
   if (f === 'kg') {
     if (!p) return; const pk = num(p.kg), pd = /[.,]/.test(kgTxt(pk)), m = v.match(/^(\d+)(?:[.,](\d*))?$/); if (!m) return;
-    if (m[2]) { go(); return; } if (/[.,]$/.test(v)) return;
+    if (m[2] && m[2].length >= 2) { go(); return; } if (m[2]) { anT = setTimeout(go, 1500); return; } if (/[.,]$/.test(v)) return;
     if (m[1].length >= String(Math.floor(pk)).length) anT = setTimeout(go, 1500);
     return;
   }
