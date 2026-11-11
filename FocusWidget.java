@@ -497,11 +497,13 @@ public class FocusWidget extends AppWidgetProvider {
                     float by = y0 + ch + 18 * k, bw = W * .7f; rr((W - bw) / 2, by, bw, 4 * k, 2 * k, fill(a(.1f))); rr((W - bw) / 2, by, Math.max(4 * k, bw * f), 4 * k, 2 * k, fill(fg));
                     t(pct + " de " + fmt(g), cx, by + 20 * k, 11 * k, mut, Paint.Align.CENTER, false, 0, 0); break; }
                 case 3: { // Sommet
-                    float[][] P = { { .06f, .86f }, { .22f, .62f }, { .33f, .7f }, { .5f, .34f }, { .6f, .46f }, { .72f, .26f }, { .84f, .52f }, { .94f, .86f } };
+                    float[][] P = { { -.02f, .9f }, { .16f, .64f }, { .28f, .72f }, { .46f, .36f }, { .57f, .48f }, { .7f, .26f }, { .84f, .54f }, { 1.02f, .86f } };
                     for (float[] q : P) { q[0] *= W; q[1] *= H; }
                     Path path = new Path(); path.moveTo(P[0][0], P[0][1]); for (int i = 1; i < P.length; i++) path.lineTo(P[i][0], P[i][1]);
-                    Path fp = new Path(path); fp.lineTo(P[7][0], H); fp.lineTo(P[0][0], H); fp.close(); x.drawPath(fp, fill(a(.05f)));
-                    x.drawPath(path, round(stroke(a(.18f), 2 * k)));
+                    Path fp = new Path(path); fp.lineTo(W + 4 * k, H + 4 * k); fp.lineTo(-4 * k, H + 4 * k); fp.close();
+                    Paint mf = fill(0); mf.setShader(new LinearGradient(0, H * .26f, 0, H, a(.13f), a(.04f), Shader.TileMode.CLAMP)); x.drawPath(fp, mf);
+                    Path back = new Path(); back.moveTo(W * .3f, H + 4 * k); back.lineTo(W * .62f, H * .58f); back.lineTo(W * .78f, H * .7f); back.lineTo(W + 4 * k, H * .62f); back.lineTo(W + 4 * k, H + 4 * k); back.close(); x.drawPath(back, fill(a(.04f)));
+                    x.drawPath(path, round(stroke(a(.22f), 2 * k)));
                     int peak = 5; float L = 0; float[] lens = new float[peak]; for (int i = 1; i <= peak; i++) { L += (float) Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); lens[i - 1] = L; }
                     float tg = L * f, ex = P[0][0], ey = P[0][1]; Path done = new Path(); done.moveTo(ex, ey);
                     for (int i = 1; i <= peak; i++) { float l0 = i > 1 ? lens[i - 2] : 0, seg = lens[i - 1] - l0;
