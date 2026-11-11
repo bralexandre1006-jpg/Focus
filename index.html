@@ -968,6 +968,28 @@ body.lite .qbadge{right:50px!important}
 .bg.tap i{animation:bgTap .55s cubic-bezier(.2,1.5,.4,1)}
 .bgtip{position:fixed;left:50%;bottom:calc(var(--sb) + 22px);transform:translate(-50%,30px);opacity:0;z-index:200;padding:13px 18px;border-radius:18px;background:rgba(30,30,36,.96);border:1px solid rgba(255,255,255,.1);font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:.35s var(--spring);pointer-events:none}
 .bgtip.on{transform:translate(-50%,0);opacity:1}
+.bsp{position:relative;display:flex;align-items:center;gap:14px;margin:12px 0 4px;padding:14px;border-radius:24px;overflow:hidden;background:var(--card);border:1px solid rgba(255,255,255,.06);animation:rise .5s var(--ease) .05s both}
+.bsp.on{background:radial-gradient(120% 140% at 0% 50%,rgba(255,138,92,.22),transparent 60%),radial-gradient(100% 120% at 100% 0%,rgba(124,92,255,.25),transparent 60%),var(--card);border:0}
+.bsp.on::before{content:"";position:absolute;inset:0;border-radius:24px;padding:1.5px;background:conic-gradient(from var(--ba),#FFE58A,#FF8A5C,#FF4DA6,#7C5CFF,#4FE3D0,#FFE58A);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:bspSpin 4s linear infinite}
+@property --ba{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes bspSpin{to{--ba:360deg}}
+.bsp-m{position:relative;width:118px;height:118px;flex-shrink:0}
+.bsp-m svg{position:relative;z-index:1;display:block;overflow:visible}
+.bsp.on .bsp-m svg{animation:bspFloat 3s ease-in-out infinite;filter:drop-shadow(0 8px 22px rgba(255,120,120,.45))}
+.bsp-halo{position:absolute;inset:-6px;border-radius:50%;opacity:0}
+.bsp.on .bsp-halo{opacity:1;background:conic-gradient(from 0deg,transparent,rgba(255,229,138,.55),transparent 30%,rgba(255,77,166,.5),transparent 60%,rgba(124,92,255,.55),transparent 90%);-webkit-mask:radial-gradient(circle,transparent 46px,#000 48px,#000 58px,transparent 60px);mask:radial-gradient(circle,transparent 46px,#000 48px,#000 58px,transparent 60px);animation:bgSpin 3.5s linear infinite}
+.bsp-m s{position:absolute;z-index:2;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff,0 0 18px #FFD54F;opacity:0;animation:bspStar 2.4s ease-in-out infinite}
+.bsp-m s:nth-of-type(1){left:6px;top:20px}.bsp-m s:nth-of-type(2){right:4px;top:10px;animation-delay:.5s}.bsp-m s:nth-of-type(3){right:10px;bottom:22px;animation-delay:1s}.bsp-m s:nth-of-type(4){left:16px;bottom:8px;animation-delay:1.5s}.bsp-m s:nth-of-type(5){left:50%;top:-4px;animation-delay:1.9s}
+.bsp-m b{position:absolute;top:2px;right:0;z-index:3;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:linear-gradient(180deg,#FF6A85,#E8304F);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center}
+.bsp-t{flex:1;min-width:0}
+.bsp-t small{display:block;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.bsp.on .bsp-t small{background:linear-gradient(90deg,#FFE58A,#FF8A5C,#FF4DA6,#7C5CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bsp-t h6{font-size:20px;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin:4px 0 6px}
+.bsp-t p{font-size:13px;font-weight:700;color:var(--mut);margin:0}.bsp-t p b{color:var(--txt);white-space:nowrap}
+.bsp-t em{display:block;height:6px;border-radius:3px;background:var(--card2);margin-top:9px;overflow:hidden}.bsp-t em s{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#FFE58A,#FF8A5C,#FF4DA6,#7C5CFF)}
+.bsp.tap .bsp-m svg{animation:bgTap .55s cubic-bezier(.2,1.5,.4,1)}
+@keyframes bspFloat{50%{transform:translateY(-5px) rotate(-3deg)}}
+@keyframes bspStar{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1)}}
 @keyframes bgPop{0%{opacity:0;transform:scale(.3) rotate(-25deg)}100%{opacity:1;transform:none}}
 @keyframes bgFloat{50%{transform:translateY(-4px)}}
 @keyframes bgShine{0%,55%{background-position:150% 0}100%{background-position:-60% 0}}
@@ -3514,7 +3536,12 @@ const openBadges = () => {
     const nx = g.list.find(x => bv < x);
     return `<div class="bgsec" style="--bc:${g.c};--b1:${g.m[0]};--b2:${g.m[1]};--b3:${g.m[2]};animation-delay:${.1 + gi * .08}s"><h5><i></i>${g.t}<span>${w}/${g.list.length}</span></h5><p>${g.lbl} : <b>${fmt(bv)}</b> pas${nx ? ` · encore <b>${fmt(nx - bv)}</b> pour ${kTxt(nx)}` : ' · tout débloqué 🔥'}</p><div class="bgg">${cells}</div></div>`;
   }).join('');
-  $('#badgeBody').innerHTML = `<div class="bgh"><div class="rgw"><div class="rg"></div><span>🏆</span></div><div><b><u data-bc="${won}">0</u><em> / ${all}</em></b><small>badges débloqués</small></div></div>${secs}`;
+  const SP = 31000, spN = dayV.filter(x => x >= SP).length, spB = best(dayV); all++; if (spN) won++;
+  const special = `<div class="bsp ${spN ? 'on' : ''}"><div class="bsp-m"><i class="bsp-halo"></i>${badgeSvg({ tier: 10, glyph: 'bolt', label: '31k', locked: !spN, size: 118 })}${spN ? '<s></s><s></s><s></s><s></s><s></s>' : ''}${spN > 1 ? `<b>×${spN}</b>` : ''}</div>
+    <div class="bsp-t"><small>Défi légendaire</small><h6>31 000 pas en un jour</h6><p>${spN ? `Débloqué${spN > 1 ? ` ${spN} fois` : ''} 🔥 Record : <b>${fmt(spB)}</b>` : `Ton record : <b>${fmt(spB)}</b> · encore <b>${fmt(Math.max(0, SP - spB))}</b>`}</p>
+    ${spN ? '' : `<em><s style="width:${Math.min(100, spB / SP * 100)}%"></s></em>`}</div></div>`;
+  $('#badgeBody').innerHTML = `<div class="bgh"><div class="rgw"><div class="rg"></div><span>🏆</span></div><div><b><u data-bc="${won}">0</u><em> / ${all}</em></b><small>badges débloqués</small></div></div>${special}${secs}`;
+  const spEl = $('#badgeBody .bsp.on'); if (spEl) spEl.onclick = () => { spEl.classList.remove('tap'); void spEl.offsetWidth; spEl.classList.add('tap'); burst(spEl.querySelector('.bsp-m'), ['#FFE58A', '#FF8A5C', '#FF4DA6', '#7C5CFF', '#fff']); buzz('success'); };
   openOv('badgeModal');
   const bd = $('#badgeBody'), num0 = bd.querySelector('[data-bc]');
   requestAnimationFrame(() => requestAnimationFrame(() => {
