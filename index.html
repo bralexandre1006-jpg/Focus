@@ -3986,7 +3986,8 @@ const markDone = (e, st, row, si, p, fromReps) => {
     row.classList.add('done'); row.querySelector('.wn').textContent = '✓';
     row.classList.remove('just'); void row.offsetWidth; row.classList.add('just');
     const w = woCur(), pb = bestEver(e.name, w && w.id);
-    if (pb && e1rm({ kg: num(st.kg), reps: num(st.reps), repsR: num(st.repsR) }) > pb + .01 && !woEdit) {
+    const upKg = p && num(st.kg) > num(p.kg) + .001;
+    if (!woEdit && (upKg || (pb && e1rm({ kg: num(st.kg), reps: num(st.reps), repsR: num(st.repsR) }) > pb + .01))) {
       const wdc = row.querySelector('.wdc'); wdc.innerHTML = `<span class="wpr">${prIcon()}</span>`; burst(row.querySelector('.wn'), ['#FFD54F','#FF9F43','#D7FF3A','#fff']);
       setTimeout(() => { if (wdc.isConnected && st.done) wdc.innerHTML = prDelta(st, p, e.uni); }, 3000);
       tone([784, 988, 1319], .1, 'triangle', .12); buzz('heavy');
