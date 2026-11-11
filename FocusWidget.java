@@ -68,7 +68,7 @@ public class FocusWidget extends AppWidgetProvider {
             SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             Cfg f = new Cfg();
             f.metric = p.getInt("m_" + id, kind == 0 ? 0 : 2);
-            f.style = Math.max(0, Math.min(6, p.getInt("s_" + id, kind == 3 ? 3 : 0)));
+            f.style = Math.max(0, Math.min(34, p.getInt("s_" + id, kind == 3 ? 3 : 0)));
             f.col = Math.max(0, Math.min(15, p.getInt("c2_" + id, 3)));
             f.bg = p.getInt("b_" + id, 85);
             f.shape = p.getInt("h_" + id, 0);
@@ -434,6 +434,255 @@ public class FocusWidget extends AppWidgetProvider {
         return r;
     }
 
+
+    /* ---------- designs supplémentaires (styles 7 à 34) ---------- */
+    static final String[] DESIGN_NAMES = { "Orbite", "Segments", "Compteur", "Sommet", "Empreintes", "Minimal", "Barres", "Odomètre", "Sablier", "Aiguille",
+        "Montre", "3 anneaux", "Matrice", "Vague", "Spirale", "Route", "Escalier", "Vertical", "Pourcent", "Tachymètre", "Étoiles", "Code-barres", "Ticket",
+        "Semaine +", "Thermomètre", "Piste", "Règle", "Onde" };
+    static boolean wideDesign(int id) { return id == 6 || id == 7 || id >= 25; }
+
+    static class Dz {
+        Canvas x; float W, H, k, f; int v, g, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
+        int a(float al) { return T.a(al); }
+        Paint fill(int c) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(c); return p; }
+        Paint stroke(int c, float w) { Paint p = fill(c); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(w); return p; }
+        Paint round(Paint p) { p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND); return p; }
+        Paint glow(Paint p, float b) { p.setShadowLayer(b * k, 0, 0, glowC); return p; }
+        void rr(float l, float t, float w, float h, float r, Paint p) { x.drawRoundRect(new RectF(l, t, l + w, t + h), r, r, p); }
+        RectF ov(float cx, float cy, float rx, float ry) { return new RectF(cx - rx, cy - ry, cx + rx, cy + ry); }
+        float t(String s, float X, float Y, float sz, int col, Paint.Align al, boolean b8, float ls, float maxW) {
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setTypeface(b8 ? T8 : T7); p.setTextSize(sz); p.setColor(col); p.setTextAlign(al);
+            if (ls != 0) p.setLetterSpacing(ls / sz);
+            if (maxW > 0) while (sz > 4 && p.measureText(s) > maxW) { sz *= .94f; p.setTextSize(sz); if (ls != 0) p.setLetterSpacing(ls / sz); }
+            x.drawText(s, X, Y, p); return sz;
+        }
+        void t(String s, float X, float Y, float sz, int col) { t(s, X, Y, sz, col, Paint.Align.CENTER, true, 0, W * .9f); }
+        void tl(String s, float X, float Y, float sz, int col, boolean b8) { t(s, X, Y, sz, col, Paint.Align.LEFT, b8, 0, W - X - 10 * k); }
+        void shoe(float cx, float cy, float sz, int col, float lw) {
+            x.save(); x.translate(cx - sz / 2, cy - sz / 2); x.scale(sz / 24, sz / 24);
+            Path q = new Path(); q.moveTo(3, 15.5f); q.cubicTo(3, 12, 5, 11, 7.5f, 11); q.lineTo(10, 8.5f); q.cubicTo(11, 7.5f, 12.5f, 8, 13, 9); q.lineTo(14.5f, 11.5f); q.cubicTo(17, 12.5f, 21, 13.5f, 21, 16); q.lineTo(21, 17.5f); q.lineTo(3, 17.5f); q.close();
+            q.moveTo(8, 14); q.lineTo(10, 14); q.moveTo(11, 12.5f); q.lineTo(12.5f, 12.5f);
+            x.drawPath(q, round(stroke(col, lw))); x.restore();
+        }
+        String digits() { String d = String.valueOf(v); while (d.length() < 5) d = "0" + d; return d; }
+        void odoCell(float xx, float y0, float cw, float ch, String c, boolean lead) {
+            Paint g = fill(0); g.setShader(new LinearGradient(0, y0, 0, y0 + ch, new int[] { a(.16f), a(.07f), a(.03f), a(.1f) }, new float[] { 0, .5f, .5f, 1 }, Shader.TileMode.CLAMP));
+            rr(xx, y0, cw, ch, 5 * k, g); rr(xx, y0, cw, ch, 5 * k, stroke(a(.12f), Math.max(1, k * .5f)));
+            x.drawRect(xx, y0 + ch / 2 - .5f * k, xx + cw, y0 + ch / 2 + .5f * k, fill(0x99000000));
+            t(c, xx + cw / 2, y0 + ch * .74f, ch * .62f, lead ? a(.25f) : fg, Paint.Align.CENTER, true, 0, 0);
+        }
+
+        void draw(int id) {
+            float cx = W / 2, cy = H / 2;
+            switch (id) {
+                case 0: { // Orbite
+                    float oy = H * .47f, rx = W * .4f, ry = H * .14f;
+                    x.save(); x.translate(cx, oy); x.rotate((float) Math.toDegrees(-.22));
+                    x.drawOval(ov(0, 0, rx, ry), stroke(a(.14f), 2 * k));
+                    x.drawArc(ov(0, 0, rx, ry), 90, Math.max(1, f * 360), false, glow(round(stroke(fg, 2.6f * k)), 8));
+                    double a1 = Math.toRadians(90 + f * 360); float px = (float) Math.cos(a1) * rx, py = (float) Math.sin(a1) * ry;
+                    Paint pl = fill(0); pl.setShader(new android.graphics.RadialGradient(px - 3 * k, py - 3 * k, 8 * k, fg, a(.5f), Shader.TileMode.CLAMP)); x.drawCircle(px, py, 6.5f * k, pl);
+                    x.restore();
+                    t(fmt(v), cx, oy + 12 * k, 30 * k, fg); t(pct + "  ·  " + sub, cx, H - 20 * k, 11 * k, mut, Paint.Align.CENTER, false, .5f * k, W * .9f); break; }
+                case 1: { // Segments
+                    float r = W * .38f; int n = 20; float on = f * n;
+                    for (int i = 0; i < n; i++) { float a = -90 + (i + .5f) * 18, sp = 18 * .36f;
+                        x.drawArc(ov(cx, cy, r, r), a - sp, sp * 2, false, round(stroke(i < (int) on ? fg : i < on ? a(.55f) : a(.1f), 9 * k))); }
+                    shoe(cx, cy - 22 * k, 16 * k, a(.7f), 2); t(fmt(v), cx, cy + 10 * k, 27 * k, fg); t("/ " + fmt(g), cx, cy + 27 * k, 11 * k, mut, Paint.Align.CENTER, false, 0, 0); break; }
+                case 2: { // Compteur
+                    String d = digits(); int lead = d.length() - String.valueOf(v).length();
+                    float cw = W * .15f * Math.min(1, 5f / d.length()), ch = cw * 1.45f, gap = 4 * k, tw = d.length() * cw + (d.length() - 1) * gap, x0 = (W - tw) / 2, y0 = H * .3f;
+                    t(lbl, cx, y0 - 12 * k, 10 * k, mut, Paint.Align.CENTER, true, 3 * k, 0);
+                    for (int i = 0; i < d.length(); i++) odoCell(x0 + i * (cw + gap), y0, cw, ch, d.substring(i, i + 1), i < lead);
+                    float by = y0 + ch + 18 * k, bw = W * .7f; rr((W - bw) / 2, by, bw, 4 * k, 2 * k, fill(a(.1f))); rr((W - bw) / 2, by, Math.max(4 * k, bw * f), 4 * k, 2 * k, fill(fg));
+                    t(pct + " de " + fmt(g), cx, by + 20 * k, 11 * k, mut, Paint.Align.CENTER, false, 0, 0); break; }
+                case 3: { // Sommet
+                    float[][] P = { { .06f, .86f }, { .22f, .62f }, { .33f, .7f }, { .5f, .34f }, { .6f, .46f }, { .72f, .26f }, { .84f, .52f }, { .94f, .86f } };
+                    for (float[] q : P) { q[0] *= W; q[1] *= H; }
+                    Path path = new Path(); path.moveTo(P[0][0], P[0][1]); for (int i = 1; i < P.length; i++) path.lineTo(P[i][0], P[i][1]);
+                    Path fp = new Path(path); fp.lineTo(P[7][0], H); fp.lineTo(P[0][0], H); fp.close(); x.drawPath(fp, fill(a(.05f)));
+                    x.drawPath(path, round(stroke(a(.18f), 2 * k)));
+                    int peak = 5; float L = 0; float[] lens = new float[peak]; for (int i = 1; i <= peak; i++) { L += (float) Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); lens[i - 1] = L; }
+                    float tg = L * f, ex = P[0][0], ey = P[0][1]; Path done = new Path(); done.moveTo(ex, ey);
+                    for (int i = 1; i <= peak; i++) { float l0 = i > 1 ? lens[i - 2] : 0, seg = lens[i - 1] - l0;
+                        if (tg >= lens[i - 1]) { ex = P[i][0]; ey = P[i][1]; done.lineTo(ex, ey); }
+                        else { float q = (tg - l0) / seg; ex = P[i - 1][0] + (P[i][0] - P[i - 1][0]) * q; ey = P[i - 1][1] + (P[i][1] - P[i - 1][1]) * q; done.lineTo(ex, ey); break; } }
+                    x.drawPath(done, glow(round(stroke(fg, 3 * k)), 8)); x.drawCircle(ex, ey, 5 * k, fill(fg));
+                    float[] pk = P[peak]; x.drawLine(pk[0], pk[1], pk[0], pk[1] - 16 * k, stroke(fg, 1.5f * k));
+                    Path fl = new Path(); fl.moveTo(pk[0], pk[1] - 16 * k); fl.lineTo(pk[0] + 10 * k, pk[1] - 12 * k); fl.lineTo(pk[0], pk[1] - 8 * k); fl.close(); x.drawPath(fl, fill(fg));
+                    tl(fmt(v), 16 * k, 34 * k, 24 * k, fg, true); tl(unit + " · " + sub, 16 * k, 49 * k, 10.5f * k, mut, false); break; }
+                case 4: { // Empreintes
+                    int n = 10, on = Math.round(f * n);
+                    for (int i = 0; i < n; i++) { float tt = i / (float) (n - 1), px = W * (.16f + .68f * tt), py = H * (.78f - .2f * (float) Math.sin(tt * Math.PI)) + (i % 2 == 1 ? -7 : 7) * k;
+                        x.save(); x.translate(px, py); x.rotate((float) Math.toDegrees(Math.PI / 2 - .5 * Math.cos(tt * Math.PI) + (i % 2 == 1 ? .12 : -.12)));
+                        Paint p = fill(i < on ? fg : a(.12f)); if (i == on - 1) glow(p, 10);
+                        x.drawOval(ov(0, 0, 3.4f * k, 5.6f * k), p); x.drawOval(ov(0, -8.6f * k, 2.4f * k, 2.6f * k), p); x.restore(); }
+                    t(fmt(v), cx, H * .36f, 32 * k, fg); t(lbl + " · " + pct, cx, H * .36f + 17 * k, 10 * k, mut, Paint.Align.CENTER, true, 2 * k, 0); break; }
+                case 5: { // Minimal
+                    float p = 18 * k; t("AUJOURD'HUI", p, p + 8 * k, 10 * k, mut, Paint.Align.LEFT, true, 2.5f * k, 0);
+                    t(fmt(v), p - 2 * k, H * .62f, 46 * k, fg, Paint.Align.LEFT, true, -2 * k, W - 2 * p);
+                    float ly = H - p - 14 * k; x.drawLine(p, ly, W - p, ly, stroke(a(.15f), 1.2f * k));
+                    x.drawLine(p, ly, p + (W - 2 * p) * f, ly, round(stroke(fg, 2.4f * k)));
+                    tl(unit, p, H - p + 2 * k, 11 * k, mut, false); t(sub, W - p, H - p + 2 * k, 11 * k, mut, Paint.Align.RIGHT, false, 0, 0); break; }
+                case 6: { // Barres (long)
+                    float p = 18 * k; shoe(p + 12 * k, cy, 22 * k, fg, 1.8f);
+                    t(fmt(v), p + 32 * k, cy + 6 * k, 28 * k, fg, Paint.Align.LEFT, true, 0, W * .5f - p - 34 * k);
+                    t("/ " + fmt(g) + " " + unit, p + 32 * k, cy + 22 * k, 10.5f * k, mut, Paint.Align.LEFT, false, 0, W * .5f - p - 34 * k);
+                    float bx = W * .55f, bw = W * .45f - p; int n = 24; float cw = bw / n;
+                    for (int i = 0; i < n; i++) { boolean on = i < f * n; float hh = (10 + 18 * Math.abs((float) Math.sin(i * 1.7 + 1))) * k * (on ? 1 : .6f); hh = Math.min(hh, H - 16 * k);
+                        rr(bx + i * cw + cw * .2f, cy - hh / 2, cw * .6f, hh, cw * .3f, fill(on ? fg : a(.12f))); }
+                    break; }
+                case 7: { // Odomètre (long)
+                    float p = 18 * k; String d = digits(); int lead = d.length() - String.valueOf(v).length(); float cw = 22 * k, ch = 34 * k, gap = 3 * k, y0 = (H - ch) / 2;
+                    for (int i = 0; i < d.length(); i++) odoCell(p + i * (cw + gap), y0, cw, ch, d.substring(i, i + 1), i < lead);
+                    float tx = p + d.length() * (cw + gap) + 10 * k;
+                    t(lbl, tx, cy - 4 * k, 10 * k, mut, Paint.Align.LEFT, true, 2.5f * k, 0); t(pct + " · " + sub, tx, cy + 12 * k, 11 * k, fg, Paint.Align.LEFT, false, 0, W - tx - 60 * k);
+                    float rx = W - p - 20 * k; x.drawCircle(rx, cy, 18 * k, stroke(a(.1f), 4 * k)); x.drawArc(ov(rx, cy, 18 * k, 18 * k), -90, Math.max(1, f * 360), false, round(stroke(fg, 4 * k))); shoe(rx, cy, 16 * k, fg, 1.8f); break; }
+                case 8: { // Sablier
+                    float sx = W * .3f, top = H * .2f, bot = H * .8f, w = W * .17f, mid = (top + bot) / 2;
+                    Path up = new Path(); up.moveTo(sx - w, top); up.lineTo(sx + w, top); up.lineTo(sx + 3 * k, mid); up.lineTo(sx - 3 * k, mid); up.close();
+                    Path dn = new Path(); dn.moveTo(sx - 3 * k, mid); dn.lineTo(sx + 3 * k, mid); dn.lineTo(sx + w, bot); dn.lineTo(sx - w, bot); dn.close();
+                    x.save(); x.clipPath(up); x.drawRect(0, top + (mid - top) * f, W, H, fill(fg)); x.restore();
+                    x.save(); x.clipPath(dn); x.drawRect(0, bot - (bot - mid) * f, W, H, fill(fg)); x.restore();
+                    Paint s = stroke(a(.5f), 1.5f * k); x.drawPath(up, s); x.drawPath(dn, s);
+                    x.drawRect(sx - w - 4 * k, top - 4 * k, sx + w + 4 * k, top - k, fill(fg)); x.drawRect(sx - w - 4 * k, bot + k, sx + w + 4 * k, bot + 4 * k, fill(fg));
+                    tl(fmt(v), W * .56f, cy, 22 * k, fg, true); tl(unit + " · " + pct, W * .56f, cy + 16 * k, 10 * k, mut, false); break; }
+                case 9: { // Aiguille
+                    float gy = H * .6f, r = W * .36f;
+                    for (int i = 0; i <= 40; i++) { double a = Math.PI * (1 + i / 40.0); float L = (i % 5 != 0 ? 5 : 10) * k;
+                        x.drawLine(cx + (float) Math.cos(a) * r, gy + (float) Math.sin(a) * r, cx + (float) Math.cos(a) * (r - L), gy + (float) Math.sin(a) * (r - L), stroke(i / 40f <= f ? fg : a(.12f), (i % 5 != 0 ? 1.2f : 2.2f) * k)); }
+                    double a = Math.PI * (1 + f); x.drawLine(cx, gy, cx + (float) Math.cos(a) * r * .8f, gy + (float) Math.sin(a) * r * .8f, glow(round(stroke(fg, 2.5f * k)), 6));
+                    x.drawCircle(cx, gy, 5 * k, fill(fg)); t(fmt(v), cx, H * .86f, 22 * k, fg);
+                    t("0", cx - r, gy + 14 * k, 9 * k, mut, Paint.Align.CENTER, true, 0, 0); t(compact(g), cx + r, gy + 14 * k, 9 * k, mut, Paint.Align.CENTER, true, 0, 0); break; }
+                case 10: { // Montre
+                    float r = W * .38f;
+                    for (int i = 0; i < 12; i++) { double a = i * Math.PI / 6; x.drawCircle(cx + (float) Math.cos(a) * r, cy + (float) Math.sin(a) * r, (i % 3 != 0 ? 1.6f : 2.6f) * k, fill(i % 3 != 0 ? mut : fg)); }
+                    t(lbl, cx, cy - r * .42f, 9 * k, mut, Paint.Align.CENTER, true, 2 * k, 0);
+                    double a1 = -Math.PI / 2 + f * Math.PI * 2; x.drawLine(cx, cy, cx + (float) Math.cos(a1) * r * .78f, cy + (float) Math.sin(a1) * r * .78f, round(stroke(fg, 3 * k)));
+                    double a2 = -Math.PI / 2 + (v % 1000) / 1000.0 * Math.PI * 2; x.drawLine(cx, cy, cx + (float) Math.cos(a2) * r * .55f, cy + (float) Math.sin(a2) * r * .55f, round(stroke(a(.45f), 2 * k)));
+                    x.drawCircle(cx, cy, 4 * k, fill(fg)); t(fmt(v), cx, cy + r * .58f, 14 * k, fg); break; }
+                case 11: { // 3 anneaux : aujourd'hui, hier, moyenne de la semaine
+                    float yv = ti > 0 ? Math.min(1, w7[ti - 1] / (float) g) : 0; int sum = 0; for (int i = 0; i <= ti; i++) sum += w7[i];
+                    float[][] R = { { f, .4f }, { yv, .3f }, { Math.min(1, sum / (float) (ti + 1) / g), .2f } };
+                    for (int i = 0; i < 3; i++) { float r = W * R[i][1]; x.drawCircle(cx, cy, r, stroke(a(.08f), 7 * k));
+                        if (R[i][0] > 0) x.drawArc(ov(cx, cy, r, r), -90, Math.max(1, R[i][0] * 360), false, round(stroke(a(1 - i * .28f), 7 * k))); }
+                    t(compact(v), cx, cy + 5 * k, 14 * k, fg); break; }
+                case 12: { // Matrice
+                    int n = 10; float p = 20 * k, top = 46 * k, cs = (W - 2 * p) / n; int rows = Math.max(1, (int) ((H - top - p) / cs)), on = Math.round(f * 100);
+                    tl(fmt(v), p, 32 * k, 20 * k, fg, true); t(pct, W - p, 32 * k, 11 * k, mut, Paint.Align.RIGHT, true, 0, 0);
+                    for (int i = 0; i < n * rows; i++) { int q = Math.round(i * 100f / (n * rows)); x.drawCircle(p + (i % n + .5f) * cs, top + (i / n + .5f) * cs, cs * .3f, fill(q < on ? fg : a(.12f))); }
+                    break; }
+                case 13: { // Vague
+                    float r = W * .38f, lv = cy + r - 2 * r * f; Path circ = new Path(); circ.addCircle(cx, cy, r, Path.Direction.CW);
+                    x.save(); x.clipPath(circ); x.drawRect(0, 0, W, H, fill(a(.05f)));
+                    Path front = null;
+                    for (int j = 0; j < 2; j++) { float o = j == 0 ? 0 : 1.6f; Path wv = new Path(); wv.moveTo(0, H);
+                        for (float px = 0; px <= W; px += 2) wv.lineTo(px, lv + (float) Math.sin(px / W * 9 + o) * 4 * k); wv.lineTo(W, H); wv.close();
+                        x.drawPath(wv, fill(j == 0 ? a(.3f) : fg)); front = wv; }
+                    x.restore(); x.drawCircle(cx, cy, r, stroke(a(.35f), 1.5f * k));
+                    t(fmt(v), cx, cy + 6 * k, 24 * k, fg); t(pct, cx, cy + 22 * k, 10 * k, fg);
+                    x.save(); x.clipPath(circ); x.clipPath(front); t(fmt(v), cx, cy + 6 * k, 24 * k, inv); t(pct, cx, cy + 22 * k, 10 * k, inv); x.restore(); break; }
+                case 14: { // Spirale
+                    float turns = 2.6f; int N = 300; Path tr = new Path(), pr = new Path(); float ex = 0, ey = 0;
+                    for (int i = 0; i <= N; i++) { float tt = i / (float) N; double a = -Math.PI / 2 + tt * turns * Math.PI * 2; float r = W * (.08f + .32f * tt), px = cx + (float) Math.cos(a) * r, py = cy + (float) Math.sin(a) * r;
+                        if (i == 0) { tr.moveTo(px, py); pr.moveTo(px, py); } else { tr.lineTo(px, py); if (tt <= f) pr.lineTo(px, py); } if (tt <= f) { ex = px; ey = py; } }
+                    x.drawPath(tr, round(stroke(a(.12f), 3 * k))); x.drawPath(pr, glow(round(stroke(fg, 3 * k)), 6)); x.drawCircle(ex, ey, 4.5f * k, fill(fg));
+                    t(fmt(v), W - 14 * k, H - 14 * k, 13 * k, fg, Paint.Align.RIGHT, true, 0, 0); break; }
+                case 15: { // Route
+                    float hz = H * .42f;
+                    Path road = new Path(); road.moveTo(cx - 3 * k, hz); road.lineTo(cx + 3 * k, hz); road.lineTo(W * .9f, H); road.lineTo(W * .1f, H); road.close(); x.drawPath(road, fill(a(.06f)));
+                    Paint ed = stroke(a(.4f), 1.2f * k); x.drawLine(cx - 3 * k, hz, W * .1f, H, ed); x.drawLine(cx + 3 * k, hz, W * .9f, H, ed);
+                    for (int i = 0; i < 7; i++) { float t0 = (float) Math.pow(i / 7.0, 1.8), t1 = (float) Math.pow((i + .5) / 7.0, 1.8), y0 = hz + (H - hz) * t0, y1 = hz + (H - hz) * t1;
+                        Path q = new Path(); q.moveTo(cx - .4f * k - t0 * 3 * k, y0); q.lineTo(cx + .4f * k + t0 * 3 * k, y0); q.lineTo(cx + .4f * k + t1 * 3 * k, y1); q.lineTo(cx - .4f * k - t1 * 3 * k, y1); q.close();
+                        x.drawPath(q, fill((1 - i / 7f) <= f ? a(.35f) : fg)); }
+                    x.drawCircle(cx, hz, 3 * k, glow(fill(fg), 10)); t(fmt(v), cx, 30 * k, 20 * k, fg); t(sub, cx, 44 * k, 10 * k, mut, Paint.Align.CENTER, false, 0, 0); break; }
+                case 16: { // Escalier
+                    int n = 8, on = Math.round(f * n); float p = 16 * k, sw = (W - 2 * p) / n, sh = (H * .62f) / n;
+                    for (int i = 0; i < n; i++) rr(p + i * sw, H - p - (i + 1) * sh, sw - 2 * k, (i + 1) * sh, 3 * k, fill(i < on ? a(.35f + .65f * i / n) : a(.07f)));
+                    tl(fmt(v), p, 30 * k, 20 * k, fg, true); tl("marche " + on + "/" + n, p, 44 * k, 10 * k, mut, false); break; }
+                case 17: { // Vertical
+                    String d = String.valueOf(v); float s = (H - 30 * k) / Math.max(4, d.length());
+                    for (int i = 0; i < d.length(); i++) t(d.substring(i, i + 1), W * .3f, 22 * k + s * (i + .82f), s * 1.05f, fg, Paint.Align.CENTER, true, 0, 0);
+                    float th = H - 40 * k; rr(W * .62f, 20 * k, 6 * k, th, 3 * k, fill(a(.12f))); rr(W * .62f, 20 * k + th * (1 - f), 6 * k, Math.max(6 * k, th * f), 3 * k, fill(fg));
+                    tl(pct, W * .75f, cy, 12 * k, fg, true); t(lbl, W * .75f, cy + 14 * k, 9 * k, mut, Paint.Align.LEFT, true, 2 * k, 0); break; }
+                case 18: { // Pourcent
+                    t(String.valueOf(Math.round(f * 100)), W * .48f, H * .62f, 64 * k, fg, Paint.Align.CENTER, true, -3 * k, W * .7f); t("%", W * .84f, H * .42f, 18 * k, mut);
+                    t(fmt(v) + " / " + fmt(g) + " " + unit, cx, H * .84f, 10.5f * k, mut, Paint.Align.CENTER, false, 0, W * .9f); break; }
+                case 19: { // Tachymètre
+                    float gy = H * .62f, r = W * .4f;
+                    for (int i = 0; i < 9; i++) { float a0 = 180 + i * 20 + 1.7f; Paint p = stroke((i + 1) / 9f <= f + .001f ? a(.4f + .6f * i / 8) : a(.08f), 14 * k); x.drawArc(ov(cx, gy, r, r), a0, 20 - 3.4f, false, p); }
+                    t(fmt(v), cx, gy, 22 * k, fg); t(lbl, cx, gy + 15 * k, 9 * k, mut, Paint.Align.CENTER, true, 2.5f * k, 0); break; }
+                case 20: { // Étoiles
+                    float[][] P = { { .18f, .7f }, { .3f, .48f }, { .46f, .58f }, { .58f, .32f }, { .72f, .44f }, { .84f, .22f }, { .7f, .75f }, { .88f, .62f } };
+                    for (float[] q : P) { q[0] *= W; q[1] *= H; } int on = Math.round(f * P.length);
+                    for (int i = 1; i < P.length; i++) x.drawLine(P[i - 1][0], P[i - 1][1], P[i][0], P[i][1], stroke(i < on ? a(.7f) : a(.1f), 1.2f * k));
+                    for (int i = 0; i < P.length; i++) { Paint p = fill(i < on ? fg : a(.2f)); if (i < on) glow(p, 6); x.drawCircle(P[i][0], P[i][1], (i < on ? 3.4f : 2.4f) * k, p); }
+                    tl(fmt(v), 16 * k, 30 * k, 20 * k, fg, true); tl(on + "/" + P.length + " étoiles", 16 * k, 44 * k, 10 * k, mut, false); break; }
+                case 21: { // Code-barres
+                    float p = 18 * k; int n = 46; float bw = (W - 2 * p) / n; float[] ws = { .3f, .55f, .8f, .4f };
+                    for (int i = 0; i < n; i++) { float w = ws[(i * 7 + 3) % 4] * bw; x.drawRect(p + i * bw, 24 * k, p + i * bw + w, 24 * k + H * .5f, fill(i / (float) n < f ? fg : a(.14f))); }
+                    t(fmt(v), cx, H * .5f + 48 * k, 18 * k, fg, Paint.Align.CENTER, true, 4 * k, W * .9f); break; }
+                case 22: { // Ticket
+                    float p = 18 * k; t("TICKET DU JOUR", cx, 30 * k, 9 * k, mut, Paint.Align.CENTER, true, 2.5f * k, 0);
+                    Paint ds = stroke(a(.25f), k); ds.setPathEffect(new DashPathEffect(new float[] { 3 * k, 3 * k }, 0));
+                    x.drawLine(p, 42 * k, W - p, 42 * k, ds); x.drawLine(p, H - 46 * k, W - p, H - 46 * k, ds);
+                    String[][] rows = { { unit.equals("pas") ? "Pas" : "Kcal", fmt(v) }, { unit.equals("pas") ? "Distance" : "Objectif", sub }, { "Progression", pct } };
+                    for (int i = 0; i < 3; i++) { float y = 64 * k + i * 18 * k; tl(rows[i][0], p, y, 11 * k, mut, false); t(rows[i][1], W - p, y, 11 * k, fg, Paint.Align.RIGHT, true, 0, 0); }
+                    t("TOTAL  " + fmt(v), cx, H - 22 * k, 13 * k, fg, Paint.Align.CENTER, true, k, W * .9f); break; }
+                case 23: { // Semaine +
+                    float p = 18 * k, top = 50 * k, bh = H - top - 30 * k, bw = (W - 2 * p) / 7; int mx = Math.max(1, g); for (int q : w7) mx = Math.max(mx, q);
+                    tl(fmt(v), p, 32 * k, 20 * k, fg, true);
+                    Paint ds = stroke(a(.3f), k); ds.setPathEffect(new DashPathEffect(new float[] { 2 * k, 3 * k }, 0)); float gy = top + bh * (1 - g / (float) mx); x.drawLine(p, gy, W - p, gy, ds);
+                    String days = "LMMJVSD";
+                    for (int i = 0; i < 7; i++) { float h = Math.max(4 * k, bh * w7[i] / mx); rr(p + i * bw + bw * .22f, top + bh - h, bw * .56f, h, bw * .28f, fill(i == ti ? fg : i > ti ? a(.07f) : a(.35f)));
+                        t(days.substring(i, i + 1), p + i * bw + bw / 2, H - 14 * k, 9 * k, i == ti ? fg : mut, Paint.Align.CENTER, true, 0, 0); }
+                    break; }
+                case 24: { // Thermomètre
+                    float sx = W * .28f, top = 22 * k, bot = H - 40 * k, w = 12 * k;
+                    rr(sx - w / 2, top, w, bot - top, w / 2, fill(a(.08f))); x.drawCircle(sx, bot + 8 * k, 13 * k, fill(a(.08f)));
+                    Paint fp = glow(fill(fg), 8); rr(sx - w / 2 + 3 * k, top + 3 * k + (bot - top) * (1 - f), w - 6 * k, Math.max(0, (bot - top) * f), w / 2, fp); x.drawCircle(sx, bot + 8 * k, 9 * k, fp);
+                    for (int i = 0; i <= 4; i++) { float y = top + (bot - top) * i / 4; x.drawRect(sx + w, y, sx + w + 6 * k, y + k, fill(mut)); }
+                    tl(fmt(v), W * .48f, cy, 22 * k, fg, true); tl(unit + " · " + pct, W * .48f, cy + 15 * k, 10 * k, mut, false); break; }
+                case 25: { // Piste (long)
+                    float p = 16 * k, tw = W * .5f, th = H - 2 * p, tx = W - p - tw, r = th / 2;
+                    Path tr = new Path(); tr.addRoundRect(new RectF(tx, p, tx + tw, p + th), r, r, Path.Direction.CW);
+                    x.drawPath(tr, stroke(a(.1f), 6 * k)); float per = 2 * (tw - 2 * r) + (float) (2 * Math.PI * r);
+                    Paint pp = glow(round(stroke(fg, 6 * k)), 6); pp.setPathEffect(new DashPathEffect(new float[] { Math.max(.1f, per * f), per }, 0)); x.drawPath(tr, pp);
+                    t(fmt(v), p + 4 * k, cy + 4 * k, 26 * k, fg, Paint.Align.LEFT, true, 0, tx - p - 12 * k);
+                    t(unit + " · " + pct, p + 4 * k, cy + 20 * k, 10 * k, mut, Paint.Align.LEFT, false, 0, tx - p - 12 * k); break; }
+                case 26: { // Règle (long)
+                    float p = 18 * k, y = H * .62f, L = W - 2 * p;
+                    for (int i = 0; i <= 80; i++) { float xx = p + L * i / 80; boolean big = i % 10 == 0; float th = (big ? 14 : i % 5 != 0 ? 6 : 10) * k;
+                        x.drawRect(xx, y - th, xx + (big ? 1.6f : 1) * k, y, fill(i / 80f <= f ? fg : a(.2f)));
+                        if (big) t(compact(Math.round(g * i / 80f)), xx, y + 12 * k, 8.5f * k, mut, Paint.Align.CENTER, false, 0, 0); }
+                    float mx = p + L * f; Path tri = new Path(); tri.moveTo(mx, y - 16 * k); tri.lineTo(mx - 5 * k, y - 24 * k); tri.lineTo(mx + 5 * k, y - 24 * k); tri.close(); x.drawPath(tri, fill(fg));
+                    t(fmt(v) + " " + unit, p, 28 * k, 16 * k, fg, Paint.Align.LEFT, true, 0, W * .7f); t(pct, W - p, 28 * k, 12 * k, mut, Paint.Align.RIGHT, true, 0, 0); break; }
+                default: { // Onde (long)
+                    float p = 18 * k, lw = W * f;
+                    for (int j = 0; j < 2; j++) { float o = j == 0 ? 0 : 2; Path wv = new Path(); wv.moveTo(0, H);
+                        for (float px = 0; px <= lw; px += 2) wv.lineTo(px, H * .55f + (float) Math.sin(px / W * 14 + o) * 5 * k); wv.lineTo(lw, H); wv.close(); x.drawPath(wv, fill(a(j == 0 ? .08f : .14f))); }
+                    Path ln = new Path(); for (float px = 0; px <= lw; px += 2) { float py = H * .55f + (float) Math.sin(px / W * 14 + 2) * 5 * k; if (px == 0) ln.moveTo(px, py); else ln.lineTo(px, py); }
+                    x.drawPath(ln, glow(round(stroke(fg, 2 * k)), 6));
+                    t(fmt(v), p, H * .42f, 24 * k, fg, Paint.Align.LEFT, true, 0, W * .7f); t(pct, W - p, H * .42f, 13 * k, fg, Paint.Align.RIGHT, true, 0, 0); }
+            }
+        }
+    }
+
+    static void drawDesign(Art A, Cfg f, int[] v) {
+        int id = f.style - 7; Th T = A.T; Dz z = new Dz(); z.T = T;
+        boolean kc = f.metric == 1;
+        z.v = kc ? v[2] : v[0]; z.g = Math.max(1, kc ? v[3] : v[1]); z.ti = Math.max(0, Math.min(6, v[4]));
+        z.w7 = kc ? java.util.Arrays.copyOfRange(v, 12, 19) : java.util.Arrays.copyOfRange(v, 5, 12);
+        z.f = Math.max(0, Math.min(1, z.v / (float) z.g)); z.pct = Math.round(z.f * 100) + " %";
+        z.lbl = kc ? "KCAL" : "PAS"; z.unit = kc ? "kcal" : "pas";
+        z.sub = kc ? "/ " + fmt(z.g) : String.format(Locale.FRANCE, "%.1f km", z.v * 0.00075f);
+        z.fg = T.fg; z.mut = T.mut; z.inv = T.light ? Color.WHITE : 0xFF0B0B0F; z.glowC = al(T.fg, .7f);
+        Canvas c = A.x; c.save(); c.clipPath(A.shapeP(0));
+        if (wideDesign(id)) { z.W = A.W; z.H = A.H; z.k = Math.min(A.H / 84f, A.W / 360f); }
+        else { float s = Math.min(A.W, A.H); c.translate((A.W - s) / 2, (A.H - s) / 2); z.W = s; z.H = s; z.k = s / 170f; }
+        z.x = c; z.draw(id); c.restore();
+    }
+
     static Bitmap draw(Cfg f, int[] v, int Wi, int Hi, float dp) {
         Bitmap bm = Bitmap.createBitmap(Math.max(8, Wi), Math.max(8, Hi), Bitmap.Config.ARGB_8888);
         Art A = new Art(); A.x = new Canvas(bm); A.f = f; A.d = v; A.W = Wi; A.H = Hi; A.dp = dp; A.T = theme(f.col);
@@ -441,6 +690,7 @@ public class FocusWidget extends AppWidgetProvider {
         A.sh = f.bg < 25 && (A.T.bg.equals("glass") || A.T.bg.equals("chrome"));
         A.circle = f.shape == 1 && W < H * 1.3f && H < W * 1.3f; A.rad = A.T.bg.equals("glass") ? Math.min(u * .32f, 26 * dp) : Math.min(u * .26f, 30 * dp);
         A.background();
+        if (f.style >= 7) { drawDesign(A, f, v); return bm; }
         float pad2 = (A.T.bg.equals("cartoon") || A.T.bg.equals("brutal")) ? pad + 3 * dp : pad; A.pad2 = pad2;
         Th T = A.T;
         M ms = new M(); ms.v = v[0]; ms.g = Math.max(1, v[1]); ms.l = "PAS"; ms.u = "pas"; ms.c0 = T.s0; ms.c1 = T.s1; ms.kd = 's'; ms.w7 = java.util.Arrays.copyOfRange(v, 5, 12);

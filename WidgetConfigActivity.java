@@ -66,10 +66,12 @@ public class WidgetConfigActivity extends Activity {
         section("Données");
         choices(new String[] { "Pas", "Repas", "Pas + brûlées" }, cfg.metric, i -> cfg.metric = i);
         section("Style");
-        int[][] sm = { { 0, 1, 2 }, { 3, 4, 5 }, { 6 } };
-        String[][] sn = { { "Cadran", "Jauge", "Chiffre" }, { "Semaine", "Batterie", "Points" }, { "Gros chiffre" } };
+        java.util.List<String> all = new java.util.ArrayList<>(java.util.Arrays.asList("Cadran", "Jauge", "Chiffre", "Semaine", "Batterie", "Points", "Gros chiffre"));
+        all.addAll(java.util.Arrays.asList(FocusWidget.DESIGN_NAMES));
+        int nr = (all.size() + 2) / 3; int[][] sm = new int[nr][]; String[][] sn = new String[nr][];
+        for (int r = 0; r < nr; r++) { int c0 = r * 3, c1 = Math.min(all.size(), c0 + 3); sm[r] = new int[c1 - c0]; sn[r] = new String[c1 - c0]; for (int j = c0; j < c1; j++) { sm[r][j - c0] = j; sn[r][j - c0] = all.get(j); } }
         groupStart();
-        for (int r = 0; r < 3; r++) { final int[] sr = sm[r]; int sel = -1; for (int j = 0; j < sr.length; j++) if (sr[j] == cfg.style) sel = j; choices(sn[r], sel, i -> cfg.style = sr[i]); }
+        for (int r = 0; r < nr; r++) { final int[] sr = sm[r]; int sel = -1; for (int j = 0; j < sr.length; j++) if (sr[j] == cfg.style) sel = j; choices(sn[r], sel, i -> cfg.style = sr[i]); }
         groupEnd();
         section("Thème");
         groupStart();

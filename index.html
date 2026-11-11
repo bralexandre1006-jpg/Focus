@@ -4203,8 +4203,14 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
   return { n: ws.length, min: ws.reduce((t, w) => t + w.min, 0), vol: ws.reduce((t, w) => t + woVol(w), 0), cats: Object.entries(byCat).sort((x, y) => y[1] - x[1]).slice(0, 3) }; };
 
 /* ---------- v1.37 : fonctionnalités ---------- */
-const APP_VER = '1.39';
+const APP_VER = '1.40';
 const CHANGELOG = [
+  { v:'1.40', items:[
+    '28 nouveaux styles de widget : Orbite, Compteur, Sommet, Montre, Vague, Piste… (appui long sur le widget)',
+    'Badges en médailles à paliers, de bronze à légendaire',
+    'Thème noir et blanc, et « kg » dans l\'historique',
+    'Widget « Pas + brûlées » et widget « Repas » séparés',
+    'Moins de batterie consommée' ] },
   { v:'1.39', items:[
     'Badges de pas : au total, en un jour, en un mois et en un an (bouton trophée sur la carte Pas)',
     'Minuteur de repos dans les notifications et la barre d\'état, avec le son de fin au choix dans les réglages',
