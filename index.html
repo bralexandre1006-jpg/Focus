@@ -3564,6 +3564,17 @@ const fillBadges = () => {
   });
 };
 $('#badgeBtn').onclick = e => { e.stopPropagation(); openBadges(); sfx.tap(); buzz(); };
+const warmBadges = () => {
+  const w = document.createElement('div');
+  w.setAttribute('aria-hidden', 'true');
+  w.style.cssText = 'position:fixed;left:0;top:0;width:100vw;display:flex;flex-wrap:wrap;opacity:.01;pointer-events:none;z-index:-1;contain:layout paint';
+  let h = '';
+  for (let t = 1; t <= 10; t++) h += `<div class="bg on" style="opacity:1;animation:none"><i>${badgeSvg({ tier: t, glyph: Object.keys(BGLYPH)[t % 4], label: kTxt(t * 1e5), size: 100 })}</i></div>`;
+  h += `<div class="bg lock" style="opacity:1;animation:none"><i>${badgeSvg({ tier: 1, label: '1k', locked: true, size: 100 })}</i></div>`;
+  w.innerHTML = h; document.body.appendChild(w);
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => w.remove(), 300)));
+};
+setTimeout(() => (window.requestIdleCallback || (f => f()))(warmBadges, { timeout: 2000 }), 2500);
 const applyLite = () => {
   document.body.classList.toggle('lite', !!S.settings.lite);
   document.body.classList.toggle('nograd', S.settings.grad === false);
