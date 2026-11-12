@@ -961,8 +961,8 @@ body.lite .qbadge{right:50px!important}
 .bg.lock i::before{content:"";position:absolute;left:10px;top:8px;width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--bc) calc(var(--bp)*1%),rgba(255,255,255,.06) 0);transition:--bp 1.3s cubic-bezier(.2,.8,.2,1) .3s;-webkit-mask:radial-gradient(circle,transparent 36px,#000 37px);mask:radial-gradient(circle,transparent 36px,#000 37px);z-index:0}
 .bg small{margin-top:-4px;font-size:12px;font-weight:800;color:var(--mut);text-align:center;line-height:1.15}
 .bg.on i{animation:bgFloat 3.4s ease-in-out infinite;animation-delay:calc(var(--d) + .6s)}
-.bg.on i svg{filter:drop-shadow(0 6px 14px color-mix(in srgb,var(--bc) 35%,transparent))}
-.bg.on i::after{content:"";position:absolute;left:14px;top:9px;width:72px;height:72px;border-radius:50%;z-index:2;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 60%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:bgShine 3.2s ease-in-out infinite;animation-delay:calc(var(--d) + 1s);mix-blend-mode:overlay}
+.bg.on i::before{content:"";position:absolute;left:18px;top:18px;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--bc) 45%,transparent),transparent 70%);transform:translateY(10px) scale(1.3)}
+.bg.on i::after{display:none}
 .bg.on small{color:var(--txt)}
 .bg b{position:absolute;top:0;right:0;z-index:3;min-width:30px;height:24px;padding:0 7px;border-radius:12px;background:linear-gradient(180deg,#FF6A85,#E8304F);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center;box-shadow:0 3px 10px rgba(232,48,79,.5);animation:bgPop .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--d) + .45s)}
 .bg.tap i{animation:bgTap .55s cubic-bezier(.2,1.5,.4,1)}
@@ -992,7 +992,7 @@ body.lite .qbadge{right:50px!important}
 @keyframes bspStar{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1)}}
 @keyframes bgPop{0%{opacity:0;transform:scale(.3) rotate(-25deg)}100%{opacity:1;transform:none}}
 @keyframes bgFloat{50%{transform:translateY(-4px)}}
-@keyframes bgShine{0%,55%{background-position:150% 0}100%{background-position:-60% 0}}
+@keyframes bgShine{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 @keyframes bgSpin{to{transform:rotate(360deg)}}
 @keyframes bgTap{0%{transform:scale(1)}40%{transform:scale(1.18) rotate(-8deg)}100%{transform:none}}
 body.lite .qcorner{right:10px;bottom:10px;width:18px;height:18px;font-size:11px}
@@ -1543,155 +1543,6 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
 .modal{visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s}
 .modal.on{visibility:visible;transition:transform .55s var(--ease),visibility 0s}
 
-/* design sobre (méthode unslop par Damir Sokolovsky @heydamir, CC BY 4.0) */
-body.us .head h1{font-weight:600;letter-spacing:-.035em}
-body.us .card h3{font-weight:600;text-transform:none;letter-spacing:0}
-body.us .ring .mid b{font-weight:600;letter-spacing:-.04em}
-body.us .ring-info .val{font-weight:600;letter-spacing:-.03em}
-body.us .pill{font-weight:600}
-body.us .field input{font-weight:600}
-body.us .btn{font-weight:600}
-body.us .wbig b{font-weight:600;letter-spacing:-.05em}
-body.us .wbig span{font-weight:600}
-body.us .wpct b{font-weight:600;letter-spacing:-.04em}
-body.us .wpct small{font-weight:500}
-body.us .wk button{font-weight:600}
-body.us .badge{font-weight:600}
-body.us .kcal b{font-weight:600;letter-spacing:-.045em}
-body.us .mac b{font-weight:600}
-body.us .slot-h .t{font-weight:600}
-body.us .plus{font-weight:600}
-body.us .ent .k{font-weight:600}
-body.us .tab{font-weight:600}
-body.us .seg button{font-weight:600}
-body.us .statnum b{font-weight:600;letter-spacing:-.045em}
-body.us .trend{font-weight:600}
-body.us .chart .c span{font-weight:600}
-body.us .kpi b{font-weight:600}
-body.us .hd b{font-weight:600}
-body.us .hd small{text-transform:none}
-body.us .dmb{font-weight:600}
-body.us .dmc{font-weight:600;letter-spacing:.08em}
-body.us .hx-h b{text-transform:none;letter-spacing:0}
-body.us .hx-pill{font-weight:600;letter-spacing:.03em}
-body.us .hx-dt small{text-transform:none;letter-spacing:0}
-body.us .hx-v small{text-transform:none;letter-spacing:0}
-body.us .hx-w b i,body.us .hx-wse b i{font-weight:600;letter-spacing:0}
-body.us .hx-w small{font-weight:600}
-body.us .hx-s small{text-transform:none;letter-spacing:0}
-body.us .hx-tag{font-weight:600;letter-spacing:.1em}
-body.us .hx-wse em{font-weight:600}
-body.us .strec small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .wsug span{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .nv h5{text-transform:none;letter-spacing:0}
-body.us .mo-g small{text-transform:none;letter-spacing:0}
-body.us .mo-pr h5{text-transform:none;letter-spacing:0}
-body.us .offb{font-weight:600;letter-spacing:.06em}
-body.us .offg small{text-transform:none;letter-spacing:0}
-body.us .offg input{font-weight:600}
-body.us .offn{font-weight:600}
-body.us .offit button{font-weight:600}
-body.us .sndl button{font-weight:600}
-body.us .srow .l{font-weight:600}
-body.us .sin{font-weight:600}
-body.us .rem .lbl{font-weight:500}
-body.us .rc-hero small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .rc-tile small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .days button{font-weight:600}
-body.us .ob-step h2{font-weight:600;letter-spacing:-.04em}
-body.us .sheet h4{font-weight:600}
-body.us .mhead h4{font-weight:600;letter-spacing:-.03em}
-body.us .seg2 button{font-weight:600}
-body.us .ing .ing-l{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .unit button{font-weight:600}
-body.us #addQuick .g4 small{text-transform:none;letter-spacing:0}
-body.us #addQuick .g4 input{font-weight:600}
-body.us .flist .fh{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .fmore{font-weight:600}
-body.us .ing .g4 small{text-transform:none;letter-spacing:0}
-body.us .ing .g4 input{font-weight:600}
-body.us .ing .foot button{font-weight:600}
-body.us .linkbtn{font-weight:600}
-body.us .pg-top span{font-weight:600}
-body.us .sess-t{font-weight:600;letter-spacing:-.025em}
-body.us .sval{font-weight:600}
-body.us .mtog{font-weight:600}
-body.us .acc-h small{font-weight:600}
-body.us .chart .gl span{font-weight:600}
-body.us .hold .hlbl{font-weight:600}
-body.us .hold .hlbl small{font-weight:500}
-body.us .wmiss{font-weight:500}
-body.us .wundo{font-weight:600}
-body.us .tag{font-weight:600;text-transform:none;letter-spacing:0}
-body.us .qbtn{font-weight:600}
-body.us .qcorner{font-weight:600!important}
-body.us .ib-sec h5{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .ib-row>span{font-weight:600}
-body.us .tag.tb{text-transform:none;letter-spacing:0;font-weight:500}
-body.us .wshift{font-weight:600}
-body.us .rt-io button{font-weight:600}
-body.us .rtcats span{font-weight:600}
-body.us .rte-cats button{font-weight:600}
-body.us .rte-f small{text-transform:none;letter-spacing:0}
-body.us .rte-reps input{font-weight:600}
-body.us .rte-cat{font-weight:600}
-body.us .rte-restb small{text-transform:none;letter-spacing:0}
-body.us .rp-ruler em{font-weight:600}
-body.us .rp-chips button{font-weight:600}
-body.us .rte-lbl{text-transform:none;letter-spacing:0}
-body.us .catit{font-weight:600}
-body.us .catit small{text-transform:none}
-body.us .note-last small{text-transform:none}
-body.us .rte-act button{font-weight:600}
-body.us #woClock{font-weight:600}
-body.us .wcat{font-weight:600}
-body.us .wlab span{font-weight:600;text-transform:none;letter-spacing:0}
-body.us .wn{font-weight:600}
-body.us .wi{font-weight:600}
-body.us .rest button{font-weight:600}
-body.us .wd{font-weight:600;letter-spacing:-.03em}
-body.us .wex-f button{font-weight:600}
-body.us .wo-quit{font-weight:600}
-body.us .glm{font-weight:600}
-body.us .glacts button{font-weight:600}
-body.us .wdc-top>span{font-weight:600;text-transform:capitalize}
-body.us .wdc-k b{font-weight:600;letter-spacing:-.03em}
-body.us .wdc-k small{font-weight:500}
-body.us .wdc-k em{font-weight:600}
-body.us .wdc-h b{font-weight:600}
-body.us .wdc-c{font-weight:600}
-body.us .wdc-s>span{font-weight:600}
-body.us .wdc-s b{font-weight:600}
-body.us .wdc-s em i{font-weight:600}
-body.us .glpg button{font-weight:600}
-body.us .gld small{text-transform:none}
-body.us .gex-t b{font-weight:600;letter-spacing:-.02em}
-body.us .gex-c{font-weight:600}
-body.us .gex-m small{font-weight:600;text-transform:none;letter-spacing:0}
-body.us .gex-m strong{font-weight:600;letter-spacing:-.04em}
-body.us .gex-m strong em{font-weight:600}
-body.us .rc-gym>small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .rc-gc span{font-weight:600}
-body.us .wcta .ct small{font-weight:500}
-body.us .wgym .gv{font-weight:600}
-body.us .wp-t small{text-transform:none;letter-spacing:0}
-body.us .gh-t small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .gh-k span{font-weight:600}
-body.us .rtmeta{font-weight:500}
-body.us #woCnt{font-weight:600}
-body.us .wo-t small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .wst small{text-transform:none;letter-spacing:0;font-weight:600}
-body.us .wex-i{font-weight:600}
-body.us .wnow{font-weight:600}
-body.us .wchips span{font-weight:600}
-body.us .wex-h .wdone{font-weight:600}
-body.us .wo-intro small{font-weight:600}
-body.us .wsum-k em{font-weight:600}
-body.us{--bg:#141415;--bg2:#0f0f10;--card:#19191b;--card2:#232325;--line:rgba(237,237,237,.08);--txt:#ededed;--sec:#a1a1a6;--mut:#85858b;
-  --ok:#4cc38a;--bad:#e5484d;--cal:#ec7b55;--wgt:#5aa9e6;--spt:#a88beb;--pro:#e06f92;--carb:#e2b04f;--fat:#5aa9e6;--grn:#4cc38a;
-  --spring:cubic-bezier(.22,1,.36,1);--tick:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),rgba(237,237,237,.16) calc(10% - 1px) 10%)}body.us{background:var(--bg)}body.lite.us .card,body.lite.nograd.us .card{background:var(--card)!important;border:1px solid var(--line)!important;box-shadow:none!important;border-radius:16px}body.lite.us .card::before{display:none!important}body.us .card h3,body.lite.us .card h3{color:var(--sec);font-size:13px;font-weight:500;letter-spacing:0;text-transform:none}body.us .card h3 i{width:6px!important;height:6px!important;box-shadow:none!important}body.lite.us .head h1,body.us .head h1{background:none!important;-webkit-text-fill-color:currentColor;color:var(--txt)!important;font-weight:600;letter-spacing:-.02em;padding:0;margin-bottom:0}body.us .head .sub,body.lite.us .head .sub{color:var(--sec);font-weight:500}body.lite.us .tabbar,body.us .tabbar{background:#19191b!important;border:1px solid var(--line)!important;box-shadow:0 8px 24px rgba(0,0,0,.35)}body.lite.us .tab-ind,body.us .tab-ind{background:var(--acc)!important;box-shadow:none!important;transition:transform .35s var(--ease),width .35s var(--ease)}body.us .tab.on svg{transform:none!important}body.lite.us .seg .si,body.us .seg .si{background:#ededed!important}body.us .seg button,body.us .seg button.on{font-weight:500}body.lite.us .days button.on,body.lite.us .tgl.on{background:var(--acc)!important}body.lite.us .btn,body.us .btn{border-radius:12px;font-weight:600;box-shadow:none}body.us .btn.ghost{background:var(--card2);box-shadow:inset 0 0 0 1px var(--line)}body.lite.us #openRecap,body.lite.us #newRec{background:var(--card2);box-shadow:inset 0 0 0 1px var(--line)}body.us .recbtns .btn svg{width:18px;height:18px;flex-shrink:0;color:var(--sec)}body.us .wbar,body.us .pgbar,body.us .bar{background:var(--tick),var(--card2)!important;border-radius:3px!important}body.us .wbar i,body.us .pgbar i,body.us .bar i,body.lite.us .wbar i,body.lite.us .pgbar i{border-radius:3px!important;box-shadow:none!important}body.lite.us .wbar i{background:#ededed!important}body.lite.us .pgbar i{background:#ededed!important}body.lite.us .bar i::after,body.lite.us .wbar i::after,body.lite.us .pgbar i::after{display:none!important;animation:none!important}body.lite.us .ring .glw{opacity:0!important}body.lite.us .ring .fgc{stroke:var(--acc)!important}body.lite.us .mac,body.lite.nograd.us .mac{background:var(--card2)!important;border:0!important}body.lite.us .kpi,body.lite.us .field,body.lite.us .sin,body.lite.us .days button,body.lite.us .mtog,body.lite.us .wk button{background:var(--card2)!important}body.lite.us .wk button.yes.sel{background:rgba(76,195,138,.14)!important}body.lite.us .wk button.no.sel{background:rgba(229,72,77,.14)!important}body.lite.us .wbtn{background:var(--card2)!important;color:var(--ok);box-shadow:inset 0 0 0 1px var(--line)!important}body.us .badge,body.lite.us .badge{background:var(--card2)!important;color:var(--sec)!important;font-weight:500;letter-spacing:0!important;text-transform:none!important;box-shadow:none!important}body.us .pill,body.lite.us .pill{background:var(--card2);color:var(--sec);font-weight:500;box-shadow:none}body.us .pill .dot::after,body.us .wlive::after{display:none}body.us .chart .c i{background:#2c2c30}body.lite.us .chart .c i.ok{background:var(--acc)!important}body.lite.us .chart.cal .c i.ok{background:var(--cal)!important}body.us .chart .c i.now{box-shadow:0 0 0 1px rgba(237,237,237,.5)}body.us .chart .gl{border-top:1px dashed rgba(237,237,237,.14)}body.us .chart .gl span{font-weight:500}
-
-@keyframes usIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}body.lite.us .screen.on.fresh .card{animation:usIn .35s var(--ease) both}body.us .head .sub,body.lite.us .head .sub{text-transform:none!important}body.us .hx-wk,body.us .hx-wk.past,body.lite.us .hx-wk{background:var(--card)!important;border:1px solid var(--line)!important;box-shadow:none!important}body.us .hx-wk::before,body.us .hx-wk::after{display:none!important}body.us .hx-pill,body.us .hx-pill.g{background:var(--card2)!important;color:var(--sec)!important;font-weight:500;letter-spacing:0;text-transform:none}body.us .hx-pill.g{color:var(--ok)!important}body.us .hx-r{background:transparent!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;margin:0!important}body.us .hx-dt,body.us .hx-dt.ok,body.us .hx-dt.no{background:var(--card2)!important;box-shadow:none!important;color:var(--txt)!important;border-radius:10px!important;position:relative}body.us .hx-dt.ok::after,body.us .hx-dt.no::after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--ok)}body.us .hx-dt.no::after{background:var(--bad)}body.us .hx-dt.tdy{background:#ededed!important;color:#141415!important;box-shadow:none!important}body.us .strec{background:var(--card2)!important;border:1px solid var(--line)!important}body.us .strec small{color:var(--sec)!important}body.us .trend{font-weight:500}body.us #gsWeeks .c i,body.us #gsWeeks .c i.ok,body.lite.us #gsWeeks .c i.ok{background:#3a3a3e!important}body.us #gsWeeks .c:last-child i{background:var(--acc)!important}body.us .i-rest{background-image:none!important;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/%3E%3C/svg%3E") center/26px no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/%3E%3C/svg%3E") center/26px no-repeat;background-color:var(--sec)!important}body.us .qcorner,body.us .qbadge{background:var(--card2)!important;color:var(--sec)!important}body.us .gex{background:var(--card2)!important;border:1px solid var(--line)!important}body.us .gex-t i{box-shadow:none!important}body.us .gex-sp path:first-of-type{opacity:.6}body.us .head .sub::first-letter{text-transform:uppercase}body.us #gsWeeks .c:last-child i{background:#3a3a3e!important}body.us #gsWeeks .c i.now{background:var(--acc)!important;box-shadow:none!important}body.us .recbtns .btn{font-size:14px!important;white-space:nowrap;gap:6px}
 </style>
 </head>
 <body>
@@ -1821,7 +1672,7 @@ body.us{--bg:#141415;--bg2:#0f0f10;--card:#19191b;--card2:#232325;--line:rgba(23
   <!-- STATS -->
   <section class="screen" id="s-stats">
     <div class="head"><div><div class="sub">Ta progression</div><h1>Stats</h1></div></div>
-    <div class="recbtns"><button class="btn ghost full press" id="openRecap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Bilan de la semaine</button><button class="btn ghost full press" id="openMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Bilan du mois</button></div>
+    <div class="recbtns"><button class="btn full press" id="openRecap">📊 Bilan de la semaine</button><button class="btn ghost full press" id="openMonth">🗓 Bilan du mois</button></div>
     <div class="seg" id="seg"><div class="si"></div>
       <button class="on" data-p="week">Semaine</button><button data-p="month">Mois</button><button data-p="year">Année</button>
     </div>
@@ -1935,8 +1786,6 @@ body.us{--bg:#141415;--bg2:#0f0f10;--card:#19191b;--card2:#232325;--line:rgba(23
       <div class="lbl-s">Son de fin du minuteur</div>
       <div class="sndl" id="sndList"></div>
       <div class="srow"><div class="l">Bilan du dimanche à 19 h</div><button class="tgl" id="tRecap"></button></div>
-      <div class="lbl-s">Design</div>
-      <div class="sndl" id="designList"><button class="press" data-dz="us">Sobre</button><button class="press" data-dz="classic">Classique</button></div>
       <div class="srow"><div class="l">Focus Lite<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Interface épurée et compacte</small></div><button class="tgl" id="tLite"></button></div>
       <div class="srow" id="gradRow"><div class="l">Couleurs des cartes<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Dégradés et halos en mode Lite</small></div><button class="tgl" id="tGrad"></button></div>
     </div></div></div>
@@ -2511,7 +2360,7 @@ const renderToday = () => {
   const p = S.profile, now = new Date(), d = day();
   $('#todayDate').textContent = now.toLocaleDateString('fr-BE',{weekday:'long', day:'numeric', month:'long'});
   const h = now.getHours();
-  $('#hello').textContent = S.settings.design !== 'classic' ? 'Aujourd\'hui' : (h<12?'Bonjour':h<18?'Salut':'Bonsoir') + (p.name?' '+p.name:'');
+  $('#hello').textContent = (h<12?'Bonjour':h<18?'Salut':'Bonsoir') + (p.name?' '+p.name:'');
   renderSteps(); renderProgram(); renderWeight(); renderSession(); renderNutrition();
 };
 RENDER.today = renderToday;
@@ -3198,12 +3047,17 @@ const bars = (el, o) => {
     cs.forEach((c,i) => { const b = c.getBoundingClientRect(), d = Math.abs(b.left + b.width / 2 - e.clientX); if (d < bd) { bd = d; best = i; } });
     show(best);
   };
-  let drag = false;
-  el.onpointerdown = e => { drag = true; at(e); };
-  el.onpointermove = e => { if (drag) at(e); };
-  el.onpointerup = el.onpointercancel = el.onpointerleave = () => { drag = false; };
+  if (!el.dataset.ct) { el.dataset.ct = 1; chartTouch(el, e => el._at(e)); } el._at = at;
   const card = el.closest('.card');
   card.onclick = e => { if (!el.contains(e.target)) hide(); };
+};
+/* touche un graphique : un appui court sélectionne, un appui long puis glisser parcourt ; un défilement ne sélectionne rien */
+const chartTouch = (el, at) => {
+  let sx = 0, sy = 0, drag = false, moved = false, tm = 0;
+  el.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; moved = false; drag = false; clearTimeout(tm); tm = setTimeout(() => { if (!moved) { drag = true; at(e); buzz(); } }, 280); });
+  el.addEventListener('pointermove', e => { if (drag) { at(e); return; } if (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8) { moved = true; clearTimeout(tm); } });
+  el.addEventListener('pointerup', e => { clearTimeout(tm); if (!drag && !moved) at(e); drag = false; });
+  ['pointercancel','pointerleave'].forEach(n => el.addEventListener(n, () => { clearTimeout(tm); drag = false; }));
 };
 const series = (p, f) => {
   const [a,b] = rangeFor(p, pOff), n = new Date();
@@ -3232,7 +3086,7 @@ const renderStats = () => {
   $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · ${fmt(monthAvgSteps())} / mois · objectif atteint ${stHit} j`;
   { const rk = Object.keys(S.days).reduce((m, k) => (S.days[k].steps || 0) > (m ? S.days[m].steps || 0 : 0) ? k : m, null), el = $('#stStepsRec');
     el.classList.toggle('hidden', !feat('stepRec') || !rk);
-    if (rk) el.innerHTML = `<small>Record</small><b>${fmt(S.days[rk].steps)}</b><em>${parseKey(rk).toLocaleDateString('fr-BE', { day:'numeric', month:'short' }).replace('.', '')}</em>`; }
+    if (rk) el.innerHTML = `<small>🏆 Record</small><b>${fmt(S.days[rk].steps)}</b><em>${parseKey(rk).toLocaleDateString('fr-BE', { day:'numeric', month:'short' }).replace('.', '')}</em>`; }
   const sS = series(period,'steps');
   bars($('#chSteps'), { ...sS, goal: period === 'year' ? null : G.steps, kind:'steps', period, restore: fmt(st), numEl:$('#stSteps'), subEl:$('#stStepsSub'), trEl:$('#trSteps') });
   const ca = sumField(curK,'calories'), caP = sumField(prevK,'calories');
@@ -3328,10 +3182,7 @@ const renderWeightStats = () => {
     let best = 0; pts.forEach((p,i) => { if (Math.abs(p[0] - x) < Math.abs(pts[best][0] - x)) best = i; });
     show(best);
   };
-  let drag = false;
-  svg.addEventListener('pointerdown', e => { drag = true; at(e); });
-  svg.addEventListener('pointermove', e => { if (drag) at(e); });
-  ['pointerup','pointercancel','pointerleave'].forEach(n => svg.addEventListener(n, () => { drag = false; }));
+  chartTouch(svg, at);
   el.closest('.card').onclick = e => { if (!svg.contains(e.target)) hide(); };
 };
 
@@ -3671,6 +3522,10 @@ function badgeSvg({ tier = 1, glyph = 'shoe', label = '', locked = false, size =
     ${front}${rib}</svg>`;
 }
 const openBadges = () => {
+  $('#badgeBody').innerHTML = ''; openOv('badgeModal');
+  requestAnimationFrame(() => setTimeout(fillBadges, 30));
+};
+const fillBadges = () => {
   const ks = Object.keys(S.days).filter(k => (S.days[k].steps || 0) > 0).sort(), st = k => S.days[k].steps || 0;
   const tot = ks.reduce((t, k) => t + st(k), 0), by = f => { const o = {}; ks.forEach(k => { const g = f(k); o[g] = (o[g] || 0) + st(k); }); return o; };
   const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), dayV = ks.map(st);
@@ -3694,7 +3549,6 @@ const openBadges = () => {
     ${spN ? '' : `<em><s style="width:${Math.min(100, spB / SP * 100)}%"></s></em>`}</div></div>`;
   $('#badgeBody').innerHTML = `<div class="bgh"><div class="rgw"><div class="rg"></div><span>🏆</span></div><div><b><u data-bc="${won}">0</u><em> / ${all}</em></b><small>badges débloqués</small></div></div>${special}${secs}`;
   const spEl = $('#badgeBody .bsp.on'); if (spEl) spEl.onclick = () => { spEl.classList.remove('tap'); void spEl.offsetWidth; spEl.classList.add('tap'); burst(spEl.querySelector('.bsp-m'), ['#FFE58A', '#FF8A5C', '#FF4DA6', '#7C5CFF', '#fff']); buzz('success'); };
-  openOv('badgeModal');
   const bd = $('#badgeBody'), num0 = bd.querySelector('[data-bc]');
   requestAnimationFrame(() => requestAnimationFrame(() => {
     bd.querySelector('.rg').style.setProperty('--bp', all ? won / all * 100 : 0);
@@ -3712,8 +3566,6 @@ const openBadges = () => {
 $('#badgeBtn').onclick = e => { e.stopPropagation(); openBadges(); sfx.tap(); buzz(); };
 const applyLite = () => {
   document.body.classList.toggle('lite', !!S.settings.lite);
-  document.body.classList.toggle('us', S.settings.design !== 'classic');
-  $$('#designList [data-dz]').forEach(b => b.classList.toggle('on', (S.settings.design === 'classic' ? 'classic' : 'us') === b.dataset.dz));
   document.body.classList.toggle('nograd', S.settings.grad === false);
   $('#gradRow').classList.toggle('hidden', !S.settings.lite);
   setTimeout(moveInd, 30);
@@ -3730,7 +3582,6 @@ const accInfo = () => {
   $('#accProfI').textContent = S.profile.name || '';
   $('#accExpI').textContent = S.settings.lite ? 'Lite' : '';
 };
-$$('#designList [data-dz]').forEach(b => b.onclick = () => { S.settings.design = b.dataset.dz; save(); applyLite(); renderToday(); sfx.tap(); buzz(); });
 $('#tLite').onclick = () => {
   S.settings.lite = !S.settings.lite; save(); $('#tLite').classList.toggle('on', S.settings.lite);
   sfx.tap(); buzz(); document.body.classList.add('switching');
@@ -4388,7 +4239,7 @@ const renderGstats = () => {
   $('#gsWeeks').innerHTML = wk.map((x, i) => `<div class="c" data-i="${i}"><i class="${i === 7 ? 'ok now' : x.v ? 'ok' : ''}" style="height:max(4px, calc((100% - 18px) * ${x.v / mx}))"></i><span>${x.s0.getDate()}/${x.s0.getMonth() + 1}</span></div>`).join('');
   requestAnimationFrame(() => requestAnimationFrame(() => $$('#gsWeeks i').forEach((x, i) => { x.style.transitionDelay = i * 30 + 'ms'; x.classList.add('in'); })));
   const wl = $('#gsWkL'), wdef = `${fmtKg(wk[7].v)} cette semaine`; wl.textContent = wdef;
-  $('#gsWeeks').onpointerdown = e => { const c = e.target.closest('.c'); if (!c) return; const x = wk[+c.dataset.i];
+  $('#gsWeeks').onclick = e => { const c = e.target.closest('.c'); if (!c) return; const x = wk[+c.dataset.i];
     $$('#gsWeeks i').forEach((y, j) => y.classList.toggle('sel', j === +c.dataset.i)); $('#gsWeeks').classList.add('picking');
     wl.textContent = `Semaine du ${x.s0.toLocaleDateString('fr-BE', { day:'numeric', month:'short' })} · ${fmtKg(x.v)} · ${x.n} séance${x.n > 1 ? 's' : ''}`; buzz(); };
   $('#gsWeeks').closest('.card').onclick = e => { if (e.target.closest('#gsWeeks')) return; $('#gsWeeks').classList.remove('picking'); $$('#gsWeeks i').forEach(y => y.classList.remove('sel')); wl.textContent = wdef; };
@@ -4446,9 +4297,8 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
 const APP_VER = '1.41';
 const CHANGELOG = [
   { v:'1.41', items:[
-    'Nouveau design sobre : fonds graphite, une seule couleur d\'accent, textes moins gras (Réglages › Design pour revenir au classique)',
-    'Barres de progression graduées façon chrono',
-    'Plus d\'emojis dans l\'interface, les bilans et badges restent comme avant',
+    'Graphiques : un appui court sélectionne un jour, le défilement ne clique plus dessus',
+    'Page des badges plus rapide à ouvrir',
     'Badge légendaire 31 000 pas, historique des séances par mois, pas moyens par mois' ] },
   { v:'1.40', items:[
     '43 nouveaux styles de widget : Orbite, Saturne, Lune, Sommet, Montre, Vinyle, Piste… (appui long sur le widget)',
