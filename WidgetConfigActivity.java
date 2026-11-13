@@ -80,7 +80,7 @@ public class WidgetConfigActivity extends Activity {
         groupEnd();
         section("Thème");
         groupStart();
-        for (int r = 0; r < 4; r++) { final int tb = r * 4; String[] n = java.util.Arrays.copyOfRange(FocusWidget.THEME_NAMES, tb, tb + 4); choices(n, cfg.col >= tb && cfg.col < tb + 4 ? cfg.col - tb : -1, i -> cfg.col = tb + i); }
+        for (int r = 0; r * 4 < FocusWidget.THEME_NAMES.length; r++) { final int tb = r * 4; String[] n = java.util.Arrays.copyOfRange(FocusWidget.THEME_NAMES, tb, Math.min(FocusWidget.THEME_NAMES.length, tb + 4)); choices(n, cfg.col >= tb && cfg.col < tb + 4 ? cfg.col - tb : -1, i -> cfg.col = tb + i); }
         groupEnd();
         if (kind == 0 || kind == 1) {
             section("Forme du fond");

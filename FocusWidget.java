@@ -71,7 +71,7 @@ public class FocusWidget extends AppWidgetProvider {
             Cfg f = new Cfg();
             f.metric = p.getInt("m_" + id, kind == 0 ? 0 : 2);
             f.style = Math.max(0, Math.min(49, p.getInt("s_" + id, kind == 3 ? 3 : 0)));
-            f.col = Math.max(0, Math.min(15, p.getInt("c2_" + id, 3)));
+            f.col = Math.max(0, Math.min(16, p.getInt("c2_" + id, 3)));
             f.bg = p.getInt("b_" + id, 85);
             f.shape = p.getInt("h_" + id, 0);
             f.kv = Math.max(0, Math.min(8, p.getInt("kv_" + id, 1)));
@@ -163,7 +163,7 @@ public class FocusWidget extends AppWidgetProvider {
         Th(int fg, int mut, int tr, int s0, int s1, int k0, int k1, String bg) { this.fg = fg; this.mut = mut; this.tr = tr; this.s0 = s0; this.s1 = s1; this.k0 = k0; this.k1 = k1; this.bg = bg; }
         int a(float x) { return al(base, x); }
     }
-    static final String[] THEME_NAMES = { "Blanc", "Couleur", "Dégradé", "Chrome", "Cartoon", "Futuriste", "Rétro", "iOS", "Papier", "Brutal", "Néon blanc", "Ligne", "Terminal", "Trame", "Givré", "Graphite" };
+    static final String[] THEME_NAMES = { "Blanc", "Couleur", "Dégradé", "Chrome", "Cartoon", "Futuriste", "Rétro", "iOS", "Papier", "Brutal", "Néon blanc", "Ligne", "Terminal", "Trame", "Givré", "Graphite", "Liquid glass" };
     static Th theme(int i) {
         final int W = 0xFFFFFFFF, M55 = 0x8CFFFFFF, T12 = 0x1FFFFFFF;
         Th t;
@@ -183,6 +183,7 @@ public class FocusWidget extends AppWidgetProvider {
             case 13: t = new Th(W, 0x99FFFFFF, 0x24FFFFFF, W, W, W, W, "halftone"); break;
             case 14: t = new Th(W, 0xB3FFFFFF, 0x33FFFFFF, W, W, W, W, "givre"); break;
             case 15: t = new Th(0xFFF4F4F6, 0x80FFFFFF, 0x1AFFFFFF, W, 0xFF9A9AA2, 0xFFE6E6EA, 0xFF8A8A92, "graphite"); break;
+            case 16: t = new Th(W, 0x99FFFFFF, 0x24FFFFFF, W, W, W, W, "liquid"); break;
             default: t = new Th(W, M55, T12, W, W, W, W, "glass");
         }
         t.base = t.bg.equals("retro") ? 0xFF3B2414 : t.light ? 0xFF000000 : 0xFFFFFFFF;
@@ -273,6 +274,18 @@ public class FocusWidget extends AppWidgetProvider {
                     for (int i = 0; i < 700; i++) { float px = (i * 131.7f) % W, py = (i * 71.3f) % H; x.drawRect(px, py, px + dp, py + dp, i % 2 == 1 ? a1 : a2); }
                     x.restore(); Paint s2 = stroke(0, Math.max(1, dp)); s2.setShader(lin(0x59FFFFFF, 0x0DFFFFFF, 0, 0, W, H)); x.drawPath(shapeP(.5f), s2); break; }
                 case "ios": x.drawPath(shapeP(0), fill(rgba(28, 28, 30, Math.max(.85f, A)))); break;
+                case "liquid": {
+                    // verre liquide : voile sombre léger, liseré clair, reflets internes
+                    float lw = Math.max(1.2f, 1.3f * dp), i = lw / 2; Path p = shapeP(i);
+                    x.drawPath(p, fill(rgba(18, 18, 20, .42f * A)));
+                    x.save(); x.clipPath(p);
+                    Paint top = fill(0); top.setShader(lin(rgba(255, 255, 255, .09f), 0x00FFFFFF, 0, 0, 0, H * .45f)); x.drawRect(0, 0, W, H * .45f, top);
+                    Paint rim = stroke(0, 7 * dp); rim.setMaskFilter(new android.graphics.BlurMaskFilter(6 * dp, android.graphics.BlurMaskFilter.Blur.NORMAL));
+                    rim.setShader(new LinearGradient(0, 0, W, H, new int[] { 0x2EFFFFFF, 0x08FFFFFF, 0x1FFFFFFF }, new float[] { 0, .5f, 1 }, Shader.TileMode.CLAMP)); x.drawPath(p, rim);
+                    x.restore();
+                    Paint bd = stroke(0, lw); bd.setShader(new LinearGradient(0, 0, W, H, new int[] { 0x99FFFFFF, 0x2EFFFFFF, 0x1AFFFFFF, 0x66FFFFFF }, new float[] { 0, .35f, .65f, 1 }, Shader.TileMode.CLAMP));
+                    x.drawPath(p, bd);
+                    break; }
                 case "glass":
                     if (f.bg > 0) {
                         float lw = Math.max(1, dp * .8f), i = lw / 2; Path p = shapeP(i);
@@ -855,8 +868,8 @@ public class FocusWidget extends AppWidgetProvider {
         Bitmap bm = Bitmap.createBitmap(Math.max(8, Wi), Math.max(8, Hi), Bitmap.Config.ARGB_8888);
         Art A = new Art(); A.x = new Canvas(bm); A.f = f; A.d = v; A.W = Wi; A.H = Hi; A.dp = dp; A.T = theme(f.col);
         float W = Wi, H = Hi, u = Math.min(W, H), pad = Math.max(8 * dp, u * .1f); A.u = u; A.pad = pad;
-        A.sh = f.bg < 25 && (A.T.bg.equals("glass") || A.T.bg.equals("chrome"));
-        A.circle = f.shape == 1 && W < H * 1.3f && H < W * 1.3f; A.rad = A.T.bg.equals("glass") ? Math.min(u * .32f, 26 * dp) : Math.min(u * .26f, 30 * dp);
+        A.sh = f.bg < 25 && (A.T.bg.equals("glass") || A.T.bg.equals("chrome") || A.T.bg.equals("liquid"));
+        A.circle = f.shape == 1 && W < H * 1.3f && H < W * 1.3f; A.rad = A.T.bg.equals("liquid") ? Math.min(u * .2f, 24 * dp) : A.T.bg.equals("glass") ? Math.min(u * .32f, 26 * dp) : Math.min(u * .26f, 30 * dp);
         A.background();
         if (f.style >= 7) { drawDesign(A, f, v); return bm; }
         float pad2 = (A.T.bg.equals("cartoon") || A.T.bg.equals("brutal")) ? pad + 3 * dp : pad; A.pad2 = pad2;
