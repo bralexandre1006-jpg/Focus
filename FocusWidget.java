@@ -59,13 +59,13 @@ public class FocusWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context c, int[] ids) {
         SharedPreferences.Editor e = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_" }) e.remove(k + id);
+        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_", "kp_" }) e.remove(k + id);
         e.apply();
     }
 
     /** Réglages d'un widget : données, style, couleurs, fond, forme. */
     static class Cfg {
-        int metric, style, bg, shape, col, kv;
+        int metric, style, bg, shape, col, kv, kp;
         static Cfg load(Context c, int id, int kind) {
             SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             Cfg f = new Cfg();
@@ -75,11 +75,12 @@ public class FocusWidget extends AppWidgetProvider {
             f.bg = p.getInt("b_" + id, 85);
             f.shape = p.getInt("h_" + id, 0);
             f.kv = Math.max(0, Math.min(8, p.getInt("kv_" + id, 1)));
+            f.kp = p.getInt("kp_" + id, 0) == 1 ? 1 : 0;
             return f;
         }
         void save(Context c, int id) {
             c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt("m_" + id, metric).putInt("s_" + id, style)
-                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).apply();
+                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).putInt("kp_" + id, kp).apply();
         }
     }
 
@@ -464,7 +465,7 @@ public class FocusWidget extends AppWidgetProvider {
     static boolean wideDesign(int id) { return id == 6 || id == 7 || (id >= 25 && id <= 27) || id >= 41; }
 
     static class Dz {
-        int[] mo = new int[0]; boolean small, kc; Canvas x; float W, H, k, f; int v, g, ke, kg, kv, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
+        int[] mo = new int[0]; boolean small, kc; Canvas x; float W, H, k, f; int v, g, ke, kg, kv, kp, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
         int a(float al) { return T.a(al); }
         Paint fill(int c) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(c); return p; }
         Paint stroke(int c, float w) { Paint p = fill(c); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(w); return p; }
@@ -506,6 +507,16 @@ public class FocusWidget extends AppWidgetProvider {
         void sommetKcal() {
             String n = fmt(ke), gl = "/ " + fmt(kg) + " kcal"; float kf = Math.min(1, ke / (float) kg), by = H - 16 * k;
             if (small) { float ky = H - 14 * k, ks = t(n, 16 * k, ky, 26 * k, fg, Paint.Align.LEFT, true, 0, W * .5f); t("kcal", 16 * k + tw(n, ks, true) + 4 * k, ky, 11 * k, mut, Paint.Align.LEFT, false, 0, 0); return; }
+            // à droite : décale le bloc pour qu'il finisse à la même marge que le bord gauche
+            float bw = kv == 1 ? tw(n, 20 * k, true) + 4 * k + tw(gl, 10.5f * k, false)
+                : kv == 2 ? 17 * k + tw(n, 13 * k, true) + 3 * k + tw(gl, 10 * k, false)
+                : kv == 5 ? tw(n + " kcal", 12 * k, true) + 34 * k - 4 * k
+                : kv == 6 ? 35 * k + Math.max(tw(n, 15 * k, true), tw(gl, 9 * k, false)) : -1;
+            boolean shift = kp == 1 && bw > 0; if (shift) { x.save(); x.translate(W - 32 * k - bw, 0); }
+            sommetKcalAt(n, gl, kf, by);
+            if (shift) x.restore();
+        }
+        void sommetKcalAt(String n, String gl, float kf, float by) {
             switch (kv) {
                 case 1: { float w = tw(n, 20 * k, true); t(n, 16 * k, by, 20 * k, fg, Paint.Align.LEFT, true, 0, 0); t(gl, 16 * k + w + 4 * k, by, 10.5f * k, mut, Paint.Align.LEFT, false, 0, 0); break; }
                 case 2: { flame(23 * k, by - 5 * k, 13 * k, mut); float w = tw(n, 13 * k, true); t(n, 33 * k, by, 13 * k, fg, Paint.Align.LEFT, true, 0, 0); t(gl, 33 * k + w + 3 * k, by, 10 * k, mut, Paint.Align.LEFT, false, 0, 0); break; }
@@ -851,7 +862,7 @@ public class FocusWidget extends AppWidgetProvider {
     static void drawDesign(Art A, Cfg f, int[] v) {
         int id = f.style - 7; Th T = A.T; Dz z = new Dz(); z.T = T;
         boolean kc = f.metric == 1;
-        z.kc = kc; z.kv = f.kv; z.ke = v[2]; z.kg = Math.max(1, v[3]);
+        z.kc = kc; z.kv = f.kv; z.kp = f.kp; z.ke = v[2]; z.kg = Math.max(1, v[3]);
         z.v = kc ? v[2] : v[0]; z.g = Math.max(1, kc ? v[3] : v[1]); z.ti = Math.max(0, Math.min(6, v[4]));
         z.w7 = kc ? java.util.Arrays.copyOfRange(v, 12, 19) : java.util.Arrays.copyOfRange(v, 5, 12);
         z.f = Math.max(0, Math.min(1, z.v / (float) z.g)); z.pct = Math.round(z.f * 100) + " %";

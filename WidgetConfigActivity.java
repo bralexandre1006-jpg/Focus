@@ -83,6 +83,8 @@ public class WidgetConfigActivity extends Activity {
         String[][] kn = { { "Aucune", "Gros", "Discret" }, { "Sous les pas", "Barre", "Pastille" }, { "Anneau", "Bas droite", "Côte à côte" } };
         for (int r = 0; r < 3; r++) { final int kb = r * 3; choices(kn[r], cfg.kv >= kb && cfg.kv < kb + 3 ? cfg.kv - kb : -1, i -> cfg.kv = kb + i); }
         groupEnd();
+        section("Position des calories");
+        choices(new String[] { "Gauche", "Droite" }, cfg.kp, i -> cfg.kp = i);
         section("Thème");
         groupStart();
         for (int r = 0; r * 4 < FocusWidget.THEME_NAMES.length; r++) { final int tb = r * 4; String[] n = java.util.Arrays.copyOfRange(FocusWidget.THEME_NAMES, tb, Math.min(FocusWidget.THEME_NAMES.length, tb + 4)); choices(n, cfg.col >= tb && cfg.col < tb + 4 ? cfg.col - tb : -1, i -> cfg.col = tb + i); }
