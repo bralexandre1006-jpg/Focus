@@ -59,13 +59,13 @@ public class FocusWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context c, int[] ids) {
         SharedPreferences.Editor e = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_", "kp_" }) e.remove(k + id);
+        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_", "kp_", "al_" }) e.remove(k + id);
         e.apply();
     }
 
     /** Réglages d'un widget : données, style, couleurs, fond, forme. */
     static class Cfg {
-        int metric, style, bg, shape, col, kv, kp;
+        int metric, style, bg, shape, col, kv, kp, al;
         static Cfg load(Context c, int id, int kind) {
             SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             Cfg f = new Cfg();
@@ -76,11 +76,12 @@ public class FocusWidget extends AppWidgetProvider {
             f.shape = p.getInt("h_" + id, 0);
             f.kv = Math.max(0, Math.min(8, p.getInt("kv_" + id, 1)));
             f.kp = p.getInt("kp_" + id, 0) == 1 ? 1 : 0;
+            f.al = p.getInt("al_" + id, 0) == 1 ? 1 : 0;
             return f;
         }
         void save(Context c, int id) {
             c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt("m_" + id, metric).putInt("s_" + id, style)
-                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).putInt("kp_" + id, kp).apply();
+                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).putInt("kp_" + id, kp).putInt("al_" + id, al).apply();
         }
     }
 
@@ -878,7 +879,9 @@ public class FocusWidget extends AppWidgetProvider {
     static Bitmap draw(Cfg f, int[] v, int Wi, int Hi, float dp) {
         Bitmap bm = Bitmap.createBitmap(Math.max(8, Wi), Math.max(8, Hi), Bitmap.Config.ARGB_8888);
         Art A = new Art(); A.x = new Canvas(bm); A.f = f; A.d = v; A.W = Wi; A.H = Hi; A.dp = dp; A.T = theme(f.col);
-        float W = Wi, H = Hi, u = Math.min(W, H), pad = Math.max(8 * dp, u * .1f); A.u = u; A.pad = pad;
+        // « aligné aux icônes » : le haut du widget descend au niveau du haut des icônes voisines
+        if (f.al == 1) { float ins = Hi * .092f; A.x.translate(0, ins); A.H = Hi - ins; }
+        float W = Wi, H = A.H, u = Math.min(W, H), pad = Math.max(8 * dp, u * .1f); A.u = u; A.pad = pad;
         A.sh = f.bg < 25 && (A.T.bg.equals("glass") || A.T.bg.equals("chrome") || A.T.bg.equals("liquid"));
         A.circle = f.shape == 1 && W < H * 1.3f && H < W * 1.3f; A.rad = A.T.bg.equals("liquid") ? Math.min(u * .2f, 24 * dp) : A.T.bg.equals("glass") ? Math.min(u * .32f, 26 * dp) : Math.min(u * .26f, 30 * dp);
         A.background();

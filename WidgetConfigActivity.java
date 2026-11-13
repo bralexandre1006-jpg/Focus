@@ -83,6 +83,8 @@ public class WidgetConfigActivity extends Activity {
         String[][] kn = { { "Aucune", "Gros", "Discret" }, { "Sous les pas", "Barre", "Pastille" }, { "Anneau", "Bas droite", "Côte à côte" } };
         for (int r = 0; r < 3; r++) { final int kb = r * 3; choices(kn[r], cfg.kv >= kb && cfg.kv < kb + 3 ? cfg.kv - kb : -1, i -> cfg.kv = kb + i); }
         groupEnd();
+        section("Hauteur");
+        choices(new String[] { "Normale", "Alignée aux icônes" }, cfg.al, i -> cfg.al = i);
         section("Position des calories");
         choices(new String[] { "Gauche", "Droite" }, cfg.kp, i -> cfg.kp = i);
         section("Thème");
