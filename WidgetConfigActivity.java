@@ -73,6 +73,11 @@ public class WidgetConfigActivity extends Activity {
         groupStart();
         for (int r = 0; r < nr; r++) { final int[] sr = sm[r]; int sel = -1; for (int j = 0; j < sr.length; j++) if (sr[j] == cfg.style) sel = j; choices(sn[r], sel, i -> cfg.style = sr[i]); }
         groupEnd();
+        section("Calories (style Sommet)");
+        groupStart();
+        String[][] kn = { { "Aucune", "Gros", "Discret" }, { "Sous les pas", "Barre", "Pastille" }, { "Anneau", "Bas droite", "Côte à côte" } };
+        for (int r = 0; r < 3; r++) { final int kb = r * 3; choices(kn[r], cfg.kv >= kb && cfg.kv < kb + 3 ? cfg.kv - kb : -1, i -> cfg.kv = kb + i); }
+        groupEnd();
         section("Thème");
         groupStart();
         for (int r = 0; r < 4; r++) { final int tb = r * 4; String[] n = java.util.Arrays.copyOfRange(FocusWidget.THEME_NAMES, tb, tb + 4); choices(n, cfg.col >= tb && cfg.col < tb + 4 ? cfg.col - tb : -1, i -> cfg.col = tb + i); }

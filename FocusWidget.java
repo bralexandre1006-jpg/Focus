@@ -59,13 +59,13 @@ public class FocusWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context c, int[] ids) {
         SharedPreferences.Editor e = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_" }) e.remove(k + id);
+        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_" }) e.remove(k + id);
         e.apply();
     }
 
     /** Réglages d'un widget : données, style, couleurs, fond, forme. */
     static class Cfg {
-        int metric, style, bg, shape, col;
+        int metric, style, bg, shape, col, kv;
         static Cfg load(Context c, int id, int kind) {
             SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             Cfg f = new Cfg();
@@ -74,11 +74,12 @@ public class FocusWidget extends AppWidgetProvider {
             f.col = Math.max(0, Math.min(15, p.getInt("c2_" + id, 3)));
             f.bg = p.getInt("b_" + id, 85);
             f.shape = p.getInt("h_" + id, 0);
+            f.kv = Math.max(0, Math.min(8, p.getInt("kv_" + id, 1)));
             return f;
         }
         void save(Context c, int id) {
             c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt("m_" + id, metric).putInt("s_" + id, style)
-                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).apply();
+                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).apply();
         }
     }
 
@@ -450,7 +451,7 @@ public class FocusWidget extends AppWidgetProvider {
     static boolean wideDesign(int id) { return id == 6 || id == 7 || (id >= 25 && id <= 27) || id >= 41; }
 
     static class Dz {
-        int[] mo = new int[0]; boolean small, kc; Canvas x; float W, H, k, f; int v, g, ke, kg, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
+        int[] mo = new int[0]; boolean small, kc; Canvas x; float W, H, k, f; int v, g, ke, kg, kv, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
         int a(float al) { return T.a(al); }
         Paint fill(int c) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(c); return p; }
         Paint stroke(int c, float w) { Paint p = fill(c); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(w); return p; }
@@ -475,6 +476,40 @@ public class FocusWidget extends AppWidgetProvider {
         void planet(float px, float py, float R) {
             Paint g = fill(0); g.setShader(new android.graphics.RadialGradient(px - R * .4f, py - R * .5f, R * 1.3f, new int[] { 0xFFFFFFFF, 0xFF9A9AA2, 0xFF2A2A30 }, new float[] { 0, .5f, 1 }, Shader.TileMode.CLAMP));
             x.drawCircle(px, py, R, g);
+        }
+        float tw(String s, float sz, boolean b8) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setTypeface(b8 ? T8 : T7); p.setTextSize(sz); return p.measureText(s); }
+        void halo(String s, float X, float Y, float sz, int col, boolean b8, Paint.Align al) {
+            Paint o = new Paint(Paint.ANTI_ALIAS_FLAG); o.setTypeface(b8 ? T8 : T7); o.setTextSize(sz); o.setTextAlign(al); o.setColor(0xD90B0B0F);
+            o.setStyle(Paint.Style.STROKE); o.setStrokeWidth(sz * .22f); o.setStrokeJoin(Paint.Join.ROUND); x.drawText(s, X, Y, o);
+            t(s, X, Y, sz, col, al, b8, 0, 0);
+        }
+        void flame(float cx, float cy, float sz, int col) {
+            x.save(); x.translate(cx - sz / 2, cy - sz / 2); x.scale(sz / 24, sz / 24);
+            Path q = new Path(); q.moveTo(12, 3); q.cubicTo(13, 7, 18, 9, 18, 14); q.arcTo(new RectF(6, 8, 18, 20), 0, 180, false);
+            q.cubicTo(6, 11, 8, 9, 9, 8); q.cubicTo(9, 10, 10, 11, 11, 11); q.cubicTo(11, 8, 10, 6, 12, 3); q.close();
+            x.drawPath(q, round(stroke(col, 2.2f))); x.restore();
+        }
+        /** Calories mangées sur le design Sommet ; kv = disposition choisie dans les réglages du widget. */
+        void sommetKcal() {
+            String n = fmt(ke), gl = "/ " + fmt(kg) + " kcal"; float kf = Math.min(1, ke / (float) kg), by = H - 16 * k;
+            if (small) { float ky = H - 14 * k, ks = t(n, 16 * k, ky, 26 * k, fg, Paint.Align.LEFT, true, 0, W * .5f); t("kcal", 16 * k + tw(n, ks, true) + 4 * k, ky, 11 * k, mut, Paint.Align.LEFT, false, 0, 0); return; }
+            switch (kv) {
+                case 1: { float w = tw(n, 20 * k, true); t(n, 16 * k, by, 20 * k, fg, Paint.Align.LEFT, true, 0, 0); t(gl, 16 * k + w + 4 * k, by, 10.5f * k, mut, Paint.Align.LEFT, false, 0, 0); break; }
+                case 2: { flame(23 * k, by - 5 * k, 13 * k, mut); float w = tw(n, 13 * k, true); t(n, 33 * k, by, 13 * k, fg, Paint.Align.LEFT, true, 0, 0); t(gl, 33 * k + w + 3 * k, by, 10 * k, mut, Paint.Align.LEFT, false, 0, 0); break; }
+                case 3: { flame(21 * k, 61 * k, 11 * k, fg); t(n + " kcal", 30 * k, 65 * k, 9.5f * k, fg, Paint.Align.LEFT, true, 0, W * .46f - 28 * k); break; }
+                case 4: { float bw = W - 32 * k; rr(16 * k, by - 2 * k, bw, 5 * k, 2.5f * k, fill(a(.12f))); rr(16 * k, by - 2 * k, Math.max(5 * k, bw * kf), 5 * k, 2.5f * k, fill(fg));
+                    float w = tw(n, 14 * k, true); t(n, 16 * k, by - 9 * k, 14 * k, fg, Paint.Align.LEFT, true, 0, 0); t(gl, 16 * k + w + 3 * k, by - 9 * k, 9.5f * k, mut, Paint.Align.LEFT, false, 0, 0); break; }
+                case 5: { String tx = n + " kcal"; float pw = tw(tx, 12 * k, true) + 34 * k; rr(12 * k, by - 17 * k, pw, 24 * k, 12 * k, fill(0xBF141418)); rr(12 * k, by - 17 * k, pw, 24 * k, 12 * k, stroke(a(.14f), k));
+                    flame(25 * k, by - 5 * k, 12 * k, fg); t(tx, 34 * k, by - k, 12 * k, fg, Paint.Align.LEFT, true, 0, 0); break; }
+                case 6: { float ccx = 30 * k, ccy = by - 12 * k, r = 13 * k; x.drawCircle(ccx, ccy, r, stroke(a(.14f), 3.5f * k));
+                    x.drawArc(ov(ccx, ccy, r, r), -90, Math.max(1, kf * 360), false, round(stroke(fg, 3.5f * k))); flame(ccx, ccy, 12 * k, fg);
+                    t(n, ccx + r + 8 * k, ccy + k, 15 * k, fg, Paint.Align.LEFT, true, 0, 0); t(gl, ccx + r + 8 * k, ccy + 13 * k, 9 * k, mut, Paint.Align.LEFT, false, 0, 0); break; }
+                case 7: { float uw = tw("kcal", 10 * k, false); t("kcal", W - 16 * k, by, 10 * k, mut, Paint.Align.RIGHT, false, 0, 0); t(n, W - 16 * k - uw - 4 * k, by, 18 * k, fg, Paint.Align.RIGHT, true, 0, 0);
+                    t(Math.round(kf * 100) + " % de " + fmt(kg), W - 16 * k, by - 21 * k, 9 * k, mut, Paint.Align.RIGHT, false, 0, 0); break; }
+                case 8: { halo(fmt(v), 16 * k, 34 * k, 22 * k, fg, true, Paint.Align.LEFT); halo("pas", 16 * k, 48 * k, 10 * k, mut, false, Paint.Align.LEFT);
+                    x.drawRect(W * .5f, 18 * k, W * .5f + k, 52 * k, fill(a(.18f)));
+                    halo(n, W * .5f + 9 * k, 34 * k, 22 * k, fg, true, Paint.Align.LEFT); halo(gl, W * .5f + 9 * k, 48 * k, 10 * k, mut, false, Paint.Align.LEFT); break; }
+            }
         }
         String digits() { String d = String.valueOf(v); while (d.length() < 5) d = "0" + d; return d; }
         void odoCell(float xx, float y0, float cw, float ch, String c, boolean lead) {
@@ -525,14 +560,8 @@ public class FocusWidget extends AppWidgetProvider {
                     float[] pk = P[peak]; x.drawLine(pk[0], pk[1], pk[0], pk[1] - 16 * k, stroke(fg, 1.5f * k));
                     Path fl = new Path(); fl.moveTo(pk[0], pk[1] - 16 * k); fl.lineTo(pk[0] + 10 * k, pk[1] - 12 * k); fl.lineTo(pk[0], pk[1] - 8 * k); fl.close(); x.drawPath(fl, fill(fg));
                     if (small) t(compact(v), 14 * k, 46 * k, 40 * k, fg, Paint.Align.LEFT, true, -k, W * .58f);
-                    else { tl(fmt(v), 16 * k, 34 * k, 24 * k, fg, true); tl(unit + " · " + sub, 16 * k, 49 * k, 10.5f * k, mut, false); }
-                    if (!kc) {
-                        float ky = H - (small ? 14 : 16) * k, ks = (small ? 26 : 20) * k;
-                        float kw = t(fmt(ke), 16 * k, ky, ks, fg, Paint.Align.LEFT, true, -.3f * k, W * .5f);
-                        Paint mp = new Paint(Paint.ANTI_ALIAS_FLAG); mp.setTypeface(T8); mp.setTextSize(kw);
-                        float ex2 = 16 * k + mp.measureText(fmt(ke)) + 4 * k;
-                        t(small ? "kcal" : "/ " + fmt(kg) + " kcal", ex2, ky, (small ? 11 : 10.5f) * k, mut, Paint.Align.LEFT, false, 0, W - ex2 - 10 * k);
-                    }
+                    else if (kc || kv != 8) { tl(fmt(v), 16 * k, 34 * k, 24 * k, fg, true); tl(unit + " · " + sub, 16 * k, 49 * k, 10.5f * k, mut, false); }
+                    if (!kc && kv > 0) sommetKcal();
                     break; }
                 case 4: { // Empreintes
                     int n = 10, on = Math.round(f * n);
@@ -809,7 +838,7 @@ public class FocusWidget extends AppWidgetProvider {
     static void drawDesign(Art A, Cfg f, int[] v) {
         int id = f.style - 7; Th T = A.T; Dz z = new Dz(); z.T = T;
         boolean kc = f.metric == 1;
-        z.kc = kc; z.ke = v[2]; z.kg = Math.max(1, v[3]);
+        z.kc = kc; z.kv = f.kv; z.ke = v[2]; z.kg = Math.max(1, v[3]);
         z.v = kc ? v[2] : v[0]; z.g = Math.max(1, kc ? v[3] : v[1]); z.ti = Math.max(0, Math.min(6, v[4]));
         z.w7 = kc ? java.util.Arrays.copyOfRange(v, 12, 19) : java.util.Arrays.copyOfRange(v, 5, 12);
         z.f = Math.max(0, Math.min(1, z.v / (float) z.g)); z.pct = Math.round(z.f * 100) + " %";
