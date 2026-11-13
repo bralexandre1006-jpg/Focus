@@ -279,11 +279,11 @@ public class FocusWidget extends AppWidgetProvider {
                     float lw = Math.max(1.2f, 1.3f * dp), i = lw / 2; Path p = shapeP(i);
                     x.drawPath(p, fill(rgba(18, 18, 20, .42f * A)));
                     x.save(); x.clipPath(p);
-                    Paint top = fill(0); top.setShader(lin(rgba(255, 255, 255, .09f), 0x00FFFFFF, 0, 0, 0, H * .45f)); x.drawRect(0, 0, W, H * .45f, top);
-                    Paint rim = stroke(0, 7 * dp); rim.setMaskFilter(new android.graphics.BlurMaskFilter(6 * dp, android.graphics.BlurMaskFilter.Blur.NORMAL));
+                    Paint top = fill(0xFFFFFFFF); top.setShader(lin(rgba(255, 255, 255, .09f), 0x00FFFFFF, 0, 0, 0, H * .45f)); x.drawRect(0, 0, W, H * .45f, top);
+                    Paint rim = stroke(0xFFFFFFFF, 7 * dp); rim.setMaskFilter(new android.graphics.BlurMaskFilter(6 * dp, android.graphics.BlurMaskFilter.Blur.NORMAL));
                     rim.setShader(new LinearGradient(0, 0, W, H, new int[] { 0x2EFFFFFF, 0x08FFFFFF, 0x1FFFFFFF }, new float[] { 0, .5f, 1 }, Shader.TileMode.CLAMP)); x.drawPath(p, rim);
                     x.restore();
-                    Paint bd = stroke(0, lw); bd.setShader(new LinearGradient(0, 0, W, H, new int[] { 0x99FFFFFF, 0x2EFFFFFF, 0x1AFFFFFF, 0x66FFFFFF }, new float[] { 0, .35f, .65f, 1 }, Shader.TileMode.CLAMP));
+                    Paint bd = stroke(0xFFFFFFFF, lw); bd.setShader(new LinearGradient(0, 0, W, H, new int[] { 0x99FFFFFF, 0x2EFFFFFF, 0x1AFFFFFF, 0x66FFFFFF }, new float[] { 0, .35f, .65f, 1 }, Shader.TileMode.CLAMP));
                     x.drawPath(p, bd);
                     break; }
                 case "glass":
