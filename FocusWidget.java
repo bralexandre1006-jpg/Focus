@@ -47,6 +47,8 @@ public class FocusWidget extends AppWidgetProvider {
     public void onUpdate(Context c, AppWidgetManager m, int[] ids) {
         for (int id : ids) render(c, m, id);
         WidgetTicker.schedule(c);
+        // relit le capteur de pas : l'app peut être fermée depuis longtemps
+        try { c.sendBroadcast(new Intent(c, WidgetTicker.class)); } catch (Throwable ignored) {}
     }
 
     @Override
