@@ -450,7 +450,7 @@ public class FocusWidget extends AppWidgetProvider {
     static boolean wideDesign(int id) { return id == 6 || id == 7 || (id >= 25 && id <= 27) || id >= 41; }
 
     static class Dz {
-        int[] mo = new int[0]; boolean small; Canvas x; float W, H, k, f; int v, g, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
+        int[] mo = new int[0]; boolean small, kc; Canvas x; float W, H, k, f; int v, g, ke, kg, ti, fg, mut, inv, glowC; int[] w7; String lbl, unit, sub, pct; Th T;
         int a(float al) { return T.a(al); }
         Paint fill(int c) { Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(c); return p; }
         Paint stroke(int c, float w) { Paint p = fill(c); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(w); return p; }
@@ -526,6 +526,13 @@ public class FocusWidget extends AppWidgetProvider {
                     Path fl = new Path(); fl.moveTo(pk[0], pk[1] - 16 * k); fl.lineTo(pk[0] + 10 * k, pk[1] - 12 * k); fl.lineTo(pk[0], pk[1] - 8 * k); fl.close(); x.drawPath(fl, fill(fg));
                     if (small) t(compact(v), 14 * k, 46 * k, 40 * k, fg, Paint.Align.LEFT, true, -k, W * .58f);
                     else { tl(fmt(v), 16 * k, 34 * k, 24 * k, fg, true); tl(unit + " · " + sub, 16 * k, 49 * k, 10.5f * k, mut, false); }
+                    if (!kc) {
+                        float ky = H - (small ? 14 : 16) * k, ks = (small ? 26 : 20) * k;
+                        float kw = t(fmt(ke), 16 * k, ky, ks, fg, Paint.Align.LEFT, true, -.3f * k, W * .5f);
+                        Paint mp = new Paint(Paint.ANTI_ALIAS_FLAG); mp.setTypeface(T8); mp.setTextSize(kw);
+                        float ex2 = 16 * k + mp.measureText(fmt(ke)) + 4 * k;
+                        t(small ? "kcal" : "/ " + fmt(kg) + " kcal", ex2, ky, (small ? 11 : 10.5f) * k, mut, Paint.Align.LEFT, false, 0, W - ex2 - 10 * k);
+                    }
                     break; }
                 case 4: { // Empreintes
                     int n = 10, on = Math.round(f * n);
@@ -802,6 +809,7 @@ public class FocusWidget extends AppWidgetProvider {
     static void drawDesign(Art A, Cfg f, int[] v) {
         int id = f.style - 7; Th T = A.T; Dz z = new Dz(); z.T = T;
         boolean kc = f.metric == 1;
+        z.kc = kc; z.ke = v[2]; z.kg = Math.max(1, v[3]);
         z.v = kc ? v[2] : v[0]; z.g = Math.max(1, kc ? v[3] : v[1]); z.ti = Math.max(0, Math.min(6, v[4]));
         z.w7 = kc ? java.util.Arrays.copyOfRange(v, 12, 19) : java.util.Arrays.copyOfRange(v, 5, 12);
         z.f = Math.max(0, Math.min(1, z.v / (float) z.g)); z.pct = Math.round(z.f * 100) + " %";
