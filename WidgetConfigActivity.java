@@ -22,7 +22,8 @@ public class WidgetConfigActivity extends Activity {
     int id = AppWidgetManager.INVALID_APPWIDGET_ID, kind = 1;
     FocusWidget.Cfg cfg;
     ImageView preview;
-    TextView bgVal;
+    TextView bgVal, styleName, styleNum;
+    java.util.List<String> styles;
     float dp;
     LinearLayout root;
 
@@ -61,18 +62,22 @@ public class WidgetConfigActivity extends Activity {
         preview = new ImageView(this);
         preview.setAdjustViewBounds(true);
         box.addView(preview, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        root.addView(box, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, px(kind == 2 ? 130 : kind == 0 ? 150 : 220)));
+        LinearLayout car = new LinearLayout(this);
+        car.setOrientation(LinearLayout.HORIZONTAL); car.setGravity(Gravity.CENTER_VERTICAL);
+        car.addView(arrow("‹", -1), new LinearLayout.LayoutParams(px(44), px(44)));
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, px(kind == 2 ? 130 : kind == 0 ? 150 : 220), 1);
+        blp.leftMargin = px(8); blp.rightMargin = px(8);
+        car.addView(box, blp);
+        car.addView(arrow("›", 1), new LinearLayout.LayoutParams(px(44), px(44)));
+        root.addView(car);
+        styleName = label("", 17, Color.WHITE, true); styleName.setTypeface(FocusWidget.T8); styleName.setGravity(Gravity.CENTER);
+        styleName.setPadding(0, px(12), 0, 0); root.addView(styleName);
+        styleNum = label("", 13, 0xFF8E8E9E, false); styleNum.setGravity(Gravity.CENTER); root.addView(styleNum);
 
         section("Données");
         choices(new String[] { "Pas", "Repas", "Pas + brûlées" }, cfg.metric, i -> cfg.metric = i);
-        section("Style");
-        java.util.List<String> all = new java.util.ArrayList<>(java.util.Arrays.asList("Cadran", "Jauge", "Chiffre", "Semaine", "Batterie", "Points", "Gros chiffre"));
-        all.addAll(java.util.Arrays.asList(FocusWidget.DESIGN_NAMES));
-        int nr = (all.size() + 2) / 3; int[][] sm = new int[nr][]; String[][] sn = new String[nr][];
-        for (int r = 0; r < nr; r++) { int c0 = r * 3, c1 = Math.min(all.size(), c0 + 3); sm[r] = new int[c1 - c0]; sn[r] = new String[c1 - c0]; for (int j = c0; j < c1; j++) { sm[r][j - c0] = j; sn[r][j - c0] = all.get(j); } }
-        groupStart();
-        for (int r = 0; r < nr; r++) { final int[] sr = sm[r]; int sel = -1; for (int j = 0; j < sr.length; j++) if (sr[j] == cfg.style) sel = j; choices(sn[r], sel, i -> cfg.style = sr[i]); }
-        groupEnd();
+        styles = new java.util.ArrayList<>(java.util.Arrays.asList("Cadran", "Jauge", "Chiffre", "Semaine", "Batterie", "Points", "Gros chiffre"));
+        styles.addAll(java.util.Arrays.asList(FocusWidget.DESIGN_NAMES));
         section("Calories (style Sommet)");
         groupStart();
         String[][] kn = { { "Aucune", "Gros", "Discret" }, { "Sous les pas", "Barre", "Pastille" }, { "Anneau", "Bas droite", "Côte à côte" } };
@@ -117,6 +122,13 @@ public class WidgetConfigActivity extends Activity {
     }
 
     interface Pick { void on(int i); }
+
+    TextView arrow(String t, int dir) {
+        TextView a = label(t, 28, Color.WHITE, true); a.setGravity(Gravity.CENTER); a.setPadding(0, 0, 0, px(4));
+        GradientDrawable g = new GradientDrawable(); g.setShape(GradientDrawable.OVAL); g.setColor(0xFF1C1C23); a.setBackground(g);
+        a.setOnClickListener(v -> { int n = styles.size(); cfg.style = ((cfg.style + dir) % n + n) % n; refresh(); });
+        return a;
+    }
 
     int px(float v) { return Math.round(v * dp); }
 
@@ -167,6 +179,7 @@ public class WidgetConfigActivity extends Activity {
     }
 
     void refresh() {
+        if (styleName != null && cfg.style < styles.size()) { styleName.setText(styles.get(cfg.style)); styleNum.setText((cfg.style + 1) + " / " + styles.size()); }
         bgVal.setText(cfg.bg == 0 ? "Transparent" : cfg.bg + " %");
         int[] s = FocusWidget.sizeDp(AppWidgetManager.getInstance(this), id, kind);
         float k = Math.min(dp, 640f / Math.max(s[0], s[1]));
