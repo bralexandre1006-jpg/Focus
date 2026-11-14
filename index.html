@@ -2550,7 +2550,7 @@ $('#wSave').onclick = e => {
 $('#wIn').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#wSave').click(); });
 $('#wDel').onclick = () => {
   if (!day().weight) { sfx.no(); toast('Aucun poids aujourd\'hui'); return; }
-  day().weight = null; delete day().wsrc; save(); renderWeight(); sfx.no(); buzz('medium'); toast('Poids du jour effacé');
+  { const d = day(); if (d.wsrc === 'hc') d.hcSkip = d.hct || Date.now(); d.weight = null; delete d.wsrc; } save(); renderWeight(); sfx.no(); buzz('medium'); toast('Poids du jour effacé');
 };
 
 /* séance : un tap sur vert ou rouge, un second tap sur le même bouton annule */
@@ -3295,7 +3295,7 @@ $('#dmEdit').onclick = () => { const d = day(dmK), nm = (d.meals || []).length; 
   setTimeout(() => openOv('dayEdit'), 120); };
 $$('#deWk button').forEach(b => b.onclick = () => { deW = b.dataset.w === 'null' ? null : b.dataset.w === 'true'; $$('#deWk button').forEach(x => x.classList.toggle('on', x === b)); sfx.tap(); buzz(); });
 $('#deSave').onclick = () => { const d = day(dmK), w = num($('#deW').value);
-  if ((w > 0 ? w : null) !== (d.weight || null)) d.wsrc = 'man';
+  if ((w > 0 ? w : null) !== (d.weight || null)) { if (!(w > 0) && d.wsrc === 'hc') { d.hcSkip = d.hct || Date.now(); delete d.wsrc; } else d.wsrc = 'man'; }
   d.weight = w > 0 ? w : null;
   if (!(d.meals || []).length) d.calories = Math.max(0, parseInt($('#deC').value) || 0);
   d.workout = deW; save(); closeOv('dayEdit'); renderHistory(); if (dmK === today()) renderToday(); sfx.ok(); buzz('success'); toast('Jour modifié ✓'); };
@@ -4645,8 +4645,8 @@ const syncHC = async (manual) => {
     let n = 0, last = null;
     Object.keys(byDay).forEach(k => {
       const d = day(k), kg = Math.round(byDay[k].kg * 100) / 100;
-      if (d.wsrc === 'man' || (d.weight && d.wsrc !== 'hc')) return;
-      if (d.weight !== kg) { d.weight = kg; d.wsrc = 'hc'; n++; if (!last || k > last) last = k; }
+      if (d.wsrc === 'man' || (d.weight && d.wsrc !== 'hc') || byDay[k].t <= (d.hcSkip || 0)) return;
+      if (d.weight !== kg) { d.weight = kg; d.wsrc = 'hc'; d.hct = byDay[k].t; n++; if (!last || k > last) last = k; }
     });
     S.settings.hcAt = Date.now(); save();
     if (n) { RENDER[cur](); toast(`${last === today() ? 'Poids du jour' : 'Pesée du ' + parseKey(last).toLocaleDateString('fr-BE', { day:'numeric', month:'short' })} à ${new Date(byDay[last].t).toLocaleTimeString('fr-BE', { hour:'2-digit', minute:'2-digit' })} : ${f1(day(last).weight)} kg${n > 1 ? ` (+${n - 1} autre${n > 2 ? 's' : ''})` : ''}`); }
