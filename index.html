@@ -478,11 +478,11 @@ html.mono body{filter:grayscale(1)}
 .mgrab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:10px auto 0}
 .mbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 18px 20px}
 .mfoot{padding:12px 18px calc(var(--sb) + 14px);border-top:1px solid var(--line);background:var(--bg2)}
-.ico{display:inline-grid;place-items:center;width:1.15em;height:1.15em;vertical-align:-.2em;line-height:1;flex-shrink:0}
-.ico svg{width:100%;height:100%;display:block;overflow:visible}
-span.ico{padding:0!important;margin:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;animation:none!important;min-width:0!important}
-.wchips .ico{margin-right:4px!important}
-.ico-e{width:auto;height:auto}
+.fic{display:inline-grid;place-items:center;width:1.15em;height:1.15em;vertical-align:-.2em;line-height:1;flex-shrink:0}
+.fic svg{width:100%;height:100%;display:block;overflow:visible}
+span.fic{padding:0!important;margin:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;animation:none!important;min-width:0!important}
+.wchips .fic{margin-right:4px!important}
+.fic-e{width:auto;height:auto}
 .icsty{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .icsty button{background:var(--card);border-radius:14px;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;border:2px solid transparent;font-size:24px}
 .icsty button small{font-size:11px;font-weight:800;color:var(--mut)}
@@ -1811,6 +1811,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
       <button class="acc-h"><h3><i style="background:var(--cal)"></i>Données et sauvegarde</h3><small></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Balance (Health Connect)</div><button class="tgl" id="tHC"></button></div>
+      <button class="btn ghost full press" id="hcNow" style="margin:0 0 10px">Récupérer mes pesées</button>
       <div class="srow"><div class="l">Podomètre</div><span class="sval" id="pdState">—</span></div>
       <div class="srow"><div class="l">Pas aujourd'hui</div><span class="sval" id="pdToday">—</span></div>
       <div class="bkinfo" id="bkInfo"></div>
@@ -2161,10 +2162,10 @@ let icN = 0;
 function ic(k, st) {
   const d = ICO.k[k]; if (!d) return '';
   st = st || icStyle();
-  if (st === 'emoji') return `<span class="ico ico-e">${d[0]}</span>`;
-  if (st === 'pk') { const u = 'x' + (icN++); return `<span class="ico" style="color:${d[1]}"><svg viewBox="0 0 48 48">${ICO.pk[k].replace(/(id="|url\(#)(\w+)/g, '$1$2' + u)}</svg></span>`; }
+  if (st === 'emoji') return `<span class="fic fic-e">${d[0]}</span>`;
+  if (st === 'pk') { const u = 'x' + (icN++); return `<span class="fic" style="color:${d[1]}"><svg viewBox="0 0 48 48">${ICO.pk[k].replace(/(id="|url\(#)(\w+)/g, '$1$2' + u)}</svg></span>`; }
   const v = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO.ln[k]}</svg>`;
-  return `<span class="ico" style="color:${d[1]}">${v}</span>`;
+  return `<span class="fic" style="color:${d[1]}">${v}</span>`;
 }
 const icE = e => ic(E2K[(e || '').replace(/️/g, '')] || 'plate');
 const paintIcons = () => document.querySelectorAll('[data-ic]').forEach(el => { el.innerHTML = ic(el.dataset.ic); });
@@ -2547,7 +2548,7 @@ $('#wSave').onclick = e => {
 $('#wIn').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#wSave').click(); });
 $('#wDel').onclick = () => {
   if (!day().weight) { sfx.no(); toast('Aucun poids aujourd\'hui'); return; }
-  day().weight = null; day().wsrc = 'man'; save(); renderWeight(); sfx.no(); buzz('medium'); toast('Poids du jour effacé');
+  day().weight = null; delete day().wsrc; save(); renderWeight(); sfx.no(); buzz('medium'); toast('Poids du jour effacé');
 };
 
 /* séance : un tap sur vert ou rouge, un second tap sur le même bouton annule */
@@ -4659,6 +4660,7 @@ $('#tHC').onclick = async () => {
 };
 $('#tHC').classList.toggle('on', !!S.settings.hc);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) syncHC(); });
+$('#hcNow').onclick = () => { sfx.tap(); buzz(); if (!S.settings.hc) { toast('Active d\'abord la balance'); return; } S.settings.hcAt = 0; syncHC(true); };
 
 /* ---------- boot ---------- */
 let lastDay = today();
@@ -4671,7 +4673,7 @@ const boot = () => {
   $('#tabbar').classList.remove('hide');
   setTimeout(moveInd, 60); renderToday(); syncPill(); placeBridge();
   const later = (f, ms) => setTimeout(() => (window.requestIdleCallback || (g => g()))(f, { timeout: 1500 }), ms);
-  later(startSteps, 700); later(scheduleAll, 1300); later(launchExtras, 1600); later(syncHC, 2200);
+  later(startSteps, 700); later(scheduleAll, 1300); later(launchExtras, 1600); later(() => syncHC(), 2200);
   if (LN) LN.addListener('localNotificationActionPerformed', e => { if (e && e.notification && e.notification.id === 9000) setTimeout(weekStory, 400); });
   // Ouvre le bilan une fois, le dimanche soir ou le lundi
   const n = new Date(), [ra, rb] = recapRange();
