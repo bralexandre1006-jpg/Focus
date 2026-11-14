@@ -23,8 +23,11 @@ public class ClockWidget extends AppWidgetProvider {
         return Math.max(0, Math.min(NAMES.length - 1, c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt("d_" + id, 0)));
     }
 
+    static boolean glass(Context c, int id) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("g_" + id, false); }
+
     static void render(Context c, AppWidgetManager m, int id) {
         RemoteViews v = new RemoteViews(c.getPackageName(), layout(c, design(c, id)));
+        if (glass(c, id)) v.setInt(R.id.c_root, "setBackgroundResource", R.drawable.clk_liquid);
         Intent i = new Intent(AlarmClock.ACTION_SHOW_ALARMS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         v.setOnClickPendingIntent(R.id.c_root, PendingIntent.getActivity(c, 8000 + id, i, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
         m.updateAppWidget(id, v);
@@ -41,7 +44,7 @@ public class ClockWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context c, int[] ids) {
         SharedPreferences.Editor e = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        for (int id : ids) e.remove("d_" + id);
+        for (int id : ids) { e.remove("d_" + id); e.remove("g_" + id); }
         e.apply();
     }
 }
