@@ -480,6 +480,8 @@ html.mono body{filter:grayscale(1)}
 .mfoot{padding:12px 18px calc(var(--sb) + 14px);border-top:1px solid var(--line);background:var(--bg2)}
 .ico{display:inline-grid;place-items:center;width:1.15em;height:1.15em;vertical-align:-.2em;line-height:1;flex-shrink:0}
 .ico svg{width:100%;height:100%;display:block;overflow:visible}
+span.ico{padding:0!important;margin:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;animation:none!important;min-width:0!important}
+.wchips .ico{margin-right:4px!important}
 .ico-e{width:auto;height:auto}
 .icsty{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .icsty button{background:var(--card);border-radius:14px;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;border:2px solid transparent;font-size:24px}
@@ -1789,8 +1791,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
       <div class="accents" id="accents"></div>
       <div class="lbl-s">Style d'emoji</div>
       <div class="icsty" id="icSty"></div>
-      <div class="srow"><div class="l">Focus Lite</div><button class="tgl" id="tLite"></button></div>
-      <div class="srow" id="gradRow"><div class="l">Couleurs des cartes en Lite</div><button class="tgl" id="tGrad"></button></div>
+      <div class="srow" id="gradRow"><div class="l">Couleurs des cartes</div><button class="tgl" id="tGrad"></button></div>
     </div></div></div>
 <div class="card acc" id="accExp">
       <button class="acc-h"><h3><i style="background:var(--spt)"></i>Sons et vibrations</h3><small></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -2015,7 +2016,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
   </div>
   <div class="wo-prog"><i id="woProg"></i></div>
   <div class="wo-b" id="woBody"></div>
-  <div class="wo-intro" id="woIntro"><div><span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span><b id="woIntroN"></b><small>C'est parti <span data-ic="dumbbell"></span></small></div></div>
+  <div class="wo-intro" id="woIntro"><div><span><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span><b id="woIntroN"></b><small>C'est parti</small></div></div>
   <div class="rest" id="rest"><div class="rest-p" id="restP"></div>
     <div class="rest-i"><small id="restL">Repos</small><b id="restT">0:00</b></div>
     <button class="press" data-r="-15">−15</button><button class="press" data-r="15">+15</button>
@@ -2068,7 +2069,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
   <div class="mhead"><h4 id="deT">Modifier</h4><button class="x press" data-close>×</button></div>
   <div class="mbody">
     <div class="mini-lbl">Poids</div><label class="field"><input id="deW" type="text" inputmode="decimal" placeholder="—"><span>kg</span></label>
-    <div class="mini-lbl">Pas</div><label class="field"><input id="deS" type="text" inputmode="numeric" placeholder="0"><span>pas</span></label>
+    <div class="mini-lbl">Pas · comptés par le podomètre</div><label class="field"><input id="deS" type="text" inputmode="numeric" placeholder="0" disabled><span>pas</span></label>
     <div class="mini-lbl">Calories</div><label class="field"><input id="deC" type="text" inputmode="numeric" placeholder="0"><span>kcal</span></label><div class="hint" id="deCH" style="margin:6px 4px 0"></div>
     <div class="mini-lbl">Séance</div><div class="seg2" id="deWk"><button data-w="true">Faite</button><button data-w="false">Ratée</button><button data-w="null">Rien</button></div>
   </div>
@@ -3284,14 +3285,13 @@ $('#dmDel').onclick = async () => { if (!(await confirmSheet('Supprimer les stat
   delete S.days[dmK]; save(); closeOv('dayMenu'); renderHistory(); if (dmK === today()) renderToday(); sfx.no(); buzz('heavy'); toast('Jour supprimé'); };
 let deW = null;
 $('#dmEdit').onclick = () => { const d = day(dmK), nm = (d.meals || []).length; closeOv('dayMenu');
-  $('#deT').textContent = dLabel(dmK); $('#deW').value = d.weight ? f1(d.weight) : ''; $('#deS').value = d.steps ? String(d.steps) : '';
+  $('#deT').textContent = dLabel(dmK); $('#deW').value = d.weight ? f1(d.weight) : ''; $('#deS').value = d.steps ? String(d.steps) : ''; $('#deS').disabled = true;
   $('#deC').value = d.calories ? String(d.calories) : ''; $('#deC').disabled = nm > 0; $('#deCH').textContent = nm ? `Calculées depuis ${nm} repas noté${nm > 1 ? 's' : ''}` : '';
   deW = d.workout ?? null; $$('#deWk button').forEach(b => b.classList.toggle('on', String(deW) === b.dataset.w));
   setTimeout(() => openOv('dayEdit'), 120); };
 $$('#deWk button').forEach(b => b.onclick = () => { deW = b.dataset.w === 'null' ? null : b.dataset.w === 'true'; $$('#deWk button').forEach(x => x.classList.toggle('on', x === b)); sfx.tap(); buzz(); });
-$('#deSave').onclick = () => { const d = day(dmK), w = num($('#deW').value), st = $('#deS').value.trim();
+$('#deSave').onclick = () => { const d = day(dmK), w = num($('#deW').value);
   d.weight = w > 0 ? w : null;
-  if (st === '') delete d.sm; else d.sm = Math.max(0, parseInt(st) || 0); mergeSteps(d);
   if (!(d.meals || []).length) d.calories = Math.max(0, parseInt($('#deC').value) || 0);
   d.workout = deW; save(); closeOv('dayEdit'); renderHistory(); if (dmK === today()) renderToday(); sfx.ok(); buzz('success'); toast('Jour modifié ✓'); };
 
@@ -3624,13 +3624,8 @@ const accInfo = () => {
   const n = S.settings.reminders.filter(r => r.on).length;
   $('#accRemI').textContent = n ? `${n} actif${n > 1 ? 's' : ''}` : 'Aucun';
   $('#accProfI').textContent = S.profile.name || '';
-  $('#accExpI').textContent = S.settings.lite ? 'Lite' : '';
 };
-$('#tLite').onclick = () => {
-  S.settings.lite = !S.settings.lite; save(); $('#tLite').classList.toggle('on', S.settings.lite);
-  sfx.tap(); buzz(); document.body.classList.add('switching');
-  setTimeout(() => { applyLite(); setTimeout(() => document.body.classList.remove('switching'), 60); toast(S.settings.lite ? 'Focus Lite activé' : 'Interface complète'); }, 250);
-};
+S.settings.lite = true;
 applyLite();
 $('#tRecap').onclick = async () => {
   S.settings.recap = S.settings.recap === false; save(); $('#tRecap').classList.toggle('on', S.settings.recap);
@@ -3654,7 +3649,6 @@ const renderSettings = () => {
   $$('#pAltNext button').forEach(b => b.classList.toggle('on', alt && sg && String(isTDay(today()) ? 0 : 1) === b.dataset.n));
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
   $('#tRecap').classList.toggle('on', S.settings.recap !== false);
-  $('#tLite').classList.toggle('on', !!S.settings.lite);
   $$('#pSex button').forEach(b => b.classList.toggle('on', b.dataset.x === (S.profile.sex || 'm')));
   $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
   accInfo();
