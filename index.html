@@ -4675,6 +4675,7 @@ const hcInfo = () => {
 };
 hcInfo();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) syncHC(); });
+setInterval(() => { if (!document.hidden) syncHC(); }, 60000);
 $('#hcOpen').onclick = async () => { sfx.tap(); buzz(); try { await HC.openSettings(); } catch (e) { toast('Health Connect introuvable'); } };
 $('#hcNow').onclick = () => { sfx.tap(); buzz(); if (!S.settings.hc) { toast('Active d\'abord la balance'); return; } S.settings.hcAt = 0; syncHC(true); };
 
