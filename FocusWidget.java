@@ -59,13 +59,13 @@ public class FocusWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context c, int[] ids) {
         SharedPreferences.Editor e = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
-        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_", "kp_", "al_", "ck_" }) e.remove(k + id);
+        for (int id : ids) for (String k : new String[] { "m_", "s_", "c2_", "b_", "h_", "kv_", "kp_", "al_" }) e.remove(k + id);
         e.apply();
     }
 
     /** Réglages d'un widget : données, style, couleurs, fond, forme. */
     static class Cfg {
-        int metric, style, bg, shape, col, kv, kp, al, ck;
+        int metric, style, bg, shape, col, kv, kp, al;
         static Cfg load(Context c, int id, int kind) {
             SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             Cfg f = new Cfg();
@@ -77,12 +77,11 @@ public class FocusWidget extends AppWidgetProvider {
             f.kv = Math.max(0, Math.min(8, p.getInt("kv_" + id, 1)));
             f.kp = p.getInt("kp_" + id, 0) == 1 ? 1 : 0;
             f.al = p.getInt("al_" + id, 0) == 1 ? 1 : 0;
-            f.ck = p.getInt("ck_" + id, 0) == 1 ? 1 : 0;
             return f;
         }
         void save(Context c, int id) {
             c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt("m_" + id, metric).putInt("s_" + id, style)
-                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).putInt("kp_" + id, kp).putInt("al_" + id, al).putInt("ck_" + id, ck).apply();
+                .putInt("c2_" + id, col).putInt("b_" + id, bg).putInt("h_" + id, shape).putInt("kv_" + id, kv).putInt("kp_" + id, kp).putInt("al_" + id, al).apply();
         }
     }
 
@@ -132,18 +131,11 @@ public class FocusWidget extends AppWidgetProvider {
         int[] s = sizeDp(m, id, kind);
         float d = c.getResources().getDisplayMetrics().density;
         float k = Math.min(d * 1.15f, 1500f / Math.max(s[0], s[1]));
-        Cfg cf = Cfg.load(c, id, kind);
-        Bitmap b = draw(cf, data(c), Math.round(s[0] * k), Math.round(s[1] * k), k);
+        Bitmap b = draw(Cfg.load(c, id, kind), data(c), Math.round(s[0] * k), Math.round(s[1] * k), k);
         RemoteViews v = new RemoteViews(c.getPackageName(), R.layout.focus_widget_img);
         v.setImageViewBitmap(R.id.w_img, b);
         Intent i = c.getPackageManager().getLaunchIntentForPackage(c.getPackageName());
         if (i != null) v.setOnClickPendingIntent(R.id.w_root, PendingIntent.getActivity(c, 0, i, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
-        // horloge en direct (TextClock) : un appui ouvre l'app Horloge du téléphone
-        v.setViewVisibility(R.id.w_clock, cf.ck == 1 ? android.view.View.VISIBLE : android.view.View.GONE);
-        if (cf.ck == 1) {
-            Intent ck = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            v.setOnClickPendingIntent(R.id.w_clock, PendingIntent.getActivity(c, 7000 + id, ck, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
-        }
         m.updateAppWidget(id, v);
     }
 

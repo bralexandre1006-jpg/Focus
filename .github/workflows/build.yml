@@ -31,7 +31,7 @@ jobs:
           npx cap add android
           cp StepCounterPlugin.java HealthPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
           if [ -f MidnightReceiver.java ]; then cp MidnightReceiver.java android/app/src/main/java/com/alexandre/focus/; fi
-          cp FocusWidget.java WidgetConfigActivity.java RestTimer.java WidgetTicker.java android/app/src/main/java/com/alexandre/focus/
+          cp FocusWidget.java WidgetConfigActivity.java RestTimer.java WidgetTicker.java ClockWidget.java ClockConfigActivity.java android/app/src/main/java/com/alexandre/focus/
 
       - name: Permissions Android
         run: |
@@ -76,6 +76,21 @@ jobs:
               <receiver android:name=".RestTimer$End" android:exported="false" />
               <receiver android:name=".WidgetTicker" android:exported="false" />
               </application>""", 1)
+          open(p,'w').write(s)
+          PY
+
+      - name: Widget horloge
+        run: |
+          python3 - <<'PY'
+          p='android/app/src/main/AndroidManifest.xml'; s=open(p).read()
+          s=s.replace('</application>', """    <receiver android:name=".ClockWidget" android:exported="true" android:label="Focus · Horloge">
+                  <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+                  <meta-data android:name="android.appwidget.provider" android:resource="@xml/focus_clock" />
+              </receiver>
+              <activity android:name=".ClockConfigActivity" android:exported="true" android:theme="@android:style/Theme.Material.NoActionBar">
+                  <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" /></intent-filter>
+              </activity>
+          </application>""", 1)
           open(p,'w').write(s)
           PY
 
