@@ -97,7 +97,7 @@ public class HealthPlugin extends Plugin {
                 JSArray a = new JSArray();
                 for (Object x : ((ReadRecordsResponse<?>) r).getRecords()) {
                     WeightRecord w = (WeightRecord) x; JSObject o = new JSObject();
-                    o.put("t", w.getTime().toEpochMilli()); o.put("kg", w.getWeight().getKilograms()); a.put(o);
+                    o.put("t", w.getTime().toEpochMilli()); if (w.getZoneOffset() != null) o.put("off", w.getZoneOffset().getTotalSeconds()); o.put("kg", w.getWeight().getKilograms()); a.put(o);
                 }
                 JSObject out = new JSObject(); out.put("items", a); call.resolve(out);
             });

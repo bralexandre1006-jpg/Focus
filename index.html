@@ -4634,7 +4634,9 @@ const syncHC = async (manual) => {
     const since = S.settings.hcAt ? S.settings.hcAt - 3 * 864e5 : Date.now() - 60 * 864e5;
     const r = await HC.readWeights({ since });
     const byDay = {};
-    (r.items || []).forEach(x => { const k = key(new Date(x.t)); if (!byDay[k] || x.t > byDay[k].t) byDay[k] = x; });
+    // jour de la pesée selon le fuseau enregistré avec elle (sinon celui du téléphone)
+    const dayOf = x => { if (x.off == null) return key(new Date(x.t)); const u = new Date(x.t + x.off * 1000); return `${u.getUTCFullYear()}-${pad(u.getUTCMonth() + 1)}-${pad(u.getUTCDate())}`; };
+    (r.items || []).forEach(x => { const k = dayOf(x); if (!byDay[k] || x.t > byDay[k].t) byDay[k] = x; });
     let n = 0, last = null;
     Object.keys(byDay).forEach(k => {
       const d = day(k), kg = Math.round(byDay[k].kg * 100) / 100;
@@ -4642,7 +4644,7 @@ const syncHC = async (manual) => {
       if (d.weight !== kg) { d.weight = kg; d.wsrc = 'hc'; n++; if (!last || k > last) last = k; }
     });
     S.settings.hcAt = Date.now(); save();
-    if (n) { RENDER[cur](); toast(`${last === today() ? 'Poids du jour' : 'Pesée du ' + parseKey(last).toLocaleDateString('fr-BE', { day:'numeric', month:'short' })} : ${f1(day(last).weight)} kg${n > 1 ? ` (+${n - 1} autre${n > 2 ? 's' : ''})` : ''}`); }
+    if (n) { RENDER[cur](); toast(`${last === today() ? 'Poids du jour' : 'Pesée du ' + parseKey(last).toLocaleDateString('fr-BE', { day:'numeric', month:'short' })} à ${new Date(byDay[last].t).toLocaleTimeString('fr-BE', { hour:'2-digit', minute:'2-digit' })} : ${f1(day(last).weight)} kg${n > 1 ? ` (+${n - 1} autre${n > 2 ? 's' : ''})` : ''}`); }
     else if (manual) toast('Aucune nouvelle pesée');
   } catch (e) { if (manual) toast('Health Connect indisponible'); }
 };
