@@ -29,7 +29,7 @@ jobs:
           npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app @capacitor-mlkit/barcode-scanning
           npx cap init Focus com.alexandre.focus --web-dir www
           npx cap add android
-          cp StepCounterPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
+          cp StepCounterPlugin.java HealthPlugin.java MainActivity.java android/app/src/main/java/com/alexandre/focus/
           if [ -f MidnightReceiver.java ]; then cp MidnightReceiver.java android/app/src/main/java/com/alexandre/focus/; fi
           cp FocusWidget.java WidgetConfigActivity.java RestTimer.java WidgetTicker.java android/app/src/main/java/com/alexandre/focus/
 
@@ -79,6 +79,26 @@ jobs:
           open(p,'w').write(s)
           PY
 
+      - name: Health Connect (poids de la balance)
+        run: |
+          python3 - <<'PY'
+          p='android/app/src/main/AndroidManifest.xml'; s=open(p).read()
+          if 'xmlns:tools=' not in s:
+              s=s.replace('<manifest ', '<manifest xmlns:tools="http://schemas.android.com/tools" ', 1)
+          s=s.replace('</manifest>', '''    <uses-sdk tools:overrideLibrary="androidx.health.connect.client" />
+              <uses-permission android:name="android.permission.health.READ_WEIGHT" />
+              <queries><package android:name="com.google.android.apps.healthdata" /></queries>
+          </manifest>''', 1)
+          s=s.replace('</application>', '''    <activity-alias android:name="HealthRationale" android:exported="true" android:targetActivity=".MainActivity">
+                  <intent-filter><action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" /></intent-filter>
+              </activity-alias>
+              <activity-alias android:name="ViewPermissionUsageActivity" android:exported="true" android:targetActivity=".MainActivity" android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+                  <intent-filter><action android:name="android.intent.action.VIEW_PERMISSION_USAGE" /><category android:name="android.intent.category.HEALTH_PERMISSIONS" /></intent-filter>
+              </activity-alias>
+          </application>''', 1)
+          open(p,'w').write(s)
+          PY
+
       - name: Icone de l'app
         continue-on-error: true
         run: |
@@ -103,7 +123,7 @@ jobs:
 
       - name: Enregistreur de pas Google
         run: |
-          printf '\ndependencies {\n    implementation "com.google.android.gms:play-services-fitness:21.2.0"\n}\n' >> android/app/build.gradle
+          printf '\ndependencies {\n    implementation "com.google.android.gms:play-services-fitness:21.2.0"\n    implementation "androidx.health.connect:connect-client:1.1.+"\n}\n' >> android/app/build.gradle
 
       - name: Signature fixe
         run: |

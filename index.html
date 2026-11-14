@@ -1810,6 +1810,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
 <div class="card acc" id="accData">
       <button class="acc-h"><h3><i style="background:var(--cal)"></i>Données et sauvegarde</h3><small></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="acc-b"><div class="acc-i">
+      <div class="srow"><div class="l">Balance (Health Connect)</div><button class="tgl" id="tHC"></button></div>
       <div class="srow"><div class="l">Podomètre</div><span class="sval" id="pdState">—</span></div>
       <div class="srow"><div class="l">Pas aujourd'hui</div><span class="sval" id="pdToday">—</span></div>
       <div class="bkinfo" id="bkInfo"></div>
@@ -2539,14 +2540,14 @@ $('#wSave').onclick = e => {
   const v = num($('#wIn').value);
   if (!v || v<20 || v>400) { sfx.no(); buzz('medium'); toast('Poids invalide'); return; }
   const before = day().weight;
-  day().weight = +v.toFixed(1); save(); $('#wIn').blur();
+  day().weight = +v.toFixed(1); day().wsrc = 'man'; save(); $('#wIn').blur();
   renderWeight(); sfx.ok(); buzz('success'); toast(before ? 'Poids modifié ✓' : 'Poids enregistré ✓');
   const G = goals(); if (G.target && G.start && (G.start > G.target ? v <= G.target : v >= G.target)) burst(e.currentTarget, ['#6BD36E','#D7FF3A','#ffffff']);
 };
 $('#wIn').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#wSave').click(); });
 $('#wDel').onclick = () => {
   if (!day().weight) { sfx.no(); toast('Aucun poids aujourd\'hui'); return; }
-  day().weight = null; save(); renderWeight(); sfx.no(); buzz('medium'); toast('Poids du jour effacé');
+  day().weight = null; day().wsrc = 'man'; save(); renderWeight(); sfx.no(); buzz('medium'); toast('Poids du jour effacé');
 };
 
 /* séance : un tap sur vert ou rouge, un second tap sur le même bouton annule */
@@ -3291,6 +3292,7 @@ $('#dmEdit').onclick = () => { const d = day(dmK), nm = (d.meals || []).length; 
   setTimeout(() => openOv('dayEdit'), 120); };
 $$('#deWk button').forEach(b => b.onclick = () => { deW = b.dataset.w === 'null' ? null : b.dataset.w === 'true'; $$('#deWk button').forEach(x => x.classList.toggle('on', x === b)); sfx.tap(); buzz(); });
 $('#deSave').onclick = () => { const d = day(dmK), w = num($('#deW').value);
+  if ((w > 0 ? w : null) !== (d.weight || null)) d.wsrc = 'man';
   d.weight = w > 0 ? w : null;
   if (!(d.meals || []).length) d.calories = Math.max(0, parseInt($('#deC').value) || 0);
   d.workout = deW; save(); closeOv('dayEdit'); renderHistory(); if (dmK === today()) renderToday(); sfx.ok(); buzz('success'); toast('Jour modifié ✓'); };
@@ -4622,6 +4624,42 @@ const monthStory = off => {
 $('#openRecap').onclick = weekStory;
 $('#openMonth').onclick = () => monthStory(period === 'month' ? pOff : 0);
 
+/* ---------- balance connectée via Health Connect ---------- */
+// Lit les pesées (ex. Tefal Goodvibes) et remplit le poids du jour. Un poids tapé à la main n'est jamais écrasé.
+const HC = P.Health;
+const syncHC = async (manual) => {
+  if (!HC || !S.settings.hc) return;
+  try {
+    const since = S.settings.hcAt ? S.settings.hcAt - 3 * 864e5 : Date.now() - 60 * 864e5;
+    const r = await HC.readWeights({ since });
+    const byDay = {};
+    (r.items || []).forEach(x => { const k = key(new Date(x.t)); if (!byDay[k] || x.t > byDay[k].t) byDay[k] = x; });
+    let n = 0, last = null;
+    Object.keys(byDay).forEach(k => {
+      const d = day(k), kg = Math.round(byDay[k].kg * 100) / 100;
+      if (d.wsrc === 'man' || (d.weight && d.wsrc !== 'hc')) return;
+      if (d.weight !== kg) { d.weight = kg; d.wsrc = 'hc'; n++; if (!last || k > last) last = k; }
+    });
+    S.settings.hcAt = Date.now(); save();
+    if (n) { RENDER[cur](); toast(last === today() ? `Poids importé : ${f1(day(last).weight)} kg` : `${n} pesée${n > 1 ? 's' : ''} importée${n > 1 ? 's' : ''}`); }
+    else if (manual) toast('Aucune nouvelle pesée');
+  } catch (e) { if (manual) toast('Health Connect indisponible'); }
+};
+$('#tHC').onclick = async () => {
+  sfx.tap(); buzz();
+  if (S.settings.hc) { S.settings.hc = false; save(); $('#tHC').classList.remove('on'); return; }
+  if (!HC) { toast('Disponible dans l\'app Android'); return; }
+  try {
+    const st = await HC.status();
+    if (!st.available) { toast('Installe ou mets à jour Health Connect'); return; }
+    const ok = st.granted || (await HC.request()).granted;
+    if (!ok) { toast('Autorisation refusée'); return; }
+    S.settings.hc = true; save(); $('#tHC').classList.add('on'); syncHC(true);
+  } catch (e) { toast('Health Connect indisponible'); }
+};
+$('#tHC').classList.toggle('on', !!S.settings.hc);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) syncHC(); });
+
 /* ---------- boot ---------- */
 let lastDay = today();
 setInterval(()=>{ if (today()!==lastDay){ lastDay=today(); RENDER[cur](); } }, 20000);
@@ -4633,7 +4671,7 @@ const boot = () => {
   $('#tabbar').classList.remove('hide');
   setTimeout(moveInd, 60); renderToday(); syncPill(); placeBridge();
   const later = (f, ms) => setTimeout(() => (window.requestIdleCallback || (g => g()))(f, { timeout: 1500 }), ms);
-  later(startSteps, 700); later(scheduleAll, 1300); later(launchExtras, 1600);
+  later(startSteps, 700); later(scheduleAll, 1300); later(launchExtras, 1600); later(syncHC, 2200);
   if (LN) LN.addListener('localNotificationActionPerformed', e => { if (e && e.notification && e.notification.id === 9000) setTimeout(weekStory, 400); });
   // Ouvre le bilan une fois, le dimanche soir ou le lundi
   const n = new Date(), [ra, rb] = recapRange();
