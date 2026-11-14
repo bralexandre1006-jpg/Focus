@@ -83,6 +83,16 @@ public class HealthPlugin extends Plugin {
         JSObject o = new JSObject(); o.put("granted", got != null && got.contains(READ_WEIGHT)); call.resolve(o);
     }
 
+    /** Ouvre l'écran Health Connect du téléphone (données et autorisations). */
+    @PluginMethod
+    public void openSettings(PluginCall call) {
+        String[] acts = { "android.health.connect.action.HEALTH_HOME_SETTINGS", "androidx.health.ACTION_HEALTH_CONNECT_SETTINGS", "android.health.connect.action.MANAGE_HEALTH_DATA" };
+        for (String a : acts) {
+            try { Intent i = new Intent(a).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getActivity().startActivity(i); call.resolve(); return; } catch (Throwable ignored) {}
+        }
+        call.reject("introuvable");
+    }
+
     /** Pesées depuis « since » (ms), de la plus récente à la plus ancienne. */
     @PluginMethod
     public void readWeights(PluginCall call) {
