@@ -1811,7 +1811,8 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
       <button class="acc-h"><h3><i style="background:var(--cal)"></i>Données et sauvegarde</h3><small></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Balance (Health Connect)</div><button class="tgl" id="tHC"></button></div>
-      <button class="btn ghost full press" id="hcNow" style="margin:0 0 10px">Récupérer mes pesées</button>
+      <button class="btn ghost full press" id="hcNow" style="margin:0 0 6px">Récupérer mes pesées</button>
+      <div class="bkinfo" id="hcInfo" style="margin-bottom:10px"></div>
       <div class="srow"><div class="l">Podomètre</div><span class="sval" id="pdState">—</span></div>
       <div class="srow"><div class="l">Pas aujourd'hui</div><span class="sval" id="pdToday">—</span></div>
       <div class="bkinfo" id="bkInfo"></div>
@@ -4633,6 +4634,9 @@ const syncHC = async (manual) => {
   try {
     const since = S.settings.hcAt ? S.settings.hcAt - 3 * 864e5 : Date.now() - 60 * 864e5;
     const r = await HC.readWeights({ since });
+    const it = r.items || [], top = it.reduce((a, x) => !a || x.t > a.t ? x : a, null);
+    S.settings.hcLast = { at: Date.now(), n: it.length, t: top && top.t, kg: top && top.kg, src: top && top.src };
+    hcInfo();
     const byDay = {};
     // jour de la pesée selon le fuseau enregistré avec elle (sinon celui du téléphone)
     const dayOf = x => { if (x.off == null) return key(new Date(x.t)); const u = new Date(x.t + x.off * 1000); return `${u.getUTCFullYear()}-${pad(u.getUTCMonth() + 1)}-${pad(u.getUTCDate())}`; };
@@ -4661,6 +4665,14 @@ $('#tHC').onclick = async () => {
   } catch (e) { toast('Health Connect indisponible'); }
 };
 $('#tHC').classList.toggle('on', !!S.settings.hc);
+// diagnostic : ce que Health Connect a renvoyé à la dernière lecture
+const hcInfo = () => {
+  const l = S.settings.hcLast, el = $('#hcInfo'); if (!el) return;
+  if (!S.settings.hc || !l) { el.textContent = ''; return; }
+  el.textContent = !l.n ? 'Health Connect ne contient aucune pesée récente.' :
+    `Dernière pesée trouvée : ${new Date(l.t).toLocaleString('fr-BE', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })} · ${f1(l.kg)} kg${l.src ? ' · ' + l.src : ''} (${l.n} au total)`;
+};
+hcInfo();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) syncHC(); });
 $('#hcNow').onclick = () => { sfx.tap(); buzz(); if (!S.settings.hc) { toast('Active d\'abord la balance'); return; } S.settings.hcAt = 0; syncHC(true); };
 
