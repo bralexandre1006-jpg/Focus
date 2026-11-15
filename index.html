@@ -2589,10 +2589,12 @@ const renderNutrition = () => {
   });
 };
 
-let mealsOpen = false;
+let mealsOpen = false, fitT;
 $('#mTog').onclick = () => {
   mealsOpen = !mealsOpen;
-  $('#nutCard').classList.toggle('open', mealsOpen); $('#mTog').setAttribute('aria-expanded', mealsOpen); fitHome();
+  $('#nutCard').classList.toggle('open', mealsOpen); $('#mTog').setAttribute('aria-expanded', mealsOpen);
+  // à la fermeture, on attend la fin de l'animation avant de remesurer l'accueil
+  clearTimeout(fitT); if (mealsOpen) fitHome(); else fitT = setTimeout(fitHome, 600);
   sfx.tap(); buzz();
   if (mealsOpen) setTimeout(() => $('#nutCard').scrollIntoView({ behavior:'smooth', block:'start' }), 150);
 };
