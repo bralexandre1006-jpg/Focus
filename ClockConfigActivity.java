@@ -51,7 +51,7 @@ public class ClockConfigActivity extends Activity {
         box = new FrameLayout(this);
         GradientDrawable bg = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[] { 0xFF2A2A30, 0xFF0E0E12 });
         bg.setCornerRadius(px(22)); box.setBackground(bg); box.setPadding(px(10), px(10), px(10), px(10));
-        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, px(170), 1);
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, px(190), 1);
         blp.leftMargin = px(8); blp.rightMargin = px(8);
         car.addView(box, blp);
         car.addView(arrow("›", 1), new LinearLayout.LayoutParams(px(44), px(44)));
@@ -103,7 +103,7 @@ public class ClockConfigActivity extends Activity {
         try {
             android.view.View w = LayoutInflater.from(this).inflate(ClockWidget.layout(this, d), box, false);
             if (gl) w.setBackgroundResource(R.drawable.clk_liquid);
-            box.addView(w);
+            box.addView(w, new FrameLayout.LayoutParams(px(150), px(150), Gravity.CENTER));
         } catch (Exception ignored) {}
         for (int i = 0; i < 2; i++) {
             GradientDrawable g = new GradientDrawable(); g.setCornerRadius(px(14)); boolean on = (i == 1) == gl;

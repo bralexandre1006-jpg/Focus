@@ -10,12 +10,11 @@ import android.content.SharedPreferences;
 import android.provider.AlarmClock;
 import android.widget.RemoteViews;
 
-/** Widget Horloge : 28 styles (res/layout/clock_N.xml), l'heure vit seule (TextClock / AnalogClock), un appui ouvre l'app Horloge. */
+/** Widget Horloge : 20 montres à aiguilles (res/layout/clock_N.xml), l'heure vit seule (AnalogClock), un appui ouvre l'app Horloge. */
 public class ClockWidget extends AppWidgetProvider {
     static final String PREFS = "focus_clock";
-    static final String[] NAMES = { "Gros chiffres", "Heure et date", "Empilé", "Fin", "Jour", "Large", "Accent", "Secondes", "12 heures", "Calendrier",
-        "Néon", "Pastille", "Verre", "Carte", "Lime", "Terminal", "Rétro", "Analogique", "Analogique minimal", "Analogique néon",
-        "Montre classique", "Montre sport", "Chronographe", "Montre dorée", "Bauhaus", "Cercle néon", "Points", "Montre verre" };
+    static final String[] NAMES = { "Noir classique", "Blanc", "Sport lime", "Chrono", "Doré", "Bauhaus", "Néon", "Points", "Bleu nuit", "Militaire",
+        "Rouge", "Minimal", "Radar", "Pilote", "Rose", "Graphite", "Gare", "Arc-en-ciel", "Lune", "Verre" };
 
     static int layout(Context c, int d) { return c.getResources().getIdentifier("clock_" + d, "layout", c.getPackageName()); }
 
