@@ -182,11 +182,24 @@ public class WidgetConfigActivity extends Activity {
         }
     }
 
+    final android.os.Handler ui = new android.os.Handler(android.os.Looper.getMainLooper());
+    final Runnable redraw = this::drawPreview;
+    android.graphics.Bitmap shown;
+
+    // regroupe les demandes rapprochées (curseur, défilement) en un seul dessin
     void refresh() {
         if (styleName != null && cfg.style < styles.size()) { styleName.setText(styles.get(cfg.style)); styleNum.setText((cfg.style + 1) + " / " + styles.size()); }
         bgVal.setText(cfg.bg == 0 ? "Transparent" : cfg.bg + " %");
-        int[] s = FocusWidget.sizeDp(AppWidgetManager.getInstance(this), id, kind);
-        float k = Math.min(dp, 640f / Math.max(s[0], s[1]));
-        preview.setImageBitmap(FocusWidget.draw(cfg, FocusWidget.data(this), Math.round(s[0] * k), Math.round(s[1] * k), k));
+        ui.removeCallbacks(redraw); ui.postDelayed(redraw, shown == null ? 0 : 50);
+    }
+
+    void drawPreview() {
+        try {
+            int[] s = FocusWidget.sizeDp(AppWidgetManager.getInstance(this), id, kind);
+            float k = Math.min(dp, 640f / Math.max(s[0], s[1]));
+            android.graphics.Bitmap b = FocusWidget.draw(cfg, FocusWidget.data(this), Math.round(s[0] * k), Math.round(s[1] * k), k);
+            android.graphics.Bitmap old = shown; shown = b; preview.setImageBitmap(b);
+            if (old != null && old != b) old.recycle();
+        } catch (Throwable ignored) {}
     }
 }

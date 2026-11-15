@@ -126,6 +126,10 @@ public class FocusWidget extends AppWidgetProvider {
     }
 
     static void render(Context c, AppWidgetManager m, int id) {
+        try { renderOnce(c, m, id); } catch (Throwable ignored) {}
+    }
+
+    static void renderOnce(Context c, AppWidgetManager m, int id) {
         fonts(c);
         int kind = kindOfId(m, id);
         int[] s = sizeDp(m, id, kind);
