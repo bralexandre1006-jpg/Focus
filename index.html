@@ -3118,7 +3118,7 @@ const renderStats = () => {
   const st = sumField(curK,'steps'), stP = sumField(prevK,'steps');
   countTo($('#stSteps'), st); trendEl($('#trSteps'), st, stP);
   const G = goals(), stHit = curK.filter(k => (S.days[k] && S.days[k].steps || 0) >= G.steps).length;
-  $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · ${fmt(monthAvgSteps())} / mois · objectif atteint ${stHit} j`;
+  $('#stStepsSub').textContent = `Moy. ${fmt(st/Math.max(1,curK.length))} / jour · ${fmt(weekAvgSteps())} / semaine · ${fmt(monthAvgSteps())} / mois · objectif atteint ${stHit} j`;
   { const rk = Object.keys(S.days).reduce((m, k) => (S.days[k].steps || 0) > (m ? S.days[m].steps || 0 : 0) ? k : m, null), el = $('#stStepsRec');
     el.classList.toggle('hidden', !feat('stepRec') || !rk);
     if (rk) el.innerHTML = `<small>${ic('trophy')} Record</small><b>${fmt(S.days[rk].steps)}</b><em>${parseKey(rk).toLocaleDateString('fr-BE', { day:'numeric', month:'short' }).replace('.', '')}</em>`; }
@@ -3568,11 +3568,12 @@ const openBadges = () => {
 const fillBadges = () => {
   const ks = Object.keys(S.days).filter(k => (S.days[k].steps || 0) > 0).sort(), st = k => S.days[k].steps || 0;
   const tot = ks.reduce((t, k) => t + st(k), 0), by = f => { const o = {}; ks.forEach(k => { const g = f(k); o[g] = (o[g] || 0) + st(k); }); return o; };
-  const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), dayV = ks.map(st);
+  const mo = by(k => k.slice(0, 7)), yr = by(k => k.slice(0, 4)), wk = by(weekKey), dayV = ks.map(st);
   const best = a => a.length ? Math.max(...a) : 0, cnt = (a, g) => a.filter(v => v >= g).length;
   const G = [
     { t:'Au total', gl:'shoe', c:'#FFC44A', m:['#FFE58A','#F2A91E','#9A5E0A'], u:'pas', list:[1e6, 2e6, 3e6, 4e6, 5e6, 6e6, 7e6, 8e6, 9e6, 1e7], v:[tot], once:true, lbl:'Depuis le début' },
     { t:'En une journée', gl:'bolt', c:'#C9F23A', m:['#F0FFB0','#A8D81E','#4F7008'], u:'en 1 jour', list:[25e3, 5e4, 75e3, 1e5, 125e3, 15e4], v:dayV, lbl:'Ton record' },
+    { t:'En une semaine', gl:'shoe', c:'#4FE3D0', m:['#D9FFF9','#4FE3D0','#14806F'], u:'en 1 sem.', list:[5e4, 75e3, 1e5, 125e3, 15e4, 175e3, 2e5, 25e4], v:Object.values(wk), lbl:'Ta meilleure semaine' },
     { t:'En un mois', gl:'cal', c:'#9EC5FF', m:['#FFFFFF','#B8C8E0','#5C6B85'], u:'en 1 mois', list:[25e4, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5], v:Object.values(mo), lbl:'Ton meilleur mois' },
     { t:'En une année', gl:'peak', c:'#C49BFF', m:['#F3E8FF','#A77BFF','#4C2A9E'], u:'en 1 an', list:[1e6, 15e5, 2e6, 25e5, 3e6], v:Object.values(yr), lbl:'Ta meilleure année' } ];
   let won = 0, all = 0, d = 0;
@@ -4333,6 +4334,10 @@ const openExStats = k => {
 /* moyenne des pas par mois (mois terminés, sinon le mois en cours) */
 const monthAvgSteps = () => { const cm = today().slice(0, 7), o = {}; Object.keys(S.days).forEach(k => { const v = S.days[k].steps || 0; if (v) o[k.slice(0, 7)] = (o[k.slice(0, 7)] || 0) + v; });
   const full = Object.keys(o).filter(m => m !== cm), l = full.length ? full : Object.keys(o); return l.length ? Math.round(l.reduce((t, m) => t + o[m], 0) / l.length) : 0; };
+/* semaine du lundi au dimanche ; moyenne des pas par semaine (semaines terminées, sinon la semaine en cours) */
+const weekKey = k => { const d = parseKey(k); d.setDate(d.getDate() - wd(d)); return key(d); };
+const weekAvgSteps = () => { const cw = weekKey(today()), o = {}; Object.keys(S.days).forEach(k => { const v = S.days[k].steps || 0; if (v) { const w = weekKey(k); o[w] = (o[w] || 0) + v; } });
+  const full = Object.keys(o).filter(w => w !== cw), l = full.length ? full : Object.keys(o); return l.length ? Math.round(l.reduce((t, w) => t + o[w], 0) / l.length) : 0; };
 const gymTiles = g => `<div class="sb-gym"><div><b>${g.n}</b><small>fois</small></div><div><b>${fmtDur(g.min)}</b><small>temps</small></div><div><b>${fmtKg(g.vol)}</b><small>volume</small></div></div>`;
 const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws = S.workouts.filter(w => w.start >= aT && w.start < bT);
   const byCat = {}; ws.forEach(w => w.ex.forEach(e => byCat[e.cat] = (byCat[e.cat] || 0) + e.sets.length));
