@@ -19,6 +19,18 @@ class FocusStore(private val ctx: Context) {
     var root: JSONObject = load()
         private set
 
+    /** Version des données : change à chaque sauvegarde ou import. Les résultats en cache ne sont recalculés que si elle change. */
+    @Volatile var rev = 0
+        private set
+    private val memo = HashMap<String, Pair<Int, Any?>>()
+    @Suppress("UNCHECKED_CAST")
+    fun <T> cached(key: String, f: () -> T): T {
+        synchronized(memo) { memo[key]?.takeIf { it.first == rev }?.let { return it.second as T } }
+        val r = rev; val v = f()
+        synchronized(memo) { memo[key] = r to v }
+        return v
+    }
+
     private fun load(): JSONObject = try {
         if (file.exists()) JSONObject(file.readText()) else JSONObject()
     } catch (e: Exception) { JSONObject() }
@@ -31,6 +43,7 @@ class FocusStore(private val ctx: Context) {
 
     fun save() {
         val tmp = File(ctx.filesDir, "focus-data.json.tmp")
+        rev++
         tmp.writeText(root.toString()); tmp.renameTo(file)
     }
 
@@ -53,7 +66,7 @@ class FocusStore(private val ctx: Context) {
     fun weight(k: String = today()): Double? = dayOrNull(k)?.let { if (it.isNull("weight")) null else it.optDouble("weight").takeIf { w -> w > 0 } }
 
     /** Dernier poids connu, en remontant le temps. */
-    fun lastWeight(): Double? = days().keys().asSequence().toList().sortedDescending().firstNotNullOfOrNull { weight(it) }
+    fun lastWeight(): Double? = cached("lastW") { sortedDays().firstNotNullOfOrNull { weight(it) } }
 
     data class Macros(val kcal: Double, val p: Double, val c: Double, val f: Double, val n: Int)
     fun macros(k: String = today()): Macros {
@@ -78,10 +91,10 @@ class FocusStore(private val ctx: Context) {
     }
     private fun frzOk(d: JSONObject): Boolean { val f = d.optJSONObject("frz") ?: return false
         if (f.optString("by") == today()) return true; return steps(f.optString("by")) >= f.optInt("goal") }
-    fun streak(): Int {
+    fun streak(): Int = cached("streak" + today()) {
         var k = today(); if (!noted(k)) k = addDays(k, -1)
         var n = 0; while (noted(k)) { n++; k = addDays(k, -1) }
-        return n
+        n
     }
 
     // ---------- séance ----------
@@ -130,7 +143,8 @@ class FocusStore(private val ctx: Context) {
 
     // ---------- badges (mêmes paliers que l'app web) ----------
     data class BadgeGroup(val title: String, val best: Int, val tiers: List<Int>, val counts: List<Int>)
-    fun badges(): List<BadgeGroup> {
+    fun badges(): List<BadgeGroup> = cached("badges") { badgesCalc() }
+    private fun badgesCalc(): List<BadgeGroup> {
         val ks = days().keys().asSequence().filter { steps(it) > 0 }.toList()
         val dayV = ks.map { steps(it) }
         fun by(f: (String) -> String) = ks.groupBy(f).mapValues { e -> e.value.sumOf { steps(it) } }.values.toList()
@@ -145,7 +159,7 @@ class FocusStore(private val ctx: Context) {
             g("En une année", yr, listOf(1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000)))
     }
 
-    fun sortedDays(): List<String> = days().keys().asSequence().toList().sortedDescending()
+    fun sortedDays(): List<String> = cached("sorted") { days().keys().asSequence().toList().sortedDescending() }
 
     companion object {
         private val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)

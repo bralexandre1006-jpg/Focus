@@ -113,7 +113,8 @@ fun HomeScreen(store: FocusStore, version: Int, onChanged: () -> Unit, onImport:
 /** Badges : mêmes paliers que l'app web, débloqués en couleur, verrouillés en gris. */
 @Composable
 fun BadgesDialog(store: FocusStore, onClose: () -> Unit) = androidx.compose.ui.window.Dialog(onClose, androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
-    val groups = remember { store.badges() }
+    // calcul en arrière-plan : la fenêtre s'ouvre tout de suite
+    val groups by produceState<List<FocusStore.BadgeGroup>>(emptyList(), store.rev) { value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) { store.badges() } }
     androidx.compose.foundation.lazy.LazyColumn(Modifier.fillMaxSize().background(C.bg).statusBarsPadding().padding(horizontal = 16.dp), contentPadding = PaddingValues(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item { Row(verticalAlignment = Alignment.CenterVertically) { T("Badges", 26.sp, modifier = Modifier.weight(1f)); Btn("✕", C.card2, C.txt, Modifier.width(46.dp), onClose) } }
         items(groups.size) { gi -> val g = groups[gi]

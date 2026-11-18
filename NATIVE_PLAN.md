@@ -9,6 +9,8 @@
 - Garder exactement les mêmes fonctionnalités, la police Jakarta en gras, l'accueil tenu sur un écran sans défiler, le style actuel (cartes teintées, couleurs).
 
 ## Performance (règle)
+- Résultats calculés (stats, badges, série, historique) gardés en cache dans `FocusStore.cached()` tant que `rev` (version des données) ne change pas.
+- Calculs lourds hors du fil d'affichage (`produceState` + `Dispatchers.Default`) : une transition ou un tap ne doit jamais attendre un calcul.
 - Toute liste longue (historique, séances, aliments, recettes) en `LazyColumn` : seuls les éléments visibles sont lus et dessinés. Pas de calcul sur tout l'historique au rendu : agréger à la demande, mettre en cache si besoin.
 
 ## Données (aucune perte)
