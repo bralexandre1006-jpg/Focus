@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
         if (uri == null) return@registerForActivityResult
         val text = contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: ""
         val ok = store.importJson(text)
+        com.alexandre.focus.nat.ui.C.setAccent(store.root.optJSONObject("settings")?.optString("accent"))
         Toast.makeText(this, if (ok) "Données importées" else "Fichier illisible", Toast.LENGTH_SHORT).show()
         version++
     }
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         store = FocusStore(this)
+        com.alexandre.focus.nat.ui.C.setAccent(store.root.optJSONObject("settings")?.optString("accent"))
         setContent {
             val v = version
             // toute modification des données redessine l'écran

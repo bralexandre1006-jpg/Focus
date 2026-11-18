@@ -14,8 +14,14 @@ object C {
     val line = Color(0x14FFFFFF)
     val txt = Color(0xFFF4F4F6)
     val mut = Color(0xFF8E8E9E)
-    val acc = Color(0xFFD7FF3A)
-    val acc2 = Color(0xFF7BE07E)
+    var acc = Color(0xFFD7FF3A)
+    var acc2 = Color(0xFF7BE07E)
+    /** Couleur de l'app choisie dans les réglages web (S.settings.accent). */
+    fun setAccent(k: String?) {
+        val m = mapOf("lime" to (0xFFD7FF3A to 0xFF7BE07E), "bleu" to (0xFF5AB8FF to 0xFF7C8CFF), "violet" to (0xFFB88CFF to 0xFFFF7AD9),
+            "orange" to (0xFFFFB347 to 0xFFFF6B4A), "rose" to (0xFFFF7AB8 to 0xFFFFB86B), "cyan" to (0xFF4FE3D0 to 0xFF5AB8FF), "mono" to (0xFFFFFFFF to 0xFFBDBDC6))
+        val (a, b) = m[k] ?: m["lime"]!!; acc = Color(a); acc2 = Color(b)
+    }
     val ok = Color(0xFF3DDC84)
     val bad = Color(0xFFFF4D6A)
     val cal = Color(0xFFFF6B4A)

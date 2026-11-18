@@ -65,6 +65,8 @@ fun Logo(modifier: Modifier) = Canvas(modifier) {
     withTransform({ scale(k, k, Offset.Zero); translate(-255f, -155f) }) { drawPath(LOGO_A, C.acc); drawPath(LOGO_B, C.acc) }
 }
 
+val FLAME by lazy { p("M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z") }
+val GEAR by lazy { p("M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z") }
 val DUMBBELL by lazy { p("M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11") }
 
 private val TAB_ICONS by lazy {
@@ -87,12 +89,12 @@ fun Icon24(path: Path, color: Color, modifier: Modifier = Modifier) = Canvas(mod
 @Composable
 fun TabBar(sel: Int, onSel: (Int) -> Unit, modifier: Modifier = Modifier) {
     BoxWithConstraints(
-        modifier.fillMaxWidth().padding(horizontal = 22.dp).height(58.dp).clip(RoundedCornerShape(22.dp))
+        modifier.fillMaxWidth().padding(horizontal = 18.dp).height(64.dp).clip(RoundedCornerShape(24.dp))
             .background(Color(0xF716161D)).border(1.dp, Color(0x12FFFFFF), RoundedCornerShape(22.dp)).padding(5.dp)
     ) {
         val w = maxWidth / 5
         val x by animateDpAsState(w * sel, tween(200), label = "tab")
-        Box(Modifier.offset(x = x).width(w).fillMaxHeight().clip(RoundedCornerShape(17.dp)).background(C.acc))
+        Box(Modifier.offset(x = x).width(w).fillMaxHeight().clip(RoundedCornerShape(19.dp)).background(C.acc))
         Row(Modifier.fillMaxSize()) {
             TAB_ICONS.forEachIndexed { i, ic ->
                 Box(Modifier.weight(1f).fillMaxHeight().clickable(remember { MutableInteractionSource() }, null) { onSel(i) }, contentAlignment = Alignment.Center) {
@@ -108,7 +110,7 @@ fun FocusApp(store: FocusStore, version: Int, onChanged: () -> Unit, onImport: (
     var splash by rememberSaveable { mutableStateOf(true) }
     var tab by rememberSaveable { mutableIntStateOf(0) }
     Box(Modifier.fillMaxSize().background(C.bg)) {
-        Box(Modifier.fillMaxSize().padding(bottom = 76.dp).navigationBarsPadding()) {
+        Box(Modifier.fillMaxSize().padding(bottom = 82.dp).navigationBarsPadding()) {
             key(version) { when (tab) {
                 0 -> HomeScreen(store, version, onChanged, onImport) { tab = 2 }
                 1 -> MealsScreen(store)
