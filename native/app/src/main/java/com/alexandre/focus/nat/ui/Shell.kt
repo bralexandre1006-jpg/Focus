@@ -108,7 +108,7 @@ fun FocusApp(store: FocusStore, version: Int, onChanged: () -> Unit, onImport: (
     Box(Modifier.fillMaxSize().background(C.bg)) {
         Box(Modifier.fillMaxSize().padding(bottom = 76.dp).navigationBarsPadding()) {
             when (tab) {
-                0 -> HomeScreen(store, version, onChanged, onImport)
+                0 -> HomeScreen(store, version, onChanged, onImport) { tab = 2 }
                 1 -> MealsScreen(store)
                 2 -> GymScreen(store)
                 3 -> StatsScreen(store)

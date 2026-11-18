@@ -74,8 +74,10 @@ class FocusStore(private val ctx: Context) {
     fun noted(k: String): Boolean {
         val d = dayOrNull(k) ?: return false
         return (weight(k) ?: 0.0) > 0 || (d.optJSONArray("meals")?.length() ?: 0) > 0 || d.optDouble("calories", 0.0) > 0 ||
-            !d.isNull("workout") && d.has("workout") || d.has("off") && !d.isNull("off") || d.optInt("steps", 0) >= stepGoal || d.has("frz")
+            !d.isNull("workout") && d.has("workout") || d.has("off") && !d.isNull("off") || d.optInt("steps", 0) >= stepGoal || frzOk(d)
     }
+    private fun frzOk(d: JSONObject): Boolean { val f = d.optJSONObject("frz") ?: return false
+        if (f.optString("by") == today()) return true; return steps(f.optString("by")) >= f.optInt("goal") }
     fun streak(): Int {
         var k = today(); if (!noted(k)) k = addDays(k, -1)
         var n = 0; while (noted(k)) { n++; k = addDays(k, -1) }
@@ -104,6 +106,43 @@ class FocusStore(private val ctx: Context) {
             kc += g * x.optDouble("kcal", 0.0); p += g * x.optDouble("p", 0.0); c += g * x.optDouble("c", 0.0); f += g * x.optDouble("f", 0.0) }
         val n = r.optDouble("portions", 1.0).coerceAtLeast(1.0)
         return Macros(kc / n, p / n, c / n, f / n, ing.length())
+    }
+
+    // ---------- programme ----------
+    data class Prog(val name: String, val week: Int, val total: Int, val done: Boolean)
+    fun program(k: String = today()): Prog? {
+        val pr = root.optJSONObject("program") ?: return null
+        if (!pr.optBoolean("active") || !pr.has("data")) return null
+        val data = pr.optJSONObject("data") ?: return null; val weeks = data.optJSONArray("weeks")?.length() ?: 0
+        val st = pr.optString("start", ""); if (st.isEmpty()) return null
+        val n = ((parse(k).time - parse(st).time) / 86400000L).toInt(); if (n < 0) return null
+        val w = n / 7
+        return Prog(data.optString("name", "Programme"), (w + 1).coerceAtMost(weeks), weeks, w >= weeks)
+    }
+
+    // ---------- série : gel d'un jour oublié contre objectif + 2 500 pas ----------
+    val FRZ = 2500
+    fun canFreeze(): Boolean { val y = addDays(today(), -1); val s = root.optJSONObject("settings")
+        return !noted(y) && noted(addDays(y, -1)) && s?.optString("frzAsk") != y }
+    fun markFreezeAsked() { val s = root.optJSONObject("settings") ?: JSONObject().also { root.put("settings", it) }; s.put("frzAsk", addDays(today(), -1)); save() }
+    fun freeze() { val y = addDays(today(), -1); day(y).put("frz", JSONObject().put("by", today()).put("goal", stepGoal + FRZ)); markFreezeAsked() }
+    fun freezeToday(): JSONObject? = dayOrNull(addDays(today(), -1))?.optJSONObject("frz")?.takeIf { it.optString("by") == today() }
+
+    // ---------- badges (mêmes paliers que l'app web) ----------
+    data class BadgeGroup(val title: String, val best: Int, val tiers: List<Int>, val counts: List<Int>)
+    fun badges(): List<BadgeGroup> {
+        val ks = days().keys().asSequence().filter { steps(it) > 0 }.toList()
+        val dayV = ks.map { steps(it) }
+        fun by(f: (String) -> String) = ks.groupBy(f).mapValues { e -> e.value.sumOf { steps(it) } }.values.toList()
+        val wk = by { k -> addDays(k, -weekday(k)) }; val mo = by { it.take(7) }; val yr = by { it.take(4) }; val tot = dayV.sum()
+        fun g(t: String, v: List<Int>, tiers: List<Int>, once: Boolean = false) =
+            BadgeGroup(t, v.maxOrNull() ?: 0, tiers, tiers.map { x -> if (once) (if (v.sum() >= x) 1 else 0) else v.count { it >= x } })
+        return listOf(
+            g("Au total", listOf(tot), listOf(1_000_000, 2_000_000, 3_000_000, 4_000_000, 5_000_000, 6_000_000, 7_000_000, 8_000_000, 9_000_000, 10_000_000), true),
+            g("En une journée", dayV, listOf(10_000, 20_000, 25_000, 50_000, 75_000, 100_000, 125_000, 150_000)),
+            g("En une semaine", wk, listOf(50_000, 75_000, 100_000, 125_000, 150_000, 175_000, 200_000, 250_000)),
+            g("En un mois", mo, listOf(250_000, 300_000, 400_000, 500_000, 600_000, 700_000, 800_000)),
+            g("En une année", yr, listOf(1_000_000, 1_500_000, 2_000_000, 2_500_000, 3_000_000)))
     }
 
     fun sortedDays(): List<String> = days().keys().asSequence().toList().sortedDescending()

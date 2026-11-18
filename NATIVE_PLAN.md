@@ -37,7 +37,8 @@
 - [x] Ouverture native (logo qui s'assemble, rebond, zoom), barre d'onglets avec pastille (200 ms), navigation 5 onglets.
 - [x] Accueil v1 : carte Séance (faite / ratée / repos / off, jours fixes), repas dépliables dans Nutrition.
 - [x] Premières versions lecture seule : Repas (recettes en cartes), Muscu (routines + dernières séances), Stats (pas 7 j + poids), Historique (jour par jour).
-- [ ] Accueil complet : programme, « Lancer ma séance », gel de série, badges / aide, décalages et rythme 1 sur 2.
+- [x] Accueil v2 : carte Programme, « Lancer ma séance » (ouvre Muscu), gel de série (proposition + progression), badges (5 groupes, mêmes paliers).
+- [ ] Accueil : aide « comment c'est calculé », décalages de séance et rythme 1 sur 2, ajout de repas depuis l'accueil.
 - [ ] Réglages natifs.
 - [ ] Podomètre natif branché (StepCounter) et widgets mis à jour depuis le natif.
 - [ ] Repas et recettes, scan code-barres.
