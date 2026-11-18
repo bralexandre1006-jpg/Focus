@@ -536,7 +536,24 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 @keyframes aispin{to{transform:rotate(360deg)}}
 .aift{padding:10px 16px calc(var(--sb,0px) + 14px);border-top:1px solid rgba(255,255,255,.06);background:var(--bg);display:flex;flex-direction:column;gap:10px}
 .aift .btn{margin:0}
+.aiaskw{display:flex;flex-direction:column;gap:8px}
 .aiask{display:flex;gap:8px}
+.aichips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}.aichips::-webkit-scrollbar{display:none}
+.aichips button{flex-shrink:0;height:34px;padding:0 12px;border-radius:12px;background:var(--card);border:1px solid rgba(255,255,255,.08);color:var(--txt);font-size:13px;font-weight:800;white-space:nowrap}
+.aichips button:active{background:color-mix(in srgb,var(--acc) 25%,var(--card))}
+.aiask button.off{opacity:.35}
+.aichat p{animation:aiIn .35s var(--ease) both}
+@keyframes aiIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.aichat .typing span{display:flex;gap:5px;padding:4px 0}
+.aichat .typing span i{width:8px;height:8px;border-radius:50%;background:var(--mut);animation:aiDot 1.2s ease-in-out infinite}
+.aichat .typing span i:nth-child(2){animation-delay:.15s}.aichat .typing span i:nth-child(3){animation-delay:.3s}
+@keyframes aiDot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
+.aichat .aid{display:inline-block;margin-top:8px;padding:4px 9px;border-radius:9px;font-size:13px;font-weight:800}
+.aid.up{color:var(--cal);background:rgba(255,107,74,.14)}.aid.dn{color:var(--ok);background:rgba(61,220,132,.14)}.aid.eq{color:var(--mut);background:rgba(255,255,255,.06)}
+.aichat .err button{display:block;margin-top:8px;height:34px;padding:0 12px;border-radius:10px;background:rgba(255,77,106,.2);color:var(--bad);font-weight:800}
+#aiOut.upd .aikc,#aiOut.upd .aimac{opacity:.45;transition:opacity .2s}
+.aikc.flash{animation:aiFlash .7s var(--ease)}
+@keyframes aiFlash{0%{transform:scale(1)}35%{transform:scale(1.03);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 45%,transparent)}100%{transform:none}}
 .aiask input{flex:1;min-width:0;height:50px;border-radius:16px;background:var(--card);border:1px solid rgba(255,255,255,.08);color:var(--txt);font:inherit;font-size:15px;font-weight:700;padding:0 14px;outline:none}
 .aiask input:focus{border-color:var(--acc)}
 .aiask button{width:50px;height:50px;border-radius:16px;background:var(--acc);color:#0B0B0F;display:grid;place-items:center;flex-shrink:0}.aiask button svg{width:22px;height:22px}
@@ -2219,7 +2236,10 @@ body.perf .wo-intro span{box-shadow:none!important}
     <div class="aiload hidden" id="aiLoad"><i></i><span id="aiLoadT">Analyse en cours…</span></div>
   </div>
   <div class="aift">
-    <div class="aiask hidden" id="aiAsk"><input id="aiMsg" placeholder="Corriger : il y avait aussi une sauce…" autocomplete="off"><button class="press" id="aiSend" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    <div class="aiaskw hidden" id="aiAsk">
+      <div class="aichips" id="aiChips"><button>Portion plus petite</button><button>Portion plus grande</button><button>Il y avait de la sauce</button><button>Avec de l'huile</button><button>J'en ai laissé la moitié</button><button>Sans fromage</button></div>
+      <div class="aiask"><input id="aiMsg" placeholder="Écris à Chef pour corriger…" autocomplete="off" enterkeyhint="send"><button class="press off" id="aiSend" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div>
+    </div>
     <button class="btn full press" id="aiGo">Estimer les calories</button>
     <button class="btn full press hidden" id="aiAdd">Ajouter</button>
   </div>
@@ -3022,21 +3042,31 @@ const aiBar = () => { const p = aiNum($('#aiP').value) * 4, c = aiNum($('#aiC').
   ['aiK', 'aiP', 'aiC', 'aiF'].forEach(id => { const el = $('#' + id); el.style.width = Math.max(1, el.value.length) * .7 + .1 + 'em'; });
   $('#aiAdd').textContent = `Ajouter · ${fmt(aiNum($('#aiK').value))} kcal`; };
 ['aiK', 'aiP', 'aiC', 'aiF'].forEach(id => $('#' + id).addEventListener('input', aiBar));
-const aiBubble = (cls, html) => { $('#aiChat').insertAdjacentHTML('beforeend', `<p class="${cls}">${html}</p>`); };
-const aiShow = o => { aiCur = o;
+const aiScroll = () => requestAnimationFrame(() => { const b = $('#aiBody'); b.scrollTo({ top: b.scrollHeight, behavior: 'smooth' }); });
+const aiBubble = (cls, html) => { $('#aiChat').insertAdjacentHTML('beforeend', `<p class="${cls}">${html}</p>`); aiScroll(); return $('#aiChat').lastElementChild; };
+const aiShow = (o, prev) => { aiCur = o;
   $('#aiName').value = o.nom || 'Plat'; $('#aiK').value = Math.round(+o.kcal || 0);
   $('#aiP').value = s1(aiNum(o.proteines)); $('#aiC').value = s1(aiNum(o.glucides)); $('#aiF').value = s1(aiNum(o.lipides));
   const cf = ['faible', 'moyenne', 'bonne'].includes(o.confiance) ? o.confiance : 'moyenne', em = $('#aiConf');
   em.className = cf; em.textContent = `${o.grammes ? '~' + fmt(o.grammes) + ' g · ' : ''}confiance ${cf}`;
-  aiBubble('ai', `<small>Chef</small>${esc(o.detail || '')}`); aiBar();
+  let dif = ''; if (prev) { const k0 = Math.round(prev.kcal || 0), k1 = Math.round(+o.kcal || 0), d = k1 - k0;
+    dif = `<br><span class="aid ${d > 0 ? 'up' : d < 0 ? 'dn' : 'eq'}">${d ? `${fmt(k0)} → ${fmt(k1)} kcal (${d > 0 ? '+' : '−'}${fmt(Math.abs(d))})` : 'Calories inchangées'}</span>`; }
+  aiBubble('ai', `<small>Chef</small>${esc(o.detail || '')}${dif}`); aiBar();
+  if (prev) { const kc = $('.aikc'); kc.classList.remove('flash'); void kc.offsetWidth; kc.classList.add('flash'); }
   $('#aiStart').classList.add('hidden'); $('#aiOut').classList.remove('hidden');
-  $('#aiGo').classList.add('hidden'); $('#aiAdd').classList.remove('hidden'); $('#aiAsk').classList.remove('hidden');
-  requestAnimationFrame(() => { const b = $('#aiBody'); b.scrollTo({ top: b.scrollHeight, behavior: 'smooth' }); }); };
-const aiRun = async (prompt) => {
-  if (aiBusy) return; aiBusy = true; $('#aiLoad').classList.remove('hidden'); $('#aiLoadT').textContent = 'Analyse en cours…'; sfx.tap(); buzz();
-  try { const o = await aiEstimate(prompt, t => $('#aiLoadT').textContent = t); aiShow(o); buzz('success'); }
-  catch (x) { $('#aiOut').classList.remove('hidden'); aiBubble('err', `Échec de l'analyse : ${esc(String(x.message || x))}`); sfx.no && sfx.no(); }
-  aiBusy = false; $('#aiLoad').classList.add('hidden'); };
+  $('#aiGo').classList.add('hidden'); $('#aiAdd').classList.remove('hidden'); $('#aiAsk').classList.remove('hidden'); };
+let aiLast = null;
+const aiRun = async (prompt, prev) => {
+  if (aiBusy) return; aiBusy = true; aiLast = [prompt, prev]; sfx.tap(); buzz();
+  let typ = null;
+  if (prev) { typ = aiBubble('ai typing', '<small>Chef</small><span><i></i><i></i><i></i></span>'); $('#aiOut').classList.add('upd'); }
+  else { $('#aiLoad').classList.remove('hidden'); $('#aiLoadT').textContent = 'Chef analyse ton plat…'; }
+  try { const o = await aiEstimate(prompt, t => { if (typ) typ.querySelector('small').textContent = t; else $('#aiLoadT').textContent = t; });
+    if (typ) typ.remove(); aiShow(o, prev); buzz('success'); }
+  catch (x) { if (typ) typ.remove(); $('#aiOut').classList.remove('hidden');
+    const e = aiBubble('err', `Échec de l'analyse : ${esc(String(x.message || x))}<button class="press">Réessayer</button>`);
+    e.querySelector('button').onclick = () => { e.remove(); aiRun(...aiLast); }; sfx.no && sfx.no(); }
+  aiBusy = false; $('#aiLoad').classList.add('hidden'); $('#aiOut').classList.remove('upd'); };
 const aiOpen = async file => { if (!file) return;
   try { aiImg = await aiShrink(file); } catch (x) { toast('Photo illisible'); return; }
   $('#aiImg').src = aiImg; aiCur = null; $('#aiChat').innerHTML = ''; $('#aiNote').value = aiNoteTxt = ''; $('#aiMsg').value = '';
@@ -3053,12 +3083,19 @@ $('#aiCam').onchange = e => aiOpen(e.target.files[0]);
 $('#aiGal').onchange = e => aiOpen(e.target.files[0]);
 $('#aiRe').onclick = () => { openOv('aiSrc'); sfx.tap(); };
 $('#aiClose').onclick = () => { closeOv('aiPage'); sfx.tap(); };
-$('#aiGo').onclick = () => { if (!aiImg) return; aiNoteTxt = $('#aiNote').value.trim(); if (aiNoteTxt) aiBubble('me', esc(aiNoteTxt)); aiRun(AI_PROMPT(aiNoteTxt)); };
-const aiSendMsg = () => { const m = $('#aiMsg').value.trim(); if (!m || aiBusy) return; $('#aiMsg').value = ''; $('#aiMsg').blur();
+$('#aiGo').onclick = () => { if (!aiImg) return; aiNoteTxt = $('#aiNote').value.trim(); $('#aiNote').blur(); if (aiNoteTxt) aiBubble('me', esc(aiNoteTxt)); aiRun(AI_PROMPT(aiNoteTxt)); };
+const aiSendMsg = txt => { const m = (txt || $('#aiMsg').value).trim(); if (!m || aiBusy) return;
+  if (!txt) { $('#aiMsg').value = ''; $('#aiSend').classList.add('off'); }
   aiBubble('me', esc(m));
   const prev = aiCur ? { ...aiCur, nom: $('#aiName').value.trim(), kcal: aiNum($('#aiK').value), proteines: aiNum($('#aiP').value), glucides: aiNum($('#aiC').value), lipides: aiNum($('#aiF').value) } : null;
-  aiRun(AI_PROMPT(aiNoteTxt, prev, m)); };
-$('#aiSend').onclick = aiSendMsg;
+  if (!prev) { aiRun(AI_PROMPT([aiNoteTxt, m].filter(Boolean).join('. '))); return; }
+  aiRun(AI_PROMPT(aiNoteTxt, prev, m), prev); };
+/* le clavier reste ouvert : le bouton et les suggestions ne prennent pas le focus */
+['#aiSend', '#aiChips'].forEach(q => $(q).addEventListener('pointerdown', e => { if (document.activeElement === $('#aiMsg')) e.preventDefault(); }));
+$('#aiSend').onclick = () => aiSendMsg();
+$$('#aiChips button').forEach(b => b.onclick = () => aiSendMsg(b.textContent));
+$('#aiMsg').addEventListener('input', () => $('#aiSend').classList.toggle('off', !$('#aiMsg').value.trim()));
+$('#aiMsg').addEventListener('focus', () => setTimeout(aiScroll, 350));
 $('#aiMsg').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); aiSendMsg(); } });
 $('#aiAdd').onclick = () => {
   if (!aiNum($('#aiK').value)) { toast('Indique les calories'); $('#aiK').focus(); return; }
