@@ -1635,6 +1635,9 @@ body.perf .wo-intro span{box-shadow:none!important}
 .rempty{flex:1;display:grid;place-items:center;text-align:center;color:var(--mut);font-weight:700;padding:30px;border:1px solid rgba(255,255,255,.06);border-radius:24px}
 /* listes longues : le téléphone ne dessine que ce qui est à l'écran */
 .hx-wk,#recList .rcard,.glist>*{content-visibility:auto;contain-intrinsic-size:auto 220px}
+.screen.zz{content-visibility:hidden}
+.screen.zz *,.modal:not(.on) *,.sheet:not(.on) *{animation-play-state:paused!important}
+.hx-more{height:1px}
 </style>
 </head>
 <body>
@@ -2453,9 +2456,11 @@ const go = id => {
     if (cur !== id) return;
     const el = $('#s-'+id); el.scrollTop = 0;
     const sig = dataVer + '|' + today() + '|' + document.body.className;
-    if (id === 'today' || GYM.includes(id) || id === 'stats' || rendered[id] !== sig) { RENDER[id](); rendered[id] = sig; }
+    el.classList.remove('zz');
+    if (id === 'today' || GYM.includes(id) || rendered[id] !== sig) { RENDER[id](); rendered[id] = sig; }
     if (!el.dataset.seen) { el.dataset.seen = 1; el.classList.add('fresh'); setTimeout(() => el.classList.remove('fresh'), 900); }
     requestAnimationFrame(() => { if (cur === id) $$('.screen').forEach(s => s.classList.toggle('on', s === el)); });
+    clearTimeout(go.zt); go.zt = setTimeout(() => $$('.screen').forEach(s => s.classList.toggle('zz', s !== $('#s-' + cur))), 450);
   });
 };
 $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
@@ -3337,7 +3342,8 @@ const renderHistory = () => {
   const el = $('#histList');
   if (!ks.length) { el.innerHTML = '<div class="card"><div class="empty">Rien pour l\'instant. Remplis ta première journée.</div></div>'; return; }
   const G = goals(), wkOf = k => { const d = parseKey(k); d.setDate(d.getDate() - wd(d)); return key(d); }, curW = wkOf(T0);
-  const lastW = before => { const w = Object.keys(S.days).filter(k => k < before && S.days[k].weight).sort().pop(); return w ? S.days[w].weight : null; };
+  const wks = Object.keys(S.days).filter(k => S.days[k].weight).sort();
+  const lastW = before => { let lo = 0, hi = wks.length; while (lo < hi) { const m = (lo + hi) >> 1; if (wks[m] < before) lo = m + 1; else hi = m; } return lo ? S.days[wks[lo - 1]].weight : null; };
   const weeks = []; ks.forEach(k => { const w = wkOf(k); if (!weeks.length || weeks.at(-1).w !== w) weeks.push({ w, ks: [] }); weeks.at(-1).ks.push(k); });
   const row = k => { const d = S.days[k], dt = parseKey(k), wdn = dt.toLocaleDateString('fr-BE', { weekday:'short' }).replace('.', '');
     if (d.off) { const o = offCat(d); return `<div class="hx-off" data-k="${k}" style="color:${o[1]};background-color:rgba(${o[2]},.1);border-color:rgba(${o[2]},.25)"><div class="hx-dt"><b>${dt.getDate()}</b><small>${wdn}</small></div>
@@ -3365,11 +3371,13 @@ const renderHistory = () => {
         : `<span>Poids<b class="${wd0 > 0 ? 'wup' : wd0 < 0 ? 'wdn' : ''}">${wd0 == null ? '—' : (wd0 > 0 ? '+' : wd0 < 0 ? '−' : '±') + f1(Math.abs(wd0)) + ' kg'}</b></span>`}</div>
       ${W.ks.map(row).join('')}</div>`; };
   const tok = (renderHistory.tok = (renderHistory.tok || 0) + 1), all = weeks.slice(0, 60);
-  el.innerHTML = all.slice(0, 4).map(week).join('');
-  let i = 4;
-  const more = () => { if (tok !== renderHistory.tok || i >= all.length) return;
-    el.insertAdjacentHTML('beforeend', all.slice(i, i + 6).map((w, j) => week(w, i + j)).join('')); i += 6; setTimeout(more, 80); };
-  setTimeout(more, 400);
+  el.innerHTML = all.slice(0, 3).map(week).join('') + '<div class="hx-more"></div>';
+  let i = 3; const sen = el.querySelector('.hx-more');
+  if (renderHistory.io) renderHistory.io.disconnect();
+  const io = renderHistory.io = new IntersectionObserver(es => { if (!es[0].isIntersecting || tok !== renderHistory.tok) return;
+    sen.insertAdjacentHTML('beforebegin', all.slice(i, i + 3).map((w, j) => week(w, i + j)).join('')); i += 3;
+    if (i >= all.length) { io.disconnect(); sen.style.display = 'none'; } }, { root: $('#s-history'), rootMargin: '0px 0px 900px 0px' });
+  if (i < all.length) io.observe(sen); else sen.style.display = 'none';
 };
 RENDER.history = renderHistory;
 let dmK = null;
