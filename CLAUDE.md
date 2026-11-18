@@ -11,7 +11,7 @@ Développement 100 % vibecoding : l'utilisateur n'édite pas le code. Communique
 6. Préserver les fonctionnalités existantes ; pas de suppression sans accord.
 7. Interfaces modernes, fluides, soignées, cohérentes avec le thème choisi (Sobre/Classique).
 8. Économie de tokens : lire uniquement les fichiers nécessaires (utiliser grep sur `index.html`, ne pas le lire en entier), pas d'analyses répétées, pas de sous-agents.
-9. Push autorisé sans redemander (accord de l'utilisateur). Tout push déclenche un build : prévenir en une ligne et envoyer le lien de l'APK.
+9. Demander l'accord de l'utilisateur avant chaque push (tout push déclenche un build). Après le push : prévenir en une ligne et envoyer le lien de l'APK.
 
 ## Mises à jour installables (priorité absolue)
 Chaque APK doit s'installer par-dessus la version existante, sans désinstallation.
