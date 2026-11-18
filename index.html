@@ -2913,7 +2913,7 @@ $('#qAiGo').onclick = async () => {
     generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
   let out = null, err = '';
   for (const m of ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash']) {
-    try { const rq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+    try { const rq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
       const j = await rq.json();
       if (!rq.ok) { err = (j.error && j.error.message) || rq.status; if (rq.status === 404) continue;
         if (rq.status === 400 || rq.status === 403) { if (/key/i.test(err)) { S.settings.aiKey = ''; save(); } } break; }
