@@ -82,9 +82,37 @@ class FocusStore(private val ctx: Context) {
         return n
     }
 
+    // ---------- séance ----------
+    /** Jour de séance prévu (jours fixes du profil ; décalages et programme : à porter). */
+    fun isTrainingDay(k: String = today()): Boolean {
+        val d = dayOrNull(k); if (d != null && d.has("off") && !d.isNull("off")) return false
+        val sh = root.optJSONObject("shifts")?.optString(k, ""); if (sh == "gym") return true; if (sh == "rest") return false
+        val td = profile().optJSONArray("trainingDays") ?: return false
+        val wd = weekday(k); for (i in 0 until td.length()) if (td.optInt(i) == wd) return true
+        return false
+    }
+    fun workout(k: String = today()): Boolean? = dayOrNull(k)?.let { if (!it.has("workout") || it.isNull("workout")) null else it.optBoolean("workout") }
+    fun setWorkout(v: Boolean?) { day().put("workout", v ?: JSONObject.NULL); save() }
+    fun isOff(k: String = today()) = dayOrNull(k)?.let { it.has("off") && !it.isNull("off") } ?: false
+
+    fun list(key: String): List<JSONObject> { val a = root.optJSONArray(key) ?: return emptyList(); return (0 until a.length()).mapNotNull { a.optJSONObject(it) } }
+
+    /** Kcal et macros par portion d'une recette (même calcul que l'app web). */
+    fun recipePer(r: JSONObject): Macros {
+        val ing = r.optJSONArray("ingredients") ?: JSONArray(); var kc = 0.0; var p = 0.0; var c = 0.0; var f = 0.0
+        for (i in 0 until ing.length()) { val x = ing.getJSONObject(i); val g = x.optDouble("grams", x.optDouble("qty", 100.0)) / 100.0
+            kc += g * x.optDouble("kcal", 0.0); p += g * x.optDouble("p", 0.0); c += g * x.optDouble("c", 0.0); f += g * x.optDouble("f", 0.0) }
+        val n = r.optDouble("portions", 1.0).coerceAtLeast(1.0)
+        return Macros(kc / n, p / n, c / n, f / n, ing.length())
+    }
+
+    fun sortedDays(): List<String> = days().keys().asSequence().toList().sortedDescending()
+
     companion object {
         private val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         fun today(): String = fmt.format(Date())
+        fun weekday(k: String): Int { val c = Calendar.getInstance(); c.time = fmt.parse(k)!!; return (c.get(Calendar.DAY_OF_WEEK) + 5) % 7 }
+        fun parse(k: String): Date = fmt.parse(k)!!
         fun addDays(k: String, n: Int): String { val c = Calendar.getInstance(); c.time = fmt.parse(k)!!; c.add(Calendar.DAY_OF_YEAR, n); return fmt.format(c.time) }
     }
 }

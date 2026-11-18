@@ -10,7 +10,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.alexandre.focus.nat.data.FocusStore
-import com.alexandre.focus.nat.ui.HomeScreen
+import com.alexandre.focus.nat.ui.FocusApp
 
 class MainActivity : ComponentActivity() {
     private lateinit var store: FocusStore
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val v = version
             // toute modification des données redessine l'écran
-            key(v) { HomeScreen(store, v, onChanged = { version++ }, onImport = { pick.launch(arrayOf("application/json", "text/plain", "*/*")) }) }
+            key(v) { FocusApp(store, v, onChanged = { version++ }, onImport = { pick.launch(arrayOf("application/json", "text/plain", "*/*")) }) }
         }
     }
 }

@@ -31,8 +31,11 @@
 - [x] `FocusStore` : lecture / écriture du JSON brut, poids, macros, série.
 - [x] Pont web → `focus-data.json`.
 - [x] Accueil v0 : en-tête + série, cartes Pas, Poids (saisie), Nutrition. Import du JSON.
-- [ ] Accueil complet : séance, programme, repas dépliables, gel, badges / aide.
-- [ ] Barre d'onglets + navigation (Jour, Repas, Muscu, Stats, Historique) + Réglages.
+- [x] Ouverture native (logo qui s'assemble, rebond, zoom), barre d'onglets avec pastille (200 ms), navigation 5 onglets.
+- [x] Accueil v1 : carte Séance (faite / ratée / repos / off, jours fixes), repas dépliables dans Nutrition.
+- [x] Premières versions lecture seule : Repas (recettes en cartes), Muscu (routines + dernières séances), Stats (pas 7 j + poids), Historique (jour par jour).
+- [ ] Accueil complet : programme, « Lancer ma séance », gel de série, badges / aide, décalages et rythme 1 sur 2.
+- [ ] Réglages natifs.
 - [ ] Podomètre natif branché (StepCounter) et widgets mis à jour depuis le natif.
 - [ ] Repas et recettes, scan code-barres.
 - [ ] Muscu complète.

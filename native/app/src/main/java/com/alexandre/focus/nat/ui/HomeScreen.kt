@@ -65,7 +65,7 @@ fun HomeScreen(store: FocusStore, version: Int, onChanged: () -> Unit, onImport:
     Column(Modifier.fillMaxSize().background(C.bg).statusBarsPadding().padding(horizontal = 14.dp)) {
         // en-tête : logo, série, réglages
         Row(Modifier.fillMaxWidth().height(52.dp), verticalAlignment = Alignment.CenterVertically) {
-            T("F", 26.sp, C.acc)
+            Logo(Modifier.size(24.dp, 30.dp))
             Spacer(Modifier.width(12.dp))
             val n = store.streak()
             if (n > 0) Row(
@@ -86,6 +86,7 @@ fun HomeScreen(store: FocusStore, version: Int, onChanged: () -> Unit, onImport:
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             StepsCard(store, today)
             WeightCard(store, today, onChanged)
+            SessionCard(store, today, onChanged)
             NutritionCard(store, today)
         }
     }
@@ -160,6 +161,31 @@ fun WeightCard(store: FocusStore, k: String, onChanged: () -> Unit) {
     }
 }
 
+/** Séance : jour de séance (validée / manquée), jour de repos ou jour off. */
+@Composable
+fun SessionCard(store: FocusStore, k: String, onChanged: () -> Unit) {
+    val td = store.isTrainingDay(k); val wo = store.workout(k)
+    FCard(Color(0xFF7896FF)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            CardTitle("Séance de sport", Color(0xFFB88CFF)); Spacer(Modifier.weight(1f))
+            if (td) T("Jour de séance", 11.sp, C.spt)
+        }
+        Spacer(Modifier.height(10.dp))
+        when {
+            store.isOff(k) -> T("Jour off", 16.sp, C.mut)
+            !td && wo == null -> Row(verticalAlignment = Alignment.CenterVertically) {
+                T("😴", 30.sp); Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) { T("Jour de repos", 16.sp); T("J'ai quand même fait une séance", 13.sp, C.acc, FontWeight.Bold, Modifier.clickable { store.setWorkout(true); onChanged() }) }
+            }
+            else -> Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                val yes = wo == true; val no = wo == false
+                Btn(if (yes) "✓ Séance validée" else "✓ Faite", if (yes) Color(0x553DDC84) else Color(0x223DDC84), C.ok, Modifier.weight(1f)) { store.setWorkout(if (yes) null else true); onChanged() }
+                Btn(if (no) "✕ Séance manquée" else "✕ Ratée", if (no) Color(0x55FF4D6A) else Color(0x22FF4D6A), C.bad, Modifier.weight(1f)) { store.setWorkout(if (no) null else false); onChanged() }
+            }
+        }
+    }
+}
+
 @Composable
 fun NutritionCard(store: FocusStore, k: String) {
     val m = store.macros(k); val g = store.kcalGoal
@@ -173,6 +199,17 @@ fun NutritionCard(store: FocusStore, k: String) {
             Box(Modifier.fillMaxWidth(p).fillMaxHeight().clip(RoundedCornerShape(3.dp)).background(Brush.horizontalGradient(listOf(C.cal, Color(0xFFFFB347)))))
         }
         Spacer(Modifier.height(10.dp))
+        var open by remember { mutableStateOf(false) }
+        if (m.n > 0) {
+            Spacer(Modifier.height(4.dp))
+            T(if (open) "Masquer les repas ▴" else "Repas (${m.n}) ▾", 13.sp, C.cal, FontWeight.ExtraBold, Modifier.clickable { open = !open }.padding(vertical = 4.dp))
+            if (open) {
+                val meals = store.dayOrNull(k)?.optJSONArray("meals")
+                for (i in 0 until (meals?.length() ?: 0)) { val x = meals!!.getJSONObject(i)
+                    Row(Modifier.fillMaxWidth().padding(vertical = 3.dp)) { T(x.optString("name"), 14.sp, C.txt, FontWeight.Bold, Modifier.weight(1f)); T("${x.optDouble("kcal", 0.0).roundToInt()} kcal", 14.sp, C.mut, FontWeight.Bold) } }
+                Spacer(Modifier.height(6.dp))
+            }
+        }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val pg = store.proteinGoal
             Mac(if (pg > 0) "${m.p.roundToInt()} / $pg g" else "${m.p.roundToInt()} g", "Protéines", C.pro, Modifier.weight(1f))
