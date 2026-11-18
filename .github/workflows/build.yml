@@ -24,10 +24,12 @@ jobs:
       - name: Preparer le projet
         env:
           GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+          ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
         run: |
           mkdir -p www assets
           cp index.html www/index.html
           if [ -n "$GEMINI_KEY" ]; then sed -i "s|__GEMINI_KEY__|$GEMINI_KEY|" www/index.html; fi
+          if [ -n "$ANTHROPIC_KEY" ]; then sed -i "s|__ANTHROPIC_KEY__|$ANTHROPIC_KEY|" www/index.html; fi
           npm init -y
           npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app @capacitor-mlkit/barcode-scanning
           npx cap init Focus com.alexandre.focus --web-dir www

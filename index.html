@@ -2889,7 +2889,23 @@ $('#qName').addEventListener('input', () => { qAll = false; renderQuick(); });
 ['qKcal','qP','qC','qF','qGrams'].forEach(id => $('#'+id).addEventListener('input', renderQRes));
 $('#qScan').onclick = async () => { const prod = await lookupProduct(); if (!prod) return; fillFood(S.foods[prod.name.toLowerCase()] || prod); };
 /* Photo IA : Gemini estime le plat (clé injectée au build depuis le secret GEMINI_KEY, ou collée dans l'app) */
-const GEM_KEY = '__GEMINI_KEY__';
+const GEM_KEY = '__GEMINI_KEY__', CL_KEY = '__ANTHROPIC_KEY__';
+const AI_SCHEMA = { type: 'object', additionalProperties: false, required: ['nom', 'grammes', 'kcal', 'proteines', 'glucides', 'lipides', 'confiance', 'detail'],
+  properties: { nom: { type: 'string' }, grammes: { type: 'number' }, kcal: { type: 'number' }, proteines: { type: 'number' }, glucides: { type: 'number' }, lipides: { type: 'number' },
+    confiance: { type: 'string', enum: ['faible', 'moyenne', 'bonne'] }, detail: { type: 'string' } } };
+/* Claude Haiku en premier (rapide, précis), Gemini gratuit en secours */
+const aiClaude = async (prompt, img) => {
+  if (CL_KEY.startsWith('__')) return null;
+  const rq = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-api-key': CL_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-haiku-5-5', max_tokens: 4000, output_config: { effort: 'low', format: { type: 'json_schema', schema: AI_SCHEMA } },
+      messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: img } }, { type: 'text', text: prompt }] }] }) });
+  const j = await rq.json();
+  if (!rq.ok) throw new Error((j.error && j.error.message) || rq.status);
+  if (j.stop_reason === 'refusal') throw new Error('analyse refusée');
+  const t = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+  return JSON.parse(t);
+};
 const aiKey = () => { let k = (S.settings.aiKey || '').trim() || (S.settings.aiNoBuiltin || GEM_KEY.startsWith('__') ? '' : GEM_KEY);
   if (!k) { k = (prompt('Colle ta clé Gemini (aistudio.google.com › Get API key) :') || '').trim(); if (k) { S.settings.aiKey = k; save(); } } return k; };
 let aiImg = null;
@@ -2907,13 +2923,14 @@ const AI_PROMPT = note => `Tu es nutritionniste. Analyse la photo de ce repas et
 Réponds uniquement en JSON : {"nom": "nom court du plat en français", "grammes": poids total estimé en g, "kcal": total, "proteines": g, "glucides": g, "lipides": g, "confiance": "faible" | "moyenne" | "bonne", "detail": "une phrase listant les aliments et quantités estimés"}.
 Valeurs pour la portion visible entière, nombres sans unité.`;
 $('#qAiGo').onclick = async () => {
-  if (!aiImg) return; const key = aiKey(); if (!key) return;
+  if (!aiImg) return; const key = CL_KEY.startsWith('__') ? aiKey() : ((S.settings.aiKey || '').trim() || (S.settings.aiNoBuiltin ? '' : GEM_KEY)); if (!key && CL_KEY.startsWith('__')) return;
   const box = $('#qAiBox'), res = $('#qAiRes'); box.classList.add('busy'); res.innerHTML = 'Analyse en cours…'; sfx.tap(); buzz();
   const body = JSON.stringify({ contents: [{ parts: [{ text: AI_PROMPT($('#qAiNote').value.trim()) }, { inline_data: { mime_type: 'image/jpeg', data: aiImg.split(',')[1] } }] }],
     generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
   let out = null, err = '';
+  try { out = await aiClaude(AI_PROMPT($('#qAiNote').value.trim()), aiImg.split(',')[1]); } catch (x) { err = x.message; res.innerHTML = 'Claude indisponible, essai avec Gemini…'; }
   const tries = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-flash-latest'];
-  for (let ti = 0; ti < tries.length; ti++) { const m = tries[ti];
+  for (let ti = 0; ti < tries.length && !out; ti++) { const m = tries[ti];
     if (ti) { res.innerHTML = `Serveur chargé, nouvel essai (${ti + 1}/${tries.length})…`; await new Promise(z => setTimeout(z, ti === tries.length - 1 ? 3000 : 800)); }
     try { const rq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
       const j = await rq.json();
