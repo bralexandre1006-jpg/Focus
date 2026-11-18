@@ -1612,26 +1612,36 @@ body.perf .wo-intro span{box-shadow:none!important}
 .rsum b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
 .rsum small{font-size:12px;color:var(--mut);font-weight:700}
 /* recettes : cartes qui remplissent l'écran */
-.rpage{display:flex;flex-direction:column;gap:10px;min-height:calc(100dvh - var(--st,0px) - var(--sb,0px) - 215px);margin-bottom:12px}
-.rcard{flex:1 1 0;min-height:132px;max-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:18px;border-radius:24px;text-align:left;
-  background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 16%,#16161C) 0%,#16161C 55%);border:1px solid color-mix(in srgb,var(--rc) 22%,transparent);transition:transform .15s ease}
+.rpage{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.rhead{display:flex;align-items:center;gap:12px;padding:2px 2px 2px}
+.rhead h2{font-size:28px;font-weight:800;letter-spacing:-.035em;line-height:1.1}
+.rhead small{display:block;margin-top:3px;font-size:13px;color:var(--mut);font-weight:700}
+.rhead button{margin-left:auto;width:48px;height:48px;border-radius:16px;background:var(--acc);color:#0B0B0F;display:grid;place-items:center;flex-shrink:0;transition:transform .15s ease}
+.rhead button:active{transform:scale(.92)}
+.rhead button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.rcard{position:relative;overflow:hidden;flex:1 1 0;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:18px;border-radius:26px;text-align:left;
+  background:radial-gradient(130% 110% at 0% 0%,color-mix(in srgb,var(--rc) 20%,transparent),transparent 62%),linear-gradient(160deg,color-mix(in srgb,var(--rc) 8%,#16161C) 0%,#131318 100%);
+  border:1px solid color-mix(in srgb,var(--rc) 24%,transparent);box-shadow:0 10px 26px rgba(0,0,0,.28);transition:transform .15s ease}
+.rcard>*{position:relative}
 .rcard:active{transform:scale(.98)}
 .rcard.rec{align-items:stretch}
+.rwm{position:absolute!important;right:-26px;bottom:-30px;width:150px;height:150px;font-size:120px;line-height:1;opacity:.07;display:grid;place-items:center;pointer-events:none;transform:rotate(-12deg)}
+.rwm svg{width:100%;height:100%}
 .rtop{display:flex;align-items:center;gap:14px}
-.ric{width:54px;height:54px;border-radius:18px;background:color-mix(in srgb,var(--rc) 20%,transparent);display:grid;place-items:center;font-size:28px;flex-shrink:0}
+.ric{width:56px;height:56px;border-radius:18px;background:color-mix(in srgb,var(--rc) 22%,transparent);border:1px solid color-mix(in srgb,var(--rc) 30%,transparent);display:grid;place-items:center;font-size:28px;flex-shrink:0}
 .rti{flex:1;min-width:0}
-.rti b{display:block;font-size:19px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rti small{display:block;margin-top:3px;font-size:13px;color:var(--mut);font-weight:700}
-.rkc{text-align:right}
-.rkc b{display:block;font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.rti b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:20px;font-weight:800;letter-spacing:-.025em;line-height:1.15}
+.rti small{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:5px;font-size:13px;color:var(--mut);font-weight:700}
+.rti em{font-style:normal;font-size:12px;font-weight:800;color:var(--rc);background:color-mix(in srgb,var(--rc) 16%,transparent);padding:3px 8px;border-radius:8px}
+.rkc{text-align:right;flex-shrink:0}
+.rkc b{display:block;font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
 .rkc small{font-size:12px;color:var(--mut);font-weight:700}
-.rmacs{display:flex;gap:12px}
-.rmac{flex:1;min-width:0}
-.rmv{font-size:13px;color:var(--mut);font-weight:700}.rmv b{font-size:17px;color:var(--txt)}
-.rmb{height:6px;border-radius:3px;background:rgba(255,255,255,.07);margin:6px 0 4px;overflow:hidden}.rmb i{display:block;height:100%;border-radius:3px}
-.rmac small{font-size:11px;color:var(--mut);font-weight:700}
-.radd2{height:54px;border-radius:18px;border:1.5px dashed rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:800;color:var(--txt)}
-.radd2 span{width:28px;height:28px;border-radius:9px;background:var(--acc);color:#0B0B0F;display:grid;place-items:center;font-size:20px}
+.rseg{display:flex;gap:3px;height:9px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.06)}
+.rseg i{display:block;height:100%;border-radius:3px}
+.rleg{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.rleg span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);font-weight:700;min-width:0}
+.rleg i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rleg b{font-size:18px;color:var(--txt);font-weight:800;letter-spacing:-.02em}
 .rempty{flex:1;display:grid;place-items:center;text-align:center;color:var(--mut);font-weight:700;padding:30px;border:1px solid rgba(255,255,255,.06);border-radius:24px}
 /* listes longues : le téléphone ne dessine que ce qui est à l'écran */
 .hx-wk,#recList .rcard,.glist>*{content-visibility:auto;contain-intrinsic-size:auto 220px}
@@ -2915,19 +2925,34 @@ const renderFoods = () => {
   });
 };
 $('#foodSearch').addEventListener('input', renderFoods);
+/* recettes : la page s'arrête pile au-dessus de la barre d'onglets */
+const fitRec = () => requestAnimationFrame(() => {
+  const sc = $('#s-meals'), pg = $('#recList .rpage'), nav = $('nav') || $('.nav') || $('.tabbar'), ac = $('#accFoods'); if (!sc || !pg || !nav) return;
+  pg.style.minHeight = '';
+  let top = 0, e = pg; while (e && e !== sc) { top += e.offsetTop; e = e.offsetParent; }
+  const acH = ac ? ac.offsetHeight + (parseFloat(getComputedStyle(ac).marginBottom) || 0) : 0;
+  const h = nav.getBoundingClientRect().top - 12 - top - acH - 10;
+  pg.style.minHeight = Math.max(0, h) + 'px';
+});
+addEventListener('resize', fitRec);
 const renderMeals = () => {
   renderFoods();
   const el = $('#recList');
   const recs = [...S.recipes].sort((a,b)=>a.name.localeCompare(b.name,'fr'));
   const uses = {}; Object.values(S.days).forEach(d => (d.meals || []).forEach(m => { if (m.recipeId) uses[m.recipeId] = (uses[m.recipeId] || 0) + 1; }));
   const cards = recs.map(r => { const {per} = recTotals(r), k = E2K[(r.emoji || '').replace(/️/g, '')] || 'plate', col = (ICO.k[k] || ['', '#FFB347'])[1], u = uses[r.id] || 0;
-    const mac = (lab, v, max, c) => `<div class="rmac"><div class="rmv"><b>${Math.round(v)}</b> g</div><div class="rmb"><i style="width:${Math.min(100, v / max * 100)}%;background:${c}"></i></div><small>${lab}</small></div>`;
-    return `<button class="rcard rec" data-id="${r.id}" style="--rc:${col}">
-      <div class="rtop"><div class="ric">${icE(r.emoji)}</div><div class="rti"><b>${esc(r.name)}</b><small>${r.portions} portion${r.portions > 1 ? 's' : ''} · ${r.ingredients.length} ingrédient${r.ingredients.length > 1 ? 's' : ''}${u ? ` · ajoutée ${u} fois` : ''}</small></div>
+    const ep = (per.p || 0) * 4, ec = (per.c || 0) * 4, ef = (per.f || 0) * 9, et = ep + ec + ef || 1;
+    const seg = (v, c) => v > 0 ? `<i style="flex:${(v / et).toFixed(3)};background:${c}"></i>` : '';
+    const lg = (lab, v, c) => `<span><i style="background:${c}"></i><b>${Math.round(v || 0)} g</b>${lab}</span>`;
+    return `<button class="rcard rec" data-id="${r.id}" style="--rc:${col}"><div class="rwm">${icE(r.emoji)}</div>
+      <div class="rtop"><div class="ric">${icE(r.emoji)}</div><div class="rti"><b>${esc(r.name)}</b><small>${r.portions} portion${r.portions > 1 ? 's' : ''} · ${r.ingredients.length} ingr.${u ? `<em>${u}×</em>` : ''}</small></div>
       <div class="rkc"><b>${fmt(per.kcal)}</b><small>kcal</small></div></div>
-      <div class="rmacs">${mac('Protéines', per.p, 60, 'var(--pro)')}${mac('Glucides', per.c, 120, 'var(--carb)')}${mac('Lipides', per.f, 50, 'var(--fat)')}</div></button>`; }).join('');
-  el.innerHTML = `<div class="rpage">${cards || '<div class="rempty">Crée tes plats une fois avec leurs ingrédients.<br>Ensuite, un tap suffit pour les ajouter à ta journée.</div>'}
-    <button class="radd2" id="recAdd"><span>+</span>Nouvelle recette</button></div>`;
+      <div><div class="rseg">${seg(ep, 'var(--pro)')}${seg(ec, 'var(--carb)')}${seg(ef, 'var(--fat)')}</div>
+      <div class="rleg">${lg('prot.', per.p, 'var(--pro)')}${lg('gluc.', per.c, 'var(--carb)')}${lg('lip.', per.f, 'var(--fat)')}</div></div></button>`; }).join('');
+  el.innerHTML = `<div class="rpage"><div class="rhead"><div><h2>Mes recettes</h2><small>${recs.length} recette${recs.length > 1 ? 's' : ''}</small></div>
+    <button id="recAdd" aria-label="Nouvelle recette"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+    ${cards || '<div class="rempty">Crée tes plats une fois avec leurs ingrédients.<br>Ensuite, un tap suffit pour les ajouter à ta journée.</div>'}</div>`;
+  fitRec();
   $('#recAdd').onclick = () => $('#newRec').click();
   $$('#recList .rec').forEach(b => b.onclick = () => openRecipe(b.dataset.id));
 };
