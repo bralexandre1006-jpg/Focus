@@ -37,7 +37,11 @@ button{border:0;background:none;cursor:pointer}
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px}
 .head h1{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.12}
 .head .sub{color:var(--mut);font-size:16px;margin-bottom:6px;text-transform:capitalize}
-.stk{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 9px 2px 7px;border-radius:99px;background:rgba(255,138,61,.14);color:#FF9A52;font-weight:800;font-size:.9em;text-transform:none;vertical-align:1px}
+.topl{display:flex;align-items:center;gap:12px;min-height:40px}
+.toplogo{width:30px;height:30px;color:var(--acc);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--acc) 45%,transparent))}
+.stk{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px 0 11px;border-radius:14px;background:linear-gradient(135deg,rgba(255,138,61,.2),rgba(255,77,106,.12));border:1px solid rgba(255,138,61,.28);color:#FFB27A;font-weight:800;font-size:15px;letter-spacing:-.01em}
+.stk .fic{font-size:20px}
+.stk b{color:#fff;font-size:17px}
 .logo-btn{width:52px;height:52px;border-radius:18px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
 .logo-btn svg{width:32px;height:32px}
 
@@ -1577,7 +1581,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
   <!-- JOUR -->
   <section class="screen on" id="s-today">
     <div class="head">
-      <div><div class="sub"><span id="todayDate"></span><span class="stk hidden" id="streak"></span></div><h1 id="hello">Salut</h1></div>
+      <div class="topl"><svg class="toplogo"><use href="#logo"/></svg><span class="stk hidden" id="streak"></span></div>
       <button class="logo-btn gear press" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
 
@@ -2392,16 +2396,13 @@ addEventListener('resize', fitHome);
 const renderToday = () => {
   fitHome();
   const p = S.profile, now = new Date(), d = day();
-  $('#todayDate').textContent = now.toLocaleDateString('fr-BE',{weekday:'long', day:'numeric', month:'long'});
-  const h = now.getHours();
-  $('#hello').textContent = (h<12?'Bonjour':h<18?'Salut':'Bonsoir') + (p.name?' '+p.name:'');
   renderSteps(); renderProgram(); renderWeight(); renderSession(); renderNutrition(); renderStreak();
 };
 RENDER.today = renderToday;
 /* série : jours d'affilée avec au moins une info notée (poids, repas, calories, séance ou jour off) ; les pas, automatiques, ne comptent pas */
 const noted = k => { const d = S.days[k]; return !!d && (d.weight > 0 || (d.meals || []).length > 0 || d.calories > 0 || d.workout != null || !!d.off); };
 const notedRun = () => { let k = today(); if (!noted(k)) k = addDays(k, -1); let n = 0; while (noted(k)) { n++; k = addDays(k, -1); } return n; };
-const renderStreak = () => { const n = notedRun(), el = $('#streak'); el.classList.toggle('hidden', n < 1); if (n) { el.innerHTML = `${ic('flame')} ${n}`; el.title = `${n} jour${n > 1 ? 's' : ''} d'affilée`; } };
+const renderStreak = () => { const n = notedRun(), el = $('#streak'); el.classList.toggle('hidden', n < 1); if (n) { el.innerHTML = `${ic('flame')}<span><b>${n}</b> jour${n > 1 ? 's' : ''}</span>`; el.title = `${n} jour${n > 1 ? 's' : ''} d'affilée`; } };
 
 /* programme du jour */
 const renderProgram = () => {
