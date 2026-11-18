@@ -42,6 +42,7 @@ button{border:0;background:none;cursor:pointer}
 .stk{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px 0 11px;border-radius:14px;background:linear-gradient(135deg,rgba(255,138,61,.2),rgba(255,77,106,.12));border:1px solid rgba(255,138,61,.28);color:#FFB27A;font-weight:800;font-size:15px;letter-spacing:-.01em}
 .stk .fic{font-size:20px}
 .stk b{color:#fff;font-size:17px}
+.stk .stkf{font-size:12px;color:#9FD4FF;background:rgba(90,184,255,.14);padding:3px 7px;border-radius:8px;margin-left:2px}
 .logo-btn{width:52px;height:52px;border-radius:18px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
 .logo-btn svg{width:32px;height:32px}
 
@@ -59,9 +60,6 @@ button{border:0;background:none;cursor:pointer}
 .ring{position:relative;width:166px;height:166px;flex-shrink:0;margin:-8px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .bgc{stroke:var(--card2)}
-.ring .rtk{stroke-opacity:.2}
-.ring .rfg{transition:stroke-dashoffset 1.2s var(--ease)}
-.c-steps .ring .mid{display:none}
 .ring .fgc,.ring .glw{stroke:var(--acc);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease)}
 .ring .glw{opacity:.5}
 .ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
@@ -757,6 +755,7 @@ body.lite .screen.on .card:nth-child(2){animation-delay:.05s}body.lite .screen.o
 body.lite .screen.on .card:nth-child(4){animation-delay:.15s}body.lite .screen.on .card:nth-child(5){animation-delay:.2s}body.lite .screen.on .card:nth-child(6){animation-delay:.25s}
 @keyframes liteIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
 body.lite .head h1{padding:0 .06em .12em 0;margin-bottom:-.12em;background:linear-gradient(90deg,#fff 30%,#D7FF3A 110%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.lite .ring .fgc{stroke:url(#ringGrad)}
 body.lite .ring .glw{stroke:url(#ringGrad);opacity:.35}
 body.lite .wbar i{background:linear-gradient(90deg,#4FCB86,#D7FF3A)}
 body.lite .pgbar i{background:linear-gradient(90deg,#8E6BFF,#D19CFF)}
@@ -1591,7 +1590,9 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
       <h3><i style="background:var(--acc)"></i>Pas du jour</h3>
       <div class="ring-wrap">
         <div class="ring">
-          <svg viewBox="-12 -12 144 144"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5BE39A"/></linearGradient><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="rtk" cx="60" cy="60" r="54" fill="none" stroke="#A6FF4D" stroke-width="12"/><circle class="rfg" id="ringFg" cx="60" cy="60" r="54" fill="none" stroke="#A6FF4D" stroke-width="12" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3"/><circle class="rtk" cx="60" cy="60" r="39" fill="none" stroke="#2FD3FF" stroke-width="12"/><circle class="rfg" id="ringW" cx="60" cy="60" r="39" fill="none" stroke="#2FD3FF" stroke-width="12" stroke-linecap="round" stroke-dasharray="245.0" stroke-dashoffset="245.0"/><circle class="rtk" cx="60" cy="60" r="24" fill="none" stroke="#FF375F" stroke-width="12"/><circle class="rfg" id="ringM" cx="60" cy="60" r="24" fill="none" stroke="#FF375F" stroke-width="12" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8"/></svg>
+          <svg viewBox="-12 -12 144 144"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5BE39A"/></linearGradient><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
+          <circle class="glw" id="ringGl" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7" filter="url(#ringBlur)"/>
+          <circle class="fgc" id="ringFg" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
           <div class="mid"><b id="stepsNow">0</b><span class="u">pas</span><b class="pct" id="stepsPct">0%</b></div>
         </div>
         <div class="ring-info">
@@ -2400,9 +2401,14 @@ const renderToday = () => {
 };
 RENDER.today = renderToday;
 /* série : jours d'affilée avec au moins une info notée (poids, repas, calories, séance ou jour off) ; les pas, automatiques, ne comptent pas */
-const noted = k => { const d = S.days[k]; return !!d && (d.weight > 0 || (d.meals || []).length > 0 || d.calories > 0 || d.workout != null || !!d.off); };
+// un jour compte s'il contient une info notée, si l'objectif de pas est atteint, ou s'il a été gelé (gel tenu : objectif + 2 500 pas le lendemain)
+const FRZ = 2500;
+const frzOk = d => { const f = d.frz; if (!f) return false; if (f.by === today()) return true; const b = S.days[f.by]; return !!b && (b.steps || 0) >= f.goal; };
+const noted = k => { const d = S.days[k]; return !!d && (d.weight > 0 || (d.meals || []).length > 0 || d.calories > 0 || d.workout != null || !!d.off || (d.steps || 0) >= goals().steps || frzOk(d)); };
 const notedRun = () => { let k = today(); if (!noted(k)) k = addDays(k, -1); let n = 0; while (noted(k)) { n++; k = addDays(k, -1); } return n; };
-const renderStreak = () => { const n = notedRun(), el = $('#streak'); el.classList.toggle('hidden', n < 1); if (n) { el.innerHTML = `${ic('flame')}<span><b>${n}</b> jour${n > 1 ? 's' : ''}</span>`; el.title = `${n} jour${n > 1 ? 's' : ''} d'affilée`; } };
+const frzToday = () => { const y = S.days[addDays(today(), -1)]; return y && y.frz && y.frz.by === today() ? y.frz : null; };
+const renderStreak = () => { const n = notedRun(), el = $('#streak'), f = frzToday(); el.classList.toggle('hidden', n < 1); if (n) { const st = day().steps || 0;
+  el.innerHTML = `${ic('flame')}<span><b>${n}</b> jour${n > 1 ? 's' : ''}</span>` + (f ? `<small class="stkf">${st >= f.goal ? 'gel validé' : `gel ${fmt(st)} / ${fmt(f.goal)}`}</small>` : ''); el.title = `${n} jour${n > 1 ? 's' : ''} d'affilée`; } };
 
 /* programme du jour */
 const renderProgram = () => {
@@ -2480,11 +2486,7 @@ const renderSteps = () => {
   $('#stepsBig').classList.toggle('done', s >= g);
   countTo($('#burnK'), Math.round(stepKcal(s)));
   $('#burnD').textContent = f1(stepKm(s)) + ' km';
-  // anneaux : jour, semaine (lundi → aujourd'hui), mois, chacun rapporté à l'objectif de la période
-  { const T = today(), w0 = weekKey(T), m0 = T.slice(0, 7), td = new Date(), dim = new Date(td.getFullYear(), td.getMonth() + 1, 0).getDate();
-    let ws = 0, ms = 0; Object.keys(S.days).forEach(k => { const v = S.days[k].steps || 0; if (k > T) return; if (k >= w0) ws += v; if (k.slice(0, 7) === m0) ms += v; });
-    const set = (id, r, f) => { const c = 2 * Math.PI * r; $(id).style.strokeDashoffset = c * (1 - Math.max(0, Math.min(1, f))); };
-    set('#ringFg', 54, s / g); set('#ringW', 39, ws / (g * 7)); set('#ringM', 24, ms / (g * dim)); }
+  const off = 326.7 * (1 - Math.min(1, s/g)); $('#ringFg').style.strokeDashoffset = off; $('#ringGl').style.strokeDashoffset = off;
 };
 
 /* poids */
@@ -4696,6 +4698,18 @@ setInterval(() => { if (!document.hidden) syncHC(); }, 60000);
 $('#hcOpen').onclick = async () => { sfx.tap(); buzz(); try { await HC.openSettings(); } catch (e) { toast('Health Connect introuvable'); } };
 $('#hcNow').onclick = () => { sfx.tap(); buzz(); if (!S.settings.hc) { toast('Active d\'abord la balance'); return; } S.settings.hcAt = 0; syncHC(true); };
 
+/* série : proposer de geler hier si on a oublié de noter, contre 2 500 pas en plus aujourd'hui */
+const offerFreeze = async () => {
+  const y = addDays(today(), -1);
+  if (noted(y) || !noted(addDays(y, -1)) || S.settings.frzAsk === y || stack.length) return;
+  S.settings.frzAsk = y; save();
+  let n = 0, k = addDays(y, -1); while (noted(k)) { n++; k = addDays(k, -1); }
+  const goal = goals().steps + FRZ;
+  const ok = await confirmSheet(`Ta série de ${n} jour${n > 1 ? 's' : ''} va s'arrêter`, `Tu n'as rien noté hier. Gèle ce jour pour garder ta série : il te faudra ${fmt(goal)} pas aujourd'hui, soit ton objectif plus 2 500.`, { yes: 'Geler le jour', danger: false });
+  if (!ok) return;
+  day(y).frz = { by: today(), goal }; save(); renderStreak(); sfx.ok(); buzz('success'); toast(`Jour gelé : ${fmt(goal)} pas à faire aujourd'hui`);
+};
+
 /* ---------- boot ---------- */
 let lastDay = today();
 setInterval(()=>{ if (today()!==lastDay){ lastDay=today(); RENDER[cur](); } }, 20000);
@@ -4714,7 +4728,7 @@ const boot = () => {
   $('#tabbar').classList.remove('hide');
   setTimeout(moveInd, 60); renderToday(); syncPill(); placeBridge();
   const later = (f, ms) => setTimeout(() => (window.requestIdleCallback || (g => g()))(f, { timeout: 1500 }), ms);
-  later(startSteps, 700); later(scheduleAll, 1300); later(launchExtras, 1600); later(() => syncHC(), 2200);
+  later(startSteps, 700); later(scheduleAll, 1300); later(launchExtras, 1600); later(() => offerFreeze(), 3000); later(() => syncHC(), 2200);
   if (LN) LN.addListener('localNotificationActionPerformed', e => { if (e && e.notification && e.notification.id === 9000) setTimeout(weekStory, 400); });
   // Ouvre le bilan une fois, le dimanche soir ou le lundi
   const n = new Date(), [ra, rb] = recapRange();
