@@ -418,17 +418,22 @@ html.mono body{filter:grayscale(1)}
 .g{color:var(--ok)}.r{color:var(--bad)}
 
 /* splash */
-#splash{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .55s var(--ease)}
+#splash{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .4s ease}
+#splash::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--acc) 30%,transparent),transparent 62%);opacity:0;transform:scale(.3);animation:spBg .9s cubic-bezier(.2,.8,.2,1) .35s forwards}
 #splash.out{opacity:0;pointer-events:none}
-.sp-logo{width:112px;height:140px;color:var(--acc);overflow:visible;animation:spGlow 1.3s .55s ease forwards;transition:transform .6s var(--ease)}
-#splash.out .sp-logo{transform:scale(1.7)}
-.sp-a{animation:spA .85s var(--spring) .1s both}
-.sp-b{animation:spB .85s var(--spring) .28s both}
-@keyframes spA{from{transform:translate(200px,-90px) rotate(8deg);opacity:0}to{transform:none;opacity:1}}
-@keyframes spB{from{transform:translate(-200px,90px) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
-@keyframes spGlow{0%{filter:drop-shadow(0 0 0 rgba(215,255,58,0))}45%{filter:drop-shadow(0 0 34px rgba(215,255,58,.6))}100%{filter:drop-shadow(0 0 14px rgba(215,255,58,.28))}}
-.sp-name{font-size:28px;font-weight:800;text-transform:uppercase;letter-spacing:.32em;padding-left:.32em;opacity:0;animation:spName .8s var(--ease) .75s forwards}
-@keyframes spName{from{opacity:0;transform:translateY(12px);letter-spacing:.7em}to{opacity:1;transform:none;letter-spacing:.32em}}
+.sp-logo{position:relative;z-index:2;width:104px;height:130px;color:var(--acc);overflow:visible;animation:spPop .45s cubic-bezier(.3,1.6,.5,1) .62s both;transition:transform .45s cubic-bezier(.6,0,.8,.2),opacity .4s ease}
+#splash.out .sp-logo{transform:scale(7);opacity:0}
+.sp-a{animation:spA .55s cubic-bezier(.2,1.25,.4,1) .05s both}
+.sp-b{animation:spB .55s cubic-bezier(.2,1.25,.4,1) .17s both}
+@keyframes spA{from{transform:translate(260px,-140px) rotate(14deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes spB{from{transform:translate(-260px,140px) rotate(-14deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes spPop{0%{transform:scale(1)}45%{transform:scale(1.16)}100%{transform:scale(1)}}
+@keyframes spBg{0%{opacity:0;transform:scale(.3)}40%{opacity:1}100%{opacity:.55;transform:scale(1)}}
+.sp-r{position:absolute;width:150px;height:150px;border-radius:50%;border:2px solid var(--acc);opacity:0;animation:spR .85s cubic-bezier(.1,.7,.3,1) .6s forwards}
+.sp-r2{animation-delay:.74s;border-width:1.5px}
+@keyframes spR{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(3.4)}}
+.sp-fl{position:absolute;inset:0;background:var(--acc);opacity:0;animation:spFl .35s ease-out .62s}
+@keyframes spFl{0%{opacity:0}30%{opacity:.14}100%{opacity:0}}
 .app.pre .screen{opacity:0!important;transform:translateY(40px) scale(.97)!important}
 .app.pre .card{animation:none}
 .x{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--mut);font-size:0;background:var(--card2);flex-shrink:0;position:relative}
@@ -1613,6 +1618,28 @@ body.perf .wo-intro span{box-shadow:none!important}
 .rsum div{flex:1;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px 14px}
 .rsum b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
 .rsum small{font-size:12px;color:var(--mut);font-weight:700}
+/* recettes : cartes qui remplissent l'écran */
+.rpage{display:flex;flex-direction:column;gap:10px;min-height:calc(100dvh - var(--st,0px) - var(--sb,0px) - 215px);margin-bottom:12px}
+.rcard{flex:1 1 0;min-height:132px;max-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:18px;border-radius:24px;text-align:left;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 16%,#16161C) 0%,#16161C 55%);border:1px solid color-mix(in srgb,var(--rc) 22%,transparent);transition:transform .15s ease}
+.rcard:active{transform:scale(.98)}
+.rcard.rec{align-items:stretch}
+.rtop{display:flex;align-items:center;gap:14px}
+.ric{width:54px;height:54px;border-radius:18px;background:color-mix(in srgb,var(--rc) 20%,transparent);display:grid;place-items:center;font-size:28px;flex-shrink:0}
+.rti{flex:1;min-width:0}
+.rti b{display:block;font-size:19px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rti small{display:block;margin-top:3px;font-size:13px;color:var(--mut);font-weight:700}
+.rkc{text-align:right}
+.rkc b{display:block;font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.rkc small{font-size:12px;color:var(--mut);font-weight:700}
+.rmacs{display:flex;gap:12px}
+.rmac{flex:1;min-width:0}
+.rmv{font-size:13px;color:var(--mut);font-weight:700}.rmv b{font-size:17px;color:var(--txt)}
+.rmb{height:6px;border-radius:3px;background:rgba(255,255,255,.07);margin:6px 0 4px;overflow:hidden}.rmb i{display:block;height:100%;border-radius:3px}
+.rmac small{font-size:11px;color:var(--mut);font-weight:700}
+.radd2{height:54px;border-radius:18px;border:1.5px dashed rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:800;color:var(--txt)}
+.radd2 span{width:28px;height:28px;border-radius:9px;background:var(--acc);color:#0B0B0F;display:grid;place-items:center;font-size:20px}
+.rempty{flex:1;display:grid;place-items:center;text-align:center;color:var(--mut);font-weight:700;padding:30px;border:1px solid rgba(255,255,255,.06);border-radius:24px}
 </style>
 </head>
 <body>
@@ -1631,7 +1658,7 @@ body.perf .wo-intro span{box-shadow:none!important}
     <path class="sp-a" fill="currentColor" d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/>
     <path class="sp-b" fill="currentColor" d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/>
   </svg>
-  <div class="sp-name">Focus</div>
+  <i class="sp-r"></i><i class="sp-r sp-r2"></i><i class="sp-fl"></i>
 </div>
 <div class="app pre">
   <!-- JOUR -->
@@ -2892,17 +2919,16 @@ $('#foodSearch').addEventListener('input', renderFoods);
 const renderMeals = () => {
   renderFoods();
   const el = $('#recList');
-  const add = `<button class="rtile radd" id="recAdd"><div class="ri">+</div><b class="rn">Nouvelle recette</b><small>Ses ingrédients une fois, puis un tap pour l'ajouter à ta journée</small></button>`;
   const recs = [...S.recipes].sort((a,b)=>a.name.localeCompare(b.name,'fr'));
   const uses = {}; Object.values(S.days).forEach(d => (d.meals || []).forEach(m => { if (m.recipeId) uses[m.recipeId] = (uses[m.recipeId] || 0) + 1; }));
-  const tiles = recs.map(r => { const {per} = recTotals(r), mk = per.p * 4 + per.c * 4 + per.f * 9 || 1;
-    return `<button class="rtile rec" data-id="${r.id}"><div class="ri">${icE(r.emoji)}</div><div class="rn">${esc(r.name)}</div>
-      <div class="rk"><b>${fmt(per.kcal)}</b> <span>kcal / portion</span>
-      <div class="rm"><i style="width:${per.p*4/mk*100}%;background:var(--pro)"></i><i style="width:${per.c*4/mk*100}%;background:var(--carb)"></i><i style="width:${per.f*9/mk*100}%;background:var(--fat)"></i></div>
-      <div class="rs">P ${Math.round(per.p)} · G ${Math.round(per.c)} · L ${Math.round(per.f)} g</div></div></button>`; }).join('');
-  const avg = recs.length ? recs.reduce((t, r) => t + recTotals(r).per.kcal, 0) / recs.length : 0, nUse = Object.values(uses).reduce((t, v) => t + v, 0);
-  el.innerHTML = (recs.length ? `<div class="rsum"><div><b>${recs.length}</b><small>recette${recs.length > 1 ? 's' : ''}</small></div><div><b>${fmt(avg)}</b><small>kcal en moyenne</small></div><div><b>${nUse}</b><small>fois ajoutées</small></div></div>` : '')
-    + `<div class="rgrid">${tiles}${add}</div>`;
+  const cards = recs.map(r => { const {per} = recTotals(r), k = E2K[(r.emoji || '').replace(/️/g, '')] || 'plate', col = (ICO.k[k] || ['', '#FFB347'])[1], u = uses[r.id] || 0;
+    const mac = (lab, v, max, c) => `<div class="rmac"><div class="rmv"><b>${Math.round(v)}</b> g</div><div class="rmb"><i style="width:${Math.min(100, v / max * 100)}%;background:${c}"></i></div><small>${lab}</small></div>`;
+    return `<button class="rcard rec" data-id="${r.id}" style="--rc:${col}">
+      <div class="rtop"><div class="ric">${icE(r.emoji)}</div><div class="rti"><b>${esc(r.name)}</b><small>${r.portions} portion${r.portions > 1 ? 's' : ''} · ${r.ingredients.length} ingrédient${r.ingredients.length > 1 ? 's' : ''}${u ? ` · ajoutée ${u} fois` : ''}</small></div>
+      <div class="rkc"><b>${fmt(per.kcal)}</b><small>kcal</small></div></div>
+      <div class="rmacs">${mac('Protéines', per.p, 60, 'var(--pro)')}${mac('Glucides', per.c, 120, 'var(--carb)')}${mac('Lipides', per.f, 50, 'var(--fat)')}</div></button>`; }).join('');
+  el.innerHTML = `<div class="rpage">${cards || '<div class="rempty">Crée tes plats une fois avec leurs ingrédients.<br>Ensuite, un tap suffit pour les ajouter à ta journée.</div>'}
+    <button class="radd2" id="recAdd"><span>+</span>Nouvelle recette</button></div>`;
   $('#recAdd').onclick = () => $('#newRec').click();
   $$('#recList .rec').forEach(b => b.onclick = () => openRecipe(b.dataset.id));
 };
@@ -4814,9 +4840,9 @@ setTimeout(() => {
   else boot();
   requestAnimationFrame(() => requestAnimationFrame(() => {
     $('#splash').classList.add('out'); $('.app').classList.remove('pre'); buzz();
-    setTimeout(() => $('#splash').remove(), 700);
+    setTimeout(() => $('#splash').remove(), 500);
   }));
-}, 1700);
+}, 1250);
 })();
 </script>
 </body>
