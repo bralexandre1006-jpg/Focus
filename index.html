@@ -59,6 +59,9 @@ button{border:0;background:none;cursor:pointer}
 .ring{position:relative;width:166px;height:166px;flex-shrink:0;margin:-8px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .bgc{stroke:var(--card2)}
+.ring .rtk{stroke-opacity:.2}
+.ring .rfg{transition:stroke-dashoffset 1.2s var(--ease)}
+.c-steps .ring .mid{display:none}
 .ring .fgc,.ring .glw{stroke:var(--acc);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease)}
 .ring .glw{opacity:.5}
 .ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
@@ -754,7 +757,6 @@ body.lite .screen.on .card:nth-child(2){animation-delay:.05s}body.lite .screen.o
 body.lite .screen.on .card:nth-child(4){animation-delay:.15s}body.lite .screen.on .card:nth-child(5){animation-delay:.2s}body.lite .screen.on .card:nth-child(6){animation-delay:.25s}
 @keyframes liteIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
 body.lite .head h1{padding:0 .06em .12em 0;margin-bottom:-.12em;background:linear-gradient(90deg,#fff 30%,#D7FF3A 110%);-webkit-background-clip:text;background-clip:text;color:transparent}
-body.lite .ring .fgc{stroke:url(#ringGrad)}
 body.lite .ring .glw{stroke:url(#ringGrad);opacity:.35}
 body.lite .wbar i{background:linear-gradient(90deg,#4FCB86,#D7FF3A)}
 body.lite .pgbar i{background:linear-gradient(90deg,#8E6BFF,#D19CFF)}
@@ -1348,21 +1350,21 @@ body.lite #s-today>#nutCard{flex-grow:0;justify-content:flex-start;margin-bottom
 #wkGym:empty{display:none}
 #wkGym{margin-top:0;display:flex;flex-direction:column;gap:8px}
 .wcta{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;width:100%;min-height:70px;padding:12px 16px;border-radius:20px;text-align:left;color:#0B0B0F;
-  background:linear-gradient(120deg,#D7FF3A 0%,#9BF06A 55%,#5FE3A0 100%);box-shadow:0 10px 30px rgba(215,255,58,.28);animation:ctaIn .6s var(--spring) both;transition:transform .3s var(--spring)}
+  background:var(--acc);transition:transform .3s var(--spring)}
 .wcta:active{transform:scale(.97)}
-.wcta::after{content:"";position:absolute;top:0;bottom:0;width:60%;left:0;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-120%);animation:ctaSh 3.2s 1s ease-in-out infinite}
+.wcta::after{display:none}
 @keyframes ctaSh{0%{transform:translateX(-120%)}45%,100%{transform:translateX(260%)}}
 @keyframes ctaIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
 .wcta .ci{width:46px;height:46px;border-radius:15px;background:rgba(11,11,15,.14);display:grid;place-items:center;flex-shrink:0}
-.wcta .ci svg{width:26px;height:26px;fill:none;stroke:#0B0B0F;stroke-width:2.6;stroke-linecap:round;animation:dbw 2.4s ease-in-out infinite}
+.wcta .ci svg{width:26px;height:26px;fill:none;stroke:#0B0B0F;stroke-width:2.6;stroke-linecap:round;transform:rotate(-20deg)}
 @keyframes dbw{0%,70%,100%{transform:rotate(-20deg)}78%{transform:rotate(-38deg) scale(1.08)}86%{transform:rotate(-4deg)}94%{transform:rotate(-26deg)}}
 .wcta .ct{flex:1;min-width:0}
 .wcta .ct b{display:block;font-size:18px;letter-spacing:-.02em}
 .wcta .ct small{display:block;font-size:13px;font-weight:700;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wcta .ca{width:34px;height:34px;border-radius:50%;background:#0B0B0F;color:var(--acc);display:grid;place-items:center;flex-shrink:0;animation:caN 1.6s ease-in-out infinite}
+.wcta .ca{width:34px;height:34px;border-radius:50%;background:#0B0B0F;color:var(--acc);display:grid;place-items:center;flex-shrink:0}
 .wcta .ca svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 @keyframes caN{0%,100%{transform:none}50%{transform:translateX(4px)}}
-.wcta.live{background:linear-gradient(120deg,#1E2410,#1A1E14);color:var(--txt);box-shadow:inset 0 0 0 1.5px rgba(215,255,58,.45),0 10px 30px rgba(215,255,58,.12)}
+.wcta.live{background:#1A1E14;color:var(--txt);box-shadow:inset 0 0 0 1.5px rgba(215,255,58,.45)}
 .wcta.live .ci{background:rgba(215,255,58,.14)}.wcta.live .ci svg{stroke:var(--acc)}
 .wcta.live .ct small{opacity:1;color:var(--acc);font-variant-numeric:tabular-nums}
 .wcta.live .ca{background:var(--acc);color:#0B0B0F}
@@ -1589,9 +1591,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
       <h3><i style="background:var(--acc)"></i>Pas du jour</h3>
       <div class="ring-wrap">
         <div class="ring">
-          <svg viewBox="-12 -12 144 144"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5BE39A"/></linearGradient><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="bgc" cx="60" cy="60" r="52" fill="none" stroke-width="12"/>
-          <circle class="glw" id="ringGl" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7" filter="url(#ringBlur)"/>
-          <circle class="fgc" id="ringFg" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+          <svg viewBox="-12 -12 144 144"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D7FF3A"/><stop offset="1" stop-color="#5BE39A"/></linearGradient><filter id="ringBlur" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle class="rtk" cx="60" cy="60" r="54" fill="none" stroke="#A6FF4D" stroke-width="12"/><circle class="rfg" id="ringFg" cx="60" cy="60" r="54" fill="none" stroke="#A6FF4D" stroke-width="12" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3"/><circle class="rtk" cx="60" cy="60" r="39" fill="none" stroke="#2FD3FF" stroke-width="12"/><circle class="rfg" id="ringW" cx="60" cy="60" r="39" fill="none" stroke="#2FD3FF" stroke-width="12" stroke-linecap="round" stroke-dasharray="245.0" stroke-dashoffset="245.0"/><circle class="rtk" cx="60" cy="60" r="24" fill="none" stroke="#FF375F" stroke-width="12"/><circle class="rfg" id="ringM" cx="60" cy="60" r="24" fill="none" stroke="#FF375F" stroke-width="12" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8"/></svg>
           <div class="mid"><b id="stepsNow">0</b><span class="u">pas</span><b class="pct" id="stepsPct">0%</b></div>
         </div>
         <div class="ring-info">
@@ -2480,7 +2480,11 @@ const renderSteps = () => {
   $('#stepsBig').classList.toggle('done', s >= g);
   countTo($('#burnK'), Math.round(stepKcal(s)));
   $('#burnD').textContent = f1(stepKm(s)) + ' km';
-  const off = 326.7 * (1 - Math.min(1, s/g)); $('#ringFg').style.strokeDashoffset = off; $('#ringGl').style.strokeDashoffset = off;
+  // anneaux : jour, semaine (lundi → aujourd'hui), mois, chacun rapporté à l'objectif de la période
+  { const T = today(), w0 = weekKey(T), m0 = T.slice(0, 7), td = new Date(), dim = new Date(td.getFullYear(), td.getMonth() + 1, 0).getDate();
+    let ws = 0, ms = 0; Object.keys(S.days).forEach(k => { const v = S.days[k].steps || 0; if (k > T) return; if (k >= w0) ws += v; if (k.slice(0, 7) === m0) ms += v; });
+    const set = (id, r, f) => { const c = 2 * Math.PI * r; $(id).style.strokeDashoffset = c * (1 - Math.max(0, Math.min(1, f))); };
+    set('#ringFg', 54, s / g); set('#ringW', 39, ws / (g * 7)); set('#ringM', 24, ms / (g * dim)); }
 };
 
 /* poids */
