@@ -37,6 +37,7 @@ button{border:0;background:none;cursor:pointer}
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px}
 .head h1{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.12}
 .head .sub{color:var(--mut);font-size:16px;margin-bottom:6px;text-transform:capitalize}
+.stk{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 9px 2px 7px;border-radius:99px;background:rgba(255,138,61,.14);color:#FF9A52;font-weight:800;font-size:.9em;text-transform:none;vertical-align:1px}
 .logo-btn{width:52px;height:52px;border-radius:18px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
 .logo-btn svg{width:32px;height:32px}
 
@@ -1576,7 +1577,7 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
   <!-- JOUR -->
   <section class="screen on" id="s-today">
     <div class="head">
-      <div><div class="sub" id="todayDate"></div><h1 id="hello">Salut</h1></div>
+      <div><div class="sub"><span id="todayDate"></span><span class="stk hidden" id="streak"></span></div><h1 id="hello">Salut</h1></div>
       <button class="logo-btn gear press" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
 
@@ -2394,9 +2395,13 @@ const renderToday = () => {
   $('#todayDate').textContent = now.toLocaleDateString('fr-BE',{weekday:'long', day:'numeric', month:'long'});
   const h = now.getHours();
   $('#hello').textContent = (h<12?'Bonjour':h<18?'Salut':'Bonsoir') + (p.name?' '+p.name:'');
-  renderSteps(); renderProgram(); renderWeight(); renderSession(); renderNutrition();
+  renderSteps(); renderProgram(); renderWeight(); renderSession(); renderNutrition(); renderStreak();
 };
 RENDER.today = renderToday;
+/* série : jours d'affilée avec au moins une info notée (poids, repas, calories, séance ou jour off) ; les pas, automatiques, ne comptent pas */
+const noted = k => { const d = S.days[k]; return !!d && (d.weight > 0 || (d.meals || []).length > 0 || d.calories > 0 || d.workout != null || !!d.off); };
+const notedRun = () => { let k = today(); if (!noted(k)) k = addDays(k, -1); let n = 0; while (noted(k)) { n++; k = addDays(k, -1); } return n; };
+const renderStreak = () => { const n = notedRun(), el = $('#streak'); el.classList.toggle('hidden', n < 1); if (n) { el.innerHTML = `${ic('flame')} ${n}`; el.title = `${n} jour${n > 1 ? 's' : ''} d'affilée`; } };
 
 /* programme du jour */
 const renderProgram = () => {
@@ -3572,7 +3577,7 @@ const fillBadges = () => {
   const best = a => a.length ? Math.max(...a) : 0, cnt = (a, g) => a.filter(v => v >= g).length;
   const G = [
     { t:'Au total', gl:'shoe', c:'#FFC44A', m:['#FFE58A','#F2A91E','#9A5E0A'], u:'pas', list:[1e6, 2e6, 3e6, 4e6, 5e6, 6e6, 7e6, 8e6, 9e6, 1e7], v:[tot], once:true, lbl:'Depuis le début' },
-    { t:'En une journée', gl:'bolt', c:'#C9F23A', m:['#F0FFB0','#A8D81E','#4F7008'], u:'en 1 jour', list:[25e3, 5e4, 75e3, 1e5, 125e3, 15e4], v:dayV, lbl:'Ton record' },
+    { t:'En une journée', gl:'bolt', c:'#C9F23A', m:['#F0FFB0','#A8D81E','#4F7008'], u:'en 1 jour', list:[1e4, 2e4, 25e3, 5e4, 75e3, 1e5, 125e3, 15e4], v:dayV, lbl:'Ton record' },
     { t:'En une semaine', gl:'shoe', c:'#4FE3D0', m:['#D9FFF9','#4FE3D0','#14806F'], u:'en 1 sem.', list:[5e4, 75e3, 1e5, 125e3, 15e4, 175e3, 2e5, 25e4], v:Object.values(wk), lbl:'Ta meilleure semaine' },
     { t:'En un mois', gl:'cal', c:'#9EC5FF', m:['#FFFFFF','#B8C8E0','#5C6B85'], u:'en 1 mois', list:[25e4, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5], v:Object.values(mo), lbl:'Ton meilleur mois' },
     { t:'En une année', gl:'peak', c:'#C49BFF', m:['#F3E8FF','#A77BFF','#4C2A9E'], u:'en 1 an', list:[1e6, 15e5, 2e6, 25e5, 3e6], v:Object.values(yr), lbl:'Ta meilleure année' } ];
@@ -4689,7 +4694,14 @@ $('#hcNow').onclick = () => { sfx.tap(); buzz(); if (!S.settings.hc) { toast('Ac
 /* ---------- boot ---------- */
 let lastDay = today();
 setInterval(()=>{ if (today()!==lastDay){ lastDay=today(); RENDER[cur](); } }, 20000);
-document.addEventListener('visibilitychange', ()=>{ if (!document.hidden){ lastDay=today(); RENDER[cur](); startSteps(); syncRecording(); } });
+let lastInput = null;
+document.addEventListener('visibilitychange', ()=>{
+  if (document.hidden) { const a = document.activeElement; lastInput = a && /^(INPUT|TEXTAREA)$/.test(a.tagName) ? a : null; return; }
+  lastDay=today(); RENDER[cur](); startSteps(); syncRecording();
+  // retour dans l'app : le clavier revient sur le champ qu'on remplissait
+  const f = lastInput; lastInput = null;
+  if (f && f.isConnected && f.offsetParent !== null) setTimeout(() => { f.focus({ preventScroll: true }); try { const n = f.value.length; f.setSelectionRange(n, n); } catch (e) {} }, 250);
+});
 setInterval(() => { if (!document.hidden) syncRecording(); }, 120000);
 let booted = false;
 const boot = () => {
