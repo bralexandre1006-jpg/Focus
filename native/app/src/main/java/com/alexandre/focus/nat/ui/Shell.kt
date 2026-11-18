@@ -65,6 +65,8 @@ fun Logo(modifier: Modifier) = Canvas(modifier) {
     withTransform({ scale(k, k, Offset.Zero); translate(-255f, -155f) }) { drawPath(LOGO_A, C.acc); drawPath(LOGO_B, C.acc) }
 }
 
+val DUMBBELL by lazy { p("M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11") }
+
 private val TAB_ICONS by lazy {
     listOf(
         "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
@@ -107,13 +109,13 @@ fun FocusApp(store: FocusStore, version: Int, onChanged: () -> Unit, onImport: (
     var tab by rememberSaveable { mutableIntStateOf(0) }
     Box(Modifier.fillMaxSize().background(C.bg)) {
         Box(Modifier.fillMaxSize().padding(bottom = 76.dp).navigationBarsPadding()) {
-            when (tab) {
+            key(version) { when (tab) {
                 0 -> HomeScreen(store, version, onChanged, onImport) { tab = 2 }
                 1 -> MealsScreen(store)
                 2 -> GymScreen(store)
                 3 -> StatsScreen(store)
                 else -> HistoryScreen(store)
-            }
+            } }
         }
         if (store.hasData) TabBar(tab, { tab = it }, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 12.dp))
         if (splash) Splash { splash = false }

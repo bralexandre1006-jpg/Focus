@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -205,34 +206,52 @@ fun WeightCard(store: FocusStore, k: String, onChanged: () -> Unit) {
     }
 }
 
-/** Séance : jour de séance (validée / manquée), jour de repos ou jour off. */
+/** Séance : même apparence que l'app web (bouton « Lancer ma séance », boutons validée / manquée illustrés, jour de repos illustré). */
 @Composable
 fun SessionCard(store: FocusStore, k: String, onChanged: () -> Unit, onGym: () -> Unit = {}) {
     val td = store.isTrainingDay(k); val wo = store.workout(k)
     FCard(Color(0xFF7896FF)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             CardTitle("Séance de sport", Color(0xFFB88CFF)); Spacer(Modifier.weight(1f))
-            if (td) T("Jour de séance", 11.sp, C.spt)
+            if (td) Box(Modifier.clip(RoundedCornerShape(8.dp)).background(Color(0x29B88CFF)).padding(horizontal = 8.dp, vertical = 4.dp)) { T("JOUR DE SÉANCE", 10.sp, C.spt) }
         }
         Spacer(Modifier.height(10.dp))
         when {
             store.isOff(k) -> T("Jour off", 16.sp, C.mut)
             !td && wo == null -> Row(verticalAlignment = Alignment.CenterVertically) {
-                T("😴", 30.sp); Spacer(Modifier.width(12.dp))
-                Column(Modifier.weight(1f)) { T("Jour de repos", 16.sp); T("J'ai quand même fait une séance", 13.sp, C.acc, FontWeight.Bold, Modifier.clickable { store.setWorkout(true); onChanged() }) }
+                androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(com.alexandre.focus.nat.R.drawable.ic_rest), null, Modifier.size(64.dp))
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    T("Jour de repos", 16.sp)
+                    T(if (store.list("routines").isNotEmpty()) "Lancer quand même une séance" else "J'ai quand même fait une séance", 14.sp, C.spt, FontWeight.ExtraBold,
+                        Modifier.padding(top = 4.dp).clickable { if (store.list("routines").isNotEmpty()) onGym() else { store.setWorkout(true); onChanged() } })
+                }
             }
-            td && wo == null && store.list("routines").isNotEmpty() -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Btn("Lancer ma séance", C.acc, C.bg, Modifier.fillMaxWidth(), onGym)
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Btn("✓ Faite", Color(0x223DDC84), C.ok, Modifier.weight(1f)) { store.setWorkout(true); onChanged() }
-                    Btn("✕ Ratée", Color(0x22FF4D6A), C.bad, Modifier.weight(1f)) { store.setWorkout(false); onChanged() } }
+            td && wo == null && store.list("routines").isNotEmpty() -> Row(
+                Modifier.fillMaxWidth().height(52.dp).clip(RoundedCornerShape(16.dp)).background(C.acc).clickable(onClick = onGym).padding(horizontal = 7.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(Modifier.size(38.dp).clip(RoundedCornerShape(12.dp)).background(Color(0x240B0B0F)), contentAlignment = Alignment.Center) { Icon24(DUMBBELL, C.bg) }
+                Spacer(Modifier.width(12.dp)); T("Lancer ma séance", 15.sp, C.bg, modifier = Modifier.weight(1f))
+                Box(Modifier.size(34.dp).clip(RoundedCornerShape(17.dp)).background(C.bg), contentAlignment = Alignment.Center) { T("›", 18.sp, C.acc) }
             }
             else -> Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                val yes = wo == true; val no = wo == false
-                Btn(if (yes) "✓ Séance validée" else "✓ Faite", if (yes) Color(0x553DDC84) else Color(0x223DDC84), C.ok, Modifier.weight(1f)) { store.setWorkout(if (yes) null else true); onChanged() }
-                Btn(if (no) "✕ Séance manquée" else "✕ Ratée", if (no) Color(0x55FF4D6A) else Color(0x22FF4D6A), C.bad, Modifier.weight(1f)) { store.setWorkout(if (no) null else false); onChanged() }
+                WoBtn(true, wo, Modifier.weight(if (wo == true) 3.2f else 1f)) { store.setWorkout(if (wo == true) null else true); onChanged() }
+                WoBtn(false, wo, Modifier.weight(if (wo == false) 3.2f else 1f)) { store.setWorkout(if (wo == false) null else false); onChanged() }
             }
         }
+    }
+}
+
+@Composable
+fun WoBtn(yes: Boolean, wo: Boolean?, modifier: Modifier, onClick: () -> Unit) {
+    val col = if (yes) C.ok else C.bad; val sel = wo == yes; val dim = wo != null && !sel
+    Row(modifier.height(62.dp).clip(RoundedCornerShape(16.dp)).background(col.copy(alpha = if (sel) .28f else .1f))
+        .border(if (sel) 2.dp else 1.5.dp, col.copy(alpha = if (sel) 1f else .26f), RoundedCornerShape(16.dp)).clickable(onClick = onClick)
+        .graphicsLayer { alpha = if (dim) .5f else 1f }.padding(horizontal = 10.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = if (sel) Arrangement.Start else Arrangement.Center) {
+        androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(if (yes) com.alexandre.focus.nat.R.drawable.ic_ok else com.alexandre.focus.nat.R.drawable.ic_no), null, Modifier.size(if (dim) 26.dp else 34.dp))
+        if (sel) { Spacer(Modifier.width(10.dp)); T(if (yes) "Séance validée" else "Séance manquée", 16.sp, col) }
     }
 }
 

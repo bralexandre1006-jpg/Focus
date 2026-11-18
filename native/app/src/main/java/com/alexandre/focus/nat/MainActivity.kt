@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val v = version
             // toute modification des données redessine l'écran
-            key(v) { FocusApp(store, v, onChanged = { version++ }, onImport = { pick.launch(arrayOf("application/json", "text/plain", "*/*")) }) }
+            FocusApp(store, v, onChanged = { version++ }, onImport = { pick.launch(arrayOf("application/json", "text/plain", "*/*")) })
         }
     }
 }
