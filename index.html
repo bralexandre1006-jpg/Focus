@@ -2912,14 +2912,16 @@ $('#qAiGo').onclick = async () => {
   const body = JSON.stringify({ contents: [{ parts: [{ text: AI_PROMPT($('#qAiNote').value.trim()) }, { inline_data: { mime_type: 'image/jpeg', data: aiImg.split(',')[1] } }] }],
     generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
   let out = null, err = '';
-  for (const m of ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash']) {
+  const tries = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-flash-latest'];
+  for (let ti = 0; ti < tries.length; ti++) { const m = tries[ti];
+    if (ti) { res.innerHTML = `Serveur chargé, nouvel essai (${ti + 1}/${tries.length})…`; await new Promise(z => setTimeout(z, ti === tries.length - 1 ? 3000 : 800)); }
     try { const rq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
       const j = await rq.json();
-      if (!rq.ok) { err = (j.error && j.error.message) || rq.status; if (rq.status === 404) continue;
+      if (!rq.ok) { err = (j.error && j.error.message) || rq.status; if ([404, 429, 500, 502, 503, 504].includes(rq.status)) continue;
         if (rq.status === 400 || rq.status === 403) { if (/key|api|auth|permission/i.test(err)) { if (key === GEM_KEY) S.settings.aiNoBuiltin = true; else S.settings.aiKey = ''; save(); err += ' (réessaie : colle une clé valide)'; } } break; }
       const t = j.candidates && j.candidates[0] && j.candidates[0].content.parts.map(x => x.text || '').join('');
       out = JSON.parse(t.replace(/^```json|```$/g, '').trim()); break;
-    } catch (x) { err = x.message || 'réseau'; }
+    } catch (x) { err = x.message || 'réseau'; if (out === null && /JSON/i.test(err)) continue; }
   }
   box.classList.remove('busy');
   if (!out) { res.innerHTML = `<span class="bad">Échec de l'analyse : ${esc(String(err))}</span>`; sfx.no && sfx.no(); return; }
