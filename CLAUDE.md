@@ -24,10 +24,6 @@ Chaque APK doit s'installer par-dessus la version existante, sans désinstallati
 - Ajouter dans le workflow une vérification `apksigner verify --print-certs` qui fait échouer le build si l'empreinte SHA-256 diffère.
 - En cas de doute sur la signature ou le package : s'arrêter et demander.
 
-## Réécriture native en cours
-- Plan, inventaire des fonctions et avancement : `NATIVE_PLAN.md` (à lire en premier pour reprendre).
-- Code natif dans `native/`, compilé par `.github/workflows/build-native.yml` (release `native-apk`, jamais `apk`). L'app web reste la version installée tant que la bascule n'est pas validée.
-
 ## Architecture
 - `index.html` : toute l'app (vanilla JS, ~4600 lignes), embarquée par Capacitor.
 - Java natif (package `com.alexandre.focus`) : `MainActivity`, `StepCounterPlugin` (pas, Google Fitness), `MidnightReceiver` (minuit/boot), `FocusWidget` (+ `$Small`, `$Wide`, `$Large`), `WidgetConfigActivity`, `WidgetTicker`, `RestTimer`.
