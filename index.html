@@ -419,7 +419,6 @@ html.mono body{filter:grayscale(1)}
 
 /* splash */
 #splash{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .4s ease}
-#splash::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--acc) 30%,transparent),transparent 62%);opacity:0;transform:scale(.3);animation:spBg .9s cubic-bezier(.2,.8,.2,1) .35s forwards}
 #splash.out{opacity:0;pointer-events:none}
 .sp-logo{position:relative;z-index:2;width:104px;height:130px;color:var(--acc);overflow:visible;animation:spPop .45s cubic-bezier(.3,1.6,.5,1) .62s both;transition:transform .45s cubic-bezier(.6,0,.8,.2),opacity .4s ease}
 #splash.out .sp-logo{transform:scale(7);opacity:0}
@@ -428,12 +427,6 @@ html.mono body{filter:grayscale(1)}
 @keyframes spA{from{transform:translate(260px,-140px) rotate(14deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes spB{from{transform:translate(-260px,140px) rotate(-14deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes spPop{0%{transform:scale(1)}45%{transform:scale(1.16)}100%{transform:scale(1)}}
-@keyframes spBg{0%{opacity:0;transform:scale(.3)}40%{opacity:1}100%{opacity:.55;transform:scale(1)}}
-.sp-r{position:absolute;width:150px;height:150px;border-radius:50%;border:2px solid var(--acc);opacity:0;animation:spR .85s cubic-bezier(.1,.7,.3,1) .6s forwards}
-.sp-r2{animation-delay:.74s;border-width:1.5px}
-@keyframes spR{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(3.4)}}
-.sp-fl{position:absolute;inset:0;background:var(--acc);opacity:0;animation:spFl .35s ease-out .62s}
-@keyframes spFl{0%{opacity:0}30%{opacity:.14}100%{opacity:0}}
 .app.pre .screen{opacity:0!important;transform:translateY(40px) scale(.97)!important}
 .app.pre .card{animation:none}
 .x{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--mut);font-size:0;background:var(--card2);flex-shrink:0;position:relative}
@@ -1658,7 +1651,6 @@ body.perf .wo-intro span{box-shadow:none!important}
     <path class="sp-a" fill="currentColor" d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/>
     <path class="sp-b" fill="currentColor" d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/>
   </svg>
-  <i class="sp-r"></i><i class="sp-r sp-r2"></i><i class="sp-fl"></i>
 </div>
 <div class="app pre">
   <!-- JOUR -->
