@@ -3060,7 +3060,7 @@ const aiRun = async (prompt, prev) => {
   if (aiBusy) return; aiBusy = true; aiLast = [prompt, prev]; sfx.tap(); buzz();
   let typ = null;
   if (prev) { typ = aiBubble('ai typing', '<small>Chef</small><span><i></i><i></i><i></i></span>'); $('#aiOut').classList.add('upd'); }
-  else { $('#aiLoad').classList.remove('hidden'); $('#aiLoadT').textContent = 'Chef analyse ton plat…'; }
+  else { $('#aiLoad').classList.remove('hidden'); $('#aiLoadT').textContent = 'Le chef analyse ton plat…'; }
   try { const o = await aiEstimate(prompt, t => { if (typ) typ.querySelector('small').textContent = t; else $('#aiLoadT').textContent = t; });
     if (typ) typ.remove(); aiShow(o, prev); buzz('success'); }
   catch (x) { if (typ) typ.remove(); $('#aiOut').classList.remove('hidden');
