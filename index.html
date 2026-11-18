@@ -2890,7 +2890,7 @@ $('#qName').addEventListener('input', () => { qAll = false; renderQuick(); });
 $('#qScan').onclick = async () => { const prod = await lookupProduct(); if (!prod) return; fillFood(S.foods[prod.name.toLowerCase()] || prod); };
 /* Photo IA : Gemini estime le plat (clé injectée au build depuis le secret GEMINI_KEY, ou collée dans l'app) */
 const GEM_KEY = '__GEMINI_KEY__';
-const aiKey = () => { let k = (S.settings.aiKey || '').trim() || (GEM_KEY.startsWith('__') ? '' : GEM_KEY);
+const aiKey = () => { let k = (S.settings.aiKey || '').trim() || (S.settings.aiNoBuiltin || GEM_KEY.startsWith('__') ? '' : GEM_KEY);
   if (!k) { k = (prompt('Colle ta clé Gemini (aistudio.google.com › Get API key) :') || '').trim(); if (k) { S.settings.aiKey = k; save(); } } return k; };
 let aiImg = null;
 const aiShrink = file => new Promise((ok, ko) => { const u = URL.createObjectURL(file), im = new Image();
@@ -2916,7 +2916,7 @@ $('#qAiGo').onclick = async () => {
     try { const rq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
       const j = await rq.json();
       if (!rq.ok) { err = (j.error && j.error.message) || rq.status; if (rq.status === 404) continue;
-        if (rq.status === 400 || rq.status === 403) { if (/key/i.test(err)) { S.settings.aiKey = ''; save(); } } break; }
+        if (rq.status === 400 || rq.status === 403) { if (/key|api|auth|permission/i.test(err)) { if (key === GEM_KEY) S.settings.aiNoBuiltin = true; else S.settings.aiKey = ''; save(); err += ' (réessaie : colle une clé valide)'; } } break; }
       const t = j.candidates && j.candidates[0] && j.candidates[0].content.parts.map(x => x.text || '').join('');
       out = JSON.parse(t.replace(/^```json|```$/g, '').trim()); break;
     } catch (x) { err = x.message || 'réseau'; }
