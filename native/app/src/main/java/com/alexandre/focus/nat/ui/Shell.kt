@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.dp
 import com.alexandre.focus.nat.data.FocusStore
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private fun p(d: String): Path = PathParser().parsePathString(d).toPath()
 
@@ -41,10 +42,8 @@ fun Splash(onDone: () -> Unit) {
     val pop = remember { Animatable(1f) }; val out = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         val spring = CubicBezierEasing(.2f, 1.25f, .4f, 1f)
-        kotlinx.coroutines.coroutineScope {
-            val x = kotlinx.coroutines.async { a.animateTo(1f, tween(550, easing = spring)) }
-            delay(120); b.animateTo(1f, tween(550, easing = spring)); x.await()
-        }
+        launch { a.animateTo(1f, tween(550, easing = spring)) }
+        delay(120); b.animateTo(1f, tween(550, easing = spring))
         pop.animateTo(1.16f, tween(180)); pop.animateTo(1f, tween(220))
         delay(80); out.animateTo(1f, tween(380, easing = CubicBezierEasing(.6f, 0f, .8f, .2f)))
         onDone()
