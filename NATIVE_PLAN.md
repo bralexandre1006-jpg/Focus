@@ -8,6 +8,9 @@
 - Bascule finale seulement quand toutes les fonctions ci-dessous sont faites et validées par l'utilisateur : retirer le suffixe, même `applicationId` (`com.alexandre.focus`), même `debug.keystore`, `versionCode` supérieur à celui de l'app web, puis faire publier la release `apk` par le build natif.
 - Garder exactement les mêmes fonctionnalités, la police Jakarta en gras, l'accueil tenu sur un écran sans défiler, le style actuel (cartes teintées, couleurs).
 
+## Performance (règle)
+- Toute liste longue (historique, séances, aliments, recettes) en `LazyColumn` : seuls les éléments visibles sont lus et dessinés. Pas de calcul sur tout l'historique au rendu : agréger à la demande, mettre en cache si besoin.
+
 ## Données (aucune perte)
 - Source de vérité : l'objet JSON de l'app web (`localStorage['focus.v1']`), gardé **brut** dans `FocusStore` (org.json) pour ne perdre aucun champ inconnu.
 - Pont déjà en place dans `index.html` : à chaque sauvegarde, l'app web écrit `filesDir/focus-data.json`. Après la bascule (même package), l'app native lit ce fichier au premier lancement.
