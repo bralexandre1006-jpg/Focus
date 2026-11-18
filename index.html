@@ -1570,6 +1570,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 146px)}
 body.pillon .screen{padding-bottom:calc(var(--sb) + 190px)!important}
 body.pillon.gymopen .screen{padding-bottom:calc(var(--sb) + 260px)!important}
 body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
+body.mopen.mopen.mopen #s-today{padding-bottom:calc(var(--sb) + 170px)!important}
 .wopill.dock .wp-live{margin-left:-6px;transform:scale(.82)}
 .wopill .wp-live{transition:transform .3s var(--spring),margin .3s}
 .wopill.dock{transform:translate3d(calc(100% - 50px),0,0)!important;border-radius:21px 0 0 21px}
@@ -2810,7 +2811,7 @@ const renderNutrition = () => {
 let mealsOpen = false, fitT;
 $('#mTog').onclick = () => {
   mealsOpen = !mealsOpen;
-  $('#nutCard').classList.toggle('open', mealsOpen); $('#mTog').setAttribute('aria-expanded', mealsOpen);
+  $('#nutCard').classList.toggle('open', mealsOpen); $('#mTog').setAttribute('aria-expanded', mealsOpen); document.body.classList.toggle('mopen', mealsOpen);
   // à la fermeture, on attend la fin de l'animation avant de remesurer l'accueil
   clearTimeout(fitT); if (mealsOpen) fitHome(); else fitT = setTimeout(fitHome, 600);
   sfx.tap(); buzz();
@@ -3043,7 +3044,8 @@ const aiBar = () => { const p = aiNum($('#aiP').value) * 4, c = aiNum($('#aiC').
   $('#aiAdd').textContent = `Ajouter · ${fmt(aiNum($('#aiK').value))} kcal`; };
 ['aiK', 'aiP', 'aiC', 'aiF'].forEach(id => $('#' + id).addEventListener('input', aiBar));
 const aiScroll = () => requestAnimationFrame(() => { const b = $('#aiBody'); b.scrollTo({ top: b.scrollHeight, behavior: 'smooth' }); });
-const aiBubble = (cls, html) => { $('#aiChat').insertAdjacentHTML('beforeend', `<p class="${cls}">${html}</p>`); aiScroll(); return $('#aiChat').lastElementChild; };
+const aiBubble = (cls, html, noScroll) => { $('#aiChat').insertAdjacentHTML('beforeend', `<p class="${cls}">${html}</p>`); if (!noScroll) aiScroll(); return $('#aiChat').lastElementChild; };
+const aiTop = () => requestAnimationFrame(() => { const b = $('#aiBody'); b.scrollTo({ top: Math.max(0, $('#aiOut').offsetTop - 8), behavior: 'smooth' }); });
 const aiShow = (o, prev) => { aiCur = o;
   $('#aiName').value = o.nom || 'Plat'; $('#aiK').value = Math.round(+o.kcal || 0);
   $('#aiP').value = s1(aiNum(o.proteines)); $('#aiC').value = s1(aiNum(o.glucides)); $('#aiF').value = s1(aiNum(o.lipides));
@@ -3051,10 +3053,10 @@ const aiShow = (o, prev) => { aiCur = o;
   em.className = cf; em.textContent = `${o.grammes ? '~' + fmt(o.grammes) + ' g · ' : ''}confiance ${cf}`;
   let dif = ''; if (prev) { const k0 = Math.round(prev.kcal || 0), k1 = Math.round(+o.kcal || 0), d = k1 - k0;
     dif = `<br><span class="aid ${d > 0 ? 'up' : d < 0 ? 'dn' : 'eq'}">${d ? `${fmt(k0)} → ${fmt(k1)} kcal (${d > 0 ? '+' : '−'}${fmt(Math.abs(d))})` : 'Calories inchangées'}</span>`; }
-  aiBubble('ai', `<small>Chef</small>${esc(o.detail || '')}${dif}`); aiBar();
+  aiBubble('ai', `<small>Chef</small>${esc(o.detail || '')}${dif}`, true); aiBar();
   if (prev) { const kc = $('.aikc'); kc.classList.remove('flash'); void kc.offsetWidth; kc.classList.add('flash'); }
   $('#aiStart').classList.add('hidden'); $('#aiOut').classList.remove('hidden');
-  $('#aiGo').classList.add('hidden'); $('#aiAdd').classList.remove('hidden'); $('#aiAsk').classList.remove('hidden'); };
+  $('#aiGo').classList.add('hidden'); $('#aiAdd').classList.remove('hidden'); $('#aiAsk').classList.remove('hidden'); aiTop(); };
 let aiLast = null;
 const aiRun = async (prompt, prev) => {
   if (aiBusy) return; aiBusy = true; aiLast = [prompt, prev]; sfx.tap(); buzz();
@@ -3085,13 +3087,11 @@ $('#aiRe').onclick = () => { openOv('aiSrc'); sfx.tap(); };
 $('#aiClose').onclick = () => { closeOv('aiPage'); sfx.tap(); };
 $('#aiGo').onclick = () => { if (!aiImg) return; aiNoteTxt = $('#aiNote').value.trim(); $('#aiNote').blur(); if (aiNoteTxt) aiBubble('me', esc(aiNoteTxt)); aiRun(AI_PROMPT(aiNoteTxt)); };
 const aiSendMsg = txt => { const m = (txt || $('#aiMsg').value).trim(); if (!m || aiBusy) return;
-  if (!txt) { $('#aiMsg').value = ''; $('#aiSend').classList.add('off'); }
+  if (!txt) { $('#aiMsg').value = ''; $('#aiSend').classList.add('off'); } $('#aiMsg').blur();
   aiBubble('me', esc(m));
   const prev = aiCur ? { ...aiCur, nom: $('#aiName').value.trim(), kcal: aiNum($('#aiK').value), proteines: aiNum($('#aiP').value), glucides: aiNum($('#aiC').value), lipides: aiNum($('#aiF').value) } : null;
   if (!prev) { aiRun(AI_PROMPT([aiNoteTxt, m].filter(Boolean).join('. '))); return; }
   aiRun(AI_PROMPT(aiNoteTxt, prev, m), prev); };
-/* le clavier reste ouvert : le bouton et les suggestions ne prennent pas le focus */
-['#aiSend', '#aiChips'].forEach(q => $(q).addEventListener('pointerdown', e => { if (document.activeElement === $('#aiMsg')) e.preventDefault(); }));
 $('#aiSend').onclick = () => aiSendMsg();
 $$('#aiChips button').forEach(b => b.onclick = () => aiSendMsg(b.textContent));
 $('#aiMsg').addEventListener('input', () => $('#aiSend').classList.toggle('off', !$('#aiMsg').value.trim()));
