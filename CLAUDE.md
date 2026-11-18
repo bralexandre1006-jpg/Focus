@@ -11,7 +11,7 @@ Développement 100 % vibecoding : l'utilisateur n'édite pas le code. Communique
 6. Préserver les fonctionnalités existantes ; pas de suppression sans accord.
 7. Interfaces modernes, fluides, soignées, cohérentes avec le thème choisi (Sobre/Classique).
 8. Économie de tokens : lire uniquement les fichiers nécessaires (utiliser grep sur `index.html`, ne pas le lire en entier), pas d'analyses répétées, pas de sous-agents.
-9. Demander l'autorisation avant chaque `git push`. Tout push déclenche un build.
+9. Push autorisé sans redemander (accord de l'utilisateur). Tout push déclenche un build : prévenir en une ligne et envoyer le lien de l'APK.
 
 ## Mises à jour installables (priorité absolue)
 Chaque APK doit s'installer par-dessus la version existante, sans désinstallation.
@@ -23,6 +23,10 @@ Chaque APK doit s'installer par-dessus la version existante, sans désinstallati
 - Ne pas relever `minSdkVersion` sans accord (l'APK refuserait de s'installer sur le téléphone actuel).
 - Ajouter dans le workflow une vérification `apksigner verify --print-certs` qui fait échouer le build si l'empreinte SHA-256 diffère.
 - En cas de doute sur la signature ou le package : s'arrêter et demander.
+
+## Réécriture native en cours
+- Plan, inventaire des fonctions et avancement : `NATIVE_PLAN.md` (à lire en premier pour reprendre).
+- Code natif dans `native/`, compilé par `.github/workflows/build-native.yml` (release `native-apk`, jamais `apk`). L'app web reste la version installée tant que la bascule n'est pas validée.
 
 ## Architecture
 - `index.html` : toute l'app (vanilla JS, ~4600 lignes), embarquée par Capacitor.

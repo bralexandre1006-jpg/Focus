@@ -2,6 +2,10 @@ name: Construire APK Focus
 
 on:
   push:
+    paths-ignore:
+      - 'native/**'
+      - 'NATIVE_PLAN.md'
+      - '.github/workflows/build-native.yml'
   workflow_dispatch:
 
 jobs:

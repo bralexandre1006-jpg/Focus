@@ -2286,7 +2286,10 @@ const load = raw => {
 try { S = load(JSON.parse(localStorage.getItem(SK))); } catch(e){ S = load(null); }
 let dataVer = 0;
 let ACC1 = '#D7FF3A';
-const save = () => { dataVer++; try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} window.__qw && window.__qw(); };
+// pont vers la future version native : copie des données dans filesDir/focus-data.json (même fichier que lira l'app native)
+let bridgeT = 0;
+const bridgeSave = () => { clearTimeout(bridgeT); bridgeT = setTimeout(() => { try { P.Filesystem && P.Filesystem.writeFile({ path: 'focus-data.json', data: JSON.stringify(S), directory: 'DATA', encoding: 'utf8' }).catch(() => {}); } catch (e) {} }, 1500); };
+const save = () => { dataVer++; try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} window.__qw && window.__qw(); bridgeSave(); };
 const day = (k = today()) => (S.days[k] ||= { weight:null, workout:null, calories:0, steps:0, meals:[] });
 
 /* ---------- programme : semaine en cours et objectifs effectifs ---------- */
