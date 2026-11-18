@@ -78,6 +78,18 @@ class FocusStore(private val ctx: Context) {
         return Macros(kc, p, c, f, m.length())
     }
 
+    /** Ajoute un repas au jour et recalcule les calories (même règle que l'app web). */
+    fun addMeal(m: JSONObject, k: String = today()) {
+        val d = day(k); val a = d.optJSONArray("meals") ?: JSONArray().also { d.put("meals", it) }
+        m.put("id", java.lang.Long.toString(System.currentTimeMillis(), 36) + (Math.random() * 1e4).toInt()); a.put(m); syncCalories(d); save()
+    }
+    fun removeMeal(k: String, id: String) {
+        val d = dayOrNull(k) ?: return; val a = d.optJSONArray("meals") ?: return
+        val n = JSONArray(); for (i in 0 until a.length()) a.optJSONObject(i)?.takeIf { it.optString("id") != id }?.let { n.put(it) }
+        d.put("meals", n); syncCalories(d); save()
+    }
+    private fun syncCalories(d: JSONObject) { val a = d.optJSONArray("meals") ?: return; var t = 0.0; for (i in 0 until a.length()) t += a.optJSONObject(i)?.optDouble("kcal", 0.0) ?: 0.0; d.put("calories", Math.round(t)) }
+
     fun setWeight(w: Double?) {
         val d = day(); if (w == null) d.put("weight", JSONObject.NULL) else d.put("weight", w)
         d.put("wsrc", "man"); save()

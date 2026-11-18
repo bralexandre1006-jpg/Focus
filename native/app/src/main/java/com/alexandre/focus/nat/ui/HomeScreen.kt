@@ -96,7 +96,7 @@ fun HomeScreen(store: FocusStore, version: Int, onChanged: () -> Unit, onImport:
                     Box(Modifier.fillMaxWidth(if (pg.total > 0) (pg.week.toFloat() / pg.total).coerceIn(0f, 1f) else 0f).fillMaxHeight().background(C.spt)) } } }
             WeightCard(store, today, onChanged)
             SessionCard(store, today, onChanged, onGym)
-            NutritionCard(store, today)
+            NutritionCard(store, today, onChanged)
         }
     }
     if (badges) BadgesDialog(store) { badges = false }
@@ -256,7 +256,7 @@ fun WoBtn(yes: Boolean, wo: Boolean?, modifier: Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun NutritionCard(store: FocusStore, k: String) {
+fun NutritionCard(store: FocusStore, k: String, onChanged: () -> Unit = {}) {
     val m = store.macros(k); val g = store.kcalGoal
     val p by animateFloatAsState((m.kcal / g).toFloat().coerceIn(0f, 1f), tween(900), label = "kcal")
     FCard(C.cal) {
@@ -268,17 +268,11 @@ fun NutritionCard(store: FocusStore, k: String) {
             Box(Modifier.fillMaxWidth(p).fillMaxHeight().clip(RoundedCornerShape(3.dp)).background(Brush.horizontalGradient(listOf(C.cal, Color(0xFFFFB347)))))
         }
         Spacer(Modifier.height(10.dp))
-        var open by remember { mutableStateOf(false) }
-        if (m.n > 0) {
-            Spacer(Modifier.height(4.dp))
-            T(if (open) "Masquer les repas ▴" else "Repas (${m.n}) ▾", 13.sp, C.cal, FontWeight.ExtraBold, Modifier.clickable { open = !open }.padding(vertical = 4.dp))
-            if (open) {
-                val meals = store.dayOrNull(k)?.optJSONArray("meals")
-                for (i in 0 until (meals?.length() ?: 0)) { val x = meals!!.getJSONObject(i)
-                    Row(Modifier.fillMaxWidth().padding(vertical = 3.dp)) { T(x.optString("name"), 14.sp, C.txt, FontWeight.Bold, Modifier.weight(1f)); T("${x.optDouble("kcal", 0.0).roundToInt()} kcal", 14.sp, C.mut, FontWeight.Bold) } }
-                Spacer(Modifier.height(6.dp))
-            }
-        }
+        var open by remember { mutableStateOf(false) }; var add by remember { mutableStateOf<String?>(null) }
+        Spacer(Modifier.height(4.dp))
+        T(if (open) "Masquer les repas ▴" else "Repas${if (m.n > 0) " (${m.n})" else ""} ▾", 13.sp, C.cal, FontWeight.ExtraBold, Modifier.clickable { open = !open }.padding(vertical = 4.dp))
+        if (open) { MealSlots(store, k, { add = it }, onChanged); Spacer(Modifier.height(8.dp)) }
+        add?.let { sl -> AddMealDialog(store, sl, { add = null }) { add = null; onChanged() } }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val pg = store.proteinGoal
             Mac(if (pg > 0) "${m.p.roundToInt()} / $pg g" else "${m.p.roundToInt()} g", "Protéines", C.pro, Modifier.weight(1f))

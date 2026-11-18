@@ -22,31 +22,6 @@ import kotlin.math.roundToInt
 private val dayFmt = SimpleDateFormat("EEEE d MMMM", Locale.FRANCE)
 private fun dayLabel(k: String) = dayFmt.format(FocusStore.parse(k)).replaceFirstChar { it.uppercase() }
 
-/** Repas : recettes en cartes (comme la page web), données lues depuis le JSON. */
-@Composable
-fun MealsScreen(store: FocusStore) {
-    val recs = store.list("recipes").sortedBy { it.optString("name").lowercase() }
-    LazyColumn(Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(vertical = 12.dp)) {
-        if (recs.isEmpty()) item { FCard(C.cal) { T("Aucune recette", 18.sp); T("Crée tes recettes dans l'app actuelle pour l'instant.", 14.sp, C.mut, FontWeight.Bold) } }
-        items(recs) { r ->
-            val m = store.recipePer(r)
-            FCard(C.cal) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        T(r.optString("name"), 19.sp)
-                        T("${r.optInt("portions", 1)} portion${if (r.optInt("portions", 1) > 1) "s" else ""} · ${m.n} ingrédient${if (m.n > 1) "s" else ""}", 13.sp, C.mut, FontWeight.Bold)
-                    }
-                    Column(horizontalAlignment = Alignment.End) { T("${m.kcal.roundToInt()}", 28.sp); T("kcal", 12.sp, C.mut, FontWeight.Bold) }
-                }
-                Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    MacBar("Protéines", m.p, 60.0, C.pro, Modifier.weight(1f)); MacBar("Glucides", m.c, 120.0, C.carb, Modifier.weight(1f)); MacBar("Lipides", m.f, 50.0, C.fat, Modifier.weight(1f))
-                }
-            }
-        }
-    }
-}
-
 @Composable
 fun MacBar(lab: String, v: Double, max: Double, col: Color, modifier: Modifier) = Column(modifier) {
     Row(verticalAlignment = Alignment.Bottom) { T("${v.roundToInt()}", 17.sp); T(" g", 13.sp, C.mut, FontWeight.Bold) }

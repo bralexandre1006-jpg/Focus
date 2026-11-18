@@ -43,7 +43,8 @@
 - [ ] Accueil : aide « comment c'est calculé », décalages de séance et rythme 1 sur 2, ajout de repas depuis l'accueil.
 - [ ] Réglages natifs.
 - [ ] Podomètre natif branché (StepCounter) et widgets mis à jour depuis le natif.
-- [ ] Repas et recettes, scan code-barres.
+- [x] Repas v1 : ajout depuis une recette (portions) ou ajout rapide (100 g / repas entier, macros), repas par créneau sur l'accueil avec suppression, page Recettes en cartes pleine hauteur teintées.
+- [ ] Repas : création / modification de recette, aliments mémorisés, recherche dans la base, scan code-barres.
 - [ ] Muscu complète.
 - [ ] Stats, historique, bilans, badges.
 - [ ] Réglages, rappels, notifications, Health Connect.
