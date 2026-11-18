@@ -493,6 +493,16 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 .icsty button.on{border-color:var(--acc)}
 .icsty button.on small{color:var(--txt)}
 .seg2{display:flex;background:var(--card);border-radius:16px;padding:4px;margin-bottom:14px}
+.qtop{display:flex;gap:10px;margin-bottom:12px}.qtop .btn{flex:1;margin:0}
+.qai{background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,#FF7AD9))!important;color:#0B0B0F!important}
+.qai svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linejoin:round;margin-right:8px;vertical-align:-4px}
+.aibox{background:var(--card);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:20px;padding:12px;margin-bottom:14px}
+.aiimg{position:relative;margin-bottom:10px}.aiimg img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:14px}
+.aiimg button{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:12px;background:rgba(0,0,0,.6);color:#fff;font-weight:800}
+.aibox textarea{width:100%;resize:none;background:none;border:0;color:var(--txt);font:inherit;font-size:15px;font-weight:700;outline:none}
+.aires{font-size:14px;color:var(--mut);font-weight:700;line-height:1.45;margin-top:10px}.aires:empty{display:none}
+.aires b{color:var(--txt)}.aires .bad{color:var(--bad)}
+.aibox.busy #qAiGo{opacity:.6;pointer-events:none}
 .seg2 button{flex:1;height:44px;border-radius:12px;font-weight:800;font-size:15px;color:var(--mut);transition:background .3s,color .3s}
 .seg2 button.on{background:var(--txt);color:#0B0B0F}
 .qmode{margin:12px 0 0}
@@ -2012,7 +2022,15 @@ body.perf .wo-intro span{box-shadow:none!important}
       <div id="pickList"></div>
     </div>
     <div id="addQuick" class="hidden">
-      <button class="btn full press" id="qScan"><svg class="bc"><use href="#bcIco"/></svg>Scanner un produit</button>
+      <div class="qtop"><button class="btn press" id="qScan"><svg class="bc"><use href="#bcIco"/></svg>Scanner</button>
+        <button class="btn press qai" id="qAi"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h2l1.5-2h5L16 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg>Photo IA</button></div>
+      <input type="file" id="qAiF" accept="image/*" hidden>
+      <div id="qAiBox" class="aibox hidden">
+        <div class="aiimg"><img id="qAiImg" alt=""><button class="press" id="qAiX">✕</button></div>
+        <label class="field"><textarea id="qAiNote" rows="2" placeholder="Note facultative : 200 g de riz, sauce crème, demi-portion…"></textarea></label>
+        <button class="btn full press" id="qAiGo">Estimer les calories</button>
+        <div class="aires" id="qAiRes"></div>
+      </div>
       <div class="mini-lbl">Aliment</div>
       <label class="field"><input id="qName" placeholder="Nom ou recherche (ex : Pomme)" autocomplete="off"></label>
       <div id="qRecent"></div>
@@ -2717,7 +2735,7 @@ const openAdd = slot => {
   addSlot = slot; pickId = null; portions = 1;
   const s = SLOTS.find(x=>x[0]===slot);
   $('#addTitle').innerHTML = `${ic(s[2])} ${s[1]}`;
-  $('#recSearch').value = ''; ['qName','qKcal','qP','qC','qF','qGrams'].forEach(i=>$('#'+i).value=''); setQMode(false);
+  $('#recSearch').value = ''; ['qName','qKcal','qP','qC','qF','qGrams','qAiNote'].forEach(i=>$('#'+i).value=''); setQMode(false); aiImg = null; $('#qAiBox').classList.add('hidden');
   qAll = false; renderQuick();
   setAddMode(S.recipes.length ? 'rec' : 'quick');
   renderPick(); updateAddFoot(); openOv('addModal'); sfx.tap(); buzz();
@@ -2870,6 +2888,47 @@ const pickFood = k => { const f = S.foods[k]; if (!f) return; fillFood(f); sfx.t
 $('#qName').addEventListener('input', () => { qAll = false; renderQuick(); });
 ['qKcal','qP','qC','qF','qGrams'].forEach(id => $('#'+id).addEventListener('input', renderQRes));
 $('#qScan').onclick = async () => { const prod = await lookupProduct(); if (!prod) return; fillFood(S.foods[prod.name.toLowerCase()] || prod); };
+/* Photo IA : Gemini estime le plat (clé injectée au build depuis le secret GEMINI_KEY, ou collée dans l'app) */
+const GEM_KEY = '__GEMINI_KEY__';
+const aiKey = () => { let k = (S.settings.aiKey || '').trim() || (GEM_KEY.startsWith('__') ? '' : GEM_KEY);
+  if (!k) { k = (prompt('Colle ta clé Gemini (aistudio.google.com › Get API key) :') || '').trim(); if (k) { S.settings.aiKey = k; save(); } } return k; };
+let aiImg = null;
+const aiShrink = file => new Promise((ok, ko) => { const u = URL.createObjectURL(file), im = new Image();
+  im.onload = () => { const m = 1024, sc = Math.min(1, m / Math.max(im.width, im.height)), c = document.createElement('canvas');
+    c.width = Math.round(im.width * sc); c.height = Math.round(im.height * sc); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(u); ok(c.toDataURL('image/jpeg', .82)); };
+  im.onerror = ko; im.src = u; });
+$('#qAi').onclick = () => { $('#qAiF').value = ''; $('#qAiF').click(); sfx.tap(); buzz(); };
+$('#qAiF').onchange = async e => { const f = e.target.files[0]; if (!f) return;
+  try { aiImg = await aiShrink(f); } catch (x) { toast('Photo illisible'); return; }
+  $('#qAiImg').src = aiImg; $('#qAiRes').innerHTML = ''; $('#qAiBox').classList.remove('hidden'); };
+$('#qAiX').onclick = () => { aiImg = null; $('#qAiBox').classList.add('hidden'); sfx.tap(); };
+const AI_PROMPT = note => `Tu es nutritionniste. Analyse la photo de ce repas et estime ce qui a été mangé.${note ? ` Précisions de la personne (prioritaires sur la photo) : "${note}".` : ''}
+Réponds uniquement en JSON : {"nom": "nom court du plat en français", "grammes": poids total estimé en g, "kcal": total, "proteines": g, "glucides": g, "lipides": g, "confiance": "faible" | "moyenne" | "bonne", "detail": "une phrase listant les aliments et quantités estimés"}.
+Valeurs pour la portion visible entière, nombres sans unité.`;
+$('#qAiGo').onclick = async () => {
+  if (!aiImg) return; const key = aiKey(); if (!key) return;
+  const box = $('#qAiBox'), res = $('#qAiRes'); box.classList.add('busy'); res.innerHTML = 'Analyse en cours…'; sfx.tap(); buzz();
+  const body = JSON.stringify({ contents: [{ parts: [{ text: AI_PROMPT($('#qAiNote').value.trim()) }, { inline_data: { mime_type: 'image/jpeg', data: aiImg.split(',')[1] } }] }],
+    generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
+  let out = null, err = '';
+  for (const m of ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash']) {
+    try { const rq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+      const j = await rq.json();
+      if (!rq.ok) { err = (j.error && j.error.message) || rq.status; if (rq.status === 404) continue;
+        if (rq.status === 400 || rq.status === 403) { if (/key/i.test(err)) { S.settings.aiKey = ''; save(); } } break; }
+      const t = j.candidates && j.candidates[0] && j.candidates[0].content.parts.map(x => x.text || '').join('');
+      out = JSON.parse(t.replace(/^```json|```$/g, '').trim()); break;
+    } catch (x) { err = x.message || 'réseau'; }
+  }
+  box.classList.remove('busy');
+  if (!out) { res.innerHTML = `<span class="bad">Échec de l'analyse : ${esc(String(err))}</span>`; sfx.no && sfx.no(); return; }
+  const n = v => Math.round((+v || 0) * 10) / 10;
+  $('#qName').value = out.nom || 'Plat'; setQMode(true);
+  $('#qKcal').value = Math.round(+out.kcal || 0); $('#qP').value = s1(n(out.proteines)); $('#qC').value = s1(n(out.glucides)); $('#qF').value = s1(n(out.lipides));
+  res.innerHTML = `<b>${esc(out.nom || 'Plat')}</b>${out.grammes ? ` · ~${fmt(out.grammes)} g` : ''} · confiance ${esc(out.confiance || '?')}<br>${esc(out.detail || '')}<br>Vérifie les valeurs ci-dessous puis ajoute.`;
+  renderQRes(); updateAddFoot(); buzz('success');
+};
 const updateAddFoot = () => {
   const btn = $('#addConfirm');
   $('#portionRow').classList.toggle('hidden', addMode!=='rec' || !pickId);

@@ -22,9 +22,12 @@ jobs:
           java-version: 21
 
       - name: Preparer le projet
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
         run: |
           mkdir -p www assets
           cp index.html www/index.html
+          if [ -n "$GEMINI_KEY" ]; then sed -i "s|__GEMINI_KEY__|$GEMINI_KEY|" www/index.html; fi
           npm init -y
           npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/local-notifications @capacitor/haptics @capacitor/filesystem @capacitor/share @capacitor/app @capacitor-mlkit/barcode-scanning
           npx cap init Focus com.alexandre.focus --web-dir www
