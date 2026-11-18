@@ -1558,14 +1558,12 @@ body.pillon.lite #s-today{padding-bottom:calc(var(--sb) + 150px)!important}
 .modal{visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s}
 .modal.on{visibility:visible;transition:transform .55s var(--ease),visibility 0s}
 
-/* barre du bas : sans pastille qui glisse, l'onglet actif passe en couleur avec un point */
-.tab-ind,body.lite .tab-ind,.gymbar .tab-ind{display:none!important}
+/* barre du bas : pastille de couleur sous l'onglet actif, déplacement court et sans rebond */
+.tab-ind,body.lite .tab-ind,.gymbar .tab-ind{background:var(--acc)!important;box-shadow:none!important;transition:transform .2s ease,width .2s ease!important}
 .tabbar,body.lite .tabbar{background:#16161C!important;border:1px solid rgba(255,255,255,.07)!important;box-shadow:0 12px 28px rgba(0,0,0,.45)!important}
 .tab{transition:color .18s ease!important}
 .tab svg{transition:none!important;transform:none!important}
-.tab.on,body.lite .tab.on{color:var(--acc)!important}
-.tab.on::after{content:"";position:absolute;bottom:7px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--acc)}
-body.lite .tab.on::after{bottom:5px;width:4px;height:4px;margin-left:-2px}
+.tab.on,body.lite .tab.on{color:#0B0B0F!important}
 /* mode performance (option) : plus de halos, de lueurs ni de reflets qui tournent en boucle */
 body.perf .card::before{display:none!important}
 body.perf #ringGl,body.perf .ring .glw{display:none!important}
