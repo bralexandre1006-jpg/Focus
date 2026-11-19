@@ -184,7 +184,7 @@ function dlgCode(err) {
   $('#ov').innerHTML = `<div class="dlg"><h2>Connecte ton téléphone</h2><p>Dans l'app Focus : Réglages › <b>Synchro PC</b> › active l'envoi, puis tape ici le code affiché.</p>
     <input class="in" id="codeIn" maxlength="14" placeholder="XXXX XXXX XXXX" value="${esc(CFG.code || '')}"><div class="err">${err || ''}</div>
     <button class="btn" id="codeOk">Connecter</button>${CFG.code ? '<button class="btn ghost" id="codeX">Annuler</button>' : ''}</div>`;
-  $('#codeIn').focus();
+  const ci = $('#codeIn'); setTimeout(() => ci.focus(), 50); $('#ov').onmousedown = e => { if (e.target === ci) return; if (!e.target.closest('button')) { e.preventDefault(); ci.focus(); } };
   const go = async () => { const c = $('#codeIn').value.replace(/[^A-Z0-9]/gi, '').toUpperCase(); if (c.length < 8) return dlgCode('Code trop court');
     CFG = await fapi.setCode(c); $('#ov').classList.add('hidden'); connect(); };
   $('#codeOk').onclick = go; $('#codeIn').onkeydown = e => e.key === 'Enter' && go();

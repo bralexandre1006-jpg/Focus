@@ -6,7 +6,8 @@
 html,body{height:100%;background:transparent;overflow:hidden}
 body{font-family:Jakarta,"Segoe UI",system-ui,sans-serif;font-weight:700;color:var(--txt);font-size:13px;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;user-select:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-input{font:inherit;color:inherit}
+input{font:inherit;color:inherit;user-select:text;-webkit-user-select:text}
+.ov,.ov *,.dlg,.dlg *{-webkit-app-region:no-drag}
 svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .hidden{display:none!important}
 .drag{-webkit-app-region:drag}

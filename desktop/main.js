@@ -27,7 +27,7 @@ function createMain() {
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
   });
   main.loadFile(path.join(__dirname, 'src', 'index.html'));
-  main.once('ready-to-show', () => { if (!process.argv.includes('--hidden')) main.show(); });
+  main.once('ready-to-show', () => { if (!process.argv.includes('--hidden')) { main.show(); main.focus(); main.webContents.focus(); } });
   main.on('close', e => { if (!app.isQuitting) { e.preventDefault(); main.hide(); } });
   main.on('maximize', () => main.webContents.send('max', true));
   main.on('unmaximize', () => main.webContents.send('max', false));
