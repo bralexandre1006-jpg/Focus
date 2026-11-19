@@ -4029,30 +4029,40 @@ const syncPayload = () => {
     days[k] = [d.steps || 0, Math.round(d.calories || m.kcal || 0), d.weight || 0, d.workout === true ? 1 : d.workout === false ? 0 : -1, Math.round(m.p), Math.round(m.c), Math.round(m.f), d.off ? 1 : 0]; }
   const tot = Object.values(S.days).reduce((t, d) => t + (d.steps || 0), 0);
   const meals = (day(T).meals || []).map(m => ({ s: m.slot, n: m.name, k: Math.round(m.kcal || 0), p: Math.round(m.p || 0), c: Math.round(m.c || 0), f: Math.round(m.f || 0) }));
-  const wos = [...(S.workouts || [])].sort((a, b) => b.start - a.start).slice(0, 40).map(w => ({ n: w.name, t: w.start, m: w.min || 0,
+  const ml = {}; for (let i = 0; i < 60; i++) { const k = addDays(T, -i), d = S.days[k]; if (d && d.meals && d.meals.length) ml[k] = d.meals.map(m => [m.slot, m.name, Math.round(m.kcal || 0), Math.round(m.p || 0), Math.round(m.c || 0), Math.round(m.f || 0)]); }
+  const wos = [...(S.workouts || [])].sort((a, b) => b.start - a.start).slice(0, 150).map(w => ({ n: w.name, t: w.start, m: w.min || 0,
+    ex: (w.ex || []).map(e => [e.name, e.cat || '', (e.sets || []).filter(x => num(x.reps) > 0).map(x => [num(x.kg), e.uni ? num(x.reps) + num(x.repsR) : num(x.reps)])]),
     s: (w.ex || []).reduce((t, e) => t + (e.sets || []).length, 0), v: Math.round((w.ex || []).reduce((t, e) => t + (e.sets || []).reduce((u, x) => u + setVol(x, e.uni), 0), 0)) }));
   return { v: 1, at: Date.now(), name: (S.profile.name || '').trim(), accent: S.settings.accent || 'lime',
     goals: { steps: G.steps, kcal: G.kcal, protein: G.protein || 0, target: G.target || 0, start: G.start || 0 },
-    streak: notedRun(), total: tot, days, meals, wos };
+    streak: notedRun(), total: tot, days, meals, ml, wos };
 };
-let syncT = 0, syncBusy = false;
-const pushSync = async () => {
-  if (!S.sync || !S.sync.on || !S.sync.code || FB_URL.startsWith('__') || syncBusy) return;
+let syncT = 0, syncFT = 0, syncBusy = false, syncAgain = false, syncFull = 0;
+const fbSend = async (method, body) => { const ac = new AbortController(), to = setTimeout(() => ac.abort(), 15000);
+  try { const r = await fetch(`${FB_URL}/focus/${S.sync.code}.json`, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ac.signal }); return r.ok; }
+  catch (e) { return false; } finally { clearTimeout(to); } };
+/* envoi léger (aujourd'hui) presque instantané, envoi complet au plus toutes les 30 s */
+const pushSync = async (full) => {
+  if (!S.sync || !S.sync.on || !S.sync.code || FB_URL.startsWith('__')) return;
+  if (syncBusy) { syncAgain = true; return; }
   syncBusy = true;
-  try { const r = await fetch(`${FB_URL}/focus/${S.sync.code}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(syncPayload()) });
-    S.sync.ok = r.ok; S.sync.last = r.ok ? Date.now() : S.sync.last; } catch (e) { S.sync.ok = false; }
-  syncBusy = false; try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} if (cur === 'settings') syncUI(); };
-window.__pcSync = () => { clearTimeout(syncT); syncT = setTimeout(pushSync, 8000); };
+  let ok;
+  if (full || Date.now() - syncFull > 30000) { ok = await fbSend('PUT', syncPayload()); if (ok) syncFull = Date.now(); }
+  else { const T = today(), p = syncPayload(); ok = await fbSend('PATCH', { at: p.at, meals: p.meals, streak: p.streak, total: p.total, goals: p.goals, ['days/' + T]: p.days[T] || null, ['ml/' + T]: (p.ml && p.ml[T]) || null }); }
+  S.sync.ok = ok; if (ok) S.sync.last = Date.now();
+  syncBusy = false; try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} if (cur === 'settings') syncUI();
+  if (syncAgain) { syncAgain = false; setTimeout(() => pushSync(), 300); } };
+window.__pcSync = () => { clearTimeout(syncT); syncT = setTimeout(() => pushSync(), 1000); clearTimeout(syncFT); syncFT = setTimeout(() => pushSync(true), 20000); };
 const syncUI = () => { const on = !!(S.sync && S.sync.on);
   $('#tSync').classList.toggle('on', on); $('#syncBox').classList.toggle('hidden', !on);
   if (on) $('#syncCode').textContent = S.sync.code.replace(/(.{4})(?=.)/g, '$1 ');
   $('#syncI').textContent = on ? (S.sync.ok === false ? 'Erreur' : 'Activée') : '';
   $('#syncInfo').textContent = !on ? "Tes pas, repas, poids et séances s'affichent en direct dans le logiciel Focus pour Windows."
     : FB_URL.startsWith('__') ? 'Serveur de synchro pas encore configuré.'
-    : S.sync.last ? `Dernier envoi : ${new Date(S.sync.last).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })}${S.sync.ok === false ? ' · échec du dernier essai' : ''}` : 'Premier envoi en cours…'; };
+    : S.sync.ok === false ? "Échec du dernier envoi, nouvel essai à la prochaine modification." : S.sync.last ? 'Synchronisé en temps réel.' : 'Premier envoi en cours…'; };
 $('#tSync').onclick = () => { S.sync = S.sync || {};
   if (!S.sync.code) { const a = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = crypto.getRandomValues(new Uint8Array(12)); S.sync.code = [...b].map(x => a[x % a.length]).join(''); }
-  S.sync.on = !S.sync.on; save(); syncUI(); syncNative(); if (S.sync.on) pushSync(); sfx.tap(); buzz(); };
+  S.sync.on = !S.sync.on; save(); syncUI(); syncNative(); if (S.sync.on) pushSync(true); sfx.tap(); buzz(); };
 const syncNative = () => { try { P.StepCounter && P.StepCounter.setSync && P.StepCounter.setSync({ code: S.sync && S.sync.on ? S.sync.code : '', url: FB_URL.startsWith('__') ? '' : FB_URL }).catch(() => {}); } catch (e) {} };
 setTimeout(syncNative, 4000);
 $('#syncCopy').onclick = async () => { try { await navigator.clipboard.writeText(S.sync.code); toast('Code copié'); } catch (e) { toast(S.sync.code); } buzz(); };

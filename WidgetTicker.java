@@ -19,7 +19,7 @@ import java.util.Date;
 
 /** Met à jour les widgets toutes les 5 minutes avec le compteur de pas du téléphone, même app fermée. */
 public class WidgetTicker extends BroadcastReceiver {
-    static final long EVERY = 5 * 60 * 1000L;
+    static final long EVERY = 3 * 60 * 1000L;
 
     static boolean hasWidgets(Context c) {
         android.appwidget.AppWidgetManager m = android.appwidget.AppWidgetManager.getInstance(c);

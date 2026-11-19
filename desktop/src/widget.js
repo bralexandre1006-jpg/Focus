@@ -36,5 +36,6 @@ const start = code => { unsub(); unsub = subscribe(code, (d, st) => {
   const a = ACC[d.accent] || ACC.lime; document.documentElement.style.setProperty('--acc', a[0]); document.documentElement.style.setProperty('--acc2', a[1]);
   g.innerHTML = R[TYPE](d); }); };
 let CODE = null;
-fapi.cfg().then(c => { CODE = c.code; start(c.code); });
-fapi.on('cfg', c => { if (c.code !== CODE) { CODE = c.code; start(c.code); } });
+const lock = c => document.body.classList.toggle('locked', !!c.locked);
+fapi.cfg().then(c => { CODE = c.code; lock(c); start(c.code); });
+fapi.on('cfg', c => { lock(c); if (c.code !== CODE) { CODE = c.code; start(c.code); } });

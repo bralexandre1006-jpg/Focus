@@ -28,5 +28,9 @@ function subscribe(code, cb) {
     es.onerror = () => { es.close(); cb(data, 'offline'); setTimeout(open, Math.min(30000, 2000 * ++retry)); };
   };
   open();
-  return () => { stop = true; es && es.close(); };
+  /* relecture complète toutes les 3 minutes, au cas où le flux en direct décroche */
+  const pull = async () => { try { const r = await fetch(`${FB_URL}/focus/${code}.json`, { cache: 'no-store' }); if (!r.ok) return false; const v = await r.json(); if (v) { data = v; localStorage.setItem(cacheKey, JSON.stringify(v)); cb(data, 'live'); } return true; } catch (e) { return false; } };
+  window.focusRefresh = pull;
+  const poll = setInterval(pull, 180000);
+  return () => { stop = true; clearInterval(poll); es && es.close(); };
 }
