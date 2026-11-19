@@ -426,3 +426,4 @@ body.narrow .wx .d{display:none}
 .wdd-p{width:max(100%,280px);right:auto}
 .wdd-p .wrow{white-space:nowrap}
 .side .wdd{margin-top:12px}
+.rsz,.mini-b{display:none!important}

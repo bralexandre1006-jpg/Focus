@@ -3149,17 +3149,22 @@ const memPull = async () => { if (!S.sync || !S.sync.on || FB_URL.startsWith('__
 const memDraw = () => { const el = $('#coachMem'), m = coachMem();
   el.innerHTML = `<h5>Ce que ton coach retient</h5><small>${m.length ? 'Touche ✕ pour faire oublier un élément.' : 'Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…'}</small>${m.map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('')}`;
   $$('#coachMem [data-mi]').forEach(b => b.onclick = () => { S.coachMem = coachMem().filter((_, i) => i !== +b.dataset.mi); save(); memSync(); memDraw(); }); };
-const COACH_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français, tu tutoies, tu es bienveillant mais direct.
-Tu t'appuies uniquement sur les données fournies (pas, calories, macros, poids, séances) : cite des chiffres précis, repère les tendances et donne 2 à 4 conseils concrets et réalistes.
-Réponses courtes et aérées (10 lignes maximum), sans tableau. Tu n'es pas médecin : pour une douleur ou un problème de santé, conseille de consulter.`;
+const COACH_SYS = `Tu es le pote coach de la personne dans l'app Focus : un ami qui s'y connaît en sport et en nutrition, pas un assistant. Tu parles français, tu tutoies, ton ton est détendu, chaleureux et naturel, comme des messages entre potes (tu peux être drôle, chambrer gentiment, encourager).
+Règles :
+- Ne répète pas son prénom (au maximum de temps en temps), pas de formules d'IA (« Excellente question », « En tant que coach », « N'hésite pas à… »), pas de récap systématique.
+- Réponds court comme dans une vraie conversation : 2 à 6 phrases, des listes seulement si on te demande un plan.
+- Appuie-toi sur ses vraies données (pas, calories, macros, poids, séances) et cite un chiffre quand c'est utile.
+- Dis-lui franchement s'il faut réajuster quelque chose : objectif de pas, calories, protéines, rythme ou contenu des séances, repos, sommeil. Propose un ajustement précis et réaliste.
+- Tu peux lui poser une question pour mieux comprendre, comme le ferait un ami.
+- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.`;
 const coachDraw = () => { const el = $('#coachChat');
   el.innerHTML = coachMsgs.length ? coachMsgs.map(m => `<p class="${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join('')
-    : `<p class="ai"><small>Coach</small>Salut ${esc(S.profile.name || '')} ! Je vois tes pas, tes repas, ton poids et tes séances. Demande-moi un bilan ou un conseil.</p>`;
+    : `<p class="ai"><small>Coach</small>Yo ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on regarde ça ensemble ?</p>`;
   requestAnimationFrame(() => { const b = $('#coachBody'); b.scrollTop = b.scrollHeight; }); };
 const coachAsk = async txt => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
   coachMsgs.push({ r: 'user', t: txt }); coachDraw(); $('#coachMsg').value = ''; $('#coachSend').classList.add('off'); $('#coachMsg').blur();
   const typ = document.createElement('p'); typ.className = 'ai typing'; typ.innerHTML = '<small>Coach</small><span><i></i><i></i><i></i></span>'; $('#coachChat').appendChild(typ); $('#coachBody').scrollTop = 1e9;
-  const hist = coachMsgs.slice(-16).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
+  const hist = coachMsgs.slice(-20).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
   const mem = coachMem(), sys = COACH_SYS + '\n\nCe que tu sais déjà sur la personne :\n' + (mem.length ? mem.map(x => '- ' + x).join('\n') : '(rien pour l\'instant)');
   hist[hist.length - 1].content = `Mes données à jour :\n${coachData()}\n\nMon message : ${txt}`;
   let out = '', err = '';

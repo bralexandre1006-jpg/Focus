@@ -332,14 +332,21 @@ const cData = d => { const G = d.goals, T = today(), L = [`Prénom : ${d.name ||
   for (let i = 13; i >= 0; i--) { const k = addDays(T, -i), x = D(d, k), hw = (d.wos || []).some(w => key(new Date(w.t)) === k); L.push(`${k} ; ${x.steps} ; ${x.kcal} ; ${x.p}/${x.c}/${x.f} ; ${x.weight || '-'} ; ${x.off ? 'jour off' : hw || x.wo === 1 ? 'faite' : x.wo === 0 ? 'manquée' : '-'}`); }
   const w8 = (d.wos || []).slice(0, 8); if (w8.length) { L.push('Dernières séances :'); w8.forEach(w => L.push(`${key(new Date(w.t))} « ${w.n} » ${w.m} min : ${(w.ex || []).map(e => `${e[0]} ${(e[2] || []).map(s => (s[0] ? s[0] + 'kg×' : '') + s[1]).join(',')}`).join(' | ')}`)); }
   return L.join('\n'); };
-const C_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français, tu tutoies, tu es bienveillant mais direct. Tu t'appuies uniquement sur les données fournies : cite des chiffres précis, repère les tendances et donne 2 à 4 conseils concrets. Réponses courtes et aérées (12 lignes maximum), sans tableau. Tu n'es pas médecin : pour une douleur ou un problème de santé, conseille de consulter.`;
+const C_SYS = `Tu es le pote coach de la personne dans l'app Focus : un ami qui s'y connaît en sport et en nutrition, pas un assistant. Tu parles français, tu tutoies, ton ton est détendu, chaleureux et naturel, comme des messages entre potes (tu peux être drôle, chambrer gentiment, encourager).
+Règles :
+- Ne répète pas son prénom (au maximum de temps en temps), pas de formules d'IA (« Excellente question », « En tant que coach », « N'hésite pas à… »), pas de récap systématique.
+- Réponds court comme dans une vraie conversation : 2 à 6 phrases, des listes seulement si on te demande un plan.
+- Appuie-toi sur ses vraies données (pas, calories, macros, poids, séances) et cite un chiffre quand c'est utile.
+- Dis-lui franchement s'il faut réajuster quelque chose : objectif de pas, calories, protéines, rythme ou contenu des séances, repos, sommeil. Propose un ajustement précis et réaliste.
+- Tu peux lui poser une question pour mieux comprendre, comme le ferait un ami.
+- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.`;
 function pCoach(d) { return `<div class="card fx" style="height:100%;--g:var(--acc)"><div class="cch"><div class="hdr2"><div class="lab">Coach IA</div><div style="display:flex;gap:6px"><button class="chip ${cMemOpen ? 'on' : ''}" id="cMemB">Mémoire (${cMem().length})</button><button class="chip" id="cClr">Effacer</button></div></div>
   ${cMemOpen ? `<div class="cmem"><b>Ce que ton coach retient</b>${cMem().length ? cMem().map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('') : '<small>Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…</small>'}</div>` : ''}
-  <div class="msgs" id="cMsgs">${(CM.length ? CM : [{ r: 'ai', t: `Salut ${d.name || ''} ! Je vois tes pas, tes repas, ton poids et tes séances. Demande-moi un bilan ou un conseil.` }]).map(m => `<div class="m ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</div>`).join('')}${cBusy ? '<div class="m ai typ"><small>Coach</small><span><i></i><i></i><i></i></span></div>' : ''}</div>
+  <div class="msgs" id="cMsgs">${(CM.length ? CM : [{ r: 'ai', t: `Yo ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on regarde ça ensemble ?` }]).map(m => `<div class="m ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</div>`).join('')}${cBusy ? '<div class="m ai typ"><small>Coach</small><span><i></i><i></i><i></i></span></div>' : ''}</div>
   <div class="chips">${['Fais le bilan de ma semaine', 'Comment améliorer mes pas ?', 'Mes séances sont-elles équilibrées ?', 'Mon alimentation est-elle bonne ?', 'Où en est mon poids ?'].map(x => `<button data-cq="${x}">${x}</button>`).join('')}</div>
   <div class="ask"><input id="cIn" placeholder="Pose une question à ton coach…" autocomplete="off"><button id="cGo" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div></div>`; }
 async function coachAsk(t) { t = (t || '').trim(); if (!t || cBusy || !DATA) return; CM.push({ r: 'user', t }); cBusy = true; render();
-  const hist = CM.slice(-16).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t })); hist[hist.length - 1].content = `Mes données à jour :\n${cData(DATA)}\n\nMon message : ${t}`;
+  const hist = CM.slice(-20).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t })); hist[hist.length - 1].content = `Mes données à jour :\n${cData(DATA)}\n\nMon message : ${t}`;
   const mem = cMem(), sys = C_SYS + '\n\nCe que tu sais déjà sur la personne :\n' + (mem.length ? mem.map(x => '- ' + x).join('\n') : '(rien pour l\'instant)') + C_MEMRULE;
   let out = '', err = '';
   if (CL_KEY.startsWith('__')) err = 'clé IA absente';
@@ -501,13 +508,13 @@ $$('[data-rz]').forEach(el => el.onpointerdown = e => { e.preventDefault(); el.s
 $$('.lights button').forEach(b => b.onclick = () => fapi.win(b.dataset.w));
 /* barre latérale : largeur réglable à la souris, repliée en icônes sous 150 px */
 const setSW = w => { document.body.classList.toggle('mini', w < 150); document.body.classList.toggle('narrow', w >= 150 && w < 215); if (w >= 150) document.documentElement.style.setProperty('--sw', w + 'px'); else document.documentElement.style.removeProperty('--sw'); };
-try { const w = +localStorage.getItem('focus.sw'); if (w) setSW(w); } catch (e) {}
-$('#rsz').onmousedown = e => { e.preventDefault(); const r = $('#rsz'); r.classList.add('on'); document.body.classList.add('resizing'); let w = 0;
+setSW(210);
+$('#rsz').onmousedown = e => { return; e.preventDefault(); const r = $('#rsz'); r.classList.add('on'); document.body.classList.add('resizing'); let w = 0;
   const mv = ev => { w = Math.max(76, Math.min(340, ev.clientX)); setSW(w); };
   const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); r.classList.remove('on'); document.body.classList.remove('resizing'); if (w) { const f = w < 150 ? 76 : w; setSW(f); try { localStorage.setItem('focus.sw', f); } catch (e) {} } drawCharts(); };
   addEventListener('mousemove', mv); addEventListener('mouseup', up); };
 addEventListener('mouseup', e => { if (e.button === 3) goBack(); });
-$('#rsz').ondblclick = () => $('#miniB').onclick();
+
 $('#miniB').onclick = () => { const m = !document.body.classList.contains('mini'), w = m ? 76 : 248; setSW(w); try { localStorage.setItem('focus.sw', w); } catch (e) {} setTimeout(drawCharts, 280); };
 $('#setBtn').onclick = dlgSet;
 $('#refBtn').onclick = async () => { const b = $('#refBtn'); if (b.classList.contains('spin')) return; b.classList.add('spin');
