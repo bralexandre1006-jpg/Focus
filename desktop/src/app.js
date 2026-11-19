@@ -80,9 +80,9 @@ function pHome(d) {
       <div class="sub">${fmt(d.total)} pas depuis le début</div></div>
   </div>
   <div class="grid g21" style="margin-top:12px">
-    <div class="card"><div class="hdr"><div><div class="lab">${ic('cal')}Pas · 7 derniers jours</div><div class="big num">${fmt(avg(wkKs.map(k => D(d, k).steps)))}<small>pas / jour</small></div></div></div>
+    <div class="card" style="--g:var(--acc)"><div class="hdr"><div><div class="lab">${ic('cal')}Pas · 7 derniers jours</div><div class="big num">${fmt(avg(wkKs.map(k => D(d, k).steps)))}<small>pas / jour</small></div></div></div>
       <div style="margin-top:10px">${bars(wkKs.map(k => D(d, k).steps), wkKs.map(k => dayLbl(k).toUpperCase()), { id: 'w', goal: G.steps, h: 200, tip: i => `${dayLbl(wkKs[i])} · <b>${fmt(D(d, wkKs[i]).steps)}</b> pas` })}</div></div>
-    <div class="card"><div class="lab">${ic('food')}Repas du jour</div>${mealsList(d)}</div>
+    <div class="card" style="--g:var(--cal)"><div class="lab">${ic('food')}Repas du jour</div>${mealsList(d)}</div>
   </div>
   <div class="grid g21" style="margin-top:12px">
     <div class="card"><div class="hdr"><div><div class="lab">${ic('trend')}Tendance <span style="color:var(--dim)">· moyenne sur 7 jours</span></div><div class="legend"><span><i style="background:var(--acc)"></i>Pas</span><span><i style="background:var(--cal)"></i>Calories</span><span><i style="background:var(--wgt)"></i>Poids</span></div></div>
@@ -92,7 +92,7 @@ function pHome(d) {
         { vals: mavg(rng.map(k => D(d, k).kcal)), c: ['#FFC44A', '#FF5C8A'] },
         { vals: rng.map(k => D(d, k).weight), c: ['#4FE3D0', 'var(--wgt)'] }], rng.map(dShort),
         { id: 't', h: 210, area: false, tip: (j, i) => `${dShort(rng[i])} · <b>${j === 0 ? fmt(D(d, rng[i]).steps) + ' pas' : j === 1 ? fmt(D(d, rng[i]).kcal) + ' kcal' : f1(D(d, rng[i]).weight) + ' kg'}</b>` })}</div></div>
-    <div class="card"><div class="lab">${ic('gym')}Dernières séances</div>${wos.length ? `<div class="list">${wos.map(woLi).join('')}</div>` : '<div class="empty">Aucune séance</div>'}</div>
+    <div class="card" style="--g:#7896FF"><div class="lab">${ic('gym')}Dernières séances</div>${wos.length ? `<div class="list">${wos.map(woLi).join('')}</div>` : '<div class="empty">Aucune séance</div>'}</div>
   </div>`;
 }
 const woLi = w => `<div class="li"><span class="ic">${ic('gym')}</span><div><b>${esc(w.n)}</b><small>${new Date(w.t).toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric', month: 'short' })} · ${w.s} séries</small></div><div class="r"><b class="num">${w.m} min</b><small>${w.v >= 1000 ? f1(w.v / 1000) + ' t' : fmt(w.v) + ' kg'}</small></div></div>`;
@@ -111,7 +111,7 @@ function pSteps(d) {
     <div class="card"><div class="lab">${ic('cal')}Moyenne 7 jours</div><div class="big num">${fmt(avg(v.slice(-7)))}</div><div class="sub">${trend(avg(v.slice(-7)), avg(v.slice(-14, -7)))} vs semaine passée</div></div>
     <div class="card"><div class="lab">${ic('cal')}Moyenne 30 jours</div><div class="big num">${fmt(avg(v))}</div><div class="sub">Objectif atteint ${v.filter(x => x >= G.steps).length} j / 30</div></div>
     <div class="card"><div class="lab">${ic('trophy')}Depuis le début</div><div class="big num">${fmt(d.total)}</div><div class="sub">${(d.total / 1312).toFixed(0)} km environ</div></div></div>
-  <div class="card" style="margin-top:12px"><div class="lab">${ic('cal')}30 derniers jours</div>${bars(v, ks.map((k, i) => i % 3 === 2 || i === 29 ? dShort(k) : ''), { id: 's', goal: G.steps, h: 220, tip: i => `${dShort(ks[i])} · <b>${fmt(v[i])}</b> pas` })}</div>
+  <div class="card glow" style="margin-top:12px"><div class="lab">${ic('cal')}30 derniers jours</div>${bars(v, ks.map((k, i) => i % 3 === 2 || i === 29 ? dShort(k) : ''), { id: 's', goal: G.steps, h: 220, tip: i => `${dShort(ks[i])} · <b>${fmt(v[i])}</b> pas` })}</div>
   <div class="grid g21" style="margin-top:12px">
     <div class="card"><div class="lab">${ic('cal')}26 dernières semaines</div><div class="heat">${hk.map(k => { const s = D(d, k).steps, a = Math.min(1, s / hmx);
       return `<i data-t="${dShort(k)} · <b>${fmt(s)}</b> pas" style="${s ? `background:color-mix(in srgb,var(--acc) ${Math.round(15 + a * 85)}%,#1A1A1D)` : ''}"></i>`; }).join('')}</div></div>
@@ -127,8 +127,8 @@ function pFood(d) {
       <div class="ring">${ring(t.kcal / G.kcal, 'var(--cal)')}<b class="num">${Math.round(t.kcal / G.kcal * 100)} %</b></div>
       <div style="flex:1"><div class="big num">${fmt(t.kcal)}<small>/ ${fmt(G.kcal)} kcal</small></div><div class="sub">Reste ${fmt(Math.max(0, G.kcal - t.kcal))} kcal</div>
       <div class="macs">${[['Protéines', t.p, G.protein || 100, 'var(--pro)'], ['Glucides', t.c, G.kcal * .45 / 4, 'var(--carb)'], ['Lipides', t.f, G.kcal * .3 / 9, 'var(--fat)']].map(([l, x, g, c]) => `<div><b class="num">${fmt(x)}${l === 'Protéines' && G.protein ? ' / ' + G.protein : ''} g</b><small>${l}</small><i><s style="width:${Math.min(100, x / g * 100)}%;background:${c}"></s></i></div>`).join('')}</div></div></div></div>
-    <div class="card"><div class="lab">${ic('food')}Repas du jour</div>${mealsList(d)}</div></div>
-  <div class="card" style="margin-top:12px"><div class="lab">${ic('cal')}Calories · 14 jours</div>${bars(v, ks.map(dayLbl), { id: 'k', goal: G.kcal, h: 220, tip: i => `${dShort(ks[i])} · <b>${fmt(v[i])}</b> kcal` })}</div>`;
+    <div class="card" style="--g:var(--cal)"><div class="lab">${ic('food')}Repas du jour</div>${mealsList(d)}</div></div>
+  <div class="card" style="margin-top:12px;--g:var(--cal)"><div class="lab">${ic('cal')}Calories · 14 jours</div>${bars(v, ks.map(dayLbl), { id: 'k', goal: G.kcal, h: 220, tip: i => `${dShort(ks[i])} · <b>${fmt(v[i])}</b> kcal` })}</div>`;
 }
 function pWeight(d) {
   const G = d.goals, ks = lastN(90), v = ks.map(k => D(d, k).weight), lw = lastWeight(d), all = Object.keys(d.days || {}).filter(k => d.days[k][2]).sort().reverse().slice(0, 12);
@@ -137,7 +137,7 @@ function pWeight(d) {
     <div class="card"><div class="lab">${ic('scale')}Départ</div><div class="big num">${G.start ? f1(G.start) : '—'}<small>kg</small></div></div>
     <div class="card"><div class="lab">${ic('trophy')}Objectif</div><div class="big num">${G.target ? f1(G.target) : '—'}<small>kg</small></div></div>
     <div class="card"><div class="lab">${ic('trend')}Restant</div><div class="big num">${lw && G.target ? f1(Math.abs(lw - G.target)) : '—'}<small>kg</small></div></div></div>
-  <div class="grid g21" style="margin-top:12px"><div class="card"><div class="lab">${ic('trend')}90 derniers jours</div>${v.some(x => x) ? lines([{ vals: v, c: ['#4FE3D0', 'var(--wgt)'], target: G.target || null }], ks.map(dShort), { id: 'p', h: 240, tip: (j, i) => `${dShort(ks[i])} · <b>${f1(v[i])} kg</b>` }) : '<div class="empty">Aucune pesée</div>'}</div>
+  <div class="grid g21" style="margin-top:12px"><div class="card" style="--g:var(--wgt)"><div class="lab">${ic('trend')}90 derniers jours</div>${v.some(x => x) ? lines([{ vals: v, c: ['#4FE3D0', 'var(--wgt)'], target: G.target || null }], ks.map(dShort), { id: 'p', h: 240, tip: (j, i) => `${dShort(ks[i])} · <b>${f1(v[i])} kg</b>` }) : '<div class="empty">Aucune pesée</div>'}</div>
     <div class="card"><div class="lab">${ic('cal')}Dernières pesées</div><div class="list">${all.map((k, i) => { const w = d.days[k][2], p = all[i + 1] ? d.days[all[i + 1]][2] : null, df = p ? w - p : null;
       return `<div class="li" style="padding:8px 0"><div><b>${dShort(k)}</b></div><div class="r"><b class="num">${f1(w)} kg</b>${df != null ? `<small class="${df <= 0 ? 'up' : 'dn'}">${df > 0 ? '+' : df < 0 ? '−' : '±'}${f1(Math.abs(df))}</small>` : ''}</div></div>`; }).join('') || '<div class="empty">Aucune pesée</div>'}</div></div></div>`;
 }
@@ -151,8 +151,8 @@ function pGym(d) {
     <div class="card"><div class="lab">${ic('cal')}Ce mois-ci</div><div class="big num">${mo.length}<small>séances</small></div></div>
     <div class="card"><div class="lab">${ic('cal')}Temps ce mois</div><div class="big num">${Math.floor(mo.reduce((t, w) => t + w.m, 0) / 60)}<small>h</small> ${mo.reduce((t, w) => t + w.m, 0) % 60}<small>min</small></div></div>
     <div class="card"><div class="lab">${ic('trophy')}Volume ce mois</div><div class="big num">${f1(mo.reduce((t, w) => t + w.v, 0) / 1000)}<small>t</small></div></div></div>
-  <div class="grid g21" style="margin-top:12px"><div class="card"><div class="lab">${ic('cal')}Séances par semaine</div>${bars(cnt, weeks.map(a => dShort(key(a))), { id: 'g', h: 220, tip: i => `Semaine du ${dShort(key(weeks[i]))} · <b>${cnt[i]}</b>` })}</div>
-    <div class="card"><div class="lab">${ic('gym')}Historique</div>${wos.length ? `<div class="list">${wos.slice(0, 12).map(woLi).join('')}</div>` : '<div class="empty">Aucune séance</div>'}</div></div>`;
+  <div class="grid g21" style="margin-top:12px"><div class="card" style="--g:#7896FF"><div class="lab">${ic('cal')}Séances par semaine</div>${bars(cnt, weeks.map(a => dShort(key(a))), { id: 'g', h: 220, tip: i => `Semaine du ${dShort(key(weeks[i]))} · <b>${cnt[i]}</b>` })}</div>
+    <div class="card" style="--g:#7896FF"><div class="lab">${ic('gym')}Historique</div>${wos.length ? `<div class="list">${wos.slice(0, 12).map(woLi).join('')}</div>` : '<div class="empty">Aucune séance</div>'}</div></div>`;
 }
 const PAGES = { home: ['Aperçu', pHome], steps: ['Pas', pSteps], food: ['Nutrition', pFood], weight: ['Poids', pWeight], gym: ['Muscu', pGym] };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

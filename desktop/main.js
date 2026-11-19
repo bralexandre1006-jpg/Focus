@@ -4,11 +4,11 @@ const fs = require('fs');
 
 const CFG = path.join(app.getPath('userData'), 'config.json');
 const WIDGETS = {
-  steps: { w: 200, h: 200, label: 'Pas du jour' },
-  kcal: { w: 300, h: 180, label: 'Calories' },
-  weight: { w: 200, h: 200, label: 'Poids' },
+  steps: { w: 200, h: 214, label: 'Pas du jour' },
+  kcal: { w: 320, h: 150, label: 'Calories' },
+  weight: { w: 200, h: 214, label: 'Poids' },
   week: { w: 340, h: 190, label: 'Semaine' },
-  streak: { w: 200, h: 120, label: 'Série' }
+  streak: { w: 220, h: 110, label: 'Série' }
 };
 const load = () => { try { return JSON.parse(fs.readFileSync(CFG, 'utf8')); } catch (e) { return {}; } };
 let cfg = Object.assign({ code: '', widgets: {}, onTop: false, autostart: true }, load());
