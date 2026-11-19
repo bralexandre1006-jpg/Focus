@@ -9,7 +9,7 @@ const WIDGETS = {
   weight: { w: 214, h: 214, label: 'Poids' },
   week: { w: 214, h: 214, label: 'Semaine' },
   streak: { w: 214, h: 214, label: 'Série' },
-  all: { w: 442, h: 300, label: 'Tableau de bord' }
+  all: { w: 1600, h: 250, label: 'Tableau de bord' }
 };
 const load = () => { try { return JSON.parse(fs.readFileSync(CFG, 'utf8')); } catch (e) { return {}; } };
 let cfg = Object.assign({ code: '', widgets: {}, onTop: false, autostart: true, locked: false }, load());
@@ -40,7 +40,7 @@ function openWidget(type) {
   const d = WIDGETS[type], st = cfg.widgets[type] || {}, wa = screen.getPrimaryDisplay().workArea;
   const n = Object.keys(wins).length;
   const w = new BrowserWindow({
-    width: d.w, height: d.h, x: st.x ?? wa.x + wa.width - d.w - 24, y: st.y ?? wa.y + 24 + n * (d.h + 16),
+    width: d.w, height: d.h, x: st.x ?? (type === 'all' ? wa.x + Math.round((wa.width - d.w) / 2) : wa.x + wa.width - d.w - 24), y: st.y ?? (type === 'all' ? wa.y + 24 : wa.y + 24 + n * (d.h + 16)),
     frame: false, transparent: true, resizable: false, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
     focusable: true, icon: ICON, backgroundColor: '#00000000',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
@@ -73,7 +73,7 @@ function refreshTray() {
 }
 const LAYOUTS = { right: 'Colonne à droite', left: 'Colonne à gauche', top: 'Ligne en haut', bottom: 'Ligne en bas', grid: 'Grille à droite' };
 function applyLayout(name) {
-  let on = Object.keys(WIDGETS).filter(k => cfg.widgets[k] && cfg.widgets[k].on); if (!on.length) on = Object.keys(WIDGETS);
+  let on = Object.keys(WIDGETS).filter(k => k !== 'all' && cfg.widgets[k] && cfg.widgets[k].on); if (!on.length) on = Object.keys(WIDGETS).filter(k => k !== 'all');
   const wa = screen.getPrimaryDisplay().workArea, m = 24, g = 14, pos = {};
   if (name === 'right' || name === 'left') { let y = wa.y + m; on.forEach(k => { const d = WIDGETS[k]; pos[k] = [name === 'right' ? wa.x + wa.width - m - d.w : wa.x + m, y]; y += d.h + g; }); }
   else if (name === 'top' || name === 'bottom') { const tw = on.reduce((t, k) => t + WIDGETS[k].w, 0) + g * (on.length - 1), mh = Math.max(...on.map(k => WIDGETS[k].h)); let x = wa.x + Math.round((wa.width - tw) / 2);
@@ -88,6 +88,7 @@ function setOnTop(v) { cfg.onTop = v; saveCfg(); Object.values(wins).forEach(w =
 function setAutostart(v) { cfg.autostart = v; saveCfg(); app.setLoginItemSettings({ openAtLogin: v, args: ['--hidden'] }); broadcast('cfg', cfg); }
 
 app.whenReady().then(() => {
+  { const wa = screen.getPrimaryDisplay().workArea; WIDGETS.all.w = Math.min(1760, wa.width - 140); WIDGETS.all.h = Math.min(260, Math.round(wa.height * .26)); }
   app.setAppUserModelId('com.alexandre.focus.desktop');
   createMain();
   tray = new Tray(nativeImage.createFromPath(ICON).resize({ width: 32, height: 32, quality: 'best' }));

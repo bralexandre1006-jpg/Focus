@@ -262,12 +262,17 @@ function pGym(d) {
 const hiddenEx = () => { try { return JSON.parse(localStorage.getItem('focus.hiddenEx')) || []; } catch (e) { return []; } };
 /* duel avec un ami */
 let DUEL = null, DUELT = [];
-const duelStats = d => { const T = today(), mon = monday(T), k30 = lastN(30), m0 = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime(), wos = d.wos || [], lw = lastWeight(d), G = d.goals || {};
+let DPER = 'week';
+const duelStats = (d, per) => { const T = today(), wos = d.wos || [], lw = lastWeight(d), G = d.goals || {}, gs = G.steps || 10000;
+  const ks = per === 'day' ? [T] : period(per, 0).ks.filter(k => k <= T), t0 = parseKey(ks[0]).getTime(), t1 = parseKey(T).getTime() + 864e5;
+  const st = ks.map(k => D(d, k).steps), pw = wos.filter(w => w.t >= t0 && w.t < t1);
   const prog = G.start && G.target && lw && G.start !== G.target ? Math.max(0, Math.min(100, (G.start - lw) / (G.start - G.target) * 100)) : 0;
-  let wk = 0; for (let k = mon; k <= T; k = addDays(k, 1)) wk += D(d, k).steps;
-  return [['Pas aujourd\'hui', D(d, T).steps, fmt], ['Pas cette semaine', wk, fmt], ['Moyenne 30 jours', avg(k30.map(k => D(d, k).steps)), fmt], ['Série', d.streak || 0, v => v + ' j'],
-    ['Séances (semaine)', wos.filter(w => w.t >= parseKey(mon).getTime()).length, v => v], ['Volume du mois', sum(wos.filter(w => w.t >= m0).map(wVol)), v => f1(v / 1000) + ' t'],
-    ['Objectif de pas (30 j)', k30.filter(k => D(d, k).steps >= (G.steps || 10000)).length, v => v + ' j'], ['Objectif poids', prog, v => Math.round(v) + ' %']]; };
+  const r = [['Pas', sum(st), fmt]];
+  if (per !== 'day') r.push(['Moyenne / jour', avg(st), fmt], ['Meilleur jour', Math.max(0, ...st), fmt], ['Objectif de pas', st.filter(x => x >= gs).length, v => v + ' j']);
+  else r.push(['Distance', sum(st) * .00075, v => f1(v) + ' km'], ['Objectif de pas', st[0] >= gs ? 1 : 0, v => v ? 'atteint' : 'non']);
+  r.push(['Séances', pw.length, v => v], ['Volume soulevé', sum(pw.map(wVol)), v => v >= 1000 ? f1(v / 1000) + ' t' : fmt(v) + ' kg'], ['Temps de muscu', sum(pw.map(w => w.m)), v => v >= 60 ? Math.floor(v / 60) + ' h ' + (v % 60) + ' min' : v + ' min']);
+  r.push(['Série en cours', d.streak || 0, v => v + ' j'], ['Objectif poids', prog, v => Math.round(v) + ' %']);
+  return r; };
 function pDuel(d) {
   const fr = CFG.friends || [], me = d.name || 'Moi';
   if (!DUEL) return `<div class="row" style="grid-template-columns:1fr;height:100%"><div class="card fx" style="justify-content:center;align-items:center;text-align:center;gap:14px">
@@ -275,25 +280,26 @@ function pDuel(d) {
     <div class="dt" style="font-size:26px;margin:0">Défie un ami</div><div class="sub" style="max-width:420px;line-height:1.5">Demande-lui son code de synchro (Réglages › Synchro PC dans son app) et compare vos pas, séances, séries et progrès.</div>
     <div class="dfr"><input id="dCode" placeholder="CODE DE TON AMI" spellcheck="false" maxlength="16"><button class="btn sm" id="dGo">Lancer le duel</button></div><div class="err" id="dErr"></div>
     ${fr.length ? `<div class="dfr" style="flex-wrap:wrap;justify-content:center">${fr.map(f => `<button class="chip" data-fr="${esc(f.code)}">${esc(f.name || f.code)}</button>`).join('')}</div>` : ''}</div></div>`;
-  const o = DUEL.data, A = duelStats(d), B = duelStats(o), on = DUEL.step;
+  const o = DUEL.data, A = duelStats(d, DPER), B = duelStats(o, DPER), on = DUEL.step;
   let sa = 0, sb = 0; A.slice(0, on).forEach((x, i) => { if (x[1] > B[i][1]) sa++; else if (B[i][1] > x[1]) sb++; });
   const av = (nm, ph, c1, c2) => `<i style="--c1:${c1};--c2:${c2};${ph ? `background-image:url(${ph})` : ''}">${ph ? '' : esc((nm || '?')[0].toUpperCase())}</i>`;
   return `<div class="duel">
     <div class="card dh"><div class="dp">${av(me, CFG.photo, 'var(--acc)', 'var(--acc2)')}<div><b>${esc(me)}</b><small>Toi</small></div></div>
       <div class="ds num"><b class="${on >= A.length && sa > sb ? 'win' : ''}">${sa}</b><span>–</span><b class="${on >= A.length && sb > sa ? 'win' : ''}">${sb}</b></div>
       <div class="dp r">${av(o.name, null, '#5AB8FF', '#7C8CFF')}<div><b>${esc(o.name || 'Ami')}</b><small>${on >= A.length ? (sa > sb ? 'Perdu' : sb > sa ? 'Gagné' : 'Égalité') : '…'}</small></div></div></div>
+    <div class="sub" style="text-align:center;margin:-2px 0 2px">${{ day: "Duel du jour", week: 'Duel de la semaine', month: 'Duel du mois', year: "Duel de l'année" }[DPER]}</div>
     <div class="drs">${A.map(([l, va, f], i) => { const vb = B[i][1], mx = Math.max(va, vb, 1), w = va > vb ? 'wl' : vb > va ? 'wr' : 'eq', shown = i < on;
       return `<div class="drw ${shown ? 'on ' + w : ''}"><div class="vl num">${f(va)}</div><div class="bl"><s style="width:${shown ? va / mx * 100 : 0}%"></s></div>
         <div class="c"><b>${l}</b><em>${w === 'wl' ? `1 – 0 pour ${esc(me)}` : w === 'wr' ? `1 – 0 pour ${esc(o.name || 'Ami')}` : 'Égalité'}</em></div>
         <div class="br"><s style="width:${shown ? vb / mx * 100 : 0}%"></s></div><div class="vr num">${f(vb)}</div></div>`; }).join('')}</div>
-    <div class="dfr" style="justify-content:center"><button class="btn ghost sm" id="dAgain">Rejouer</button><button class="btn ghost sm" id="dNew">Autre ami</button></div></div>`;
+    <div class="dfr" style="justify-content:center"><div class="seg" id="dPer">${[['day', "Aujourd'hui"], ['week', 'Semaine'], ['month', 'Mois'], ['year', 'Année']].map(([k, l]) => `<button data-p="${k}" class="${DPER === k ? 'on' : ''}">${l}</button>`).join('')}</div><button class="btn ghost sm" id="dAgain">Rejouer</button><button class="btn ghost sm" id="dNew">Autre ami</button></div></div>`;
 }
 const startDuel = async code => { code = String(code || '').replace(/[^A-Z0-9]/gi, '').toUpperCase(); if (code.length < 8) { $('#dErr').textContent = 'Code trop court'; return; }
   if (code === CFG.code) { $('#dErr').textContent = "C'est ton propre code"; return; }
   try { const o = await fetchOnce(code); if (!o || !o.days) { $('#dErr').textContent = 'Aucune donnée pour ce code'; return; }
     CFG = await fapi.addFriend({ code, name: o.name || code }); DUEL = { code, data: o, step: 0 }; animDuel(); } catch (e) { $('#dErr').textContent = 'Impossible de joindre le serveur'; } };
 const animDuel = () => { DUELT.forEach(clearTimeout); DUEL.step = 0; render();
-  DUELT = Array.from({ length: 8 }, (_, i) => setTimeout(() => { if (!DUEL || PAGE !== 'duel') return; DUEL.step = i + 1; render(); }, 600 + i * 750)); };
+  DUELT = Array.from({ length: 10 }, (_, i) => setTimeout(() => { if (!DUEL || PAGE !== 'duel') return; DUEL.step = i + 1; render(); }, 500 + i * 600)); };
 const PAGES = { home: ['Aperçu', pHome, 'fit-home'], hist: ['Historique', pHist, 'fit-2'], steps: ['Pas', pSteps, 'fit-3'], food: ['Nutrition', pFood, 'fit-3'], weight: ['Poids', pWeight, 'fit-2'], gym: ['Séances', pGym, 'fit-3'], duel: ['Duel', pDuel, 'fit-2'] };
 
 let STACK = [];
@@ -326,7 +332,7 @@ function bind() {
   $$('.dr[data-k]').forEach(b => b.onclick = () => { ST.csel = b.dataset.k; render(); });
   if ($('#dGo')) { const ci = $('#dCode'); $('#dGo').onclick = () => startDuel(ci.value); ci.addEventListener('keydown', e => { if (e.key === 'Enter') startDuel(ci.value); }); }
   $$('[data-fr]').forEach(b => b.onclick = () => startDuel(b.dataset.fr));
-  if ($('#dAgain')) { $('#dAgain').onclick = animDuel; $('#dNew').onclick = () => { DUEL = null; render(); }; }
+  if ($('#dAgain')) { $('#dAgain').onclick = animDuel; $('#dNew').onclick = () => { DUEL = null; render(); }; $$('#dPer button').forEach(b => b.onclick = () => { DPER = b.dataset.p; animDuel(); }); }
 }
 function side() {
   const d = DATA;

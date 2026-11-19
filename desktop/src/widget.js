@@ -1,5 +1,6 @@
 const TYPE = new URLSearchParams(location.search).get('type') || 'steps';
 const g = document.getElementById('g');
+const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const FIRE = '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>';
 const T = t => `<div class="t"><i></i>${t}</div>`;
 const arc = (p, sz, sw, grad, glow = true) => { const r = (sz - sw) / 2, C = 2 * Math.PI * r;
@@ -25,16 +26,25 @@ const R = {
       <div class="wk" style="height:96px">${ks.map((k, i) => `<div><i class="${i === 6 ? 'now' : v[i] >= d.goals.steps ? 'ok' : ''}" style="height:${Math.max(8, v[i] / mx * 74)}px"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'narrow' }).toUpperCase()}</span></div>`).join('')}</div>`; },
   streak: d => `${T('Série')}<div class="stq"><div class="fl"><svg viewBox="0 0 24 24">${FIRE}</svg></div><div class="big num" style="font-size:44px">${d.streak || 0}</div><div class="sub" style="margin:0">jour${d.streak > 1 ? 's' : ''} d'affilée</div></div>`,
   all: d => { const G = d.goals, t = D(d, today()), w = lastWeight(d), ks = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)), v = ks.map(k => D(d, k).steps), mx = Math.max(G.steps, ...v, 1), df = w && G.start ? w - G.start : null;
-    return `<div class="wh">${T('Focus · aujourd\'hui')}<span class="pill"><svg viewBox="0 0 24 24" style="width:12px;height:12px;color:#FFC07A;stroke-width:2.4">${FIRE}</svg>${d.streak || 0} j</span></div>
-      <div class="allg"><div class="ring" style="width:112px;height:112px">${arc(t.steps / G.steps, 112, 10, 'a3')}<div class="c"><b class="big num" style="font-size:22px">${fmt(t.steps)}</b><small>pas</small></div></div>
-        <div class="allc"><div><div class="t" style="font-size:9.5px"><i style="background:#FF6B4A;box-shadow:0 0 8px #FF6B4A"></i>Calories</div><b class="big num" style="font-size:24px">${fmt(t.kcal)}<small>/ ${fmt(G.kcal)}</small></b>
-          <div class="bar" style="margin-top:6px"><i style="width:${Math.min(100, t.kcal / G.kcal * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></div>
-          <div class="sub" style="font-size:10.5px">P ${t.p} · G ${t.c} · L ${t.f} g</div></div>
-          <div><div class="t" style="font-size:9.5px"><i style="background:#6BD36E;box-shadow:0 0 8px #6BD36E"></i>Poids</div><b class="big num" style="font-size:24px">${w ? f1(w) : '—'}<small>kg</small></b>${df != null ? ` <span class="pill ${df <= 0 ? 'ok' : 'bad'}">${df <= 0 ? '−' : '+'}${f1(Math.abs(df))}</span>` : ''}</div></div></div>
-      <div class="wk" style="height:96px;margin-top:10px">${ks.map((k, i) => `<div><i class="${i === 6 ? 'now' : v[i] >= G.steps ? 'ok' : ''}" style="height:${Math.max(6, v[i] / mx * 70)}px;border-radius:8px"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'narrow' }).toUpperCase()}</span></div>`).join('')}</div>`; }
+    const pw = G.start && G.target && w ? Math.max(0, Math.min(1, (G.start - w) / (G.start - G.target))) : 0, wo = (d.wos || [])[0], m = (l, x, gl, c) => `<div>${l}<span class="bar"><i style="width:${Math.min(100, x / gl * 100)}%;background:${c}"></i></span><b class="num">${fmt(x)} g</b></div>`;
+    const left = G.kcal - t.kcal, wkAvg = v.reduce((a, b) => a + b, 0) / 7;
+    return `<div class="ban">
+      <section class="s1"><div class="ring" style="width:170px;height:170px">${arc(t.steps / G.steps, 170, 13, 'a3')}<div class="c"><b class="big num" style="font-size:34px">${fmt(t.steps)}</b><small>sur ${fmt(G.steps)} pas</small></div></div>
+        <div class="sub" style="margin-top:6px">≈ ${f1(t.steps * .00075)} km · ${fmt(t.steps * .04)} kcal</div></section>
+      <section><div class="t"><i style="background:#FF6B4A;box-shadow:0 0 8px #FF6B4A"></i>Calories</div><div class="big num" style="font-size:40px;margin-top:10px">${fmt(t.kcal)}<small>/ ${fmt(G.kcal)}</small></div>
+        <div class="bar" style="margin:10px 0 4px"><i style="width:${Math.min(100, t.kcal / G.kcal * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></div><span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)} kcal</span>
+        <div class="macs" style="margin-top:12px">${m('Prot.', t.p, G.protein || 100, '#FF5C8A')}${m('Gluc.', t.c, G.kcal * .45 / 4, '#FFC44A')}${m('Lip.', t.f, G.kcal * .3 / 9, '#5AB8FF')}</div></section>
+      <section class="wide"><div class="wh"><div class="t"><i style="background:#7C8CFF;box-shadow:0 0 8px #7C8CFF"></i>Pas · 7 jours</div><div style="text-align:right"><b class="num" style="font-size:22px">${fmt(wkAvg)}</b><div class="sub" style="margin:0;font-size:10.5px">par jour</div></div></div>
+        <div class="wk" style="flex:1;height:auto;margin-top:8px">${ks.map((k, i) => `<div><b class="num" style="font-size:10.5px;color:${i === 6 ? '#fff' : 'rgba(255,255,255,.6)'}">${v[i] >= 1000 ? Math.round(v[i] / 100) / 10 + 'k' : v[i]}</b><i class="${i === 6 ? 'now' : v[i] >= G.steps ? 'ok' : ''}" style="height:${Math.max(8, v[i] / mx * 100)}%"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '').toUpperCase()}</span></div>`).join('')}</div></section>
+      <section><div class="t"><i style="background:#6BD36E;box-shadow:0 0 8px #6BD36E"></i>Poids</div><div class="big num" style="font-size:40px;margin-top:10px">${w ? f1(w) : '—'}<small>kg</small></div>
+        <div style="margin-top:8px">${df != null ? `<span class="pill ${df <= 0 ? 'ok' : 'bad'}">${df <= 0 ? '−' : '+'}${f1(Math.abs(df))} kg</span>` : ''}</div>
+        <div class="bar" style="margin-top:14px"><i style="width:${pw * 100}%;background:linear-gradient(90deg,#4FE3D0,#6BD36E)"></i></div><div class="sub">${G.target && w ? `${f1(Math.abs(w - G.target))} kg avant ${f1(G.target)}` : ''}</div></section>
+      <section class="s5"><div class="t"><i style="background:#FF8A3D;box-shadow:0 0 8px #FF8A3D"></i>Série</div><div style="display:flex;align-items:center;gap:12px;margin-top:12px"><div class="fl"><svg viewBox="0 0 24 24">${FIRE}</svg></div><div class="big num" style="font-size:40px">${d.streak || 0}<small>j</small></div></div>
+        ${wo ? `<div class="t" style="margin-top:18px"><i style="background:#7896FF;box-shadow:0 0 8px #7896FF"></i>Dernière séance</div><div style="margin-top:6px;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(wo.n)}</div><div class="sub" style="margin-top:2px">${new Date(wo.t).toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric', month: 'short' })} · ${wo.m} min</div>` : ''}</section>
+    </div>`; }
 };
 const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#7C8CFF', streak: '#FF8A3D', all: 'var(--acc)' };
-g.style.setProperty('--tint', TINT[TYPE]);
+g.style.setProperty('--tint', TINT[TYPE]); if (TYPE === 'all') document.body.classList.add('big');
 document.getElementById('x').onclick = () => fapi.hideWidget(TYPE);
 g.ondblclick = () => fapi.win('open');
 let unsub = () => {};
