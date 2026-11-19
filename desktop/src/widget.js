@@ -47,7 +47,7 @@ const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#
 g.style.setProperty('--tint', TINT[TYPE]); if (TYPE === 'all') document.body.classList.add('big');
 document.getElementById('x').onclick = () => fapi.hideWidget(TYPE);
 document.getElementById('grip').onpointerdown = e => { e.preventDefault(); const sx = e.screenX, sy = e.screenY, w0 = innerWidth, h0 = innerHeight, el = e.currentTarget; el.setPointerCapture(e.pointerId);
-  el.onpointermove = ev => fapi.resizeWidget(TYPE, w0 + ev.screenX - sx, h0 + ev.screenY - sy, false);
+  let raf = 0, lx = 0, ly = 0; el.onpointermove = ev => { lx = ev.screenX; ly = ev.screenY; if (raf) return; raf = requestAnimationFrame(() => { raf = 0; fapi.resizeWidget(TYPE, w0 + lx - sx, h0 + ly - sy, false); }); };
   el.onpointerup = ev => { el.onpointermove = el.onpointerup = null; fapi.resizeWidget(TYPE, w0 + ev.screenX - sx, h0 + ev.screenY - sy, true); }; };
 g.ondblclick = () => fapi.win('open');
 let unsub = () => {};
@@ -56,6 +56,6 @@ const start = code => { unsub(); unsub = subscribe(code, (d, st) => {
   const a = ACC[d.accent] || ACC.lime; document.documentElement.style.setProperty('--acc', a[0]); document.documentElement.style.setProperty('--acc2', a[1]);
   g.innerHTML = R[TYPE](d); }); };
 let CODE = null;
-const lock = c => document.body.classList.toggle('locked', !!c.locked);
+const lock = c => { document.body.classList.toggle('locked', !!c.locked); ['dark', 'light', 'minimal', 'neon'].forEach(x => document.body.classList.toggle('st-' + x, c.wstyle === x)); };
 fapi.cfg().then(c => { CODE = c.code; lock(c); start(c.code); });
 fapi.on('cfg', c => { lock(c); if (c.code !== CODE) { CODE = c.code; start(c.code); } });

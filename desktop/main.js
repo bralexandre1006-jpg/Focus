@@ -41,7 +41,7 @@ function openWidget(type) {
   const n = Object.keys(wins).length;
   const w = new BrowserWindow({
     width: st.w || d.w, height: st.h || d.h, x: st.x ?? (type === 'all' ? wa.x + Math.round((wa.width - d.w) / 2) : wa.x + wa.width - d.w - 24), y: st.y ?? (type === 'all' ? wa.y + 24 : wa.y + 24 + n * (d.h + 16)),
-    frame: false, transparent: true, resizable: false, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
+    frame: false, transparent: true, resizable: type === 'all', thickFrame: false, minWidth: type === 'all' ? 560 : undefined, minHeight: type === 'all' ? 170 : undefined, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
     focusable: true, icon: ICON, backgroundColor: '#00000000',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
   });
@@ -103,9 +103,10 @@ ipcMain.handle('cfg:code', (e, code) => { cfg.code = String(code || '').replace(
 ipcMain.handle('widget:set', (e, type, on) => setWidget(type, on));
 ipcMain.handle('widget:ontop', (e, v) => setOnTop(v));
 ipcMain.handle('widget:lock', (e, v) => setLocked(v));
+ipcMain.handle('widget:style', (e, v) => { cfg.wstyle = v; saveCfg(); broadcast('cfg', cfg); });
 ipcMain.handle('widget:layout', (e, n) => applyLayout(n));
 ipcMain.on('widget:size', (e, type, w, h, done) => { const win = wins[type]; if (!win) return; w = Math.max(560, Math.min(2600, Math.round(w))); h = Math.max(170, Math.min(560, Math.round(h)));
-  win.setSize(w, h); if (done) { cfg.widgets[type] = { ...(cfg.widgets[type] || {}), w, h }; saveCfg(); } });
+  win.setBounds({ width: w, height: h }); if (done) { cfg.widgets[type] = { ...(cfg.widgets[type] || {}), w, h }; saveCfg(); } });
 ipcMain.handle('friend:add', (e, f) => { cfg.friends = [f, ...(cfg.friends || []).filter(x => x.code !== f.code)].slice(0, 8); saveCfg(); return cfg; });
 ipcMain.handle('autostart', (e, v) => setAutostart(v));
 ipcMain.on('win', (e, a) => {

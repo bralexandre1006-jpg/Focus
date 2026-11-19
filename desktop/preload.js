@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('fapi', {
   setWidget: (t, on) => ipcRenderer.invoke('widget:set', t, on),
   setOnTop: v => ipcRenderer.invoke('widget:ontop', v),
   setLocked: v => ipcRenderer.invoke('widget:lock', v),
+  setWStyle: v => ipcRenderer.invoke('widget:style', v),
   layout: n => ipcRenderer.invoke('widget:layout', n),
   addFriend: f => ipcRenderer.invoke('friend:add', f),
   resizeWidget: (t, w, h, done) => ipcRenderer.send('widget:size', t, w, h, done),
