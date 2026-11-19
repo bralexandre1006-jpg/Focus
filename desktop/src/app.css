@@ -57,7 +57,7 @@ nav button.dimq{opacity:.35}
 .me small s{width:6px;height:6px;border-radius:50%;background:var(--dim)}
 .me small.live s{background:var(--ok);box-shadow:0 0 8px var(--ok)}
 .me button{margin-left:auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--mut)}
-.me button:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.me #setBtn:hover{background:rgba(255,255,255,.05);color:var(--txt)}
 .me button svg{width:16px;height:16px}
 
 /* zone principale */
@@ -196,7 +196,6 @@ select.sel2{height:28px;border-radius:9px;background:var(--card2);border:1px sol
 .lays{display:flex;gap:4px;padding:4px 6px 2px}.lays button{flex:1;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--mut);background:rgba(255,255,255,.03);border:1px solid var(--line)}
 .lays button:hover{color:var(--acc);border-color:color-mix(in srgb,var(--acc) 40%,transparent)}.lays svg{width:20px;height:20px;stroke-width:1.6}
 .me .av{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:800;color:#0B0B0D;background:linear-gradient(135deg,var(--acc),var(--acc2)) center/cover;margin:0;overflow:hidden;flex-shrink:0}
-.me .av:hover{filter:brightness(1.1)}
 .crumb em{font-style:normal;color:var(--dim);margin-left:6px}
 .ref{margin-left:auto;display:flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:800;-webkit-app-region:no-drag}
 .ref:hover{color:var(--txt)}.ref svg{width:14px;height:14px;stroke-width:2.4}
@@ -337,3 +336,28 @@ body.mini .wdd-b{width:44px;height:40px;margin:0 auto}
 
 .hdr2{flex-wrap:wrap;row-gap:8px}
 .hdr2>div{flex-wrap:wrap;row-gap:6px}.seg button{white-space:nowrap}
+
+/* v8 : sans lignes de séparation, actualiser discret, historique */
+.side{border-right:0}.top{border-bottom:0}nav{border-bottom:0;padding-bottom:6px}.me{border-top:0}.brand{border-bottom:0!important}
+.ref{background:none!important;border:0!important;width:28px;height:28px;margin-right:6px;color:var(--mut)}.ref:hover{color:var(--txt);background:rgba(255,255,255,.05)!important}
+.top .lights{margin-left:10px}
+.dhero{display:flex;align-items:center;gap:16px;padding:12px;border-radius:16px;background:linear-gradient(120deg,color-mix(in srgb,var(--acc) 14%,transparent),rgba(255,255,255,.02));border:1px solid color-mix(in srgb,var(--acc) 22%,transparent)}
+.dhero .ring b{position:absolute;inset:0;display:grid;place-items:center}
+.dhero small{display:block;font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.mbs{display:flex;flex-direction:column;gap:7px;margin-top:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid var(--line)}
+.mb{display:grid;grid-template-columns:72px 1fr 46px;align-items:center;gap:10px;font-size:12px;color:var(--mut)}
+.mb i{height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden}.mb i s{display:block;height:100%;border-radius:3px}.mb b{text-align:right;color:var(--txt);font-size:12.5px}
+.ppi{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ppi b,.ppi span{font-size:11.5px;padding:4px 9px;border-radius:8px;white-space:nowrap}
+.ppi b{background:color-mix(in srgb,#B88CFF 22%,transparent);color:#D9C2FF}.ppi span{background:rgba(255,255,255,.05);color:var(--txt);font-weight:800}
+/* jours de l'historique */
+.days{gap:8px}
+.dc{grid-template-columns:64px 1.5fr 1fr 1fr 1fr auto;max-height:84px;padding:0 16px 0 0;border-radius:16px;background:linear-gradient(100deg,color-mix(in srgb,var(--c) 16%,var(--card)) 0%,var(--card) 55%);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.dc .dd{border-radius:15px 0 0 15px;background:color-mix(in srgb,var(--c) 26%,transparent)}
+.dc .dd b{font-size:22px}
+.dc .v.st{display:flex;align-items:center;gap:12px}.dc .v.st svg{width:40px;height:40px;transform:rotate(-90deg);flex-shrink:0}
+.dc .v.st b{font-size:18px}
+.dc .v .mini{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.07);margin-top:5px;overflow:hidden;width:70%}.dc .v .mini s{display:block;height:100%;border-radius:2px}
+.dc .bdg{padding:5px 10px;border-radius:9px;font-size:11px}
+.ppi{margin:0 0 6px}.ppi b,.ppi span{font-size:11px;padding:3px 8px}
+.fit-g{grid-template-rows:auto minmax(0,.85fr) minmax(0,1.15fr)}
