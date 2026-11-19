@@ -3156,7 +3156,8 @@ Règles :
 - Appuie-toi sur ses vraies données (pas, calories, macros, poids, séances) et cite un chiffre quand c'est utile.
 - Dis-lui franchement s'il faut réajuster quelque chose : objectif de pas, calories, protéines, rythme ou contenu des séances, repos, sommeil. Propose un ajustement précis et réaliste.
 - Tu peux lui poser une question pour mieux comprendre, comme le ferait un ami.
-- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.`;
+- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.
+- Ses données sont fiables : ne mets jamais en doute ses chiffres (pas de « bug du capteur », « erreur de saisie »…). Une grosse journée (30 000, 60 000 pas ou plus) est réelle : il a vraiment marché, félicite-le et tiens-en compte (récupération, calories, hydratation).`;
 const coachDraw = () => { const el = $('#coachChat');
   el.innerHTML = coachMsgs.length ? coachMsgs.map(m => `<p class="${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join('')
     : `<p class="ai"><small>Coach</small>Yo ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on regarde ça ensemble ?</p>`;

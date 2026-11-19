@@ -339,7 +339,8 @@ Règles :
 - Appuie-toi sur ses vraies données (pas, calories, macros, poids, séances) et cite un chiffre quand c'est utile.
 - Dis-lui franchement s'il faut réajuster quelque chose : objectif de pas, calories, protéines, rythme ou contenu des séances, repos, sommeil. Propose un ajustement précis et réaliste.
 - Tu peux lui poser une question pour mieux comprendre, comme le ferait un ami.
-- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.`;
+- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.
+- Ses données sont fiables : ne mets jamais en doute ses chiffres (pas de « bug du capteur », « erreur de saisie »…). Une grosse journée (30 000, 60 000 pas ou plus) est réelle : il a vraiment marché, félicite-le et tiens-en compte (récupération, calories, hydratation).`;
 function pCoach(d) { return `<div class="card fx" style="height:100%;--g:var(--acc)"><div class="cch"><div class="hdr2"><div class="lab">Coach IA</div><div style="display:flex;gap:6px"><button class="chip ${cMemOpen ? 'on' : ''}" id="cMemB">Mémoire (${cMem().length})</button><button class="chip" id="cClr">Effacer</button></div></div>
   ${cMemOpen ? `<div class="cmem"><b>Ce que ton coach retient</b>${cMem().length ? cMem().map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('') : '<small>Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…</small>'}</div>` : ''}
   <div class="msgs" id="cMsgs">${(CM.length ? CM : [{ r: 'ai', t: `Yo ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on regarde ça ensemble ?` }]).map(m => `<div class="m ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</div>`).join('')}${cBusy ? '<div class="m ai typ"><small>Coach</small><span><i></i><i></i><i></i></span></div>' : ''}</div>
