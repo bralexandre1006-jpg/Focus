@@ -426,6 +426,9 @@ function dlgSet() {
 /* interactions */
 $$('nav button').forEach(b => { b.onclick = () => { STACK = []; go(b.dataset.p); }; });
 $('#backB').onclick = goBack;
+$$('[data-rz]').forEach(el => el.onpointerdown = e => { e.preventDefault(); el.setPointerCapture(e.pointerId); fapi.rz('start', el.dataset.rz); let raf = 0;
+  el.onpointermove = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; fapi.rz('move'); }); };
+  el.onpointerup = () => { el.onpointermove = el.onpointerup = null; fapi.rz('end'); }; });
 $$('.lights button').forEach(b => b.onclick = () => fapi.win(b.dataset.w));
 /* barre latérale : largeur réglable à la souris, repliée en icônes sous 150 px */
 const setSW = w => { document.body.classList.toggle('mini', w < 150); document.body.classList.toggle('narrow', w >= 150 && w < 215); if (w >= 150) document.documentElement.style.setProperty('--sw', w + 'px'); else document.documentElement.style.removeProperty('--sw'); };
@@ -449,6 +452,7 @@ let rzT; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(
 const tip = document.createElement('div'); tip.className = 'tip'; document.body.appendChild(tip);
 addEventListener('mousemove', e => { const t = e.target.closest && e.target.closest('[data-t]'); if (!t) { tip.classList.remove('on'); return; }
   tip.innerHTML = t.dataset.t; tip.classList.add('on'); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 10, e.clientX + 14) + 'px'; tip.style.top = Math.max(6, e.clientY - 40) + 'px'; });
+fapi.on('max', m => document.body.classList.toggle('max', !!m));
 fapi.on('cfg', c => { const code = CFG.code; CFG = c; side(); if (c.code !== code) connect(); });
 setInterval(side, 30000);
 fapi.cfg().then(c => { CFG = c; side(); connect(); });

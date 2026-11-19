@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('fapi', {
   setOnTop: v => ipcRenderer.invoke('widget:ontop', v),
   setLocked: v => ipcRenderer.invoke('widget:lock', v),
   accent: a => ipcRenderer.send('accent', a),
+  rz: (k, v) => ipcRenderer.send('win:rz-' + k, v),
   setWStyle: v => ipcRenderer.invoke('widget:style', v),
   layout: n => ipcRenderer.invoke('widget:layout', n),
   addFriend: f => ipcRenderer.invoke('friend:add', f),

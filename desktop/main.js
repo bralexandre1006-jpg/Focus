@@ -23,7 +23,7 @@ app.on('second-instance', () => showMain());
 
 function createMain() {
   main = new BrowserWindow({
-    width: 1240, height: 800, minWidth: 900, minHeight: 620, frame: false, backgroundColor: '#0B0B0F',
+    width: 1240, height: 800, minWidth: 900, minHeight: 620, frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: true,
     show: false, icon: ICON, title: 'Focus',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
   });
@@ -120,6 +120,16 @@ function applyIcon(acc) {
   } catch (e) {}
 }
 ipcMain.on('accent', (e, acc) => applyIcon(acc));
+/* fenêtre arrondie (transparente) : redimensionnement par les bords dessinés dans la page */
+let rz = null;
+ipcMain.on('win:rz-start', (e, edge) => { if (!main || main.isMaximized()) return; rz = { edge, b: main.getBounds(), p: screen.getCursorScreenPoint() }; });
+ipcMain.on('win:rz-move', () => { if (!rz || !main) return; const c = screen.getCursorScreenPoint(), dx = c.x - rz.p.x, dy = c.y - rz.p.y, b = { ...rz.b }, [mw, mh] = main.getMinimumSize();
+  if (rz.edge.includes('r')) b.width = Math.max(mw, rz.b.width + dx);
+  if (rz.edge.includes('b')) b.height = Math.max(mh, rz.b.height + dy);
+  if (rz.edge.includes('l')) { const w = Math.max(mw, rz.b.width - dx); b.x = rz.b.x + rz.b.width - w; b.width = w; }
+  if (rz.edge.includes('t')) { const h = Math.max(mh, rz.b.height - dy); b.y = rz.b.y + rz.b.height - h; b.height = h; }
+  main.setBounds(b); });
+ipcMain.on('win:rz-end', () => { rz = null; });
 ipcMain.handle('widget:style', (e, v) => { cfg.wstyle = v; saveCfg(); broadcast('cfg', cfg); });
 ipcMain.handle('widget:layout', (e, n) => applyLayout(n));
 ipcMain.on('widget:size', (e, type, w, h, done) => { const win = wins[type]; if (!win) return; w = Math.max(560, Math.min(2600, Math.round(w))); h = Math.max(170, Math.min(560, Math.round(h)));

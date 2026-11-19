@@ -3,7 +3,7 @@
 :root{--bg:#0B0B0F;--side:#0B0B0F;--card:#16161C;--card2:#1F1F27;--line:rgba(255,255,255,.08);--txt:#F4F4F6;--mut:#8E8E9E;--dim:#5E5E6C;
   --acc:#D7FF3A;--acc2:#7BE07E;--ok:#3DDC84;--bad:#FF5C70;--cal:#FF8A4C;--pro:#FF5C8A;--carb:#FFC44A;--fat:#5AB8FF;--wgt:#6BD36E;--r:20px}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#0B0B0F;overflow:hidden}
+html,body{height:100%;background:transparent;overflow:hidden}
 body{font-family:Jakarta,"Segoe UI",system-ui,sans-serif;font-weight:700;color:var(--txt);font-size:13px;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;user-select:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input{font:inherit;color:inherit;user-select:text;-webkit-user-select:text}
@@ -14,7 +14,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .drag button,.drag input{-webkit-app-region:no-drag}
 .num{white-space:nowrap;font-family:Jakarta,sans-serif;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 
-.app{position:fixed;inset:0;display:grid;grid-template-columns:248px 1fr;background:var(--bg);overflow:hidden}
+.app{position:fixed;inset:0;display:grid;grid-template-columns:248px 1fr;background:var(--bg);overflow:hidden;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 body.max .app{border-radius:0;border:0}
 
 /* barre latérale */
@@ -372,3 +372,10 @@ body.mini .wdd-b{width:44px;height:40px;margin:0 auto}
 .dc .dd b{font-size:17px!important}.dc .dd small{font-size:9px}
 .dc .v.st svg{width:34px!important;height:34px!important}.dc .v.st b{font-size:16px!important}
 .days .dc{flex:0 0 auto;height:74px}
+
+.rzh{position:fixed;z-index:100;-webkit-app-region:no-drag}
+.rzh.r{top:16px;right:0;bottom:16px;width:6px;cursor:ew-resize}.rzh.l{top:16px;left:0;bottom:16px;width:6px;cursor:ew-resize}
+.rzh.b{left:16px;right:16px;bottom:0;height:6px;cursor:ns-resize}.rzh.t{left:16px;right:16px;top:0;height:5px;cursor:ns-resize}
+.rzh.br{right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize}.rzh.bl{left:0;bottom:0;width:16px;height:16px;cursor:nesw-resize}
+.rzh.tr{right:0;top:0;width:12px;height:12px;cursor:nesw-resize}.rzh.tl{left:0;top:0;width:12px;height:12px;cursor:nwse-resize}
+body.max .rzh{display:none}
