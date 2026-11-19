@@ -2240,8 +2240,7 @@ body.perf .wo-intro span{box-shadow:none!important}
 <div class="aipg" id="coachPage">
   <div class="aihd"><button class="press" id="coachX" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div style="min-width:0;flex:1"><b>Coach</b><small>Ton coach IA</small></div><button class="press cmemb" id="coachMemB" aria-label="Mémoire"><svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-1zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg></button></div>
   <div class="aibd" id="coachBody"><div class="cmem hidden" id="coachMem"></div><div class="aichat" id="coachChat"></div></div>
-  <div class="aift"><div class="aichips" id="coachChips"><button>Fais le bilan de ma semaine</button><button>Comment améliorer mes pas ?</button><button>Mes séances sont-elles équilibrées ?</button><button>Mon alimentation est-elle bonne ?</button><button>Où en est mon poids ?</button></div>
-    <div class="aiask"><input id="coachMsg" placeholder="Pose une question à ton coach…" autocomplete="off" enterkeyhint="send"><button class="press off" id="coachSend" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div>
+  <div class="aift"><div class="aiask"><input id="coachMsg" placeholder="Pose une question à ton coach…" autocomplete="off" enterkeyhint="send"><button class="press off" id="coachSend" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div>
 </div>
 <div class="aipg" id="aiPage">
   <div class="aihd"><button class="press" id="aiClose" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div><b>Photo IA</b><small id="aiSlot"></small></div></div>
@@ -3182,7 +3181,6 @@ $('#coachX').onclick = () => { closeOv('coachPage'); sfx.tap(); };
 $('#coachSend').onclick = () => coachAsk($('#coachMsg').value);
 $('#coachMsg').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); coachAsk($('#coachMsg').value); } });
 $('#coachMsg').addEventListener('input', () => $('#coachSend').classList.toggle('off', !$('#coachMsg').value.trim()));
-$$('#coachChips button').forEach(b => b.onclick = () => coachAsk(b.textContent));
 const updateAddFoot = () => {
   const btn = $('#addConfirm');
   $('#portionRow').classList.toggle('hidden', addMode!=='rec' || !pickId);
