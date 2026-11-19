@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://*.firebasedatabase.app https://*.firebaseio.com; style-src 'self' 'unsafe-inline'; font-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://*.firebasedatabase.app https://*.firebaseio.com https://api.open-meteo.com; style-src 'self' 'unsafe-inline'; font-src 'self'">
 <style>
 @font-face{font-family:Jakarta;src:url(fonts/jakarta700.ttf);font-weight:700}
 @font-face{font-family:Jakarta;src:url(fonts/jakarta800.ttf);font-weight:800}
@@ -81,7 +81,7 @@ body.locked .g{-webkit-app-region:no-drag}body.locked .x{display:none}
 body.big .g{border-radius:34px;padding:18px 20px}
 .grip{display:none;position:absolute;right:12px;bottom:12px;width:18px;height:18px;z-index:6;cursor:nwse-resize;-webkit-app-region:no-drag;opacity:0;transition:opacity .2s;
   background:linear-gradient(135deg,transparent 45%,rgba(255,255,255,.6) 45%,rgba(255,255,255,.6) 52%,transparent 52%,transparent 66%,rgba(255,255,255,.6) 66%,rgba(255,255,255,.6) 73%,transparent 73%)}
-body.big .grip{display:block}body.big:hover .grip{opacity:.8}body.locked .grip{display:none!important}
+body.big .grip,body.rs .grip{display:block}body.big:hover .grip,body.rs:hover .grip{opacity:.8}body.locked .grip{display:none!important}
 body.big .ban .s1 .ring{width:min(170px,62vh)!important;height:min(170px,62vh)!important}
 body.big .ban .big{font-size:clamp(20px,15vh,46px)!important}
 body.big .ban .s1 .big{font-size:clamp(16px,12vh,36px)!important}
@@ -111,6 +111,21 @@ body.st-neon .big{text-shadow:0 0 14px color-mix(in srgb,var(--tint) 70%,transpa
 .dots i.now{outline:2px solid rgba(255,255,255,.7);outline-offset:2px}
 .dots span{font-size:9.5px;font-weight:800;color:rgba(255,255,255,.6)}
 .goalx .pill{white-space:nowrap;font-size:10.5px}.goalx{margin-top:10px;display:flex;align-items:baseline;gap:8px}.goalx b{font-size:18px}.goalx small{font-size:11px;color:rgba(255,255,255,.7)}
+.ck{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ck .tm{font-size:min(30vw,48vh);font-weight:800;letter-spacing:-.05em;line-height:.95;text-shadow:0 4px 24px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
+.ck .tm s{text-decoration:none;opacity:.9;animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:.25}}
+.ck .sc{font-size:min(7vw,10vh);color:var(--acc);font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.ck .dt{font-size:min(6vw,8.5vh);color:rgba(255,255,255,.72);margin-top:min(3vh,10px);font-weight:700;text-transform:capitalize}
+.ana{width:min(86vw,86vh);height:min(86vw,86vh)}
+.ana .hd{stroke:#fff;stroke-linecap:round}.ana .sd{stroke:var(--acc);stroke-linecap:round}
+.wxw{height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:min(3vh,10px)}
+.wxw .c{font-size:min(5.5vw,6vh);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.wxw .m{display:flex;align-items:center;gap:min(4vw,14px)}.wxw .e{font-size:min(22vw,26vh);line-height:1;filter:drop-shadow(0 4px 14px rgba(0,0,0,.3))}
+.wxw .t{font-size:min(24vw,30vh);font-weight:800;letter-spacing:-.05em;line-height:.9}
+.wxw .d{font-size:min(5.2vw,6vh);color:rgba(255,255,255,.75)}
+.wxw .fc{display:flex;justify-content:space-between;gap:4px}.wxw .fc div{flex:1;text-align:center;font-size:min(4.4vw,5vh);color:rgba(255,255,255,.7);padding:min(2vh,8px) 0;border-radius:12px;background:rgba(255,255,255,.07)}
+.wxw .fc b{display:block;font-size:min(7vw,8vh);margin:2px 0}.wxw .fc span{color:#fff;font-weight:800}
+@media (max-height:210px){.wxw .fc{display:none}}@media (max-height:150px){.wxw .d{display:none}}
 .off{display:grid;place-items:center;height:100%;text-align:center;font-size:12px;color:rgba(255,255,255,.75);line-height:1.4}
 </style>
 </head>

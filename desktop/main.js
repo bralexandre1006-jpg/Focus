@@ -9,8 +9,12 @@ const WIDGETS = {
   weight: { w: 214, h: 214, label: 'Poids' },
   week: { w: 214, h: 214, label: 'Semaine' },
   streak: { w: 214, h: 214, label: 'Série' },
-  all: { w: 1600, h: 250, label: 'Tableau de bord' }
+  all: { w: 1600, h: 250, label: 'Tableau de bord' },
+  clock: { w: 260, h: 260, label: 'Horloge' },
+  weather: { w: 300, h: 300, label: 'Météo' }
 };
+/* tailles min et max des widgets redimensionnables */
+const RSZ = { all: [560, 170, 2600, 560], clock: [150, 110, 900, 700], weather: [180, 150, 900, 700] };
 const load = () => { try { return JSON.parse(fs.readFileSync(CFG, 'utf8')); } catch (e) { return {}; } };
 let cfg = Object.assign({ code: '', widgets: {}, onTop: false, autostart: true, locked: false }, load());
 const saveCfg = () => { try { fs.writeFileSync(CFG, JSON.stringify(cfg, null, 2)); } catch (e) {} };
@@ -41,7 +45,7 @@ function openWidget(type) {
   const n = Object.keys(wins).length;
   const w = new BrowserWindow({
     width: st.w || d.w, height: st.h || d.h, x: st.x ?? (type === 'all' ? wa.x + Math.round((wa.width - d.w) / 2) : wa.x + wa.width - d.w - 24), y: st.y ?? (type === 'all' ? wa.y + 24 : wa.y + 24 + n * (d.h + 16)),
-    frame: false, transparent: true, resizable: type === 'all', thickFrame: false, minWidth: type === 'all' ? 560 : undefined, minHeight: type === 'all' ? 170 : undefined, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
+    frame: false, transparent: true, resizable: !!RSZ[type], thickFrame: false, minWidth: RSZ[type] ? RSZ[type][0] : undefined, minHeight: RSZ[type] ? RSZ[type][1] : undefined, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
     focusable: true, icon: ICON, backgroundColor: '#00000000',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, backgroundThrottling: false }
   });
@@ -131,8 +135,9 @@ ipcMain.on('win:rz-move', () => { if (!rz || !main) return; const c = screen.get
   main.setBounds(b); });
 ipcMain.on('win:rz-end', () => { rz = null; });
 ipcMain.handle('widget:style', (e, v) => { cfg.wstyle = v; saveCfg(); broadcast('cfg', cfg); });
+ipcMain.handle('widget:clock', (e, v) => { cfg.clock = v; saveCfg(); broadcast('cfg', cfg); });
 ipcMain.handle('widget:layout', (e, n) => applyLayout(n));
-ipcMain.on('widget:size', (e, type, w, h, done) => { const win = wins[type]; if (!win) return; w = Math.max(560, Math.min(2600, Math.round(w))); h = Math.max(170, Math.min(560, Math.round(h)));
+ipcMain.on('widget:size', (e, type, w, h, done) => { const win = wins[type], m = RSZ[type]; if (!win || !m) return; w = Math.max(m[0], Math.min(m[2], Math.round(w))); h = Math.max(m[1], Math.min(m[3], Math.round(h)));
   win.setBounds({ width: w, height: h }); if (done) { cfg.widgets[type] = { ...(cfg.widgets[type] || {}), w, h }; saveCfg(); } });
 ipcMain.handle('friend:add', (e, f) => { cfg.friends = [f, ...(cfg.friends || []).filter(x => x.code !== f.code)].slice(0, 8); saveCfg(); return cfg; });
 ipcMain.handle('autostart', (e, v) => setAutostart(v));

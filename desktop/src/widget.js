@@ -50,19 +50,40 @@ const R = {
         ${wo ? `<div class="sub" style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Dernière séance : <b style="color:#fff">${esc(wo.n)}</b> · ${new Date(wo.t).toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric' })}</div>` : ''}</section>
     </div>`; }
 };
-const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#7C8CFF', streak: '#FF8A3D', all: 'var(--acc)' };
-g.style.setProperty('--tint', TINT[TYPE]); if (TYPE === 'all') document.body.classList.add('big');
+const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#7C8CFF', streak: '#FF8A3D', all: 'var(--acc)', clock: 'var(--acc)', weather: '#5AB8FF' };
+g.style.setProperty('--tint', TINT[TYPE]); if (TYPE === 'all') document.body.classList.add('big'); if (TYPE === 'clock' || TYPE === 'weather') document.body.classList.add('rs');
 document.getElementById('x').onclick = () => fapi.hideWidget(TYPE);
 document.getElementById('grip').onpointerdown = e => { e.preventDefault(); const sx = e.screenX, sy = e.screenY, w0 = innerWidth, h0 = innerHeight, el = e.currentTarget; el.setPointerCapture(e.pointerId);
   let raf = 0, lx = 0, ly = 0; el.onpointermove = ev => { lx = ev.screenX; ly = ev.screenY; if (raf) return; raf = requestAnimationFrame(() => { raf = 0; fapi.resizeWidget(TYPE, w0 + lx - sx, h0 + ly - sy, false); }); };
   el.onpointerup = ev => { el.onpointermove = el.onpointerup = null; fapi.resizeWidget(TYPE, w0 + ev.screenX - sx, h0 + ev.screenY - sy, true); }; };
 g.ondblclick = () => fapi.win('open');
 let unsub = () => {};
-const start = code => { unsub(); unsub = subscribe(code, (d, st) => {
+/* horloge et météo : sans données du téléphone */
+let CLK = 'digital', ckT = 0;
+const drawClock = () => { const n = new Date(), hh = String(n.getHours()).padStart(2, '0'), mm = String(n.getMinutes()).padStart(2, '0'), ss = String(n.getSeconds()).padStart(2, '0'), dt = n.toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' });
+  if (CLK === 'analog') { const a = (v, m) => v / m * 360, H = a(n.getHours() % 12 + n.getMinutes() / 60, 12), M = a(n.getMinutes() + n.getSeconds() / 60, 60), S = a(n.getSeconds(), 60);
+    const tk = Array.from({ length: 12 }, (_, i) => `<line x1="50" y1="6" x2="50" y2="${i % 3 ? 10 : 13}" stroke="rgba(255,255,255,${i % 3 ? .4 : .85})" stroke-width="${i % 3 ? 1.2 : 2.4}" stroke-linecap="round" transform="rotate(${i * 30} 50 50)"/>`).join('');
+    g.innerHTML = `<div class="ck"><svg class="ana" viewBox="0 0 100 100">${tk}<line class="hd" x1="50" y1="50" x2="50" y2="27" stroke-width="4" transform="rotate(${H} 50 50)"/><line class="hd" x1="50" y1="50" x2="50" y2="15" stroke-width="2.6" transform="rotate(${M} 50 50)"/><line class="sd" x1="50" y1="58" x2="50" y2="12" stroke-width="1.2" transform="rotate(${S} 50 50)"/><circle cx="50" cy="50" r="2.6" fill="var(--acc)"/></svg></div>`; }
+  else g.innerHTML = `<div class="ck"><div class="tm num">${hh}<s>:</s>${mm}</div>${CLK === 'seconds' ? `<div class="sc">${ss}</div>` : ''}<div class="dt">${dt}</div></div>`; };
+const WMO = c => c === 0 ? ['☀️', 'Ensoleillé'] : c <= 2 ? ['🌤️', 'Peu nuageux'] : c === 3 ? ['☁️', 'Couvert'] : c <= 48 ? ['🌫️', 'Brouillard'] : c <= 57 ? ['🌦️', 'Bruine'] : c <= 67 ? ['🌧️', 'Pluie'] : c <= 77 ? ['🌨️', 'Neige'] : c <= 82 ? ['🌦️', 'Averses'] : c <= 86 ? ['🌨️', 'Averses de neige'] : ['⛈️', 'Orage'];
+const LSg = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+const drawWeather = () => { const W = LSg('focus.wx'); if (!W || !W.current) { g.innerHTML = '<div class="off">Météo en chargement…</div>'; return; }
+  const cu = W.current, [e, l] = WMO(cu.weather_code), dl = W.daily || {};
+  g.innerHTML = `<div class="wxw"><div class="c">${esc(W.city || '')}</div><div class="m"><span class="e">${e}</span><span class="t num">${Math.round(cu.temperature_2m)}°</span></div>
+    <div class="d">${l} · ressenti ${Math.round(cu.apparent_temperature)}° · ${Math.round(cu.wind_speed_10m)} km/h</div>
+    ${dl.time ? `<div class="fc">${dl.time.slice(0, 4).map((t, i) => `<div>${i ? new Date(t).toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '') : 'Auj.'}<b>${WMO(dl.weather_code[i])[0]}</b><span>${Math.round(dl.temperature_2m_max[i])}°</span> ${Math.round(dl.temperature_2m_min[i])}°</div>`).join('')}</div>` : ''}</div>`; };
+const loadWeather = async () => { const c = LSg('focus.city') || { name: 'Bruxelles', lat: 50.85, lon: 4.35 }, W = LSg('focus.wx');
+  if (W && W.city === c.name && Date.now() - W.t < 15 * 60e3) { drawWeather(); return; }
+  try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code,apparent_temperature,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=4`);
+    if (r.ok) localStorage.setItem('focus.wx', JSON.stringify({ ...(await r.json()), city: c.name, t: Date.now() })); } catch (e) {}
+  drawWeather(); };
+if (TYPE === 'clock') { drawClock(); ckT = setInterval(drawClock, 1000); }
+if (TYPE === 'weather') { loadWeather(); setInterval(loadWeather, 5 * 60e3); addEventListener('storage', e => { if (e.key === 'focus.wx') drawWeather(); }); }
+const start = code => { if (TYPE === 'clock' || TYPE === 'weather') { if (code !== undefined) {} return; } unsub(); unsub = subscribe(code, (d, st) => {
   if (!d) { g.innerHTML = `<div class="off">${st === 'nocode' ? 'Ouvre Focus pour<br>connecter ton téléphone' : st === 'noserver' ? 'Synchro non configurée' : 'Connexion…'}</div>`; return; }
   const a = ACC[d.accent] || ACC.lime; document.documentElement.style.setProperty('--acc', a[0]); document.documentElement.style.setProperty('--acc2', a[1]);
   g.innerHTML = R[TYPE](d); }); };
 let CODE = null;
-const lock = c => { document.body.classList.toggle('locked', !!c.locked); ['dark', 'light', 'minimal', 'neon'].forEach(x => document.body.classList.toggle('st-' + x, c.wstyle === x)); };
+const lock = c => { if (c.clock && c.clock !== CLK) { CLK = c.clock; if (TYPE === 'clock') drawClock(); } document.body.classList.toggle('locked', !!c.locked); ['dark', 'light', 'minimal', 'neon'].forEach(x => document.body.classList.toggle('st-' + x, c.wstyle === x)); };
 fapi.cfg().then(c => { CODE = c.code; lock(c); start(c.code); });
 fapi.on('cfg', c => { lock(c); if (c.code !== CODE) { CODE = c.code; start(c.code); } });

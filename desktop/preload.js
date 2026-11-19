@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('fapi', {
   accent: a => ipcRenderer.send('accent', a),
   rz: (k, v) => ipcRenderer.send('win:rz-' + k, v),
   setWStyle: v => ipcRenderer.invoke('widget:style', v),
+  setClock: v => ipcRenderer.invoke('widget:clock', v),
   layout: n => ipcRenderer.invoke('widget:layout', n),
   addFriend: f => ipcRenderer.invoke('friend:add', f),
   resizeWidget: (t, w, h, done) => ipcRenderer.send('widget:size', t, w, h, done),
