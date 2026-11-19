@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -103,6 +103,23 @@ ipcMain.handle('cfg:code', (e, code) => { cfg.code = String(code || '').replace(
 ipcMain.handle('widget:set', (e, type, on) => setWidget(type, on));
 ipcMain.handle('widget:ontop', (e, v) => setOnTop(v));
 ipcMain.handle('widget:lock', (e, v) => setLocked(v));
+/* icône aux couleurs de l'app : fenêtres, barre des tâches, zone de notification, raccourcis bureau et menu Démarrer */
+function applyIcon(acc) {
+  if (!/^(lime|bleu|violet|orange|rose|cyan|mono)$/.test(acc || '') || cfg.iconAcc === acc) return;
+  try {
+    const src = path.join(__dirname, 'src', 'icons', acc + '.ico'), dst = path.join(app.getPath('userData'), 'icon-' + acc + '.ico');
+    fs.writeFileSync(dst, fs.readFileSync(src));
+    const img = nativeImage.createFromPath(dst);
+    [main, ...Object.values(wins)].forEach(w => w && !w.isDestroyed() && w.setIcon(img));
+    if (tray) tray.setImage(nativeImage.createFromPath(path.join(__dirname, 'src', 'icons', acc + '.png')).resize({ width: 32, height: 32, quality: 'best' }));
+    if (process.platform === 'win32') {
+      const links = [path.join(app.getPath('desktop'), 'Focus.lnk'), path.join(app.getPath('appData'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Focus.lnk')];
+      links.forEach(l => { if (fs.existsSync(l)) { try { shell.writeShortcutLink(l, 'update', { icon: dst, iconIndex: 0 }); } catch (e) {} } });
+    }
+    cfg.iconAcc = acc; saveCfg();
+  } catch (e) {}
+}
+ipcMain.on('accent', (e, acc) => applyIcon(acc));
 ipcMain.handle('widget:style', (e, v) => { cfg.wstyle = v; saveCfg(); broadcast('cfg', cfg); });
 ipcMain.handle('widget:layout', (e, n) => applyLayout(n));
 ipcMain.on('widget:size', (e, type, w, h, done) => { const win = wins[type]; if (!win) return; w = Math.max(560, Math.min(2600, Math.round(w))); h = Math.max(170, Math.min(560, Math.round(h)));

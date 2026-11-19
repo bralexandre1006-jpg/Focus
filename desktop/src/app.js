@@ -379,7 +379,7 @@ function side() {
   const av = $('#av'); if (CFG.photo) { av.style.backgroundImage = `url(${CFG.photo})`; av.textContent = ''; } else { av.style.backgroundImage = ''; av.textContent = ((d && d.name) || 'F')[0].toUpperCase(); }
   const ms = $('#meSync'); ms.className = STATUS === 'live' ? 'live' : '';
   ms.lastChild.textContent = STATUS === 'live' ? 'Synchronisé' : STATUS === 'nocode' ? 'Pas connecté' : STATUS === 'noserver' ? 'Serveur non configuré' : 'Hors ligne';
-  if (d) { const a = ACC[d.accent] || ACC.lime; document.documentElement.style.setProperty('--acc', a[0]); document.documentElement.style.setProperty('--acc2', a[1]); }
+  if (d) { const a = ACC[d.accent] || ACC.lime; document.documentElement.style.setProperty('--acc', a[0]); document.documentElement.style.setProperty('--acc2', a[1]); if (d.accent && fapi.accent) fapi.accent(d.accent); }
   const on = WL.filter(([k]) => CFG.widgets[k] && CFG.widgets[k].on).length; $('#wddN').textContent = on ? `${on} actif${on > 1 ? 's' : ''}` : 'aucun';
   $('#wddP').innerHTML = WL.map(([k, l, c]) => `<div class="wrow"><i style="background:${c}"></i>${l}<button class="sw ${CFG.widgets[k] && CFG.widgets[k].on ? 'on' : ''}" data-w="${k}"></button></div>`).join('') +
     `<hr><div class="wrow" style="color:var(--mut)">Au premier plan<button class="sw ${CFG.onTop ? 'on' : ''}" id="wTop"></button></div><div class="wrow" style="color:var(--mut)">Verrouiller la position<button class="sw ${CFG.locked ? 'on' : ''}" id="wLock"></button></div>
