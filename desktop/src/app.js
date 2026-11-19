@@ -408,16 +408,53 @@ function dlgCode(err) {
   $('#codePaste').onclick = async () => { try { ci.value = (await navigator.clipboard.readText()).trim().toUpperCase(); } catch (e) { dlgCode('Presse-papiers inaccessible'); } };
   if ($('#codeX')) $('#codeX').onclick = () => $('#ov').classList.add('hidden');
 }
+/* météo (Open-Meteo, sans clé) et citations */
+const LS = (k, v) => { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } };
+const WMO = c => c === 0 ? ['☀️', 'Ensoleillé'] : c <= 2 ? ['🌤️', 'Peu nuageux'] : c === 3 ? ['☁️', 'Couvert'] : c <= 48 ? ['🌫️', 'Brouillard'] : c <= 57 ? ['🌦️', 'Bruine'] : c <= 67 ? ['🌧️', 'Pluie'] : c <= 77 ? ['🌨️', 'Neige'] : c <= 82 ? ['🌦️', 'Averses'] : c <= 86 ? ['🌨️', 'Averses de neige'] : ['⛈️', 'Orage'];
+let WX = LS('focus.wx');
+const city = () => LS('focus.city') || { name: 'Bruxelles', lat: 50.85, lon: 4.35 };
+async function loadWx() { const c = city();
+  try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code,apparent_temperature,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=4`);
+    if (!r.ok) return; WX = { ...(await r.json()), city: c.name, t: Date.now() }; LS('focus.wx', WX); drawWx(); } catch (e) {} }
+function drawWx() { const el = $('#wx'); if (!WX || !WX.current) { el.innerHTML = `<div class="c">${esc(city().name)}</div><div class="d">Météo indisponible</div>`; return; }
+  const cu = WX.current, [e, l] = WMO(cu.weather_code), dl = WX.daily || {};
+  el.innerHTML = `<div class="c">${esc(WX.city)}</div><div class="r"><span class="e">${e}</span><span class="t">${Math.round(cu.temperature_2m)}°</span></div>
+    <div class="d">${l} · ressenti ${Math.round(cu.apparent_temperature)}° · ${Math.round(cu.wind_speed_10m)} km/h</div>
+    ${dl.time ? `<div class="fc">${dl.time.slice(0, 4).map((t, i) => `<div>${i ? new Date(t).toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '') : 'Auj.'}<b>${WMO(dl.weather_code[i])[0]}</b><span>${Math.round(dl.temperature_2m_max[i])}°</span> ${Math.round(dl.temperature_2m_min[i])}°</div>`).join('')}</div>` : ''}`; }
+const QCATS = { all: 'Toutes', motivation: 'Motivation', communisme: 'Communisme', islam: 'Islam' };
+let QI = null;
+function pickQuote(next) { const cat = LS('focus.qcat') || 'all', pool = cat === 'all' ? Object.entries(QUOTES).flatMap(([k, a]) => a.map(q => [k, q])) : (QUOTES[cat] || []).map(q => [cat, q]);
+  if (!pool.length) return null; const day = Math.floor(Date.now() / 864e5); if (QI == null || QI.cat !== cat) QI = { cat, i: (day * 7919) % pool.length }; else if (next) QI.i = (QI.i + 1 + Math.floor(Math.random() * (pool.length - 1))) % pool.length;
+  return pool[QI.i]; }
+function drawQuote(next) { const q = pickQuote(next), el = $('#qt'); if (!q) { el.innerHTML = ''; return; }
+  const put = () => { el.innerHTML = `<div class="k"><i>“</i>${QCATS[q[0]] || ''}</div><p>${esc(q[1][0])}</p><small>— ${esc(q[1][1])}</small>`; fitSide(); };
+  if (next) { el.classList.add('fade'); setTimeout(() => { put(); el.classList.remove('fade'); }, 200); } else put(); }
+function fitSide() { const sx = $('#sidex'); if (!sx) return; sx.classList.remove('noq', 'now'); $('#qt').style.setProperty('--ql', 7);
+  const avail = sx.clientHeight; let need = $('#wx').offsetHeight + $('#qt').offsetHeight + 20;
+  for (let l = 7; need > avail && l >= 3; l--) { $('#qt').style.setProperty('--ql', l); need = $('#wx').offsetHeight + $('#qt').offsetHeight + 20; }
+  if (need > avail) { sx.classList.add('noq'); if ($('#wx').offsetHeight + 12 > avail) sx.classList.add('now'); } }
+$('#wx').onclick = () => { loadWx(); };
+$('#qt').onclick = () => drawQuote(true);
+new ResizeObserver(() => fitSide()).observe(document.querySelector('.side'));
+drawWx(); drawQuote(); if (!WX || Date.now() - WX.t > 15 * 60e3 || WX.city !== city().name) loadWx(); setInterval(loadWx, 30 * 60e3);
 function dlgSet() {
   $('#ov').classList.remove('hidden');
   $('#ov').innerHTML = `<div class="dlg"><h2>Réglages</h2>
     <div class="srow"><div>Photo de profil<small>Visible seulement sur ce PC</small></div><div style="display:flex;gap:6px"><button class="seg" id="ph"><span style="padding:4px 8px;font-size:11px;font-weight:800">Choisir</span></button>${CFG.photo ? '<button class="seg" id="phX"><span style="padding:4px 8px;font-size:11px;font-weight:800">Retirer</span></button>' : ''}</div></div>
     <div class="srow"><div>Code de synchro<small>${CFG.code ? CFG.code.replace(/(.{4})(?=.)/g, '$1 ') : 'Aucun'}</small></div><button class="seg" id="chg"><span style="padding:4px 8px;font-size:11px;font-weight:800">Changer</span></button></div>
     <div class="srow"><div>Widgets au premier plan<small>Toujours visibles au-dessus des fenêtres</small></div><button class="sw ${CFG.onTop ? 'on' : ''}" id="sTop"></button></div>
+    <div class="srow"><div>Ville pour la météo<small>${esc(city().name)}</small><div class="row2"><input id="cityIn" placeholder="Chercher une ville" spellcheck="false"><button class="seg" id="cityGo"><span style="padding:4px 10px;font-size:11px;font-weight:800">OK</span></button></div><div class="cres" id="cres"></div></div></div>
+    <div class="srow"><div>Citations<small>Catégorie affichée dans la barre</small></div><select class="sel2" id="qcat">${Object.entries(QCATS).map(([k, l]) => `<option value="${k}" ${(LS('focus.qcat') || 'all') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
     <div class="srow" style="border:0"><div>Lancer au démarrage de Windows<small>Les widgets s'affichent dès l'allumage</small></div><button class="sw ${CFG.autostart ? 'on' : ''}" id="sAuto"></button></div>
     <button class="btn" id="setX">Fermer</button></div>`;
   $('#ph').onclick = async () => { CFG = await fapi.pickPhoto(); side(); dlgSet(); };
   if ($('#phX')) $('#phX').onclick = async () => { CFG = await fapi.clearPhoto(); side(); dlgSet(); };
+  const ci = $('#cityIn'), go2 = async () => { const q = ci.value.trim(); if (!q) return; $('#cres').innerHTML = '<span class="sub">Recherche…</span>';
+    try { const r = await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=fr`)).json();
+      $('#cres').innerHTML = (r.results || []).map((x, i) => `<button data-i="${i}">${esc(x.name)}${x.admin1 ? ', ' + esc(x.admin1) : ''} · ${esc(x.country || '')}</button>`).join('') || '<span class="sub">Aucune ville trouvée</span>';
+      $$('#cres button').forEach(b => b.onclick = () => { const x = r.results[+b.dataset.i]; LS('focus.city', { name: x.name, lat: x.latitude, lon: x.longitude }); WX = null; loadWx(); dlgSet(); }); } catch (e) { $('#cres').innerHTML = '<span class="sub">Recherche impossible</span>'; } };
+  $('#cityGo').onclick = go2; ci.addEventListener('keydown', e => { if (e.key === 'Enter') go2(); });
+  $('#qcat').onchange = e => { LS('focus.qcat', e.target.value); QI = null; drawQuote(); };
   $('#chg').onclick = () => dlgCode(); $('#setX').onclick = () => $('#ov').classList.add('hidden');
   $('#sTop').onclick = e => { e.currentTarget.classList.toggle('on'); fapi.setOnTop(e.currentTarget.classList.contains('on')); };
   $('#sAuto').onclick = e => { e.currentTarget.classList.toggle('on'); fapi.setAutostart(e.currentTarget.classList.contains('on')); };

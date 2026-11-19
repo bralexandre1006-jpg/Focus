@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://*.firebasedatabase.app https://*.firebaseio.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://*.firebasedatabase.app https://*.firebaseio.com https://api.open-meteo.com https://geocoding-api.open-meteo.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'">
 <title>Focus</title>
 <link rel="stylesheet" href="app.css">
 </head>
@@ -20,7 +20,7 @@
       <button data-p="gym"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Séances<span id="nGym"></span></button>
       <button data-p="duel"><svg viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M9.5 17.5L21 6V3h-3L6.5 14.5M11 19l-6-6M8 16l-4 4M5 21l-2-2"/></svg>Duel</button>
     </nav>
-    <div style="flex:1"></div>
+    <div class="sidex" id="sidex"><div class="sxc wx" id="wx"></div><div class="sxc qt" id="qt"></div></div>
     <div class="wdd" id="wdd"><div class="wdd-p" id="wddP"></div><button class="wdd-b" id="wddB"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>Widgets<span id="wddN"></span><svg class="chv" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button></div>
     <div class="me">
       <button class="av" id="av" title="Changer la photo">F</button><div><b id="meName">Focus</b><small id="meSync"><s></s>Hors ligne</small></div>
@@ -35,6 +35,7 @@
   <div class="ov hidden" id="ov"></div><div class="rzh r" data-rz="r"></div><div class="rzh l" data-rz="l"></div><div class="rzh b" data-rz="b"></div><div class="rzh t" data-rz="t"></div><div class="rzh br" data-rz="br"></div><div class="rzh bl" data-rz="bl"></div><div class="rzh tr" data-rz="tr"></div><div class="rzh tl" data-rz="tl"></div>
 </div>
 <script src="data.js"></script>
+<script src="quotes.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
