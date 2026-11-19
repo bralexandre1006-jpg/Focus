@@ -361,3 +361,14 @@ body.mini .wdd-b{width:44px;height:40px;margin:0 auto}
 .dc .bdg{padding:5px 10px;border-radius:9px;font-size:11px}
 .ppi{margin:0 0 6px}.ppi b,.ppi span{font-size:11px;padding:3px 8px}
 .fit-g{grid-template-rows:auto minmax(0,.85fr) minmax(0,1.15fr)}
+
+/* v9 historique, même style que le reste */
+.wsum div{background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.wsum small{color:var(--mut)}.wsum b{color:var(--c);font-size:18px}
+.dc{background:rgba(255,255,255,.03)!important;border:1px solid var(--line)!important;box-shadow:none!important;padding:0 14px 0 8px!important;grid-template-columns:54px 1.5fr 1fr 1fr 1fr auto!important;border-radius:14px!important}
+.dc:hover{background:rgba(255,255,255,.05)!important}
+.dc.sel{border-color:color-mix(in srgb,var(--acc) 60%,transparent)!important;background:color-mix(in srgb,var(--acc) 7%,rgba(255,255,255,.03))!important;box-shadow:none!important}
+.dc .dd{height:auto!important;aspect-ratio:1;width:46px;border-radius:12px!important;background:color-mix(in srgb,var(--c) 18%,transparent)!important;border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
+.dc .dd b{font-size:17px!important}.dc .dd small{font-size:9px}
+.dc .v.st svg{width:34px!important;height:34px!important}.dc .v.st b{font-size:16px!important}
+.days .dc{flex:0 0 auto;height:74px}

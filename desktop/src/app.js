@@ -114,8 +114,11 @@ function pHome(d) {
   const mac = (l, v, g, c) => `<div><b class="num">${fmt(v)} g</b><small>${l}</small><i><s style="width:${Math.min(100, v / (g || 1) * 100)}%;background:${c}"></s></i></div>`;
   const wd = lw && G.start ? lw - G.start : null, wp = G.start && G.target && lw ? Math.max(0, Math.min(1, (G.start - lw) / (G.start - G.target))) : 0;
   CH.hw = el => bars(el, { id: 'hw', allv: ST.showV, vals: wk.map(k => D(d, k).steps), labels: wk.map(k => dayLbl(k).toUpperCase()), goal: G.steps, hi: i => i === 6, tip: i => `${dShort(wk[i])} · <b>${fmt(D(d, wk[i]).steps)}</b> pas`, pick: i => { ST.csel = wk[i]; ST.hw = 0; go('hist'); } });
-  CH.ht = el => lines(el, { id: 'ht', labels: rng.map(dShort), series: [{ vals: mavg(rng.map(k => D(d, k).steps)), c: ['var(--acc2)', 'var(--acc)'] }, { vals: mavg(rng.map(k => D(d, k).kcal)), c: ['#FFC44A', '#FF5C8A'] }, { vals: rng.map(k => D(d, k).weight), c: ['#4FE3D0', 'var(--wgt)'] }],
-    tip: i => `${dShort(rng[i])} · <b>${fmt(D(d, rng[i]).steps)}</b> pas · <b>${fmt(D(d, rng[i]).kcal)}</b> kcal${D(d, rng[i]).weight ? ` · <b>${f1(D(d, rng[i]).weight)}</b> kg` : ''}` });
+  const tm = ST.tm || 'steps', TM = { steps: ['Pas', 'steps', G.steps, 'var(--acc)', v => fmt(v) + ' pas'], kcal: ['Calories', 'kcal', G.kcal, 'var(--cal)', v => fmt(v) + ' kcal'], weight: ['Poids', 'weight', G.target, 'var(--wgt)', v => f1(v) + ' kg'] }[tm];
+  const grp = ST.trend > 90, buck = grp ? (() => { const o = []; rng.forEach(k => { const w = monday(k); if (!o.length || o.at(-1).w !== w) o.push({ w, ks: [] }); o.at(-1).ks.push(k); }); return o; })() : rng.map(k => ({ w: k, ks: [k] }));
+  const tv = buck.map(bk => { const v = bk.ks.map(k => D(d, k)[TM[1]]).filter(x => x); return v.length ? avg(v) : (tm === 'weight' ? null : 0); }), ta = avg(tv.filter(x => x));
+  CH.ht = el => tm === 'weight' ? lines(el, { id: 'ht', area: true, axis: true, labels: buck.map(x => dShort(x.w)), series: [{ vals: tv, c: ['#4FE3D0', 'var(--wgt)'], target: G.target || null, dots: !grp }], tip: i => `${grp ? 'Sem. du ' : ''}${dShort(buck[i].w)}${tv[i] ? ` · <b>${TM[4](tv[i])}</b>` : ''}` })
+    : bars(el, { id: 'ht', vals: tv, labels: buck.map((x, i) => i % Math.ceil(buck.length / 8) === 0 ? dShort(x.w) : ''), goal: TM[2], goalC: TM[3], line: mavg(tv, grp ? 4 : 7), lineC: '#fff', hi: i => i === buck.length - 1, tip: i => `${grp ? 'Moy. sem. du ' : ''}${dShort(buck[i].w)} · <b>${TM[4](tv[i])}</b>` });
   const wos = (d.wos || []).slice(0, 6);
   return `<div class="row" style="grid-template-columns:repeat(4,1fr)">
     <div class="card s glow"><div class="lab">Pas du jour</div><div class="big num">${fmt(t.steps)}<small>/ ${fmt(G.steps)}</small></div><div class="sub">${trend(t.steps, y.steps)} vs hier</div><div class="pbar"><i style="width:${Math.min(100, t.steps / G.steps * 100)}%"></i></div></div>
@@ -126,7 +129,8 @@ function pHome(d) {
     <div class="card fx glow"><div class="hdr2"><div style="display:flex;align-items:center;gap:8px"><div class="lab">Pas · 7 derniers jours</div><button class="eye ${ST.showV ? 'on' : ''}" data-eye="1" aria-label="Afficher les valeurs"><svg viewBox="0 0 24 24">${ST.showV ? '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/>'}</svg></button></div><b class="num" style="font-size:20px">${fmt(avg(wk.map(k => D(d, k).steps)))} <small style="font-size:12px;color:var(--mut)">/ jour</small></b></div><div class="ch" data-ch="hw"></div></div>
     <div class="card fx" style="--g:var(--cal)"><div class="lab">Repas du jour</div><div class="scroll">${mealsList(d)}</div></div></div>
   <div class="row" style="grid-template-columns:2fr 1fr">
-    <div class="card fx"><div class="hdr2"><div class="lab">Tendance <span style="color:var(--dim)">· moyenne 7 j</span></div><div class="legend"><span><i style="background:var(--acc)"></i>Pas</span><span><i style="background:var(--cal)"></i>Calories</span><span><i style="background:var(--wgt)"></i>Poids</span></div>
+    <div class="card fx"><div class="hdr2"><div class="lab">Tendance</div><div class="seg" id="tmS">${[['steps', 'Pas'], ['kcal', 'Calories'], ['weight', 'Poids']].map(([k, l]) => `<button data-m="${k}" class="${tm === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+      <span class="tag">moy. ${ta ? TM[4](ta) : '—'}</span>
       <div class="seg" id="rng">${[30, 90, 365].map(n => `<button data-n="${n}" class="${ST.trend === n ? 'on' : ''}">${n === 365 ? '1 an' : n + ' j'}</button>`).join('')}</div></div><div class="ch" data-ch="ht"></div></div>
     <div class="card fx" style="--g:#7896FF"><div class="lab">Dernières séances</div><div class="scroll">${wos.length ? wos.map((w, i) => woRow(w, i, false)).join('') : '<div class="empty">Aucune séance</div>'}</div></div></div>`;
 }
@@ -178,7 +182,7 @@ function pFood(d) {
   const kc = days.map(k => D(d, k).kcal), pr = days.map(k => D(d, k).p), ok = kc.filter(x => x <= G.kcal * 1.05).length;
   const mp = avg(days.map(k => D(d, k).p)) * 4, mc = avg(days.map(k => D(d, k).c)) * 4, mf = avg(days.map(k => D(d, k).f)) * 9, mt = mp + mc + mf || 1;
   const rng = lastN(60), rv = rng.map(k => D(d, k).kcal), rm = mavg(rv);
-  CH.fl = el => bars(el, { id: 'fl', vals: rv, labels: rng.map((k, i) => i % 7 === 0 ? dShort(k) : ''), line: rm, lineC: '#FFC44A', dim: true, hi: i => rv[i] && rv[i] <= G.kcal * 1.05, tip: i => `${dShort(rng[i])} · <b>${rv[i] ? fmt(rv[i]) + ' kcal' : 'rien noté'}</b>${rm[i] ? ` · moy. 7 j ${fmt(rm[i])}` : ''}` });
+  CH.fl = el => bars(el, { id: 'fl', vals: rv, labels: rng.map((k, i) => i % 7 === 0 ? dShort(k) : ''), goal: G.kcal, goalC: '#FF8A4C', dim: true, hi: i => rv[i] && rv[i] <= G.kcal * 1.05, tip: i => `${dShort(rng[i])} · <b>${rv[i] ? fmt(rv[i]) + ' kcal' : 'rien noté'}</b>${rm[i] ? ` · moy. 7 j ${fmt(rm[i])}` : ''}` });
   return `<div class="row" style="grid-template-columns:repeat(4,1fr)">
     <div class="card s" style="--g:var(--cal)"><div class="lab">Moyenne · ${P.title.toLowerCase()}</div><div class="big num">${fmt(avg(kc))}<small>kcal / jour</small></div><div class="sub">objectif ${fmt(G.kcal)}</div></div>
     <div class="card s" style="--g:var(--pro)"><div class="lab">Protéines</div><div class="big num">${fmt(avg(pr))}<small>g / jour</small></div><div class="sub">${G.protein ? `objectif atteint ${pr.filter(x => x >= G.protein).length} / ${days.length} j` : ''}</div></div>
@@ -187,7 +191,7 @@ function pFood(d) {
   <div class="row" style="grid-template-columns:2.2fr 1fr">
     <div class="card fx" style="--g:var(--cal)"><div class="hdr2"><div class="lab">Macros</div><div style="display:flex;gap:14px;align-items:center"><div class="legend"><span><i style="background:var(--pro)"></i>Prot.</span><span><i style="background:var(--carb)"></i>Gluc.</span><span><i style="background:var(--fat)"></i>Lip.</span></div>${pnav('food', s)}</div></div><div class="ch" data-ch="fb"></div></div>
     <div class="card fx"><div class="lab">Détail du jour</div><div class="scroll">${sel ? dayDetail(d, sel) : '<div class="empty">Choisis un jour</div>'}</div></div></div>
-  <div class="row" style="grid-template-columns:1fr"><div class="card fx" style="--g:var(--cal)"><div class="hdr2"><div class="lab">Calories · 60 jours</div><div class="legend"><span><i style="background:var(--acc)"></i>Dans l'objectif</span><span><i style="background:#3A3A42"></i>Au-dessus</span><span><i style="background:#FFC44A"></i>Moyenne 7 j</span></div></div><div class="ch" data-ch="fl"></div></div></div>`;
+  <div class="row" style="grid-template-columns:1fr"><div class="card fx" style="--g:var(--cal)"><div class="hdr2"><div class="lab">Calories · 60 jours</div><div class="legend"><span><i style="background:var(--acc)"></i>Dans l'objectif</span><span><i style="background:#3A3A42"></i>Au-dessus</span><span><i style="background:#FF8A4C"></i>Objectif ${fmt(G.kcal)}</span></div></div><div class="ch" data-ch="fl"></div></div></div>`;
 }
 function pWeight(d) {
   const G = d.goals, all = Object.keys(d.days || {}).filter(k => d.days[k][2]).sort(), lw = lastWeight(d), ks = ST.wr ? lastN(ST.wr) : (all.length ? (() => { const a = []; let k = all[0]; while (k <= today()) { a.push(k); k = addDays(k, 1); } return a; })() : []);
@@ -231,7 +235,7 @@ function pHist(d) {
       <div class="wsum"><div style="--c:var(--acc)"><small>Pas / jour</small><b class="num">${fmt(avg(st))}</b></div><div style="--c:var(--acc2)"><small>Total</small><b class="num">${fmt(sum(st))}</b></div>
         <div style="--c:#7896FF"><small>Séances</small><b class="num">${wosW.length}</b></div><div style="--c:var(--cal)"><small>Kcal / jour</small><b class="num">${kc.length ? fmt(avg(kc)) : '—'}</b></div>
         <div style="--c:var(--wgt)"><small>Poids</small><b class="num ${wdf > 0 ? 'dn' : wdf < 0 ? 'up' : ''}">${wdf == null ? '—' : (wdf > 0 ? '+' : wdf < 0 ? '−' : '±') + f1(Math.abs(wdf)) + ' kg'}</b></div></div>
-      <div class="days">${lst.map(day).join('')}${Array(7 - lst.length).fill('<div class="dc fut" style="--c:transparent;border-color:transparent;background:none"></div>').join('')}</div></div>
+      <div class="days">${lst.map(day).join('')}</div></div>
     <div class="card fx"><div class="lab">Détail du jour</div><div class="scroll">${dayDetail(d, sel)}</div></div></div>`;
 }
 
@@ -345,6 +349,7 @@ function render(anim) {
 }
 const drawCharts = () => $$('[data-ch]').forEach(el => CH[el.dataset.ch] && CH[el.dataset.ch](el));
 function bind() {
+  $$('#tmS button').forEach(b => b.onclick = () => { ST.tm = b.dataset.m; render(); });
   $$('#rng button').forEach(b => b.onclick = () => { ST.trend = +b.dataset.n; render(); });
   $$('#wr button').forEach(b => b.onclick = () => { ST.wr = +b.dataset.n; render(); });
   $$('[data-pm] button').forEach(b => b.onclick = () => { const s = ST[b.parentNode.dataset.pm]; s.m = b.dataset.m; s.o = 0; s.sel = null; render(); });
