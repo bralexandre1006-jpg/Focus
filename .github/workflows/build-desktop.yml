@@ -22,6 +22,11 @@ jobs:
           node-version: 20
       - name: Installer
         run: npm install --no-audit --no-fund
+      - name: Clé IA du coach
+        shell: bash
+        env:
+          ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
+        run: if [ -n "$ANTHROPIC_KEY" ]; then sed -i "s|__ANTHROPIC_KEY__|$ANTHROPIC_KEY|" src/app.js; fi
       - name: Compiler l'installateur Windows
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'

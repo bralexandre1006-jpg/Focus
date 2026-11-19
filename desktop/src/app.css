@@ -390,7 +390,7 @@ body.max .rzh{display:none}
 .wx .d{font-size:11.5px;color:var(--mut);margin-top:3px}
 .wx .fc{display:flex;justify-content:space-between;margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.07)}
 .wx .fc div{text-align:center;font-size:10.5px;color:var(--mut);font-weight:700}.wx .fc b{display:block;font-size:15px;margin:1px 0}.wx .fc span{color:var(--txt);font-weight:800}
-.qt{flex:0 1 auto;min-height:0;display:flex;flex-direction:column;background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 16%,transparent),rgba(255,255,255,.02) 70%);border:1px solid color-mix(in srgb,var(--acc) 22%,transparent)}
+.qt{flex:0 0 auto;display:flex;flex-direction:column;background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 16%,transparent),rgba(255,255,255,.02) 70%);border:1px solid color-mix(in srgb,var(--acc) 22%,transparent)}
 .qt .k{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--acc);display:flex;align-items:center;gap:6px}
 .qt .k i{font-style:normal;font-size:20px;line-height:0;margin-top:8px;opacity:.6}
 .qt p{margin-top:6px;font-size:13px;font-weight:700;line-height:1.45;color:var(--txt);overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:var(--ql,7)}
@@ -400,3 +400,18 @@ body.mini .sidex,body.narrow .sidex{display:none}
 .sidex.noq .qt{display:none}.sidex.now .wx{display:none}
 .dlg .row2{display:flex;gap:6px;margin-top:6px}.dlg .row2 input{flex:1;height:36px;border-radius:10px;background:var(--card2);border:1px solid var(--line);outline:0;padding:0 10px;font:inherit;font-size:13px}
 .cres{display:flex;flex-direction:column;gap:4px;margin-top:6px}.cres button{text-align:left;padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.04);font-size:12.5px}.cres button:hover{background:rgba(255,255,255,.08)}
+
+/* coach */
+.cch{display:flex;flex-direction:column;height:100%;min-height:0}
+.cch .msgs{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 6px 10px}
+.cch .m{max-width:72%;padding:12px 15px;border-radius:18px;font-size:14px;line-height:1.55;white-space:pre-wrap}
+.cch .m.ai{align-self:flex-start;background:var(--card2);border:1px solid var(--line);border-bottom-left-radius:6px}
+.cch .m.ai small{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--acc);margin-bottom:4px}.cch .m.ai b{color:var(--acc)}
+.cch .m.me{align-self:flex-end;background:var(--acc);color:#0B0B0D;border-bottom-right-radius:6px}
+.cch .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.cch .chips button{height:32px;padding:0 12px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--mut)}.cch .chips button:hover{color:var(--txt)}
+.cch .ask{display:flex;gap:8px}.cch .ask input{flex:1;height:46px;border-radius:14px;background:var(--card2);border:1px solid var(--line);outline:0;padding:0 14px;font-size:14px}
+.cch .ask input:focus{border-color:var(--acc)}.cch .ask button{width:46px;height:46px;border-radius:14px;background:var(--acc);color:#0B0B0D;display:grid;place-items:center}.cch .ask svg{width:20px;height:20px;stroke-width:2.6}
+.typ span{display:inline-flex;gap:5px}.typ i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:td 1.2s infinite}.typ i:nth-child(2){animation-delay:.15s}.typ i:nth-child(3){animation-delay:.3s}
+@keyframes td{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.sidex .wx{flex-shrink:0}

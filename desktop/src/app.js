@@ -320,7 +320,29 @@ const startDuel = async code => { code = String(code || '').replace(/[^A-Z0-9]/g
     CFG = await fapi.addFriend({ code, name: o.name || code }); DUEL = { code, data: o, step: 0 }; animDuel(); } catch (e) { $('#dErr').textContent = 'Impossible de joindre le serveur'; } };
 const animDuel = () => { DUELT.forEach(clearTimeout); DUEL.step = 0; render();
   DUELT = Array.from({ length: 10 }, (_, i) => setTimeout(() => { if (!DUEL || PAGE !== 'duel') return; DUEL.step = i + 1; render(); }, 500 + i * 600)); };
-const PAGES = { home: ['Aperçu', pHome, 'fit-home'], hist: ['Historique', pHist, 'fit-1'], steps: ['Pas', pSteps, 'fit-3'], food: ['Nutrition', pFood, 'fit-3'], weight: ['Poids', pWeight, 'fit-2'], gym: ['Séances', pGym, 'fit-3 fit-g'], duel: ['Duel', pDuel, 'fit-2'] };
+/* coach IA (Claude Haiku) */
+const CL_KEY = '__ANTHROPIC_KEY__';
+let CM = (() => { try { return JSON.parse(localStorage.getItem('focus.coach')) || []; } catch (e) { return []; } })(), cBusy = false;
+const cSave = () => { try { localStorage.setItem('focus.coach', JSON.stringify(CM.slice(-30))); } catch (e) {} };
+const cData = d => { const G = d.goals, T = today(), L = [`Prénom : ${d.name || '—'}. Objectifs : ${G.steps} pas/jour, ${G.kcal} kcal/jour${G.protein ? `, ${G.protein} g de protéines` : ''}${G.target ? `, poids visé ${G.target} kg (départ ${G.start} kg)` : ''}. Série : ${d.streak || 0} jours.`, '14 derniers jours (date ; pas ; kcal ; prot/gluc/lip ; poids ; séance) :'];
+  for (let i = 13; i >= 0; i--) { const k = addDays(T, -i), x = D(d, k), hw = (d.wos || []).some(w => key(new Date(w.t)) === k); L.push(`${k} ; ${x.steps} ; ${x.kcal} ; ${x.p}/${x.c}/${x.f} ; ${x.weight || '-'} ; ${x.off ? 'jour off' : hw || x.wo === 1 ? 'faite' : x.wo === 0 ? 'manquée' : '-'}`); }
+  const w8 = (d.wos || []).slice(0, 8); if (w8.length) { L.push('Dernières séances :'); w8.forEach(w => L.push(`${key(new Date(w.t))} « ${w.n} » ${w.m} min : ${(w.ex || []).map(e => `${e[0]} ${(e[2] || []).map(s => (s[0] ? s[0] + 'kg×' : '') + s[1]).join(',')}`).join(' | ')}`)); }
+  return L.join('\n'); };
+const C_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français, tu tutoies, tu es bienveillant mais direct. Tu t'appuies uniquement sur les données fournies : cite des chiffres précis, repère les tendances et donne 2 à 4 conseils concrets. Réponses courtes et aérées (12 lignes maximum), sans tableau. Tu n'es pas médecin : pour une douleur ou un problème de santé, conseille de consulter.`;
+function pCoach(d) { return `<div class="card fx" style="height:100%;--g:var(--acc)"><div class="cch"><div class="hdr2"><div class="lab">Coach IA</div><button class="chip" id="cClr">Effacer</button></div>
+  <div class="msgs" id="cMsgs">${(CM.length ? CM : [{ r: 'ai', t: `Salut ${d.name || ''} ! Je vois tes pas, tes repas, ton poids et tes séances. Demande-moi un bilan ou un conseil.` }]).map(m => `<div class="m ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</div>`).join('')}${cBusy ? '<div class="m ai typ"><small>Coach</small><span><i></i><i></i><i></i></span></div>' : ''}</div>
+  <div class="chips">${['Fais le bilan de ma semaine', 'Comment améliorer mes pas ?', 'Mes séances sont-elles équilibrées ?', 'Mon alimentation est-elle bonne ?', 'Où en est mon poids ?'].map(x => `<button data-cq="${x}">${x}</button>`).join('')}</div>
+  <div class="ask"><input id="cIn" placeholder="Pose une question à ton coach…" autocomplete="off"><button id="cGo" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div></div>`; }
+async function coachAsk(t) { t = (t || '').trim(); if (!t || cBusy || !DATA) return; CM.push({ r: 'user', t }); cBusy = true; render();
+  const hist = CM.slice(-12).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t })); hist[hist.length - 1].content = `Mes données à jour :\n${cData(DATA)}\n\nMa question : ${t}`;
+  let out = '', err = '';
+  if (CL_KEY.startsWith('__')) err = 'clé IA absente';
+  else try { const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': CL_KEY, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-haiku-5-5', max_tokens: 2000, output_config: { effort: 'low' }, system: C_SYS, messages: hist }) });
+    const j = await r.json(); if (!r.ok) throw new Error((j.error && j.error.message) || r.status); out = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim(); } catch (e) { err = e.message; }
+  cBusy = false; if (out) { CM.push({ r: 'ai', t: out }); cSave(); } else { CM.pop(); CM.push({ r: 'ai', t: 'Coach indisponible : ' + err }); }
+  if (PAGE === 'coach') render(); if (!out) CM.pop(); }
+const PAGES = { home: ['Aperçu', pHome, 'fit-home'], hist: ['Historique', pHist, 'fit-1'], steps: ['Pas', pSteps, 'fit-3'], food: ['Nutrition', pFood, 'fit-3'], weight: ['Poids', pWeight, 'fit-2'], gym: ['Séances', pGym, 'fit-3 fit-g'], duel: ['Duel', pDuel, 'fit-2'], coach: ['Coach', pCoach, 'fit-1'] };
 
 let STACK = [];
 function stepNotif() {
@@ -349,6 +371,7 @@ function render(anim) {
 }
 const drawCharts = () => $$('[data-ch]').forEach(el => CH[el.dataset.ch] && CH[el.dataset.ch](el));
 function bind() {
+  if ($('#cGo')) { const ci = $('#cIn'); $('#cGo').onclick = () => coachAsk(ci.value); ci.addEventListener('keydown', e => { if (e.key === 'Enter') coachAsk(ci.value); }); $$('[data-cq]').forEach(b => b.onclick = () => coachAsk(b.dataset.cq)); $('#cClr').onclick = () => { CM = []; cSave(); render(); }; const ms = $('#cMsgs'); ms.scrollTop = ms.scrollHeight; }
   $$('#tmS button').forEach(b => b.onclick = () => { ST.tm = b.dataset.m; render(); });
   $$('#rng button').forEach(b => b.onclick = () => { ST.trend = +b.dataset.n; render(); });
   $$('#wr button').forEach(b => b.onclick = () => { ST.wr = +b.dataset.n; render(); });
