@@ -1,0 +1,23 @@
+{
+  "name": "focus-desktop",
+  "productName": "Focus",
+  "version": "1.0.0",
+  "description": "Focus pour Windows : tableau de bord et widgets synchronisés avec l'app",
+  "main": "main.js",
+  "author": "Focus",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis --publish never"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.alexandre.focus.desktop",
+    "productName": "Focus",
+    "files": ["main.js", "preload.js", "src/**/*"],
+    "win": { "target": "nsis", "icon": "build/icon.png" },
+    "nsis": { "oneClick": true, "perMachine": false, "runAfterFinish": true, "artifactName": "Focus-Setup.${ext}" }
+  }
+}

@@ -676,6 +676,9 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 .walk small{color:var(--mut);font-size:13px;line-height:1.35}
 .sval{font-size:16px;font-weight:800;text-align:right}
 .hint{color:var(--mut);font-size:14px;line-height:1.4;margin-top:12px}
+.synccode{margin-top:12px;padding:14px;border-radius:16px;background:var(--card2);text-align:center}
+.synccode small{display:block;font-size:12px;color:var(--mut);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.synccode b{display:block;margin-top:6px;font-size:26px;font-weight:800;letter-spacing:.12em;font-variant-numeric:tabular-nums}
 /* ================= FOCUS LITE ================= */
 body.lite{font-size:15px}
 body.lite .screen{padding:calc(var(--st) + 12px) 14px calc(var(--sb) + 96px)}
@@ -1981,6 +1984,14 @@ body.perf .wo-intro span{box-shadow:none!important}
       <div id="featList"></div>
       <button class="btn ghost full press" id="newsOpen" style="margin-top:10px">Voir les nouveautés</button>
     </div></div></div>
+<div class="card acc" id="accSync">
+      <button class="acc-h"><h3><i style="background:var(--acc)"></i>Synchro PC</h3><small id="syncI"></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="acc-b"><div class="acc-i">
+      <div class="srow"><div class="l">Envoyer mes données au logiciel PC</div><button class="tgl" id="tSync"></button></div>
+      <div class="synccode hidden" id="syncBox"><small>Ton code à taper sur le PC</small><b id="syncCode"></b><button class="btn ghost full press" id="syncCopy" style="margin:8px 0 0">Copier le code</button></div>
+      <div class="hint" id="syncInfo">Tes pas, repas, poids et séances s'affichent en direct dans le logiciel Focus pour Windows.</div>
+      </div></div>
+    </div>
 <div class="card acc" id="accData">
       <button class="acc-h"><h3><i style="background:var(--cal)"></i>Données et sauvegarde</h3><small></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="acc-b"><div class="acc-i">
@@ -2416,7 +2427,7 @@ const load = raw => {
 try { S = load(JSON.parse(localStorage.getItem(SK))); } catch(e){ S = load(null); }
 let dataVer = 0;
 let ACC1 = '#D7FF3A';
-const save = () => { dataVer++; try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} window.__qw && window.__qw(); };
+const save = () => { dataVer++; try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e){} window.__qw && window.__qw(); window.__pcSync && window.__pcSync(); };
 const day = (k = today()) => (S.days[k] ||= { weight:null, workout:null, calories:0, steps:0, meals:[] });
 
 /* ---------- programme : semaine en cours et objectifs effectifs ---------- */
@@ -4009,7 +4020,43 @@ $$('#pSched button').forEach(b => b.onclick = () => {
   save(); renderSettings(); sfx.tap(); buzz(); toast(b.dataset.s === 'alt' ? 'Une séance tous les deux jours' : 'Jours fixes');
 });
 $$('#pAltNext button').forEach(b => b.onclick = () => { setAlt(+b.dataset.n); save(); renderSettings(); sfx.tap(); buzz(); });
+/* Synchro PC : résumé des données envoyé à Firebase, lu en direct par le logiciel Windows */
+const FB_URL = '__FIREBASE_URL__';
+const syncPayload = () => {
+  const G = goals(), T = today(), days = {};
+  for (let i = 0; i < 400; i++) { const k = addDays(T, -i), d = S.days[k]; if (!d) continue;
+    const m = sumMeals(d.meals || []);
+    days[k] = [d.steps || 0, Math.round(d.calories || m.kcal || 0), d.weight || 0, d.workout === true ? 1 : d.workout === false ? 0 : -1, Math.round(m.p), Math.round(m.c), Math.round(m.f), d.off ? 1 : 0]; }
+  const tot = Object.values(S.days).reduce((t, d) => t + (d.steps || 0), 0);
+  const meals = (day(T).meals || []).map(m => ({ s: m.slot, n: m.name, k: Math.round(m.kcal || 0), p: Math.round(m.p || 0), c: Math.round(m.c || 0), f: Math.round(m.f || 0) }));
+  const wos = [...(S.workouts || [])].sort((a, b) => b.start - a.start).slice(0, 40).map(w => ({ n: w.name, t: w.start, m: w.min || 0,
+    s: (w.ex || []).reduce((t, e) => t + (e.sets || []).length, 0), v: Math.round((w.ex || []).reduce((t, e) => t + (e.sets || []).reduce((u, x) => u + setVol(x, e.uni), 0), 0)) }));
+  return { v: 1, at: Date.now(), name: (S.profile.name || '').trim(), accent: S.settings.accent || 'lime',
+    goals: { steps: G.steps, kcal: G.kcal, protein: G.protein || 0, target: G.target || 0, start: G.start || 0 },
+    streak: notedRun(), total: tot, days, meals, wos };
+};
+let syncT = 0, syncBusy = false;
+const pushSync = async () => {
+  if (!S.sync || !S.sync.on || !S.sync.code || FB_URL.startsWith('__') || syncBusy) return;
+  syncBusy = true;
+  try { const r = await fetch(`${FB_URL}/focus/${S.sync.code}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(syncPayload()) });
+    S.sync.ok = r.ok; S.sync.last = r.ok ? Date.now() : S.sync.last; } catch (e) { S.sync.ok = false; }
+  syncBusy = false; try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} if (cur === 'settings') syncUI(); };
+window.__pcSync = () => { clearTimeout(syncT); syncT = setTimeout(pushSync, 8000); };
+const syncUI = () => { const on = !!(S.sync && S.sync.on);
+  $('#tSync').classList.toggle('on', on); $('#syncBox').classList.toggle('hidden', !on);
+  if (on) $('#syncCode').textContent = S.sync.code.replace(/(.{4})(?=.)/g, '$1 ');
+  $('#syncI').textContent = on ? (S.sync.ok === false ? 'Erreur' : 'Activée') : '';
+  $('#syncInfo').textContent = !on ? "Tes pas, repas, poids et séances s'affichent en direct dans le logiciel Focus pour Windows."
+    : FB_URL.startsWith('__') ? 'Serveur de synchro pas encore configuré.'
+    : S.sync.last ? `Dernier envoi : ${new Date(S.sync.last).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })}${S.sync.ok === false ? ' · échec du dernier essai' : ''}` : 'Premier envoi en cours…'; };
+$('#tSync').onclick = () => { S.sync = S.sync || {};
+  if (!S.sync.code) { const a = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = crypto.getRandomValues(new Uint8Array(12)); S.sync.code = [...b].map(x => a[x % a.length]).join(''); }
+  S.sync.on = !S.sync.on; save(); syncUI(); if (S.sync.on) pushSync(); sfx.tap(); buzz(); };
+$('#syncCopy').onclick = async () => { try { await navigator.clipboard.writeText(S.sync.code); toast('Code copié'); } catch (e) { toast(S.sync.code); } buzz(); };
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') window.__pcSync(); });
 const renderSettings = () => {
+  syncUI();
   const p = S.profile;
   $('#pName').value=p.name||''; $('#pHeight').value=p.height||''; $('#pSteps').value=p.stepGoal||''; $('#pCal').value=p.calGoal||'';
   $('#pStart').value = p.startWeight ? f1(p.startWeight) : ''; $('#pTarget').value = p.targetWeight ? f1(p.targetWeight) : '';
