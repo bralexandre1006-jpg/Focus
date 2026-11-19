@@ -183,10 +183,11 @@ function dlgCode(err) {
   $('#ov').classList.remove('hidden');
   $('#ov').innerHTML = `<div class="dlg"><h2>Connecte ton téléphone</h2><p>Dans l'app Focus : Réglages › <b>Synchro PC</b> › active l'envoi, puis tape ici le code affiché.</p>
     <input class="in" id="codeIn" maxlength="14" placeholder="XXXX XXXX XXXX" value="${esc(CFG.code || '')}"><div class="err">${err || ''}</div>
-    <button class="btn" id="codeOk">Connecter</button>${CFG.code ? '<button class="btn ghost" id="codeX">Annuler</button>' : ''}</div>`;
+    <button class="btn ghost" id="codePaste">Coller le code copié</button><button class="btn" id="codeOk">Connecter</button>${CFG.code ? '<button class="btn ghost" id="codeX">Annuler</button>' : ''}</div>`;
   const ci = $('#codeIn'); setTimeout(() => ci.focus(), 50); $('#ov').onmousedown = e => { if (e.target === ci) return; if (!e.target.closest('button')) { e.preventDefault(); ci.focus(); } };
   const go = async () => { const c = $('#codeIn').value.replace(/[^A-Z0-9]/gi, '').toUpperCase(); if (c.length < 8) return dlgCode('Code trop court');
     CFG = await fapi.setCode(c); $('#ov').classList.add('hidden'); connect(); };
+  $('#codePaste').onclick = async () => { try { const t = await navigator.clipboard.readText(); $('#codeIn').value = t.trim().toUpperCase(); } catch (e) { dlgCode('Presse-papiers inaccessible'); } };
   $('#codeOk').onclick = go; $('#codeIn').onkeydown = e => e.key === 'Enter' && go();
   if ($('#codeX')) $('#codeX').onclick = () => $('#ov').classList.add('hidden');
 }

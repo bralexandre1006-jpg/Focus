@@ -22,7 +22,7 @@ app.on('second-instance', () => showMain());
 
 function createMain() {
   main = new BrowserWindow({
-    width: 1240, height: 800, minWidth: 980, minHeight: 640, frame: false, transparent: true, backgroundColor: '#00000000',
+    width: 1240, height: 800, minWidth: 980, minHeight: 640, titleBarStyle: 'hidden', titleBarOverlay: { color: '#0B0B0F', symbolColor: '#C9C9D0', height: 46 }, backgroundColor: '#0B0B0F',
     show: false, icon: ICON, title: 'Focus',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
   });
