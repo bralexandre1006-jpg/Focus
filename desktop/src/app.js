@@ -399,7 +399,7 @@ function dlgSet() {
 }
 
 /* interactions */
-$$('nav button').forEach(b => { b.dataset.t = b.childNodes[1] ? b.childNodes[1].textContent.trim() : ''; b.onclick = () => { STACK = []; go(b.dataset.p); }; });
+$$('nav button').forEach(b => { b.onclick = () => { STACK = []; go(b.dataset.p); }; });
 $('#backB').onclick = goBack;
 $$('.lights button').forEach(b => b.onclick = () => fapi.win(b.dataset.w));
 /* barre latérale : largeur réglable à la souris, repliée en icônes sous 150 px */
@@ -415,7 +415,7 @@ $('#miniB').onclick = () => { const m = !document.body.classList.contains('mini'
 $('#setBtn').onclick = dlgSet;
 $('#refBtn').onclick = async () => { const b = $('#refBtn'); if (b.classList.contains('spin')) return; b.classList.add('spin');
   const ok = window.focusRefresh ? await window.focusRefresh() : false; setTimeout(() => b.classList.remove('spin'), 600);
-  b.dataset.t = ok ? 'Données à jour' : 'Impossible de joindre le serveur'; };
+  };
 $('#av').onclick = async () => { CFG = await fapi.pickPhoto(); side(); };
 $('#wddB').onclick = e => { e.stopPropagation(); $('#wdd').classList.toggle('open'); };
 addEventListener('click', e => { if (!e.target.closest('#wdd')) $('#wdd').classList.remove('open'); });
