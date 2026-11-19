@@ -4021,7 +4021,7 @@ $$('#pSched button').forEach(b => b.onclick = () => {
 });
 $$('#pAltNext button').forEach(b => b.onclick = () => { setAlt(+b.dataset.n); save(); renderSettings(); sfx.tap(); buzz(); });
 /* Synchro PC : résumé des données envoyé à Firebase, lu en direct par le logiciel Windows */
-const FB_URL = '__FIREBASE_URL__';
+const FB_URL = 'https://focus-74945-default-rtdb.europe-west1.firebasedatabase.app';
 const syncPayload = () => {
   const G = goals(), T = today(), days = {};
   for (let i = 0; i < 400; i++) { const k = addDays(T, -i), d = S.days[k]; if (!d) continue;

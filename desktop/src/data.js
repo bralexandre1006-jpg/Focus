@@ -1,5 +1,5 @@
 /* Lecture en direct des données envoyées par l'app (Firebase, flux temps réel) */
-const FB_URL = '__FIREBASE_URL__';
+const FB_URL = 'https://focus-74945-default-rtdb.europe-west1.firebasedatabase.app';
 const ACC = { lime: ['#D7FF3A', '#7BE07E'], bleu: ['#5AB8FF', '#7C8CFF'], violet: ['#B88CFF', '#FF7AD9'], orange: ['#FFB347', '#FF6B4A'], rose: ['#FF7AB8', '#FFB86B'], cyan: ['#4FE3D0', '#5AB8FF'], mono: ['#FFFFFF', '#BDBDC6'] };
 const fmt = n => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 const f1 = n => (Math.round((n || 0) * 10) / 10).toLocaleString('fr-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
