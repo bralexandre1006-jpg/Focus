@@ -10,6 +10,7 @@ const parseKey = k => { const [y, m, d] = k.split('-').map(Number); return new D
 const D = (data, k) => { const a = data && data.days && data.days[k]; return a ? { steps: a[0], kcal: a[1], weight: a[2] || null, wo: a[3], p: a[4], c: a[5], f: a[6], off: a[7] } : { steps: 0, kcal: 0, weight: null, wo: -1, p: 0, c: 0, f: 0, off: 0 }; };
 const lastWeight = (data, before) => { const ks = Object.keys((data && data.days) || {}).filter(k => (!before || k <= before) && data.days[k][2]).sort(); return ks.length ? data.days[ks.at(-1)][2] : null; };
 
+async function fetchOnce(code) { const r = await fetch(`${FB_URL}/focus/${code}.json`, { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); return r.json(); }
 function subscribe(code, cb) {
   const cacheKey = 'focus.cache.' + code;
   try { const c = JSON.parse(localStorage.getItem(cacheKey)); if (c) cb(c, 'cache'); } catch (e) {}

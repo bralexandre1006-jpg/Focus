@@ -4,11 +4,12 @@ const fs = require('fs');
 
 const CFG = path.join(app.getPath('userData'), 'config.json');
 const WIDGETS = {
-  steps: { w: 200, h: 214, label: 'Pas du jour' },
-  kcal: { w: 320, h: 150, label: 'Calories' },
-  weight: { w: 200, h: 214, label: 'Poids' },
-  week: { w: 340, h: 190, label: 'Semaine' },
-  streak: { w: 220, h: 110, label: 'Série' }
+  steps: { w: 214, h: 214, label: 'Pas du jour' },
+  kcal: { w: 214, h: 214, label: 'Calories' },
+  weight: { w: 214, h: 214, label: 'Poids' },
+  week: { w: 214, h: 214, label: 'Semaine' },
+  streak: { w: 214, h: 214, label: 'Série' },
+  all: { w: 442, h: 300, label: 'Tableau de bord' }
 };
 const load = () => { try { return JSON.parse(fs.readFileSync(CFG, 'utf8')); } catch (e) { return {}; } };
 let cfg = Object.assign({ code: '', widgets: {}, onTop: false, autostart: true, locked: false }, load());
@@ -22,7 +23,7 @@ app.on('second-instance', () => showMain());
 
 function createMain() {
   main = new BrowserWindow({
-    width: 1240, height: 800, minWidth: 980, minHeight: 640, titleBarStyle: 'hidden', titleBarOverlay: { color: '#0B0B0F', symbolColor: '#C9C9D0', height: 46 }, backgroundColor: '#0B0B0F',
+    width: 1240, height: 800, minWidth: 900, minHeight: 620, titleBarStyle: 'hidden', titleBarOverlay: { color: '#0B0B0F', symbolColor: '#C9C9D0', height: 46 }, backgroundColor: '#0B0B0F',
     show: false, icon: ICON, title: 'Focus',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
   });
@@ -102,6 +103,7 @@ ipcMain.handle('widget:set', (e, type, on) => setWidget(type, on));
 ipcMain.handle('widget:ontop', (e, v) => setOnTop(v));
 ipcMain.handle('widget:lock', (e, v) => setLocked(v));
 ipcMain.handle('widget:layout', (e, n) => applyLayout(n));
+ipcMain.handle('friend:add', (e, f) => { cfg.friends = [f, ...(cfg.friends || []).filter(x => x.code !== f.code)].slice(0, 8); saveCfg(); return cfg; });
 ipcMain.handle('autostart', (e, v) => setAutostart(v));
 ipcMain.on('win', (e, a) => {
   const w = BrowserWindow.fromWebContents(e.sender); if (!w) return;

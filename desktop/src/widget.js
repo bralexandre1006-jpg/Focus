@@ -11,22 +11,29 @@ const R = {
     return `${T('Pas du jour')}<div class="sr"><div class="ring">${arc(p, 128, 11, 'a1')}<div class="c"><b class="big num">${fmt(s)}</b><small>${p >= 1 ? 'Objectif atteint' : 'sur ' + fmt(G.steps)}</small></div></div>
       <div class="sub">≈ ${f1(s * .00075)} km · ${fmt(s * .04)} kcal</div></div>`; },
   kcal: d => { const G = d.goals, t = D(d, today()), p = t.kcal / G.kcal, left = G.kcal - t.kcal;
-    const m = (l, v, gl, c) => `<div>${l}<span class="bar"><i style="width:${Math.min(100, v / gl * 100)}%;background:${c}"></i></span><b class="num">${fmt(v)} g</b></div>`;
-    return `<div class="wh">${T('Nutrition')}<span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)} kcal</span></div>
-      <div class="kc"><div class="mini">${arc(p, 74, 8, 'a2', false).replace(/var\(--acc\)/, '#FFC44A').replace(/var\(--acc2\)/, '#FF6B4A')}<b class="num">${fmt(t.kcal)}</b></div>
-      <div class="macs">${m('Prot.', t.p, G.protein || 100, '#FF5C8A')}${m('Gluc.', t.c, G.kcal * .45 / 4, '#FFC44A')}${m('Lip.', t.f, G.kcal * .3 / 9, '#5AB8FF')}</div></div>`; },
+    const m = (l, v, gl, c) => `<div>${l}<span class="bar"><i style="width:${Math.min(100, v / gl * 100)}%;background:${c}"></i></span><b class="num">${fmt(v)}</b></div>`;
+    return `${T('Calories')}<div class="kc"><div class="mini">${arc(p, 82, 9, 'a2', false).replace(/var\(--acc\)/, '#FFC44A').replace(/var\(--acc2\)/, '#FF6B4A')}<b class="num">${fmt(t.kcal)}</b></div>
+      <div><span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)}</span><div class="sub">sur ${fmt(G.kcal)} kcal</div></div></div>
+      <div class="macs">${m('Prot.', t.p, G.protein || 100, '#FF5C8A')}${m('Gluc.', t.c, G.kcal * .45 / 4, '#FFC44A')}${m('Lip.', t.f, G.kcal * .3 / 9, '#5AB8FF')}</div>`; },
   weight: d => { const G = d.goals, w = lastWeight(d), df = w && G.start ? w - G.start : null, p = G.start && G.target && w ? Math.max(0, Math.min(1, (G.start - w) / (G.start - G.target))) : 0;
     return `${T('Poids')}<div class="big num" style="font-size:42px;margin-top:22px">${w ? f1(w) : '—'}<small>kg</small></div>
       <div style="margin-top:8px">${df != null ? `<span class="pill ${df <= 0 ? 'ok' : 'bad'}">${df <= 0 ? '−' : '+'}${f1(Math.abs(df))} kg</span>` : ''}</div>
       <div class="bar" style="margin-top:16px"><i style="width:${p * 100}%;background:linear-gradient(90deg,#4FE3D0,#6BD36E)"></i></div>
       <div class="sub">${G.target && w ? `${f1(Math.abs(w - G.target))} kg avant ${f1(G.target)} kg` : ''}</div>`; },
   week: d => { const ks = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)), v = ks.map(k => D(d, k).steps), mx = Math.max(d.goals.steps, ...v, 1);
-    const av = v.reduce((a, b) => a + b, 0) / 7;
-    return `<div class="wh">${T('Pas · 7 jours')}<div style="text-align:right"><b class="num" style="font-size:18px">${fmt(av)}</b><div class="sub" style="margin-top:0;font-size:10px">par jour</div></div></div>
-      <div class="wk">${ks.map((k, i) => `<div><i class="${i === 6 ? 'now' : v[i] >= d.goals.steps ? 'ok' : ''}" style="height:${Math.max(10, v[i] / mx * 70)}px" title="${fmt(v[i])}"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'narrow' }).toUpperCase()}</span></div>`).join('')}</div>`; },
-  streak: d => `<div class="st"><div class="fl"><svg viewBox="0 0 24 24">${FIRE}</svg></div><div><div class="t" style="margin-bottom:6px"><i></i>Série</div><div class="big num" style="font-size:36px">${d.streak || 0}<small>jour${d.streak > 1 ? 's' : ''}</small></div></div></div>`
+    return `${T('Pas · 7 jours')}<div class="big num" style="font-size:26px;margin-top:10px">${fmt(v.reduce((a, b) => a + b, 0) / 7)}<small>/ jour</small></div>
+      <div class="wk" style="height:96px">${ks.map((k, i) => `<div><i class="${i === 6 ? 'now' : v[i] >= d.goals.steps ? 'ok' : ''}" style="height:${Math.max(8, v[i] / mx * 74)}px"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'narrow' }).toUpperCase()}</span></div>`).join('')}</div>`; },
+  streak: d => `${T('Série')}<div class="stq"><div class="fl"><svg viewBox="0 0 24 24">${FIRE}</svg></div><div class="big num" style="font-size:44px">${d.streak || 0}</div><div class="sub" style="margin:0">jour${d.streak > 1 ? 's' : ''} d'affilée</div></div>`,
+  all: d => { const G = d.goals, t = D(d, today()), w = lastWeight(d), ks = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)), v = ks.map(k => D(d, k).steps), mx = Math.max(G.steps, ...v, 1), df = w && G.start ? w - G.start : null;
+    return `<div class="wh">${T('Focus · aujourd\'hui')}<span class="pill"><svg viewBox="0 0 24 24" style="width:12px;height:12px;color:#FFC07A;stroke-width:2.4">${FIRE}</svg>${d.streak || 0} j</span></div>
+      <div class="allg"><div class="ring" style="width:112px;height:112px">${arc(t.steps / G.steps, 112, 10, 'a3')}<div class="c"><b class="big num" style="font-size:22px">${fmt(t.steps)}</b><small>pas</small></div></div>
+        <div class="allc"><div><div class="t" style="font-size:9.5px"><i style="background:#FF6B4A;box-shadow:0 0 8px #FF6B4A"></i>Calories</div><b class="big num" style="font-size:24px">${fmt(t.kcal)}<small>/ ${fmt(G.kcal)}</small></b>
+          <div class="bar" style="margin-top:6px"><i style="width:${Math.min(100, t.kcal / G.kcal * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></div>
+          <div class="sub" style="font-size:10.5px">P ${t.p} · G ${t.c} · L ${t.f} g</div></div>
+          <div><div class="t" style="font-size:9.5px"><i style="background:#6BD36E;box-shadow:0 0 8px #6BD36E"></i>Poids</div><b class="big num" style="font-size:24px">${w ? f1(w) : '—'}<small>kg</small></b>${df != null ? ` <span class="pill ${df <= 0 ? 'ok' : 'bad'}">${df <= 0 ? '−' : '+'}${f1(Math.abs(df))}</span>` : ''}</div></div></div>
+      <div class="wk" style="height:96px;margin-top:10px">${ks.map((k, i) => `<div><i class="${i === 6 ? 'now' : v[i] >= G.steps ? 'ok' : ''}" style="height:${Math.max(6, v[i] / mx * 70)}px;border-radius:8px"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'narrow' }).toUpperCase()}</span></div>`).join('')}</div>`; }
 };
-const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#7C8CFF', streak: '#FF8A3D' };
+const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#7C8CFF', streak: '#FF8A3D', all: 'var(--acc)' };
 g.style.setProperty('--tint', TINT[TYPE]);
 document.getElementById('x').onclick = () => fapi.hideWidget(TYPE);
 g.ondblclick = () => fapi.win('open');

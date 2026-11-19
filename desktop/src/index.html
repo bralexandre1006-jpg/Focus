@@ -9,8 +9,7 @@
 <body>
 <div class="app" id="app">
   <aside class="side">
-    <div class="brand drag" style="height:46px;margin:-14px -12px 12px;padding:0 18px;border-bottom:1px solid var(--line)"><svg class="logo" viewBox="255 155 535 670"><path d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/><path d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/></svg><b>Focus</b><em>PC</em></div>
-    <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" placeholder="Rechercher…" autocomplete="off"><kbd>Ctrl K</kbd></label>
+    <div class="brand drag" style="height:46px;margin:-14px -12px 12px;padding:0 18px;border-bottom:1px solid var(--line)"><svg class="logo" viewBox="255 155 535 670"><path d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/><path d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/></svg><b>Focus</b><em>PC</em><button class="mini-b" id="miniB" data-t="Réduire la barre"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></div>
     <div class="sec">Navigation</div>
     <nav id="nav">
       <button data-p="home" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Aperçu</button>
@@ -19,6 +18,7 @@
       <button data-p="food"><svg viewBox="0 0 24 24"><path d="M7 2v20M4 2v6a3 3 0 0 0 6 0V2M17 22V2c-2.5 1-4 3.5-4 7v5h4"/></svg>Nutrition<span id="nFood"></span></button>
       <button data-p="weight"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M8 9a5 5 0 0 1 8 0M12 9l1.5-2"/></svg>Poids</button>
       <button data-p="gym"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Séances<span id="nGym"></span></button>
+      <button data-p="duel"><svg viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M9.5 17.5L21 6V3h-3L6.5 14.5M11 19l-6-6M8 16l-4 4M5 21l-2-2"/></svg>Duel</button>
     </nav>
     <div style="flex:1"></div>
     <div class="wdd" id="wdd"><div class="wdd-p" id="wddP"></div><button class="wdd-b" id="wddB"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>Widgets<span id="wddN"></span><svg class="chv" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button></div>
@@ -28,7 +28,7 @@
     </div>
   </aside>
   <main class="main">
-    <header class="top drag"><span class="crumb" id="crumb"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><b>Aperçu</b></span><button class="ref" id="refBtn" data-t="Actualiser les données"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5M20 20v-4h-4"/></svg>Actualiser</button></header>
+    <header class="top drag"><button class="back hidden" id="backB" data-t="Retour"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><span class="crumb" id="crumb"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><b>Aperçu</b></span><button class="ref" id="refBtn" data-t="Actualiser les données"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5M20 20v-4h-4"/></svg>Actualiser</button></header>
     <div class="page" id="page"></div>
   </main>
   <div class="ov hidden" id="ov"></div>

@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('fapi', {
   setOnTop: v => ipcRenderer.invoke('widget:ontop', v),
   setLocked: v => ipcRenderer.invoke('widget:lock', v),
   layout: n => ipcRenderer.invoke('widget:layout', n),
+  addFriend: f => ipcRenderer.invoke('friend:add', f),
   setAutostart: v => ipcRenderer.invoke('autostart', v),
   win: a => ipcRenderer.send('win', a),
   hideWidget: t => ipcRenderer.send('widget:hide', t),
