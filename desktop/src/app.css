@@ -415,3 +415,13 @@ body.mini .sidex,body.narrow .sidex{display:none}
 .typ span{display:inline-flex;gap:5px}.typ i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:td 1.2s infinite}.typ i:nth-child(2){animation-delay:.15s}.typ i:nth-child(3){animation-delay:.3s}
 @keyframes td{0%,60%,100%{opacity:.3}30%{opacity:1}}
 .sidex .wx{flex-shrink:0}
+.cmem{background:color-mix(in srgb,var(--acc) 7%,var(--card2));border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:14px;padding:12px 14px;margin:4px 0 8px;max-height:40%;overflow:auto}
+.cmem>b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--acc);margin-bottom:6px}.cmem small{color:var(--mut);font-size:12px}
+.cmem div{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--line);font-size:13px}.cmem div span{flex:1}.cmem div button{color:var(--mut)}.cmem div button:hover{color:var(--bad)}
+/* barre étroite : météo/citation gardées, menu widgets lisible */
+body.narrow .sidex{display:flex}
+body.narrow .wx .fc{display:none}
+body.narrow .wx .d{display:none}
+.side .wdd{margin-top:auto}
+.wdd-p{width:max(100%,280px);right:auto}
+.wdd-p .wrow{white-space:nowrap}

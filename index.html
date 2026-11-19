@@ -563,9 +563,13 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 .aisrc button:first-child{background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 30%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--acc) 35%,transparent)}
 .aisrc svg{width:30px;height:30px}.aisrc b{font-size:15px;font-weight:800}
 .aicx{width:100%;height:50px;border-radius:16px;font-weight:800;color:var(--mut)}
-.coachb{color:var(--acc)}.coachb svg{width:22px;height:22px;fill:currentColor;stroke:none}
+.coachb svg.cbot{width:28px;height:25px}
 .head .coachb{margin-left:auto;margin-right:-4px}
-.cclr{margin-left:auto;height:36px;padding:0 12px;border-radius:12px;background:var(--card);font-size:13px;font-weight:800;color:var(--mut)}
+.cmem{background:var(--card);border:1px solid color-mix(in srgb,var(--acc) 30%,transparent);border-radius:18px;padding:14px;margin-bottom:12px}
+.cmem h5{font-size:13px;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.cmem>small{display:block;font-size:12px;color:var(--mut);margin-bottom:8px}
+.cmem div{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;font-weight:700}.cmem div span{flex:1}.cmem div button{color:var(--mut);font-size:15px;padding:0 4px}
+.cmemb{width:44px;height:44px;border-radius:14px;background:var(--card);display:grid;place-items:center;color:var(--acc);flex-shrink:0}.cmemb svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#coachPage .aift{padding-bottom:calc(var(--sb,0px) + 22px)}#coachPage .aichips{margin:0;padding:0 16px 2px}.cclr{height:36px;padding:0 12px;border-radius:12px;background:var(--card);font-size:13px;font-weight:800;color:var(--mut)}
 #coachPage .aift{gap:8px}#coachChat{padding-bottom:10px}
 #coachChat .ai{white-space:pre-wrap}#coachChat .ai b{color:var(--acc)}
 .aibox{background:var(--card);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:20px;padding:12px;margin-bottom:14px}
@@ -1758,7 +1762,7 @@ body.perf .wo-intro span{box-shadow:none!important}
   <section class="screen on" id="s-today">
     <div class="head">
       <div class="topl"><svg class="toplogo"><use href="#logo"/></svg><span class="stk hidden" id="streak"></span></div>
-      <button class="logo-btn press coachb" id="coachBtn" aria-label="Coach"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></button>
+      <button class="logo-btn press coachb" id="coachBtn" aria-label="Coach"><svg viewBox="0 0 360 320" class="cbot"><g fill="#DE7A58"><rect x="38" y="20" width="284" height="205"/><rect x="5" y="88" width="34" height="70"/><rect x="321" y="88" width="34" height="70"/><rect x="68" y="224" width="25" height="72"/><rect x="100" y="224" width="25" height="72"/><rect x="236" y="224" width="25" height="72"/><rect x="268" y="224" width="25" height="72"/></g><path d="M68 92l42 22-42 22" fill="none" stroke="#0B0B0F" stroke-width="13"/><path d="M292 92l-42 22 42 22" fill="none" stroke="#0B0B0F" stroke-width="13"/></svg></button>
       <button class="logo-btn gear press" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
 
@@ -2234,8 +2238,8 @@ body.perf .wo-intro span{box-shadow:none!important}
   <button class="press aicx" id="aiSrcX">Annuler</button>
 </div>
 <div class="aipg" id="coachPage">
-  <div class="aihd"><button class="press" id="coachX" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div style="min-width:0"><b>Coach</b><small>Analyse tes données et te conseille</small></div><button class="press cclr" id="coachClr">Effacer</button></div>
-  <div class="aibd" id="coachBody"><div class="aichat" id="coachChat"></div></div>
+  <div class="aihd"><button class="press" id="coachX" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div style="min-width:0;flex:1"><b>Coach</b><small>Ton coach IA</small></div><button class="press cmemb" id="coachMemB" aria-label="Mémoire"><svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-1zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg></button></div>
+  <div class="aibd" id="coachBody"><div class="cmem hidden" id="coachMem"></div><div class="aichat" id="coachChat"></div></div>
   <div class="aift"><div class="aichips" id="coachChips"><button>Fais le bilan de ma semaine</button><button>Comment améliorer mes pas ?</button><button>Mes séances sont-elles équilibrées ?</button><button>Mon alimentation est-elle bonne ?</button><button>Où en est mon poids ?</button></div>
     <div class="aiask"><input id="coachMsg" placeholder="Pose une question à ton coach…" autocomplete="off" enterkeyhint="send"><button class="press off" id="coachSend" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div>
 </div>
@@ -3129,7 +3133,7 @@ $('#aiAdd').onclick = () => {
 /* Coach IA : analyse des données du jour, de la semaine et des séances */
 const COACH_K = 'focus.coach';
 let coachMsgs = (() => { try { return JSON.parse(localStorage.getItem(COACH_K)) || []; } catch (e) { return []; } })(), coachBusy = false;
-const coachSave = () => { try { localStorage.setItem(COACH_K, JSON.stringify(coachMsgs.slice(-30))); } catch (e) {} };
+const coachSave = () => { try { localStorage.setItem(COACH_K, JSON.stringify(coachMsgs.slice(-200))); } catch (e) {} };
 const coachData = () => { const G = goals(), T = today(), L = [];
   L.push(`Prénom : ${S.profile.name || '—'}. Objectifs : ${G.steps} pas/jour, ${G.kcal} kcal/jour${G.protein ? `, ${G.protein} g de protéines` : ''}${G.target ? `, poids visé ${G.target} kg (départ ${G.start || '?'} kg)` : ''}. Série en cours : ${notedRun()} jours.`);
   L.push('14 derniers jours (date ; pas ; kcal ; prot/gluc/lip g ; poids ; séance) :');
@@ -3138,6 +3142,14 @@ const coachData = () => { const G = goals(), T = today(), L = [];
   const wos = [...(S.workouts || [])].sort((a, b) => b.start - a.start).slice(0, 8);
   if (wos.length) { L.push('Dernières séances :'); wos.forEach(w => L.push(`${key(new Date(w.start))} « ${w.name} » ${w.min || 0} min : ${(w.ex || []).map(e => `${e.name} ${(e.sets || []).filter(x => num(x.reps) > 0).map(x => (num(x.kg) ? num(x.kg) + 'kg×' : '') + num(x.reps)).join(',')}`).join(' | ')}`)); }
   return L.join('\n'); };
+const coachMem = () => Array.isArray(S.coachMem) ? S.coachMem : [];
+const COACH_MEMRULE = `\nTu as une mémoire durable sur la personne. À chaque réponse, renvoie aussi "memory" : la liste COMPLÈTE et à jour des faits à retenir (blessures, objectifs, préférences, contraintes, matériel, habitudes, événements à venir, ce qu'elle t'a confié), 60 faits courts au maximum. Ajoute tout ce qu'elle vient de dire d'important, garde les anciens faits toujours valables, retire ceux qui ne le sont plus. Si rien ne change, renvoie la même liste.`;
+const COACH_SCHEMA = { type: 'object', additionalProperties: false, required: ['reply', 'memory'], properties: { reply: { type: 'string' }, memory: { type: 'array', items: { type: 'string' } } } };
+const memSync = () => { if (S.sync && S.sync.on && !FB_URL.startsWith('__')) fbSend('PATCH', { mem: coachMem() }); };
+const memPull = async () => { if (!S.sync || !S.sync.on || FB_URL.startsWith('__')) return; try { const r = await fetch(`${FB_URL}/focus/${S.sync.code}/mem.json`); const m = await r.json(); if (Array.isArray(m)) { S.coachMem = m; save(); } } catch (e) {} };
+const memDraw = () => { const el = $('#coachMem'), m = coachMem();
+  el.innerHTML = `<h5>Ce que ton coach retient</h5><small>${m.length ? 'Touche ✕ pour faire oublier un élément.' : 'Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…'}</small>${m.map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('')}`;
+  $$('#coachMem [data-mi]').forEach(b => b.onclick = () => { S.coachMem = coachMem().filter((_, i) => i !== +b.dataset.mi); save(); memSync(); memDraw(); }); };
 const COACH_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français, tu tutoies, tu es bienveillant mais direct.
 Tu t'appuies uniquement sur les données fournies (pas, calories, macros, poids, séances) : cite des chiffres précis, repère les tendances et donne 2 à 4 conseils concrets et réalistes.
 Réponses courtes et aérées (10 lignes maximum), sans tableau. Tu n'es pas médecin : pour une douleur ou un problème de santé, conseille de consulter.`;
@@ -3148,23 +3160,25 @@ const coachDraw = () => { const el = $('#coachChat');
 const coachAsk = async txt => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
   coachMsgs.push({ r: 'user', t: txt }); coachDraw(); $('#coachMsg').value = ''; $('#coachSend').classList.add('off'); $('#coachMsg').blur();
   const typ = document.createElement('p'); typ.className = 'ai typing'; typ.innerHTML = '<small>Coach</small><span><i></i><i></i><i></i></span>'; $('#coachChat').appendChild(typ); $('#coachBody').scrollTop = 1e9;
-  const hist = coachMsgs.slice(-12).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
-  hist[hist.length - 1].content = `Mes données à jour :\n${coachData()}\n\nMa question : ${txt}`;
+  const hist = coachMsgs.slice(-16).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
+  const mem = coachMem(), sys = COACH_SYS + '\n\nCe que tu sais déjà sur la personne :\n' + (mem.length ? mem.map(x => '- ' + x).join('\n') : '(rien pour l\'instant)');
+  hist[hist.length - 1].content = `Mes données à jour :\n${coachData()}\n\nMon message : ${txt}`;
   let out = '', err = '';
   try { if (!CL_KEY.startsWith('__')) { const rq = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': CL_KEY, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-haiku-5-5', max_tokens: 2000, output_config: { effort: 'low' }, system: COACH_SYS, messages: hist }) });
-    const j = await rq.json(); if (!rq.ok) throw new Error((j.error && j.error.message) || rq.status); out = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim(); } }
+      body: JSON.stringify({ model: 'claude-haiku-5-5', max_tokens: 3000, output_config: { effort: 'low', format: { type: 'json_schema', schema: COACH_SCHEMA } }, system: sys + COACH_MEMRULE, messages: hist }) });
+    const j = await rq.json(); if (!rq.ok) throw new Error((j.error && j.error.message) || rq.status); const raw = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join(''); let o; try { o = JSON.parse(raw); } catch (x) { o = { reply: raw }; }
+    out = (o.reply || '').trim(); if (Array.isArray(o.memory)) { S.coachMem = o.memory.map(x => String(x).trim()).filter(Boolean).slice(0, 60); save(); memSync(); } } }
   catch (e) { err = e.message; }
   if (!out) { const key = (S.settings.aiKey || '').trim() || (S.settings.aiNoBuiltin || GEM_KEY.startsWith('__') ? '' : GEM_KEY);
     if (key) try { const rq = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: COACH_SYS }] }, contents: hist.map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] })) }) });
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: sys }] }, contents: hist.map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] })) }) });
       const j = await rq.json(); out = (j.candidates && j.candidates[0].content.parts.map(x => x.text || '').join('').trim()) || ''; if (!out) err = (j.error && j.error.message) || err; } catch (e) { err = e.message; } }
   typ.remove(); coachBusy = false;
   if (out) { coachMsgs.push({ r: 'ai', t: out }); coachSave(); coachDraw(); buzz('success'); }
   else { coachMsgs.pop(); coachDraw(); toast('Coach indisponible' + (err ? ' : ' + err : '')); } };
-$('#coachBtn').onclick = () => { coachDraw(); openOv('coachPage'); sfx.tap(); buzz(); };
+$('#coachBtn').onclick = () => { coachDraw(); $('#coachMem').classList.add('hidden'); openOv('coachPage'); memPull(); sfx.tap(); buzz(); };
+$('#coachMemB').onclick = () => { const el = $('#coachMem'); memDraw(); el.classList.toggle('hidden'); $('#coachBody').scrollTop = 0; sfx.tap(); };
 $('#coachX').onclick = () => { closeOv('coachPage'); sfx.tap(); };
-$('#coachClr').onclick = () => { coachMsgs = []; coachSave(); coachDraw(); sfx.tap(); };
 $('#coachSend').onclick = () => coachAsk($('#coachMsg').value);
 $('#coachMsg').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); coachAsk($('#coachMsg').value); } });
 $('#coachMsg').addEventListener('input', () => $('#coachSend').classList.toggle('off', !$('#coachMsg').value.trim()));
@@ -4094,7 +4108,7 @@ const syncPayload = () => {
     s: (w.ex || []).reduce((t, e) => t + (e.sets || []).length, 0), v: Math.round((w.ex || []).reduce((t, e) => t + (e.sets || []).reduce((u, x) => u + setVol(x, e.uni), 0), 0)) }));
   return { v: 1, at: Date.now(), name: (S.profile.name || '').trim(), accent: S.settings.accent || 'lime',
     goals: { steps: G.steps, kcal: G.kcal, protein: G.protein || 0, target: G.target || 0, start: G.start || 0 },
-    streak: notedRun(), total: tot, days, meals, ml, wos };
+    streak: notedRun(), total: tot, days, meals, ml, wos, mem: coachMem() };
 };
 let syncT = 0, syncFT = 0, syncBusy = false, syncAgain = false, syncFull = 0;
 const fbSend = async (method, body) => { const ac = new AbortController(), to = setTimeout(() => ac.abort(), 15000);
