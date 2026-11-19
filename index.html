@@ -4047,12 +4047,12 @@ const pushSync = async (full) => {
   if (syncBusy) { syncAgain = true; return; }
   syncBusy = true;
   let ok;
-  if (full || Date.now() - syncFull > 30000) { ok = await fbSend('PUT', syncPayload()); if (ok) syncFull = Date.now(); }
+  if (full || Date.now() - syncFull > 120000) { ok = await fbSend('PUT', syncPayload()); if (ok) syncFull = Date.now(); }
   else { const T = today(), p = syncPayload(); ok = await fbSend('PATCH', { at: p.at, accent: p.accent, name: p.name, meals: p.meals, streak: p.streak, total: p.total, goals: p.goals, ['days/' + T]: p.days[T] || null, ['ml/' + T]: (p.ml && p.ml[T]) || null }); }
   S.sync.ok = ok; if (ok) S.sync.last = Date.now();
   syncBusy = false; try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} if (cur === 'settings') syncUI();
   if (syncAgain) { syncAgain = false; setTimeout(() => pushSync(), 300); } };
-window.__pcSync = () => { clearTimeout(syncT); syncT = setTimeout(() => pushSync(), 1000); clearTimeout(syncFT); syncFT = setTimeout(() => pushSync(true), 20000); };
+window.__pcSync = () => { clearTimeout(syncT); syncT = setTimeout(() => pushSync(), 300); clearTimeout(syncFT); syncFT = setTimeout(() => pushSync(true), 30000); };
 const syncUI = () => { const on = !!(S.sync && S.sync.on);
   $('#tSync').classList.toggle('on', on); $('#syncBox').classList.toggle('hidden', !on);
   if (on) $('#syncCode').textContent = S.sync.code.replace(/(.{4})(?=.)/g, '$1 ');
@@ -4920,7 +4920,7 @@ $('#mShare').onclick = async () => {
 const renderFeat = () => {
   S.settings.f ||= {};
   $('#accents').innerHTML = Object.entries(ACCENTS).map(([k, c]) => `<button data-a="${k}" class="${(S.settings.accent || 'lime') === k ? 'on' : ''}" style="--a1:${c[0]};--a2:${c[1]}" aria-label="${k}"></button>`).join('');
-  $$('#accents [data-a]').forEach(b => b.onclick = () => { S.settings.accent = b.dataset.a; save(); applyAccent(); renderFeat(); sfx.tap(); buzz(); rendered.history = rendered.stats = null; });
+  $$('#accents [data-a]').forEach(b => b.onclick = () => { S.settings.accent = b.dataset.a; if (S.sync && S.sync.on && !FB_URL.startsWith('__')) fbSend('PATCH', { accent: b.dataset.a }); save(); applyAccent(); renderFeat(); sfx.tap(); buzz(); rendered.history = rendered.stats = null; });
   $('#sndList').innerHTML = RSND.map(([k, t]) => `<button class="press ${restSnd() === k ? 'on' : ''}" data-snd="${k}">${t}</button>`).join('');
   $$('#sndList [data-snd]').forEach(b => b.onclick = () => { S.settings.restSnd = b.dataset.snd; save(); $$('#sndList button').forEach(x => x.classList.toggle('on', x === b));
     if (P.StepCounter && P.StepCounter.restPreview) P.StepCounter.restPreview({ sound: b.dataset.snd }).catch(() => {}); else buzz(); });
