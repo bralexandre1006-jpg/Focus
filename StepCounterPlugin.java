@@ -192,6 +192,15 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
         call.resolve();
     }
 
+    /** Code et adresse de la synchro PC, pour l'envoi des pas en arriere-plan. */
+    @PluginMethod
+    public void setSync(PluginCall call) {
+        getContext().getSharedPreferences(FocusWidget.PREFS, Context.MODE_PRIVATE).edit()
+            .putString("syncCode", call.getString("code", "")).putString("syncUrl", call.getString("url", "")).apply();
+        try { WidgetTicker.schedule(getContext()); } catch (Throwable t) {}
+        call.resolve();
+    }
+
     /** Valeurs du compteur relevees chaque nuit a 00:00, par jour (yyyy-MM-dd). */
     @PluginMethod
     public void getSnapshots(PluginCall call) {

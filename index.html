@@ -4052,7 +4052,9 @@ const syncUI = () => { const on = !!(S.sync && S.sync.on);
     : S.sync.last ? `Dernier envoi : ${new Date(S.sync.last).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })}${S.sync.ok === false ? ' · échec du dernier essai' : ''}` : 'Premier envoi en cours…'; };
 $('#tSync').onclick = () => { S.sync = S.sync || {};
   if (!S.sync.code) { const a = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = crypto.getRandomValues(new Uint8Array(12)); S.sync.code = [...b].map(x => a[x % a.length]).join(''); }
-  S.sync.on = !S.sync.on; save(); syncUI(); if (S.sync.on) pushSync(); sfx.tap(); buzz(); };
+  S.sync.on = !S.sync.on; save(); syncUI(); syncNative(); if (S.sync.on) pushSync(); sfx.tap(); buzz(); };
+const syncNative = () => { try { P.StepCounter && P.StepCounter.setSync && P.StepCounter.setSync({ code: S.sync && S.sync.on ? S.sync.code : '', url: FB_URL.startsWith('__') ? '' : FB_URL }).catch(() => {}); } catch (e) {} };
+setTimeout(syncNative, 4000);
 $('#syncCopy').onclick = async () => { try { await navigator.clipboard.writeText(S.sync.code); toast('Code copié'); } catch (e) { toast(S.sync.code); } buzz(); };
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') window.__pcSync(); });
 const renderSettings = () => {

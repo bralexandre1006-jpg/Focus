@@ -31,13 +31,38 @@ public class WidgetTicker extends BroadcastReceiver {
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         if (am == null) return;
         PendingIntent pi = PendingIntent.getBroadcast(c, 4343, new Intent(c, WidgetTicker.class), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        if (!hasWidgets(c)) { am.cancel(pi); return; }
+        if (!hasWidgets(c) && !syncOn(c)) { am.cancel(pi); return; }
         long t = SystemClock.elapsedRealtime() + EVERY;
         // Réveil non forcé : tourne quand l'écran est allumé, ne vide pas la batterie écran éteint
         try {
             if (Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms()) am.setExact(AlarmManager.ELAPSED_REALTIME, t, pi);
             else am.set(AlarmManager.ELAPSED_REALTIME, t, pi);
         } catch (SecurityException e) { am.set(AlarmManager.ELAPSED_REALTIME, t, pi); }
+    }
+
+    static boolean syncOn(Context c) {
+        SharedPreferences p = c.getSharedPreferences(FocusWidget.PREFS, Context.MODE_PRIVATE);
+        return !p.getString("syncCode", "").isEmpty() && !p.getString("syncUrl", "").isEmpty();
+    }
+
+    /** Synchro PC en arrière-plan : envoie les pas du jour à Firebase quand ils ont changé. */
+    static void pcSync(Context c) {
+        final SharedPreferences p = c.getSharedPreferences(FocusWidget.PREFS, Context.MODE_PRIVATE);
+        final String code = p.getString("syncCode", ""), url = p.getString("syncUrl", "");
+        if (code.isEmpty() || url.isEmpty()) return;
+        final String date = p.getString("date", ""); final int steps = p.getInt("steps", 0);
+        if (date.isEmpty() || (steps == p.getInt("syncSteps", -1) && date.equals(p.getString("syncDate", "")))) return;
+        new Thread(() -> {
+            try {
+                java.net.HttpURLConnection k = (java.net.HttpURLConnection) new java.net.URL(url + "/focus/" + code + ".json").openConnection();
+                k.setRequestMethod("POST"); k.setRequestProperty("X-HTTP-Method-Override", "PATCH"); k.setDoOutput(true); k.setConnectTimeout(10000); k.setReadTimeout(10000);
+                k.setRequestProperty("Content-Type", "application/json");
+                String body = "{\"at\":" + System.currentTimeMillis() + ",\"days/" + date + "/0\":" + steps + "}";
+                try (java.io.OutputStream o = k.getOutputStream()) { o.write(body.getBytes("UTF-8")); }
+                if (k.getResponseCode() / 100 == 2) p.edit().putInt("syncSteps", steps).putString("syncDate", date).apply();
+                k.disconnect();
+            } catch (Throwable ignored) {}
+        }).start();
     }
 
     /** Recalcule les pas du jour à partir du total matériel et de la dernière valeur connue. */
@@ -58,6 +83,7 @@ public class WidgetTicker extends BroadcastReceiver {
         boolean same = steps == p.getInt("steps", -1) && today.equals(p.getString("date", ""));
         e.putInt("steps", steps).putLong("refTotal", total).apply();
         if (!same) FocusWidget.push(c);
+        pcSync(c);
     }
 
     /** Repli : l'enregistreur de pas Google Play, qui compte aussi en arrière-plan. */
@@ -84,7 +110,7 @@ public class WidgetTicker extends BroadcastReceiver {
                         if (!same) e.putInt("kcal", 0);
                         e.apply();
                     }
-                    FocusWidget.push(c); pending.finish();
+                    FocusWidget.push(c); pcSync(c); pending.finish();
                 })
                 .addOnFailureListener(x -> { FocusWidget.push(c); pending.finish(); });
         } catch (Throwable t) { try { FocusWidget.push(c); } catch (Throwable ignored) {} pending.finish(); }
