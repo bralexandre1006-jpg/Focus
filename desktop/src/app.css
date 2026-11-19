@@ -277,7 +277,7 @@ nav button span{display:none}
 .side{position:relative}
 .app{grid-template-columns:var(--sw,248px) 1fr}
 .rsz{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:5;-webkit-app-region:no-drag}
-.rsz:hover,.rsz.on{background:linear-gradient(90deg,transparent 3px,color-mix(in srgb,var(--acc) 60%,transparent) 3px,color-mix(in srgb,var(--acc) 60%,transparent) 5px,transparent 5px)}
+.rsz:hover,.rsz.on{background:none}
 body.resizing,body.resizing *{cursor:col-resize!important;user-select:none}
 body.resizing .app{transition:none}
 body.mini .app{grid-template-columns:76px 1fr}
