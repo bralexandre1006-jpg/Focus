@@ -45,7 +45,7 @@ function openWidget(type) {
   const n = Object.keys(wins).length;
   const w = new BrowserWindow({
     width: st.w || d.w, height: st.h || d.h, x: st.x ?? (type === 'all' ? wa.x + Math.round((wa.width - d.w) / 2) : wa.x + wa.width - d.w - 24), y: st.y ?? (type === 'all' ? wa.y + 24 : wa.y + 24 + n * (d.h + 16)),
-    frame: false, transparent: true, resizable: !!RSZ[type], thickFrame: false, minWidth: RSZ[type] ? RSZ[type][0] : undefined, minHeight: RSZ[type] ? RSZ[type][1] : undefined, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
+    frame: false, transparent: true, resizable: !!RSZ[type] && !cfg.locked, thickFrame: false, minWidth: RSZ[type] ? RSZ[type][0] : undefined, minHeight: RSZ[type] ? RSZ[type][1] : undefined, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
     focusable: true, icon: ICON, backgroundColor: '#00000000',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, backgroundThrottling: false }
   });
@@ -87,7 +87,7 @@ function applyLayout(name) {
   on.forEach(k => { cfg.widgets[k] = { ...(cfg.widgets[k] || {}), on: true, x: pos[k][0], y: pos[k][1] }; if (wins[k]) wins[k].setPosition(pos[k][0], pos[k][1]); else openWidget(k); });
   saveCfg(); refreshTray(); broadcast('cfg', cfg);
 }
-function setLocked(v) { cfg.locked = v; saveCfg(); Object.values(wins).forEach(w => w.setMovable(!v)); refreshTray(); broadcast('cfg', cfg); }
+function setLocked(v) { cfg.locked = v; saveCfg(); Object.entries(wins).forEach(([k, w]) => { w.setMovable(!v); if (RSZ[k]) w.setResizable(!v); }); refreshTray(); broadcast('cfg', cfg); }
 function setOnTop(v) { cfg.onTop = v; saveCfg(); Object.values(wins).forEach(w => w.setAlwaysOnTop(v)); refreshTray(); broadcast('cfg', cfg); }
 function setAutostart(v) { cfg.autostart = v; saveCfg(); app.setLoginItemSettings({ openAtLogin: v, args: ['--hidden'] }); broadcast('cfg', cfg); }
 
