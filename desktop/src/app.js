@@ -92,8 +92,8 @@ const donut = (parts, sz = 110, sw = 14) => { const r = (sz - sw) / 2, C = 2 * M
   return `<svg viewBox="0 0 ${sz} ${sz}" style="width:${sz}px;height:${sz}px;transform:rotate(-90deg);flex-shrink:0"><circle cx="${sz / 2}" cy="${sz / 2}" r="${r}" stroke="rgba(255,255,255,.06)" stroke-width="${sw}"/>${parts.map(([v, c]) => { const l = v / t * C, el = `<circle cx="${sz / 2}" cy="${sz / 2}" r="${r}" stroke="${c}" stroke-width="${sw}" stroke-dasharray="${Math.max(0, l - 2)} ${C}" stroke-dashoffset="${-off}"/>`; off += l; return el; }).join('')}</svg>`; };
 
 /* détail d'un jour (réutilisé partout) */
-function dayDetail(d, k) {
-  const x = D(d, k), G = d.goals, ms = (d.ml && d.ml[k]) || (k === today() ? (d.meals || []).map(m => [m.s, m.n, m.k, m.p, m.c, m.f]) : null);
+function dayDetail(d, k, noMeals) {
+  const x = D(d, k), G = d.goals, ms = noMeals ? [] : (d.ml && d.ml[k]) || (k === today() ? (d.meals || []).map(m => [m.s, m.n, m.k, m.p, m.c, m.f]) : null);
   const wos = (d.wos || []).filter(w => key(new Date(w.t)) === k), w = x.weight;
   return `<div class="dt">${dLong(k)}</div>
   <div class="kv"><div><small>Pas</small><b class="num">${fmt(x.steps)}</b> ${x.steps >= G.steps ? '<span class="tag ok">objectif</span>' : ''}</div>
@@ -142,7 +142,7 @@ function pSteps(d) {
     pick: i => { if (P.year) { s.m = 'month'; s.o = (new Date().getFullYear() - +P.title) * 12 + new Date().getMonth() - i; } else s.sel = P.ks[i]; render(); } });
   const all = Object.keys(d.days || {}).sort(), wkT = {}, moT = {}; all.forEach(k => { const x = D(d, k).steps; wkT[monday(k)] = (wkT[monday(k)] || 0) + x; moT[k.slice(0, 7)] = (moT[k.slice(0, 7)] || 0) + x; });
   const bD = all.reduce((b, k) => D(d, k).steps > (b ? D(d, b).steps : -1) ? k : b, null), bW = Object.entries(wkT).sort((a, b) => b[1] - a[1])[0], bM = Object.entries(moT).sort((a, b) => b[1] - a[1])[0];
-  const k90 = lastN(90), wdA = [0, 1, 2, 3, 4, 5, 6].map(i => avg(k90.filter(k => (parseKey(k).getDay() + 6) % 7 === i).map(k => D(d, k).steps))), wdN = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const k90 = lastN(30), wdA = [0, 1, 2, 3, 4, 5, 6].map(i => avg(k90.filter(k => (parseKey(k).getDay() + 6) % 7 === i).map(k => D(d, k).steps))), wdN = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
   CH.swd = el => bars(el, { id: 'swd', vals: wdA, labels: wdN, goal: G.steps, hi: i => wdA[i] === Math.max(...wdA), vlab: true, tip: i => `${wdN[i]} · <b>${fmt(wdA[i])}</b> pas en moyenne` });
   const s90 = k90.map(k => D(d, k).steps), dist = [['< 5 000', s90.filter(x => x < 5000).length, '#5E5E6C'], ['5 – 10 000', s90.filter(x => x >= 5000 && x < 10000).length, 'color-mix(in srgb,var(--acc) 45%,#333)'], ['10 – 15 000', s90.filter(x => x >= 10000 && x < 15000).length, 'var(--acc)'], ['15 000 +', s90.filter(x => x >= 15000).length, 'var(--acc2)']];
   const gs = (() => { let cur = 0, best = 0, run = 0; all.forEach(k => { if (D(d, k).steps >= G.steps) { run++; best = Math.max(best, run); } else run = 0; }); for (let k = today(); D(d, k).steps >= G.steps || (k === today() && cur === 0 && D(d, k).steps < G.steps && false); k = addDays(k, -1)) cur++; if (!cur) for (let k = addDays(today(), -1); D(d, k).steps >= G.steps; k = addDays(k, -1)) cur++; return { cur, best }; })();
@@ -154,10 +154,10 @@ function pSteps(d) {
     <div class="card s"><div class="lab">Distance</div><div class="big num">${fmt(sum(dv) * .00075)}<small>km</small></div><div class="sub">≈ ${fmt(sum(dv) * .04)} kcal brûlées</div></div></div>
   <div class="row" style="grid-template-columns:2.2fr 1fr">
     <div class="card fx glow"><div class="hdr2"><div style="display:flex;align-items:center;gap:8px"><div class="lab">Pas</div><button class="eye ${ST.showV ? 'on' : ''}" id="eyeV" aria-label="Afficher les valeurs"><svg viewBox="0 0 24 24">${ST.showV ? '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/>'}</svg></button></div>${pnav('steps', s)}</div><div class="ch" data-ch="sb"></div></div>
-    <div class="card fx"><div class="lab">Détail du jour</div><div class="scroll">${sel ? dayDetail(d, sel) : '<div class="empty">Choisis un jour</div>'}</div></div></div>
+    <div class="card fx"><div class="lab">Détail du jour</div><div class="scroll">${sel ? dayDetail(d, sel, true) : '<div class="empty">Choisis un jour</div>'}</div></div></div>
   <div class="row" style="grid-template-columns:1.3fr 1fr 1fr">
-    <div class="card fx glow"><div class="hdr2"><div class="lab">Par jour de la semaine <span style="color:var(--dim)">· 90 j</span></div></div><div class="ch" data-ch="swd"></div></div>
-    <div class="card fx"><div class="lab">Tes journées <span style="color:var(--dim)">· 90 j</span></div><div class="hb" style="justify-content:space-around;flex:1">${dist.map(([l, x, c]) => `<div><span>${l}</span><i><s style="width:${x / Math.max(1, ...dist.map(z => z[1])) * 100}%;background:${c}"></s></i><b class="num">${x}</b></div>`).join('')}</div>
+    <div class="card fx glow"><div class="hdr2"><div class="lab">Par jour de la semaine <span style="color:var(--dim)">· 30 j</span></div></div><div class="ch" data-ch="swd"></div></div>
+    <div class="card fx"><div class="lab">Tes journées <span style="color:var(--dim)">· 30 j</span></div><div class="hb" style="justify-content:space-around;flex:1">${dist.map(([l, x, c]) => `<div><span>${l}</span><i><s style="width:${x / Math.max(1, ...dist.map(z => z[1])) * 100}%;background:${c}"></s></i><b class="num">${x}</b></div>`).join('')}</div>
       <div class="sub">Série d'objectifs : <b style="color:var(--txt)">${gs.cur} j</b> en cours · record <b style="color:var(--txt)">${gs.best} j</b></div></div>
     <div class="card fx"><div class="lab">Records</div><div class="tiles">
       <div><small>Meilleur jour</small><b class="num">${bD ? fmt(D(d, bD).steps) : '—'}</b><em>${bD ? dShort(bD) + ' ' + bD.slice(0, 4) : ''}</em></div>
@@ -222,12 +222,13 @@ function pHist(d) {
       <div class="v"><small>Prot.</small><b class="num" style="${G.protein && x.p >= G.protein ? 'color:var(--pro)' : ''}">${x.p ? x.p + ' g' : '—'}</b></div>
       <div class="v"><small>Poids</small><b class="num">${x.weight ? f1(x.weight) : '—'}</b>${dk != null ? ` <span style="font-size:11px" class="${dk > 0 ? 'dn' : dk < 0 ? 'up' : ''}">${dk > 0 ? '+' : dk < 0 ? '−' : '±'}${f1(Math.abs(dk))}</span>` : ''}</div>
       ${bdg ? `<span class="bdg" style="background:${bdg[1]};color:${bdg[2]}">${bdg[0]}</span>` : '<span></span>'}</div>`; };
+  const lst = ks.filter(k => k <= T).reverse();
   return `<div class="row" style="grid-template-columns:1.55fr 1fr;height:100%">
     <div class="card fx"><div class="hdr2"><div class="lab">Historique</div><div class="pnav"><button class="arr" id="hwP">${ARR(0)}</button><b>${lbl}</b><button class="arr" id="hwN" ${ST.hw ? '' : 'disabled'}>${ARR(1)}</button></div></div>
       <div class="wsum"><div style="--c:var(--acc)"><small>Pas / jour</small><b class="num">${fmt(avg(st))}</b></div><div style="--c:var(--acc2)"><small>Total</small><b class="num">${fmt(sum(st))}</b></div>
         <div style="--c:#7896FF"><small>Séances</small><b class="num">${wosW.length}</b></div><div style="--c:var(--cal)"><small>Kcal / jour</small><b class="num">${kc.length ? fmt(avg(kc)) : '—'}</b></div>
         <div style="--c:var(--wgt)"><small>Poids</small><b class="num ${wdf > 0 ? 'dn' : wdf < 0 ? 'up' : ''}">${wdf == null ? '—' : (wdf > 0 ? '+' : wdf < 0 ? '−' : '±') + f1(Math.abs(wdf)) + ' kg'}</b></div></div>
-      <div class="days">${ks.map(day).join('')}</div></div>
+      <div class="days">${lst.map(day).join('')}${Array(7 - lst.length).fill('<div class="dc fut" style="--c:transparent;border-color:transparent;background:none"></div>').join('')}</div></div>
     <div class="card fx"><div class="lab">Détail du jour</div><div class="scroll">${dayDetail(d, sel)}</div></div></div>`;
 }
 
@@ -243,12 +244,14 @@ function pGym(d) {
   CH.gv = el => bars(el, { id: 'gv', vals: wv, labels: VB.map((x, i) => ST.gvm === 'day' ? (i % 5 === 4 ? x[2] : '') : ST.gvm === 'month' ? x[2] : i % 2 ? '' : x[2]), hi: i => i === VB.length - 1, vlab: true, avgLine: wavg || null, dim: false, tip: i => `${ST.gvm === 'week' ? 'Semaine du ' : ''}${VB[i][2]} · <b>${fmt(wv[i])} kg</b> · ${wn[i]} séance${wn[i] > 1 ? 's' : ''}` });
   const cats = {}; wos.filter(w => w.t >= Date.now() - 30 * 864e5).forEach(w => (w.ex || []).forEach(e => { const c = e[1] || 'Autre'; cats[c] = (cats[c] || 0) + (e[2] || []).length; }));
   const cl = Object.entries(cats).sort((a, b) => b[1] - a[1]).slice(0, 7), cmx = Math.max(1, ...cl.map(c => c[1]));
-  const exs = {}; wos.forEach(w => (w.ex || []).forEach(e => { if (!(e[2] || []).length) return; (exs[e[0]] = exs[e[0]] || []).push({ t: w.t, kg: Math.max(...e[2].map(s => s[0])), e1: Math.max(...e[2].map(s => s[0] * (1 + s[1] / 30))) }); }));
+  const exs = {}; wos.forEach(w => (w.ex || []).forEach(e => { const z = e[2] || []; if (!z.length) return; const bs = z.reduce((b, x) => x[0] > b[0] || (x[0] === b[0] && x[1] > b[1]) ? x : b, z[0]);
+    (exs[e[0]] = exs[e[0]] || []).push({ t: w.t, kg: bs[0], rp: bs[1], mr: Math.max(...z.map(x => x[1])), vol: sum(z.map(x => x[0] * x[1])), e1: Math.max(...z.map(x => x[0] * (1 + x[1] / 30))), n: z.length }); }));
   const hid = hiddenEx(), old = n => Math.max(...exs[n].map(p => p.t)) < Date.now() - 60 * 864e5, exAll = Object.keys(exs).sort((a, b) => exs[b].length - exs[a].length), nOld = exAll.filter(n => !hid.includes(n) && old(n)).length, exNames = exAll.filter(n => !hid.includes(n) && (ST.oldEx || !old(n))); if (!exNames.includes(ST.ex)) ST.ex = exNames[0] || '';
   const top = {}; wos.filter(w => w.t >= Date.now() - 30 * 864e5).forEach(w => (w.ex || []).forEach(e => { const t = top[e[0]] = top[e[0]] || { c: e[1], n: 0, kg: 0 }; t.n += (e[2] || []).length; t.kg = Math.max(t.kg, ...(e[2] || []).map(x => x[0]), 0); }));
   const topL = Object.entries(top).sort((a, b) => b[1].n - a[1].n).slice(0, 5);
-  const pts = (exs[ST.ex] || []).slice().sort((a, b) => a.t - b.t), rec = pts.length ? Math.max(...pts.map(p => p.kg)) : 0;
-  CH.gp = el => lines(el, { id: 'gp', area: true, axis: true, labels: pts.map(p => dShort(key(new Date(p.t)))), series: [{ vals: pts.map(p => p.kg), c: ['#7C8CFF', '#B88CFF'], dots: true }], tip: i => `${dShort(key(new Date(pts[i].t)))} · <b>${f1(pts[i].kg)} kg</b> · 1RM estimé ${f1(pts[i].e1)} kg` });
+  const pts = (exs[ST.ex] || []).slice().sort((a, b) => a.t - b.t), rec = pts.length ? pts.reduce((b, p) => p.kg > b.kg || (p.kg === b.kg && p.rp > b.rp) ? p : b, pts[0]) : null;
+  const PM = { kg: ['Charge', p => p.kg, 'kg'], rp: ['Reps', p => p.mr, 'reps'], vol: ['Volume', p => p.vol, 'kg'], e1: ['1RM', p => p.e1, 'kg'] }, pm = PM[ST.pm] ? ST.pm : 'kg';
+  CH.gp = el => lines(el, { id: 'gp', area: true, axis: true, labels: pts.map(p => dShort(key(new Date(p.t)))), series: [{ vals: pts.map(PM[pm][1]), c: ['#7C8CFF', '#B88CFF'], dots: true }], tip: i => { const p = pts[i]; return `${dShort(key(new Date(p.t)))} · meilleure série <b>${f1(p.kg).replace(',0', '')} kg × ${p.rp}</b> · ${p.n} séries · volume ${fmt(p.vol)} kg · 1RM ${f1(p.e1)} kg`; } });
   return `<div class="row" style="grid-template-columns:repeat(4,1fr)">
     <div class="card s" style="--g:#7896FF"><div class="lab">Cette semaine</div><div class="big num">${wk.length}<small>séance${wk.length > 1 ? 's' : ''}</small></div><div class="sub">${fmt(sum(wk.map(wVol)))} kg soulevés</div></div>
     <div class="card s" style="--g:#7896FF"><div class="lab">Ce mois-ci</div><div class="big num">${mo.length}<small>séances</small></div><div class="sub">${Math.floor(sum(mo.map(w => w.m)) / 60)} h ${sum(mo.map(w => w.m)) % 60} min</div></div>
@@ -263,8 +266,8 @@ function pGym(d) {
       <div class="sep"></div><div class="lab" style="margin-bottom:4px">Exercices les plus faits · 30 j</div><div class="scroll"><div class="tex">${topL.map(([n, t]) => `<div><i style="background:${catColor(t.c || n)}"></i><span>${esc(n)}</span><small>${t.n} séries</small><b class="num">${t.kg ? f1(t.kg).replace(',0', '') + ' kg' : '—'}</b></div>`).join('') || '<div class="empty">Pas de données</div>'}</div></div></div></div>
   <div class="row" style="grid-template-columns:1fr 1fr">
     <div class="card fx" style="--g:#B88CFF"><div class="hdr2"><div class="lab">Volume</div><div style="display:flex;gap:8px;align-items:center"><div class="seg" id="gvm">${[['day', 'Jour'], ['week', 'Semaine'], ['month', 'Mois']].map(([k, l]) => `<button data-m="${k}" class="${ST.gvm === k ? 'on' : ''}">${l}</button>`).join('')}</div><span class="tag">moy. ${wavg >= 1000 ? f1(wavg / 1000) + ' t' : fmt(wavg) + ' kg'}</span><span class="tag ${l4 >= p4 ? 'ok' : 'no'}" data-t="Période récente vs précédente">${p4 ? (l4 >= p4 ? '+' : '−') + Math.abs(Math.round((l4 - p4) / p4 * 100)) + ' %' : '—'}</span></div></div><div class="ch" data-ch="gv"></div></div>
-    <div class="card fx" style="--g:#B88CFF"><div class="hdr2"><div class="lab">Progression</div><div style="display:flex;gap:8px;align-items:center"><span class="rec"><small>Record</small><b class="num">${rec ? f1(rec).replace(',0', '') + ' kg' : '—'}</b></span><select class="sel2" id="exSel">${exNames.map(n => `<option ${n === ST.ex ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
-      ${ST.ex ? '<button class="chip ic" id="exHide" data-t="Retirer cet exercice de la liste"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>' : ''}${nOld ? `<button class="chip ${ST.oldEx ? 'on' : ''}" id="exOld" data-t="Exercices pas faits depuis 2 mois">Anciens (${nOld})</button>` : ''}${hid.length ? `<button class="chip" id="exShow" data-t="${esc(hid.join(', '))}">Réafficher (${hid.length})</button>` : ''}</div></div>
+    <div class="card fx" style="--g:#B88CFF"><div class="hdr2"><div class="lab">Progression</div><div style="display:flex;gap:8px;align-items:center"><span class="rec"><small>Record</small><b class="num">${rec ? f1(rec.kg).replace(',0', '') + ' kg × ' + rec.rp : '—'}</b></span><div class="seg" id="pmS">${Object.entries(PM).map(([k, v]) => `<button data-m="${k}" class="${pm === k ? 'on' : ''}">${v[0]}</button>`).join('')}</div><select class="sel2" id="exSel">${exNames.map(n => `<option ${n === ST.ex ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
+      ${ST.ex ? '<button class="chip ic" id="exHide" data-t="Retirer cet exercice de la liste"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>' : ''}${nOld ? `<button class="chip ${ST.oldEx ? 'on' : ''}" id="exOld" data-t="Exercices pas faits depuis 2 mois">Anciens (${nOld})</button>` : ''}</div></div>
       ${pts.length > 1 ? '<div class="ch" data-ch="gp"></div>' : '<div class="empty">Pas assez de séances pour cet exercice</div>'}</div></div>`;
 }
 const hiddenEx = () => { try { return JSON.parse(localStorage.getItem('focus.hiddenEx')) || []; } catch (e) { return []; } };
@@ -311,6 +314,13 @@ const animDuel = () => { DUELT.forEach(clearTimeout); DUEL.step = 0; render();
 const PAGES = { home: ['Aperçu', pHome, 'fit-home'], hist: ['Historique', pHist, 'fit-1'], steps: ['Pas', pSteps, 'fit-3'], food: ['Nutrition', pFood, 'fit-3'], weight: ['Poids', pWeight, 'fit-2'], gym: ['Séances', pGym, 'fit-3'], duel: ['Duel', pDuel, 'fit-2'] };
 
 let STACK = [];
+function stepNotif() {
+  if (!DATA) return; const T = today(), s = D(DATA, T).steps, lv = Math.floor(s / 5000); let last = {};
+  try { last = JSON.parse(localStorage.getItem('focus.stepN')) || {}; } catch (e) {}
+  if (last.d !== T) last = { d: T, l: lv };
+  else if (lv > last.l) { last.l = lv; try { new Notification('Focus', { body: `🎉 ${fmt(lv * 5000)} pas atteints aujourd'hui !${lv * 5000 >= DATA.goals.steps && (lv - 1) * 5000 < DATA.goals.steps ? ' Objectif du jour validé.' : ''}`, icon: 'icon.png', silent: false }); } catch (e) {} }
+  try { localStorage.setItem('focus.stepN', JSON.stringify(last)); } catch (e) {}
+}
 function go(p, back) { if (p === PAGE) return; if (!back) STACK.push(PAGE); PAGE = p; render(true); }
 const goBack = () => { if (STACK.length) go(STACK.pop(), true); };
 function render(anim) {
@@ -323,6 +333,9 @@ function render(anim) {
   pg.className = 'page fit ' + cls + (anim ? ' anim' : ''); for (const k in CH) delete CH[k]; pg.innerHTML = f(DATA);
   $('#backB').classList.toggle('hidden', !STACK.length);
   $$('#page .scroll').forEach((s, i) => s.scrollTop = scroll[i] || 0);
+  const TC = ['#5AB8FF', '#4FE3D0', '#FFC44A', '#FF7AB8', '#7C8CFF', '#3DDC84', '#FF8A4C', '#B88CFF']; let ti = 0;
+  $$('#page .card').forEach(c => { if (!c.classList.contains('glow') && !c.style.getPropertyValue('--g')) c.style.setProperty('--g', TC[ti++ % TC.length]); });
+  stepNotif();
   drawCharts(); bind();
 }
 const drawCharts = () => $$('[data-ch]').forEach(el => CH[el.dataset.ch] && CH[el.dataset.ch](el));
@@ -342,6 +355,7 @@ function bind() {
   if ($('#eyeV')) $('#eyeV').onclick = () => { ST.showV = !ST.showV; try { localStorage.setItem('focus.showV', ST.showV ? '1' : '0'); } catch (e) {} render(); };
   $$('#gvm button').forEach(b => b.onclick = () => { ST.gvm = b.dataset.m; render(); });
   if ($('#exOld')) $('#exOld').onclick = () => { ST.oldEx = !ST.oldEx; render(); };
+  $$('#pmS button').forEach(b => b.onclick = () => { ST.pm = b.dataset.m; render(); });
   if ($('#dGo')) { const ci = $('#dCode'); $('#dGo').onclick = () => startDuel(ci.value); ci.addEventListener('keydown', e => { if (e.key === 'Enter') startDuel(ci.value); }); }
   $$('[data-fr]').forEach(b => b.onclick = () => startDuel(b.dataset.fr));
   if ($('#dAgain')) { $('#dAgain').onclick = animDuel; $('#dNew').onclick = () => { DUEL = null; render(); }; $$('#dPer button').forEach(b => b.onclick = () => { DPER = b.dataset.p; animDuel(); }); }
@@ -403,7 +417,7 @@ $$('nav button').forEach(b => { b.onclick = () => { STACK = []; go(b.dataset.p);
 $('#backB').onclick = goBack;
 $$('.lights button').forEach(b => b.onclick = () => fapi.win(b.dataset.w));
 /* barre latérale : largeur réglable à la souris, repliée en icônes sous 150 px */
-const setSW = w => { document.body.classList.toggle('mini', w < 150); if (w >= 150) document.documentElement.style.setProperty('--sw', w + 'px'); else document.documentElement.style.removeProperty('--sw'); };
+const setSW = w => { document.body.classList.toggle('mini', w < 150); document.body.classList.toggle('narrow', w >= 150 && w < 215); if (w >= 150) document.documentElement.style.setProperty('--sw', w + 'px'); else document.documentElement.style.removeProperty('--sw'); };
 try { const w = +localStorage.getItem('focus.sw'); if (w) setSW(w); } catch (e) {}
 $('#rsz').onmousedown = e => { e.preventDefault(); const r = $('#rsz'); r.classList.add('on'); document.body.classList.add('resizing'); let w = 0;
   const mv = ev => { w = Math.max(76, Math.min(340, ev.clientX)); setSW(w); };

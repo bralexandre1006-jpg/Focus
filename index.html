@@ -4048,7 +4048,7 @@ const pushSync = async (full) => {
   syncBusy = true;
   let ok;
   if (full || Date.now() - syncFull > 30000) { ok = await fbSend('PUT', syncPayload()); if (ok) syncFull = Date.now(); }
-  else { const T = today(), p = syncPayload(); ok = await fbSend('PATCH', { at: p.at, meals: p.meals, streak: p.streak, total: p.total, goals: p.goals, ['days/' + T]: p.days[T] || null, ['ml/' + T]: (p.ml && p.ml[T]) || null }); }
+  else { const T = today(), p = syncPayload(); ok = await fbSend('PATCH', { at: p.at, accent: p.accent, name: p.name, meals: p.meals, streak: p.streak, total: p.total, goals: p.goals, ['days/' + T]: p.days[T] || null, ['ml/' + T]: (p.ml && p.ml[T]) || null }); }
   S.sync.ok = ok; if (ok) S.sync.last = Date.now();
   syncBusy = false; try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} if (cur === 'settings') syncUI();
   if (syncAgain) { syncAgain = false; setTimeout(() => pushSync(), 300); } };

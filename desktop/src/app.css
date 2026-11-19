@@ -326,3 +326,14 @@ body.mini .me{flex-direction:column;gap:8px}body.mini #setBtn{display:grid}
 .fit-1{grid-template-rows:minmax(0,1fr)}
 .chip.ic{width:32px;padding:0;display:grid;place-items:center}.chip.ic svg{width:15px;height:15px}
 #exSel{max-width:150px}
+
+/* v7 */
+.ref{width:32px;padding:0;justify-content:center}
+.me{min-width:0}.me>div{min-width:0;flex:1}.me b,.me small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wdd-b{white-space:nowrap;overflow:hidden}.wdd-b span{white-space:nowrap}
+body.narrow .wdd-b span,body.narrow .me small{display:none}
+body.mini .me{align-items:center;padding:10px 0 2px}body.mini .me .av{margin:0 auto}body.mini #setBtn{margin:0 auto}
+body.mini .wdd-b{width:44px;height:40px;margin:0 auto}
+
+.hdr2{flex-wrap:wrap;row-gap:8px}
+.hdr2>div{flex-wrap:wrap;row-gap:6px}.seg button{white-space:nowrap}
