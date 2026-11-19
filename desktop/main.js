@@ -25,7 +25,7 @@ function createMain() {
   main = new BrowserWindow({
     width: 1240, height: 800, minWidth: 900, minHeight: 620, frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: true,
     show: false, icon: ICON, title: 'Focus',
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, backgroundThrottling: false }
   });
   main.loadFile(path.join(__dirname, 'src', 'index.html'));
   main.once('ready-to-show', () => { if (!process.argv.includes('--hidden')) { main.show(); main.focus(); main.webContents.focus(); } });
@@ -43,7 +43,7 @@ function openWidget(type) {
     width: st.w || d.w, height: st.h || d.h, x: st.x ?? (type === 'all' ? wa.x + Math.round((wa.width - d.w) / 2) : wa.x + wa.width - d.w - 24), y: st.y ?? (type === 'all' ? wa.y + 24 : wa.y + 24 + n * (d.h + 16)),
     frame: false, transparent: true, resizable: type === 'all', thickFrame: false, minWidth: type === 'all' ? 560 : undefined, minHeight: type === 'all' ? 170 : undefined, movable: !cfg.locked, skipTaskbar: true, alwaysOnTop: !!cfg.onTop, hasShadow: false,
     focusable: true, icon: ICON, backgroundColor: '#00000000',
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, backgroundThrottling: false }
   });
   w.loadFile(path.join(__dirname, 'src', 'widget.html'), { query: { type } });
   w.on('moved', () => { const [x, y] = w.getPosition(); cfg.widgets[type] = { ...(cfg.widgets[type] || {}), on: true, x, y }; saveCfg(); });

@@ -4052,7 +4052,7 @@ const pushSync = async (full) => {
   S.sync.ok = ok; if (ok) S.sync.last = Date.now();
   syncBusy = false; try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} if (cur === 'settings') syncUI();
   if (syncAgain) { syncAgain = false; setTimeout(() => pushSync(), 300); } };
-window.__pcSync = () => { clearTimeout(syncT); syncT = setTimeout(() => pushSync(), 300); clearTimeout(syncFT); syncFT = setTimeout(() => pushSync(true), 30000); };
+window.__pcSync = () => { if (!syncT) syncT = setTimeout(() => { syncT = 0; pushSync(); }, 500); clearTimeout(syncFT); syncFT = setTimeout(() => pushSync(true), 30000); };
 const syncUI = () => { const on = !!(S.sync && S.sync.on);
   $('#tSync').classList.toggle('on', on); $('#syncBox').classList.toggle('hidden', !on);
   if (on) $('#syncCode').textContent = S.sync.code.replace(/(.{4})(?=.)/g, '$1 ');
