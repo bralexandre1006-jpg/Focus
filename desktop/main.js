@@ -74,7 +74,7 @@ function setAutostart(v) { cfg.autostart = v; saveCfg(); app.setLoginItemSetting
 app.whenReady().then(() => {
   app.setAppUserModelId('com.alexandre.focus.desktop');
   createMain();
-  tray = new Tray(nativeImage.createFromPath(ICON).resize({ width: 16, height: 16 }));
+  tray = new Tray(nativeImage.createFromPath(ICON).resize({ width: 32, height: 32, quality: 'best' }));
   tray.setToolTip('Focus'); tray.on('click', showMain); refreshTray();
   Object.entries(cfg.widgets).forEach(([k, v]) => v && v.on && openWidget(k));
   app.setLoginItemSettings({ openAtLogin: !!cfg.autostart, args: ['--hidden'] });
