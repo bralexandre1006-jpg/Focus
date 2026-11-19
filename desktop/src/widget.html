@@ -79,10 +79,20 @@ body.locked .g{-webkit-app-region:no-drag}body.locked .x{display:none}
 .ban .wk div{gap:4px}.ban .wk i{flex-shrink:0}
 .ban .fl{width:54px;height:54px;border-radius:17px}.ban .fl svg{width:30px;height:30px}
 body.big .g{border-radius:34px;padding:18px 20px}
+.grip{display:none;position:absolute;right:12px;bottom:12px;width:18px;height:18px;z-index:6;cursor:nwse-resize;-webkit-app-region:no-drag;opacity:0;transition:opacity .2s;
+  background:linear-gradient(135deg,transparent 45%,rgba(255,255,255,.6) 45%,rgba(255,255,255,.6) 52%,transparent 52%,transparent 66%,rgba(255,255,255,.6) 66%,rgba(255,255,255,.6) 73%,transparent 73%)}
+body.big .grip{display:block}body.big:hover .grip{opacity:.8}body.locked .grip{display:none!important}
+body.big .ban .s1 .ring{width:min(170px,62vh)!important;height:min(170px,62vh)!important}
+body.big .ban .big{font-size:clamp(20px,15vh,46px)!important}
+body.big .ban .s1 .big{font-size:clamp(16px,12vh,36px)!important}
+@media (max-width:1300px){.ban .s5{display:none}}
+@media (max-width:1050px){.ban .sw{display:none}}
+@media (max-width:820px){.ban .wide{display:none}}
+@media (max-height:215px){.ban .macs,.ban .sub{display:none}}
 .off{display:grid;place-items:center;height:100%;text-align:center;font-size:12px;color:rgba(255,255,255,.75);line-height:1.4}
 </style>
 </head>
-<body><div class="g" id="g"><div class="off">Connexion…</div></div><button class="x" id="x" title="Masquer">✕</button>
+<body><div class="g" id="g"><div class="off">Connexion…</div></div><button class="x" id="x" title="Masquer">✕</button><div class="grip" id="grip" title="Redimensionner"></div>
 <script src="data.js"></script>
 <script src="widget.js"></script>
 </body>

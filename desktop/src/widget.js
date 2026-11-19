@@ -36,7 +36,7 @@ const R = {
         <div class="macs" style="margin-top:12px">${m('Prot.', t.p, G.protein || 100, '#FF5C8A')}${m('Gluc.', t.c, G.kcal * .45 / 4, '#FFC44A')}${m('Lip.', t.f, G.kcal * .3 / 9, '#5AB8FF')}</div></section>
       <section class="wide"><div class="wh"><div class="t"><i style="background:#7C8CFF;box-shadow:0 0 8px #7C8CFF"></i>Pas · 7 jours</div><div style="text-align:right"><b class="num" style="font-size:22px">${fmt(wkAvg)}</b><div class="sub" style="margin:0;font-size:10.5px">par jour</div></div></div>
         <div class="wk" style="flex:1;height:auto;margin-top:8px">${ks.map((k, i) => `<div><b class="num" style="font-size:10.5px;color:${i === 6 ? '#fff' : 'rgba(255,255,255,.6)'}">${v[i] >= 1000 ? Math.round(v[i] / 100) / 10 + 'k' : v[i]}</b><i class="${i === 6 ? 'now' : v[i] >= G.steps ? 'ok' : ''}" style="height:${Math.max(8, v[i] / mx * 100)}%"></i><span class="${i === 6 ? 'now' : ''}">${parseKey(k).toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '').toUpperCase()}</span></div>`).join('')}</div></section>
-      <section><div class="t"><i style="background:#6BD36E;box-shadow:0 0 8px #6BD36E"></i>Poids</div><div class="big num" style="font-size:40px;margin-top:10px">${w ? f1(w) : '—'}<small>kg</small></div>
+      <section class="sw"><div class="t"><i style="background:#6BD36E;box-shadow:0 0 8px #6BD36E"></i>Poids</div><div class="big num" style="font-size:40px;margin-top:10px">${w ? f1(w) : '—'}<small>kg</small></div>
         <div style="margin-top:8px">${df != null ? `<span class="pill ${df <= 0 ? 'ok' : 'bad'}">${df <= 0 ? '−' : '+'}${f1(Math.abs(df))} kg</span>` : ''}</div>
         <div class="bar" style="margin-top:14px"><i style="width:${pw * 100}%;background:linear-gradient(90deg,#4FE3D0,#6BD36E)"></i></div><div class="sub">${G.target && w ? `${f1(Math.abs(w - G.target))} kg avant ${f1(G.target)}` : ''}</div></section>
       <section class="s5"><div class="t"><i style="background:#FF8A3D;box-shadow:0 0 8px #FF8A3D"></i>Série</div><div style="display:flex;align-items:center;gap:12px;margin-top:12px"><div class="fl"><svg viewBox="0 0 24 24">${FIRE}</svg></div><div class="big num" style="font-size:40px">${d.streak || 0}<small>j</small></div></div>
@@ -46,6 +46,9 @@ const R = {
 const TINT = { steps: 'var(--acc)', kcal: '#FF6B4A', weight: '#6BD36E', week: '#7C8CFF', streak: '#FF8A3D', all: 'var(--acc)' };
 g.style.setProperty('--tint', TINT[TYPE]); if (TYPE === 'all') document.body.classList.add('big');
 document.getElementById('x').onclick = () => fapi.hideWidget(TYPE);
+document.getElementById('grip').onpointerdown = e => { e.preventDefault(); const sx = e.screenX, sy = e.screenY, w0 = innerWidth, h0 = innerHeight, el = e.currentTarget; el.setPointerCapture(e.pointerId);
+  el.onpointermove = ev => fapi.resizeWidget(TYPE, w0 + ev.screenX - sx, h0 + ev.screenY - sy, false);
+  el.onpointerup = ev => { el.onpointermove = el.onpointerup = null; fapi.resizeWidget(TYPE, w0 + ev.screenX - sx, h0 + ev.screenY - sy, true); }; };
 g.ondblclick = () => fapi.win('open');
 let unsub = () => {};
 const start = code => { unsub(); unsub = subscribe(code, (d, st) => {

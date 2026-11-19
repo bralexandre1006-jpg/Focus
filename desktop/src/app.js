@@ -190,14 +190,14 @@ function pWeight(d) {
   const G = d.goals, all = Object.keys(d.days || {}).filter(k => d.days[k][2]).sort(), lw = lastWeight(d), ks = ST.wr ? lastN(ST.wr) : (all.length ? (() => { const a = []; let k = all[0]; while (k <= today()) { a.push(k); k = addDays(k, 1); } return a; })() : []);
   const v = ks.map(k => D(d, k).weight), ok = v.filter(x => x), w7 = avg(all.slice(-7).map(k => d.days[k][2])), w7p = avg(all.filter(k => k <= addDays(today(), -7)).slice(-7).map(k => d.days[k][2]));
   const rate = all.length > 1 ? (() => { const a = all.filter(k => k >= addDays(today(), -28)); if (a.length < 2) return 0; return (d.days[a.at(-1)][2] - d.days[a[0]][2]) / ((parseKey(a.at(-1)) - parseKey(a[0])) / 864e5) * 7; })() : 0;
-  const eta = lw && G.target && rate && Math.sign(G.target - lw) === Math.sign(rate) ? (() => { const x = new Date(); x.setDate(x.getDate() + Math.round((G.target - lw) / rate * 7)); return x.toLocaleDateString('fr-BE', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', ''); })() : null;
+  const eta = lw && G.target && rate && Math.sign(G.target - lw) === Math.sign(rate) ? (() => { const x = new Date(); x.setDate(x.getDate() + Math.round((G.target - lw) / rate * 7)); return `${String(x.getDate()).padStart(2, '0')}/${String(x.getMonth() + 1).padStart(2, '0')}/${String(x.getFullYear()).slice(2)}`; })() : null;
   CH.wl = el => lines(el, { id: 'wl', area: true, axis: true, labels: ks.map(dShort), series: [{ vals: v, c: ['#4FE3D0', 'var(--wgt)'], target: G.target || null, dots: true }], tip: i => `${dShort(ks[i])}${v[i] ? ` · <b>${f1(v[i])} kg</b>` : ''}` });
   return `<div class="row" style="grid-template-columns:repeat(5,1fr)">
     <div class="card s" style="--g:var(--wgt)"><div class="lab">Actuel</div><div class="big num">${lw ? f1(lw) : '—'}<small>kg</small></div><div class="sub">${lw && G.start ? `${lw <= G.start ? '−' : '+'}${f1(Math.abs(lw - G.start))} kg depuis ${f1(G.start)}` : ''}</div></div>
     <div class="card s"><div class="lab">Moyenne 7 pesées</div><div class="big num">${w7 ? f1(w7) : '—'}<small>kg</small></div><div class="sub">${w7p ? `${w7 <= w7p ? '<span class="up">−' : '<span class="dn">+'}${f1(Math.abs(w7 - w7p))} kg</span> vs semaine passée` : ''}</div></div>
     <div class="card s"><div class="lab">Rythme</div><div class="big num">${rate ? (rate > 0 ? '+' : '−') + f1(Math.abs(rate)) : '—'}<small>kg / sem.</small></div><div class="sub">sur 4 semaines</div></div>
     <div class="card s"><div class="lab">Objectif</div><div class="big num">${G.target ? f1(G.target) : '—'}<small>kg</small></div><div class="sub">${lw && G.target ? f1(Math.abs(lw - G.target)) + ' kg restants' : ''}</div></div>
-    <div class="card s"><div class="lab">Date estimée</div><div class="big num sm" style="margin-top:6px" data-t="${eta || ''}">${eta || '—'}</div><div class="sub">au rythme actuel</div></div></div>
+    <div class="card s"><div class="lab">Date estimée</div><div class="big num">${eta || '—'}</div><div class="sub">au rythme actuel</div></div></div>
   <div class="row" style="grid-template-columns:2.2fr 1fr">
     <div class="card fx" style="--g:var(--wgt)"><div class="hdr2"><div class="lab">Courbe</div><div class="seg" id="wr">${[[30, '1 mois'], [90, '3 mois'], [180, '6 mois'], [365, '1 an'], [0, 'Tout']].map(([n, l]) => `<button data-n="${n}" class="${ST.wr === n ? 'on' : ''}">${l}</button>`).join('')}</div></div>
       ${ok.length > 1 ? '<div class="ch" data-ch="wl"></div>' : '<div class="empty">Pas assez de pesées sur cette période</div>'}</div>
@@ -387,9 +387,17 @@ function dlgSet() {
 /* interactions */
 $$('nav button').forEach(b => { b.dataset.t = b.childNodes[1] ? b.childNodes[1].textContent.trim() : ''; b.onclick = () => { STACK = []; go(b.dataset.p); }; });
 $('#backB').onclick = goBack;
+$$('.lights button').forEach(b => b.onclick = () => fapi.win(b.dataset.w));
+/* barre latérale : largeur réglable à la souris, repliée en icônes sous 150 px */
+const setSW = w => { document.body.classList.toggle('mini', w < 150); if (w >= 150) document.documentElement.style.setProperty('--sw', w + 'px'); else document.documentElement.style.removeProperty('--sw'); };
+try { const w = +localStorage.getItem('focus.sw'); if (w) setSW(w); } catch (e) {}
+$('#rsz').onmousedown = e => { e.preventDefault(); const r = $('#rsz'); r.classList.add('on'); document.body.classList.add('resizing'); let w = 0;
+  const mv = ev => { w = Math.max(76, Math.min(340, ev.clientX)); setSW(w); };
+  const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); r.classList.remove('on'); document.body.classList.remove('resizing'); if (w) { const f = w < 150 ? 76 : w; setSW(f); try { localStorage.setItem('focus.sw', f); } catch (e) {} } drawCharts(); };
+  addEventListener('mousemove', mv); addEventListener('mouseup', up); };
 addEventListener('mouseup', e => { if (e.button === 3) goBack(); });
-$('#miniB').onclick = () => { document.body.classList.toggle('mini'); try { localStorage.setItem('focus.mini', document.body.classList.contains('mini') ? '1' : ''); } catch (e) {} setTimeout(drawCharts, 280); };
-try { if (localStorage.getItem('focus.mini')) document.body.classList.add('mini'); } catch (e) {}
+$('#rsz').ondblclick = () => $('#miniB').onclick();
+$('#miniB').onclick = () => { const m = !document.body.classList.contains('mini'), w = m ? 76 : 248; setSW(w); try { localStorage.setItem('focus.sw', w); } catch (e) {} setTimeout(drawCharts, 280); };
 $('#setBtn').onclick = dlgSet;
 $('#refBtn').onclick = async () => { const b = $('#refBtn'); if (b.classList.contains('spin')) return; b.classList.add('spin');
   const ok = window.focusRefresh ? await window.focusRefresh() : false; setTimeout(() => b.classList.remove('spin'), 600);

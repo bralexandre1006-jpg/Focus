@@ -62,7 +62,7 @@ nav button.dimq{opacity:.35}
 
 /* zone principale */
 .main{display:flex;flex-direction:column;min-width:0;min-height:0}
-.top{height:46px;flex-shrink:0;display:flex;align-items:center;padding:0 160px 0 26px;border-bottom:1px solid var(--line)}
+.top{height:46px;flex-shrink:0;display:flex;align-items:center;padding:0 22px 0 26px;border-bottom:1px solid var(--line)}
 .crumb{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:13px}
 .crumb svg{width:15px;height:15px}.crumb b{color:var(--txt);font-weight:700}
 .page{flex:1;overflow-y:auto;padding:22px 26px 30px;scrollbar-width:thin;scrollbar-color:#2a2a2f transparent}
@@ -71,8 +71,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.035em;margin-bottom:18px}
 h1 span{color:var(--mut);font-weight:400}
 .grid{display:grid;gap:12px}
 .g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g21{grid-template-columns:2fr 1fr}.g2{grid-template-columns:1fr 1fr}
-.card{position:relative;--g:#8C8CAA;animation:none;background:linear-gradient(150deg,color-mix(in srgb,var(--g) 13%,transparent) 0%,color-mix(in srgb,var(--g) 3%,transparent) 45%,var(--card) 100%),var(--card);border:1px solid color-mix(in srgb,var(--g) 14%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.25);border-radius:var(--r);padding:16px 18px;overflow:hidden;animation:up .45s cubic-bezier(.2,.8,.2,1) both}
-.card+.card{animation-delay:.04s}
+.card{position:relative;--g:#8C8CAA;animation:none;background:linear-gradient(150deg,color-mix(in srgb,var(--g) 13%,transparent) 0%,color-mix(in srgb,var(--g) 3%,transparent) 45%,var(--card) 100%),var(--card);border:1px solid color-mix(in srgb,var(--g) 14%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.25);border-radius:var(--r);padding:16px 18px;overflow:hidden}
 @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .lab{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mut);font-weight:800;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em}
 .lab svg{display:none}
@@ -270,3 +269,19 @@ body.mini .wdd-p{width:240px;left:0;right:auto}
 .btn.sm{height:38px;width:auto;margin:0}
 
 .duel{gap:8px}.drw .vl,.drw .vr{font-size:16px}
+
+/* v5 : pastilles, barre redimensionnable, sans compteurs */
+nav button span{display:none}
+.lights{display:flex;gap:8px;padding:0;margin-right:14px;-webkit-app-region:no-drag}
+.lights button{width:12px;height:12px;border-radius:50%;position:relative;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.25)}
+.lights button::after{font-size:9px;line-height:12px;color:rgba(0,0,0,.65);font-weight:900}
+.side{position:relative}
+.app{grid-template-columns:var(--sw,248px) 1fr}
+.rsz{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:5;-webkit-app-region:no-drag}
+.rsz:hover,.rsz.on{background:linear-gradient(90deg,transparent 3px,color-mix(in srgb,var(--acc) 60%,transparent) 3px,color-mix(in srgb,var(--acc) 60%,transparent) 5px,transparent 5px)}
+body.resizing,body.resizing *{cursor:col-resize!important;user-select:none}
+body.resizing .app{transition:none}
+body.mini .app{grid-template-columns:76px 1fr}
+body.mini .brand{flex-direction:row;padding:0!important;justify-content:center}
+body.mini .brand .logo,body.mini .mini-b{display:none}
+body.mini .lights{margin:0}

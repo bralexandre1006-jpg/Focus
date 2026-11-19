@@ -9,7 +9,7 @@
 <body>
 <div class="app" id="app">
   <aside class="side">
-    <div class="brand drag" style="height:46px;margin:-14px -12px 12px;padding:0 18px;border-bottom:1px solid var(--line)"><svg class="logo" viewBox="255 155 535 670"><path d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/><path d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/></svg><b>Focus</b><em>PC</em><button class="mini-b" id="miniB" data-t="Réduire la barre"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+    <div class="brand drag" style="height:46px;margin:-14px -12px 12px;padding:0 16px;border-bottom:1px solid var(--line)"><div class="lights"><button class="l-close" data-w="close" data-t="Fermer"></button><button class="l-min" data-w="min" data-t="Réduire"></button><button class="l-max" data-w="max" data-t="Agrandir"></button></div><svg class="logo" viewBox="255 155 535 670"><path d="M305 427 L772 173 L772 290 C772 365 720 427 655 427 Z"/><path d="M272 495 L772 495 L692 578 C648 622 588 642 532 612 L532 808 C522 760 498 705 455 665 Z"/></svg><b>Focus</b><em>PC</em><button class="mini-b" id="miniB" data-t="Réduire la barre"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></div>
     <div class="sec">Navigation</div>
     <nav id="nav">
       <button data-p="home" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Aperçu</button>
@@ -26,6 +26,7 @@
       <button class="av" id="av" title="Changer la photo">F</button><div><b id="meName">Focus</b><small id="meSync"><s></s>Hors ligne</small></div>
       <button id="setBtn" title="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
+    <div class="rsz" id="rsz"></div>
   </aside>
   <main class="main">
     <header class="top drag"><button class="back hidden" id="backB" data-t="Retour"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><span class="crumb" id="crumb"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><b>Aperçu</b></span><button class="ref" id="refBtn" data-t="Actualiser les données"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5M20 20v-4h-4"/></svg>Actualiser</button></header>
