@@ -563,6 +563,11 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 .aisrc button:first-child{background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 30%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--acc) 35%,transparent)}
 .aisrc svg{width:30px;height:30px}.aisrc b{font-size:15px;font-weight:800}
 .aicx{width:100%;height:50px;border-radius:16px;font-weight:800;color:var(--mut)}
+.coachb{color:var(--acc)}.coachb svg{width:22px;height:22px;fill:currentColor;stroke:none}
+.head .coachb{margin-left:auto;margin-right:-4px}
+.cclr{margin-left:auto;height:36px;padding:0 12px;border-radius:12px;background:var(--card);font-size:13px;font-weight:800;color:var(--mut)}
+#coachPage .aift{gap:8px}#coachChat{padding-bottom:10px}
+#coachChat .ai{white-space:pre-wrap}#coachChat .ai b{color:var(--acc)}
 .aibox{background:var(--card);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:20px;padding:12px;margin-bottom:14px}
 .aiimg{position:relative;margin-bottom:10px}.aiimg img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:14px}
 .aiimg button{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:12px;background:rgba(0,0,0,.6);color:#fff;font-weight:800}
@@ -1753,6 +1758,7 @@ body.perf .wo-intro span{box-shadow:none!important}
   <section class="screen on" id="s-today">
     <div class="head">
       <div class="topl"><svg class="toplogo"><use href="#logo"/></svg><span class="stk hidden" id="streak"></span></div>
+      <button class="logo-btn press coachb" id="coachBtn" aria-label="Coach"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></button>
       <button class="logo-btn gear press" data-go="settings" aria-label="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
 
@@ -2226,6 +2232,12 @@ body.perf .wo-intro span{box-shadow:none!important}
   <h4>Photo IA</h4><p>Prends ton plat en photo ou choisis une image dans ta galerie.</p>
   <div class="aisrc"><button class="press" id="aiSrcCam"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h2l1.5-2h5L16 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg><b>Appareil photo</b></button><button class="press" id="aiSrcGal"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><b>Galerie</b></button></div>
   <button class="press aicx" id="aiSrcX">Annuler</button>
+</div>
+<div class="aipg" id="coachPage">
+  <div class="aihd"><button class="press" id="coachX" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div style="min-width:0"><b>Coach</b><small>Analyse tes données et te conseille</small></div><button class="press cclr" id="coachClr">Effacer</button></div>
+  <div class="aibd" id="coachBody"><div class="aichat" id="coachChat"></div></div>
+  <div class="aift"><div class="aichips" id="coachChips"><button>Fais le bilan de ma semaine</button><button>Comment améliorer mes pas ?</button><button>Mes séances sont-elles équilibrées ?</button><button>Mon alimentation est-elle bonne ?</button><button>Où en est mon poids ?</button></div>
+    <div class="aiask"><input id="coachMsg" placeholder="Pose une question à ton coach…" autocomplete="off" enterkeyhint="send"><button class="press off" id="coachSend" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div>
 </div>
 <div class="aipg" id="aiPage">
   <div class="aihd"><button class="press" id="aiClose" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div><b>Photo IA</b><small id="aiSlot"></small></div></div>
@@ -3114,6 +3126,49 @@ $('#aiAdd').onclick = () => {
   $('#qName').value = $('#aiName').value.trim() || 'Plat'; $('#qKcal').value = Math.round(aiNum($('#aiK').value));
   $('#qP').value = s1(aiNum($('#aiP').value)); $('#qC').value = s1(aiNum($('#aiC').value)); $('#qF').value = s1(aiNum($('#aiF').value));
   renderQRes(); closeOv('aiPage'); $('#addConfirm').click(); };
+/* Coach IA : analyse des données du jour, de la semaine et des séances */
+const COACH_K = 'focus.coach';
+let coachMsgs = (() => { try { return JSON.parse(localStorage.getItem(COACH_K)) || []; } catch (e) { return []; } })(), coachBusy = false;
+const coachSave = () => { try { localStorage.setItem(COACH_K, JSON.stringify(coachMsgs.slice(-30))); } catch (e) {} };
+const coachData = () => { const G = goals(), T = today(), L = [];
+  L.push(`Prénom : ${S.profile.name || '—'}. Objectifs : ${G.steps} pas/jour, ${G.kcal} kcal/jour${G.protein ? `, ${G.protein} g de protéines` : ''}${G.target ? `, poids visé ${G.target} kg (départ ${G.start || '?'} kg)` : ''}. Série en cours : ${notedRun()} jours.`);
+  L.push('14 derniers jours (date ; pas ; kcal ; prot/gluc/lip g ; poids ; séance) :');
+  for (let i = 13; i >= 0; i--) { const k = addDays(T, -i), d = S.days[k] || {}, m = sumMeals(d.meals || []);
+    L.push(`${k}${k === T ? ' (aujourd\'hui)' : ''} ; ${d.steps || 0} ; ${Math.round(d.calories || m.kcal || 0)} ; ${Math.round(m.p)}/${Math.round(m.c)}/${Math.round(m.f)} ; ${d.weight || '-'} ; ${d.off ? 'jour off' : d.workout === true ? 'faite' : d.workout === false ? 'manquée' : isTDay(k) ? 'prévue' : 'repos'}`); }
+  const wos = [...(S.workouts || [])].sort((a, b) => b.start - a.start).slice(0, 8);
+  if (wos.length) { L.push('Dernières séances :'); wos.forEach(w => L.push(`${key(new Date(w.start))} « ${w.name} » ${w.min || 0} min : ${(w.ex || []).map(e => `${e.name} ${(e.sets || []).filter(x => num(x.reps) > 0).map(x => (num(x.kg) ? num(x.kg) + 'kg×' : '') + num(x.reps)).join(',')}`).join(' | ')}`)); }
+  return L.join('\n'); };
+const COACH_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français, tu tutoies, tu es bienveillant mais direct.
+Tu t'appuies uniquement sur les données fournies (pas, calories, macros, poids, séances) : cite des chiffres précis, repère les tendances et donne 2 à 4 conseils concrets et réalistes.
+Réponses courtes et aérées (10 lignes maximum), sans tableau. Tu n'es pas médecin : pour une douleur ou un problème de santé, conseille de consulter.`;
+const coachDraw = () => { const el = $('#coachChat');
+  el.innerHTML = coachMsgs.length ? coachMsgs.map(m => `<p class="${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join('')
+    : `<p class="ai"><small>Coach</small>Salut ${esc(S.profile.name || '')} ! Je vois tes pas, tes repas, ton poids et tes séances. Demande-moi un bilan ou un conseil.</p>`;
+  requestAnimationFrame(() => { const b = $('#coachBody'); b.scrollTop = b.scrollHeight; }); };
+const coachAsk = async txt => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
+  coachMsgs.push({ r: 'user', t: txt }); coachDraw(); $('#coachMsg').value = ''; $('#coachSend').classList.add('off'); $('#coachMsg').blur();
+  const typ = document.createElement('p'); typ.className = 'ai typing'; typ.innerHTML = '<small>Coach</small><span><i></i><i></i><i></i></span>'; $('#coachChat').appendChild(typ); $('#coachBody').scrollTop = 1e9;
+  const hist = coachMsgs.slice(-12).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
+  hist[hist.length - 1].content = `Mes données à jour :\n${coachData()}\n\nMa question : ${txt}`;
+  let out = '', err = '';
+  try { if (!CL_KEY.startsWith('__')) { const rq = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': CL_KEY, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-haiku-5-5', max_tokens: 2000, output_config: { effort: 'low' }, system: COACH_SYS, messages: hist }) });
+    const j = await rq.json(); if (!rq.ok) throw new Error((j.error && j.error.message) || rq.status); out = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim(); } }
+  catch (e) { err = e.message; }
+  if (!out) { const key = (S.settings.aiKey || '').trim() || (S.settings.aiNoBuiltin || GEM_KEY.startsWith('__') ? '' : GEM_KEY);
+    if (key) try { const rq = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: COACH_SYS }] }, contents: hist.map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] })) }) });
+      const j = await rq.json(); out = (j.candidates && j.candidates[0].content.parts.map(x => x.text || '').join('').trim()) || ''; if (!out) err = (j.error && j.error.message) || err; } catch (e) { err = e.message; } }
+  typ.remove(); coachBusy = false;
+  if (out) { coachMsgs.push({ r: 'ai', t: out }); coachSave(); coachDraw(); buzz('success'); }
+  else { coachMsgs.pop(); coachDraw(); toast('Coach indisponible' + (err ? ' : ' + err : '')); } };
+$('#coachBtn').onclick = () => { coachDraw(); openOv('coachPage'); sfx.tap(); buzz(); };
+$('#coachX').onclick = () => { closeOv('coachPage'); sfx.tap(); };
+$('#coachClr').onclick = () => { coachMsgs = []; coachSave(); coachDraw(); sfx.tap(); };
+$('#coachSend').onclick = () => coachAsk($('#coachMsg').value);
+$('#coachMsg').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); coachAsk($('#coachMsg').value); } });
+$('#coachMsg').addEventListener('input', () => $('#coachSend').classList.toggle('off', !$('#coachMsg').value.trim()));
+$$('#coachChips button').forEach(b => b.onclick = () => coachAsk(b.textContent));
 const updateAddFoot = () => {
   const btn = $('#addConfirm');
   $('#portionRow').classList.toggle('hidden', addMode!=='rec' || !pickId);
@@ -3179,12 +3234,14 @@ const fitRec = () => requestAnimationFrame(() => {
   pg.style.minHeight = Math.max(0, h) + 'px';
 });
 addEventListener('resize', fitRec);
+let recPage = 0;
 const renderMeals = () => {
   renderFoods();
   const el = $('#recList');
   const recs = [...S.recipes].sort((a,b)=>a.name.localeCompare(b.name,'fr'));
   const uses = {}; Object.values(S.days).forEach(d => (d.meals || []).forEach(m => { if (m.recipeId) uses[m.recipeId] = (uses[m.recipeId] || 0) + 1; }));
-  const cards = recs.map(r => { const {per} = recTotals(r), k = E2K[(r.emoji || '').replace(/️/g, '')] || 'plate', col = (ICO.k[k] || ['', '#FFB347'])[1], u = uses[r.id] || 0;
+  const RPP = 20, nP = Math.max(1, Math.ceil(recs.length / RPP)); recPage = Math.min(recPage, nP - 1);
+  const cards = recs.slice(recPage * RPP, recPage * RPP + RPP).map(r => { const {per} = recTotals(r), k = E2K[(r.emoji || '').replace(/️/g, '')] || 'plate', col = (ICO.k[k] || ['', '#FFB347'])[1], u = uses[r.id] || 0;
     const ep = (per.p || 0) * 4, ec = (per.c || 0) * 4, ef = (per.f || 0) * 9, et = ep + ec + ef || 1;
     const seg = (v, c) => v > 0 ? `<i style="flex:${(v / et).toFixed(3)};background:${c}"></i>` : '';
     const lg = (lab, v, c) => `<span><i style="background:${c}"></i><b>${Math.round(v || 0)} g</b>${lab}</span>`;
@@ -3195,7 +3252,9 @@ const renderMeals = () => {
       <div class="rleg">${lg('prot.', per.p, 'var(--pro)')}${lg('gluc.', per.c, 'var(--carb)')}${lg('lip.', per.f, 'var(--fat)')}</div></div></button>`; }).join('');
   el.innerHTML = `<div class="rpage"><div class="rhead"><div><h2>Mes recettes</h2><small>${recs.length} recette${recs.length > 1 ? 's' : ''}</small></div>
     <button id="recAdd" aria-label="Nouvelle recette"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
-    ${cards || '<div class="rempty">Crée tes plats une fois avec leurs ingrédients.<br>Ensuite, un tap suffit pour les ajouter à ta journée.</div>'}</div>`;
+    ${cards || '<div class="rempty">Crée tes plats une fois avec leurs ingrédients.<br>Ensuite, un tap suffit pour les ajouter à ta journée.</div>'}
+    ${nP > 1 ? `<div class="glpg">${Array.from({ length: nP }, (_, i) => `<button class="press ${i === recPage ? 'on' : ''}" data-rp="${i}">${i + 1}</button>`).join('')}</div>` : ''}</div>`;
+  $$('#recList [data-rp]').forEach(b => b.onclick = () => { recPage = +b.dataset.rp; renderMeals(); $('#s-meals').scrollTo({ top: 0, behavior: 'smooth' }); sfx.tap(); buzz(); });
   fitRec();
   $('#recAdd').onclick = () => $('#newRec').click();
   $$('#recList .rec').forEach(b => b.onclick = () => openRecipe(b.dataset.id));
@@ -4463,7 +4522,7 @@ const renderWo = () => {
   $('#woQuit').onclick = async () => {
     if (woEdit) { closeWo(); sfx.tap(); return; }
     if (!(await confirmSheet('Abandonner la séance ?', 'Rien ne sera enregistré.', { yes:'Abandonner' }))) return;
-    S.activeWo = null; save(); closeWo(); sfx.no(); buzz('heavy');
+    S.activeWo = null; save(); closeWo(); RENDER.today && RENDER.today(); sfx.no(); buzz('heavy');
   };
 };
 const doneAt = new WeakMap();
@@ -4587,7 +4646,7 @@ $('#woEnd').onclick = async () => {
     save(); closeWo(); rendered.glog = null; renderGlog(); sfx.ok(); buzz('success'); toast('Séance modifiée ✓'); return;
   }
   const min = Math.max(1, Math.round((Date.now() - w.start) / 60000));
-  if (!n) { if (await confirmSheet('Aucune série notée', 'Abandonner la séance sans l\'enregistrer ?', { yes:'Abandonner' })) { S.activeWo = null; save(); closeWo(); } return; }
+  if (!n) { if (await confirmSheet('Aucune série notée', 'Abandonner la séance sans l\'enregistrer ?', { yes:'Abandonner' })) { S.activeWo = null; save(); closeWo(); RENDER.today && RENDER.today(); } return; }
   if (!(await confirmSheet('Terminer la séance ?', `${n} série${n > 1 ? 's' : ''} notée${n > 1 ? 's' : ''} · ${fmtDur(min)}`, { yes:'Terminer', danger:false }))) return;
   S.workouts.push({ id: w.id, rid: w.rid, name: w.name, start: w.start, end: Date.now(), min, ex }); S.activeWo = null;
   day(key(new Date(w.start))).workout = true;
