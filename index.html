@@ -568,6 +568,7 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 .cmem{background:var(--card);border:1px solid color-mix(in srgb,var(--acc) 30%,transparent);border-radius:18px;padding:14px;margin-bottom:12px}
 .cmem h5{font-size:13px;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.cmem>small{display:block;font-size:12px;color:var(--mut);margin-bottom:8px}
 .cmem div{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;font-weight:700}.cmem div span{flex:1}.cmem div button{color:var(--mut);font-size:15px;padding:0 4px}
+.sumai{margin-bottom:10px;background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,#DE7A58))!important;color:#0B0B0F!important}
 .cmemb{width:44px;height:44px;border-radius:14px;background:var(--card);display:grid;place-items:center;color:var(--acc);flex-shrink:0}.cmemb svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #coachPage .aift{padding-bottom:calc(var(--sb,0px) + 22px)}#coachPage .aichips{margin:0;padding:0 16px 2px}.cclr{height:36px;padding:0 12px;border-radius:12px;background:var(--card);font-size:13px;font-weight:800;color:var(--mut)}
 #coachPage .aift{gap:8px}#coachChat{padding-bottom:10px}
@@ -2334,7 +2335,8 @@ body.perf .wo-intro span{box-shadow:none!important}
   <h2>Séance terminée</h2><p id="sumName"></p>
   <div class="wsum-k" id="sumK"></div>
   <div id="sumPR"></div>
-  <button class="btn full press" id="sumOk">Continuer</button>
+  <button class="btn full press sumai" id="sumAi">Faire analyser par le Coach</button>
+  <button class="btn ghost full press" id="sumOk">Continuer</button>
 </div></div>
 
 <div class="modal" id="restModal">
@@ -3167,11 +3169,25 @@ const coachDraw = () => { const el = $('#coachChat');
   el.innerHTML = coachMsgs.length ? coachMsgs.map(m => `<p class="${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join('')
     : `<p class="ai"><small>Coach</small>Salut camarade ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on fait le point sur le plan ?</p>`;
   requestAnimationFrame(() => { const b = $('#coachBody'); b.scrollTop = b.scrollHeight; }); };
-const coachAsk = async txt => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
+const woDetail = w => {
+  if (!w) return '';
+  const prev = [...S.workouts].reverse().find(x => x.id !== w.id && (w.rid ? x.rid === w.rid : x.name === w.name) && x.start < w.start);
+  const exTxt = (wo, e) => { const ss = (e.sets || []).filter(x => num(x.reps) > 0); if (!ss.length) return 'aucune série';
+    if (ss.every(x => !num(x.kg))) return `${ss.map(x => num(x.reps)).join(', ')} reps au poids du corps (total ${ss.reduce((t, x) => t + num(x.reps), 0)} reps)`;
+    const vol = ss.reduce((t, x) => t + num(x.kg) * (e.uni ? num(x.reps) + num(x.repsR) : num(x.reps)), 0), best = ss.reduce((b, x) => num(x.kg) * (1 + num(x.reps) / 30) > num(b.kg) * (1 + num(b.reps) / 30) ? x : b, ss[0]);
+    return `${ss.map(x => (num(x.kg) ? num(x.kg) + 'kg×' : '') + num(x.reps)).join(', ')} | volume ${Math.round(vol)} kg | meilleure série ${num(best.kg)}kg×${num(best.reps)} (1RM estimé ${Math.round(num(best.kg) * (1 + num(best.reps) / 30))} kg)`; };
+  const L = [`SÉANCE À ANALYSER : « ${w.name} » du ${key(new Date(w.start))}, ${w.min || 0} min, volume total ${Math.round(woVol(w))} kg.`];
+  w.ex.forEach(e => { const pe = prev && prev.ex.find(x => x.name === e.name); L.push(`- ${e.name}${e.cat ? ' (' + e.cat + ')' : ''} : ${exTxt(w, e)}`); L.push(`  séance précédente : ${pe ? exTxt(prev, pe) : 'exercice absent ou première fois'}`); });
+  if (prev) { L.push(`SÉANCE PRÉCÉDENTE COMPARABLE : « ${prev.name} » du ${key(new Date(prev.start))}, ${prev.min || 0} min, volume total ${Math.round(woVol(prev))} kg.`);
+    prev.ex.filter(e => !w.ex.some(x => x.name === e.name)).forEach(e => L.push(`- (fait la dernière fois, pas aujourd'hui) ${e.name} : ${exTxt(prev, e)}`)); }
+  else L.push('Pas de séance précédente comparable.');
+  L.push(`Consignes d'analyse : compare exercice par exercice avec la séance précédente. Une hausse de charge avec moins de répétitions et donc un volume plus bas est normale et peut être un vrai progrès : juge avec le 1RM estimé et l'équilibre charge/répétitions, pas seulement le volume. Repère ce qui progresse, ce qui stagne ou régresse (fatigue, charge trop haute, récupération), et donne 2 ou 3 ajustements précis pour la prochaine séance (charge, reps, séries, repos). Reste court et naturel, comme un pote.`);
+  return L.join('\n'); };
+const coachAsk = async (txt, ctx) => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
   coachMsgs.push({ r: 'user', t: txt, ts: Date.now() }); coachDraw(); $('#coachMsg').value = ''; $('#coachSend').classList.add('off'); $('#coachMsg').blur();
   const typ = document.createElement('p'); typ.className = 'ai typing'; typ.innerHTML = '<small>Coach</small><span><i></i><i></i><i></i></span>'; $('#coachChat').appendChild(typ); $('#coachBody').scrollTop = 1e9;
   const hist = coachMsgs.slice(-20).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
-  const mem = coachMem(), sys = COACH_SYS + '\n\nSes données à jour (consulte-les quand c\'est utile, ne les récite pas) :\n' + coachData() + '\n\nCe que tu sais déjà sur la personne :\n' + (mem.length ? mem.map(x => '- ' + x).join('\n') : '(rien pour l\'instant)');
+  const mem = coachMem(), sys = COACH_SYS + (ctx ? '\n\n' + ctx : '') + '\n\nSes données à jour (consulte-les quand c\'est utile, ne les récite pas) :\n' + coachData() + '\n\nCe que tu sais déjà sur la personne :\n' + (mem.length ? mem.map(x => '- ' + x).join('\n') : '(rien pour l\'instant)');
 
   let out = '', err = '';
   try { if (!CL_KEY.startsWith('__')) { const rq = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': CL_KEY, 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
@@ -4677,7 +4693,8 @@ $('#woEnd').onclick = async () => {
   setGymOpen(true); rendered.glog = null; go('glog'); if (cur === 'glog') renderGlog(); renderSession();
 };
 
-const showSummary = w => {
+let sumWo = null;
+const showSummary = w => { sumWo = w;
   const prev = [...S.workouts].reverse().find(x => x.id !== w.id && x.rid === w.rid && x.start < w.start), vol = woVol(w), pv = prev ? woVol(prev) : 0;
   const prs = w.ex.map(e => { const pb = bestEver(e.name, w.id), b = bestSet(e.sets); return pb && b.e > pb + .01 ? { n: e.name, b } : null; }).filter(Boolean);
   const dv = pv ? Math.round((vol - pv) / pv * 100) : null;
@@ -4690,6 +4707,7 @@ const showSummary = w => {
   if (prs.length) setTimeout(() => { burst($('#sumPR'), ['#FFD54F','#FF9F43','#fff']); tone([784, 988, 1319], .1, 'triangle', .12); }, 1300);
 };
 $('#sumOk').onclick = () => { $('#woSum').classList.remove('on'); sfx.tap(); buzz(); };
+$('#sumAi').onclick = () => { const w = sumWo; $('#woSum').classList.remove('on'); coachDraw(); $('#coachMem').classList.add('hidden'); openOv('coachPage'); sfx.tap(); buzz(); if (w) setTimeout(() => coachAsk(`Analyse ma séance « ${w.name} »`, woDetail(w)), 350); };
 
 /* HISTORIQUE MUSCU : glisser à gauche pour modifier ou supprimer */
 let glPage = 0;
