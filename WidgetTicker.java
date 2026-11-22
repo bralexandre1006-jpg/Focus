@@ -19,7 +19,7 @@ import java.util.Date;
 
 /** Met à jour les widgets toutes les 5 minutes avec le compteur de pas du téléphone, même app fermée. */
 public class WidgetTicker extends BroadcastReceiver {
-    static final long EVERY = 3 * 60 * 1000L;
+    static final long EVERY = 3 * 60 * 1000L, OFF_EVERY = 10 * 60 * 1000L;
 
     static boolean hasWidgets(Context c) {
         android.appwidget.AppWidgetManager m = android.appwidget.AppWidgetManager.getInstance(c);
@@ -32,12 +32,17 @@ public class WidgetTicker extends BroadcastReceiver {
         if (am == null) return;
         PendingIntent pi = PendingIntent.getBroadcast(c, 4343, new Intent(c, WidgetTicker.class), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         if (!hasWidgets(c) && !syncOn(c)) { am.cancel(pi); return; }
-        long t = SystemClock.elapsedRealtime() + EVERY;
-        // Réveil non forcé : tourne quand l'écran est allumé, ne vide pas la batterie écran éteint
+        // Écran allumé : toutes les 3 min. Écran éteint (synchro PC active) : réveil léger toutes les 10 min, autorisé en veille.
+        android.os.PowerManager pm = (android.os.PowerManager) c.getSystemService(Context.POWER_SERVICE);
+        boolean on = pm == null || pm.isInteractive();
+        if (!on && !syncOn(c)) { am.cancel(pi); return; }
+        long t = SystemClock.elapsedRealtime() + (on ? EVERY : OFF_EVERY);
+        int type = on ? AlarmManager.ELAPSED_REALTIME : AlarmManager.ELAPSED_REALTIME_WAKEUP;
         try {
-            if (Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms()) am.setExact(AlarmManager.ELAPSED_REALTIME, t, pi);
-            else am.set(AlarmManager.ELAPSED_REALTIME, t, pi);
-        } catch (SecurityException e) { am.set(AlarmManager.ELAPSED_REALTIME, t, pi); }
+            if (!on) am.setAndAllowWhileIdle(type, t, pi);
+            else if (Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms()) am.setExact(type, t, pi);
+            else am.set(type, t, pi);
+        } catch (SecurityException e) { am.set(type, t, pi); }
     }
 
     static boolean syncOn(Context c) {
@@ -121,7 +126,7 @@ public class WidgetTicker extends BroadcastReceiver {
         final Context app = ctx.getApplicationContext();
         schedule(app);
         android.os.PowerManager pm = (android.os.PowerManager) app.getSystemService(Context.POWER_SERVICE);
-        if (pm != null && !pm.isInteractive()) return;
+        if (pm != null && !pm.isInteractive() && !syncOn(app)) return;
         final SensorManager sm = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
         final Sensor sensor = sm != null ? sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) : null;
         if (sensor == null) { FocusWidget.push(app); return; }
