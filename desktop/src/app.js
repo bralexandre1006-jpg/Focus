@@ -332,22 +332,29 @@ const cData = d => { const G = d.goals, T = today(), L = [`Prénom : ${d.name ||
   for (let i = 13; i >= 0; i--) { const k = addDays(T, -i), x = D(d, k), hw = (d.wos || []).some(w => key(new Date(w.t)) === k); L.push(`${k} ; ${x.steps} ; ${x.kcal} ; ${x.p}/${x.c}/${x.f} ; ${x.weight || '-'} ; ${x.off ? 'jour off' : hw || x.wo === 1 ? 'faite' : x.wo === 0 ? 'manquée' : '-'}`); }
   const w8 = (d.wos || []).slice(0, 8); if (w8.length) { L.push('Dernières séances :'); w8.forEach(w => L.push(`${key(new Date(w.t))} « ${w.n} » ${w.m} min : ${(w.ex || []).map(e => `${e[0]} ${(e[2] || []).map(s => (s[0] ? s[0] + 'kg×' : '') + s[1]).join(',')}`).join(' | ')}`)); }
   return L.join('\n'); };
-const C_SYS = `Tu es le pote coach de la personne dans l'app Focus : un ami qui s'y connaît en sport et en nutrition, pas un assistant. Tu parles français, tu tutoies, ton ton est détendu, chaleureux et naturel, comme des messages entre potes (tu peux être drôle, chambrer gentiment, encourager).
+const C_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français et tu tutoies. Ton ton est professionnel, précis et bienveillant, sans humour ni familiarité.
 Règles :
-- Ne répète pas son prénom (au maximum de temps en temps), pas de formules d'IA (« Excellente question », « En tant que coach », « N'hésite pas à… »), pas de récap systématique.
-- Réponds court comme dans une vraie conversation : 2 à 6 phrases, des listes seulement si on te demande un plan.
-- Appuie-toi sur ses vraies données (pas, calories, macros, poids, séances) et cite un chiffre quand c'est utile.
-- Dis-lui franchement s'il faut réajuster quelque chose : objectif de pas, calories, protéines, rythme ou contenu des séances, repos, sommeil. Propose un ajustement précis et réaliste.
-- Tu peux lui poser une question pour mieux comprendre, comme le ferait un ami.
-- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.
-- Ses données sont fiables : ne mets jamais en doute ses chiffres (pas de « bug du capteur », « erreur de saisie »…). Une grosse journée (30 000, 60 000 pas ou plus) est réelle : il a vraiment marché, félicite-le et tiens-en compte (récupération, calories, hydratation).
-- Ton style a une touche communiste, avec humour et légèreté : tu l'appelles parfois « camarade », tu glisses de temps en temps une petite référence (le collectif, la lutte, le plan quinquennal de ses pas, les masses, la révolution des abdos, une citation détournée de Marx, Lénine ou du Che…). Sans en faire trop, jamais de discours politique sérieux.
-- Une vraie conversation : réponds d'abord à ce qu'il vient de dire. Ne répète pas les chiffres, conseils, blagues ou formules déjà dits plus haut dans la conversation ; ne refais pas le bilan à chaque message. Varie tes débuts de phrase. Les références communistes et « camarade » : pas à chaque message, environ un message sur trois.`;
+- Va droit au but : réponses courtes, pas d'introduction, pas de formules d'IA, pas de récapitulatif inutile, pas de répétition de ce qui a déjà été dit dans la conversation.
+- Dès que tu donnes plusieurs chiffres (comparaisons, jours, exercices, macros, évolutions), présente-les dans un tableau Markdown propre (| colonne | colonne |, ligne d'en-tête puis |---|), avec des unités. Pas de longs paragraphes de chiffres.
+- Après un tableau : au maximum 2 ou 3 puces courtes avec les conclusions et les ajustements concrets (charge, répétitions, séries, repos, pas, calories, protéines).
+- Appuie-toi uniquement sur ses données ; elles sont fiables (ne parle jamais de bug de capteur ni d'erreur de saisie : une grosse journée de pas est réelle).
+- Une hausse de charge avec moins de répétitions et un volume plus bas peut être un progrès : juge avec le 1RM estimé et l'équilibre charge/répétitions.
+- Ne répète pas son prénom. Pour une douleur ou un problème de santé, conseille de consulter un professionnel.`;
 const cTs = a => (a && a.length && a[a.length - 1].ts) || 0;
 const cChatPush = () => { if (!CFG.code || FB_URL.startsWith('__')) return; if (DATA) DATA.chat = CM.slice(-80); fetch(`${FB_URL}/focus/${CFG.code}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat: CM.slice(-80) }) }).catch(() => {}); };
+const mdLite = t => { const L = esc(t).split('\n'), o = []; let i = 0;
+  const inl = x => x.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  while (i < L.length) { const l = L[i].trim();
+    if (/^\|.*\|$/.test(l)) { const rows = []; while (i < L.length && /^\|.*\|$/.test(L[i].trim())) { rows.push(L[i].trim()); i++; }
+      const cells = r => r.slice(1, -1).split('|').map(c => c.trim()), body = rows.filter(r => !/^\|[\s:|-]+\|$/.test(r));
+      if (body.length) o.push(`<div class="mdt"><table><thead><tr>${cells(body[0]).map(c => `<th>${inl(c)}</th>`).join('')}</tr></thead><tbody>${body.slice(1).map(r => `<tr>${cells(r).map(c => `<td>${inl(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`); continue; }
+    if (/^[-•*] /.test(l)) { const it = []; while (i < L.length && /^[-•*] /.test(L[i].trim())) { it.push(L[i].trim().slice(2)); i++; } o.push(`<ul>${it.map(x => `<li>${inl(x)}</li>`).join('')}</ul>`); continue; }
+    if (/^#{1,4} /.test(l)) { o.push(`<h6>${inl(l.replace(/^#+ /, ''))}</h6>`); i++; continue; }
+    if (l) o.push(`<div>${inl(l)}</div>`); i++; }
+  return o.join(''); };
 function pCoach(d) { if (Array.isArray(d.chat) && !cBusy && cTs(d.chat) > cTs(CM)) { CM = d.chat.slice(); cSave(); } return `<div class="card fx" style="height:100%;--g:var(--acc)"><div class="cch"><div class="hdr2"><div class="lab">Coach IA</div><div style="display:flex;gap:6px"><button class="chip ${cMemOpen ? 'on' : ''}" id="cMemB">Mémoire (${cMem().length})</button><button class="chip" id="cClr">Effacer</button></div></div>
   ${cMemOpen ? `<div class="cmem"><b>Ce que ton coach retient</b>${cMem().length ? cMem().map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('') : '<small>Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…</small>'}</div>` : ''}
-  <div class="msgs" id="cMsgs">${(CM.length ? CM : [{ r: 'ai', t: `Salut camarade ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on fait le point sur le plan ?` }]).map(m => `<div class="m ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</div>`).join('')}${cBusy ? '<div class="m ai typ"><small>Coach</small><span><i></i><i></i><i></i></span></div>' : ''}</div>
+  <div class="msgs" id="cMsgs">${(CM.length ? CM : [{ r: 'ai', t: `Je suis ton coach. Pose-moi une question ou demande un bilan : pas, nutrition, poids ou séances.` }]).map(m => `<div class="m ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? esc(m.t) : '<small>Coach</small><span class="cmd">' + mdLite(m.t) + '</span>'}</div>`).join('')}${cBusy ? '<div class="m ai typ"><small>Coach</small><span><i></i><i></i><i></i></span></div>' : ''}</div>
   <div class="chips">${['Fais le bilan de ma semaine', 'Comment améliorer mes pas ?', 'Mes séances sont-elles équilibrées ?', 'Mon alimentation est-elle bonne ?', 'Où en est mon poids ?'].map(x => `<button data-cq="${x}">${x}</button>`).join('')}</div>
   <div class="ask"><input id="cIn" placeholder="Pose une question à ton coach…" autocomplete="off"><button id="cGo" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div></div></div>`; }
 async function coachAsk(t) { t = (t || '').trim(); if (!t || cBusy || !DATA) return; CM.push({ r: 'user', t, ts: Date.now() }); cBusy = true; render();

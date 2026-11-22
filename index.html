@@ -184,7 +184,7 @@ button{border:0;background:none;cursor:pointer}
 .chart .c i.hl{background:var(--acc)}
 .chart .c span{font-size:10px;color:var(--mut);font-weight:800;height:12px}
 .chart.cal .c i.hl{background:var(--cal)}
-.line svg{width:100%;height:160px;margin-top:14px;overflow:visible}
+.line svg{width:100%;height:auto;margin-top:14px;overflow:visible}
 .wsvg{touch-action:pan-y;display:block}
 .wdot{transform-box:fill-box;transform-origin:center;animation:dotIn .45s var(--spring) both}
 @keyframes dotIn{from{transform:scale(0)}to{transform:scale(1)}}
@@ -572,7 +572,12 @@ span.fic{padding:0!important;margin:0!important;background:none!important;box-sh
 .cmemb{width:44px;height:44px;border-radius:14px;background:var(--card);display:grid;place-items:center;color:var(--acc);flex-shrink:0}.cmemb svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #coachPage .aift{padding-bottom:calc(var(--sb,0px) + 22px)}#coachPage .aichips{margin:0;padding:0 16px 2px}.cclr{height:36px;padding:0 12px;border-radius:12px;background:var(--card);font-size:13px;font-weight:800;color:var(--mut)}
 #coachPage .aift{gap:8px}#coachChat{padding-bottom:10px}
-#coachChat .ai{white-space:pre-wrap}#coachChat .ai b{color:var(--acc)}
+#coachChat .ai{white-space:normal;max-width:96%}#coachChat .ai b{color:var(--acc)}
+.wax{fill:var(--mut);font-size:10px;font-weight:700;font-family:inherit}
+.hx-wav em{display:block;font-style:normal;font-size:11px;font-weight:800;margin-top:1px;color:var(--mut)}.hx-wav em.wdn{color:var(--ok)}.hx-wav em.wup{color:var(--bad)}
+.aichat>.cb{max-width:88%;padding:11px 14px;border-radius:18px;font-size:15px;font-weight:700;line-height:1.45;animation:aiIn .35s var(--ease) both}.aichat>.cb.ai{max-width:100%}
+.mdt{overflow-x:auto;margin:6px 0;border-radius:10px;border:1px solid rgba(255,255,255,.1)}.mdt table{border-collapse:collapse;width:100%;font-size:11.5px}.mdt th{background:rgba(255,255,255,.07);font-weight:800;text-align:left;padding:6px 7px}.mdt td{padding:6px 7px;border-top:1px solid rgba(255,255,255,.07)}.mdt td:not(:first-child),.mdt th:not(:first-child){text-align:right}
+.cmd ul{margin:4px 0 2px 16px;padding:0}.cmd li{margin:2px 0}.cmd h6{font-size:13px;margin:6px 0 2px;color:var(--acc)}
 .aibox{background:var(--card);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:20px;padding:12px;margin-bottom:14px}
 .aiimg{position:relative;margin-bottom:10px}.aiimg img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:14px}
 .aiimg button{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:12px;background:rgba(0,0,0,.6);color:#fff;font-weight:800}
@@ -790,7 +795,7 @@ body.lite .statnum b{font-size:28px}
 body.lite .trend{font-size:12px;padding:4px 8px}
 body.lite .statsub{font-size:12px}
 body.lite .chart{height:100px;margin-top:12px}
-body.lite .line svg{height:110px;margin-top:10px}
+body.lite .line svg{height:auto;margin-top:10px}
 body.lite .whint{font-size:11px;margin-top:6px}
 body.lite .kpis{gap:8px;margin-top:6px}
 body.lite .kpi{padding:10px;border-radius:12px}
@@ -3154,20 +3159,27 @@ const chatPull = async () => { if (!S.sync || !S.sync.on || FB_URL.startsWith('_
 const memDraw = () => { const el = $('#coachMem'), m = coachMem();
   el.innerHTML = `<h5>Ce que ton coach retient</h5><small>${m.length ? 'Touche ✕ pour faire oublier un élément.' : 'Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…'}</small>${m.map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('')}`;
   $$('#coachMem [data-mi]').forEach(b => b.onclick = () => { S.coachMem = coachMem().filter((_, i) => i !== +b.dataset.mi); save(); memSync(); memDraw(); }); };
-const COACH_SYS = `Tu es le pote coach de la personne dans l'app Focus : un ami qui s'y connaît en sport et en nutrition, pas un assistant. Tu parles français, tu tutoies, ton ton est détendu, chaleureux et naturel, comme des messages entre potes (tu peux être drôle, chambrer gentiment, encourager).
+const COACH_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français et tu tutoies. Ton ton est professionnel, précis et bienveillant, sans humour ni familiarité.
 Règles :
-- Ne répète pas son prénom (au maximum de temps en temps), pas de formules d'IA (« Excellente question », « En tant que coach », « N'hésite pas à… »), pas de récap systématique.
-- Réponds court comme dans une vraie conversation : 2 à 6 phrases, des listes seulement si on te demande un plan.
-- Appuie-toi sur ses vraies données (pas, calories, macros, poids, séances) et cite un chiffre quand c'est utile.
-- Dis-lui franchement s'il faut réajuster quelque chose : objectif de pas, calories, protéines, rythme ou contenu des séances, repos, sommeil. Propose un ajustement précis et réaliste.
-- Tu peux lui poser une question pour mieux comprendre, comme le ferait un ami.
-- Pour une douleur ou un souci de santé, conseille de voir un pro, sans dramatiser.
-- Ses données sont fiables : ne mets jamais en doute ses chiffres (pas de « bug du capteur », « erreur de saisie »…). Une grosse journée (30 000, 60 000 pas ou plus) est réelle : il a vraiment marché, félicite-le et tiens-en compte (récupération, calories, hydratation).
-- Ton style a une touche communiste, avec humour et légèreté : tu l'appelles parfois « camarade », tu glisses de temps en temps une petite référence (le collectif, la lutte, le plan quinquennal de ses pas, les masses, la révolution des abdos, une citation détournée de Marx, Lénine ou du Che…). Sans en faire trop, jamais de discours politique sérieux.
-- Une vraie conversation : réponds d'abord à ce qu'il vient de dire. Ne répète pas les chiffres, conseils, blagues ou formules déjà dits plus haut dans la conversation ; ne refais pas le bilan à chaque message. Varie tes débuts de phrase. Les références communistes et « camarade » : pas à chaque message, environ un message sur trois.`;
+- Va droit au but : réponses courtes, pas d'introduction, pas de formules d'IA, pas de récapitulatif inutile, pas de répétition de ce qui a déjà été dit dans la conversation.
+- Dès que tu donnes plusieurs chiffres (comparaisons, jours, exercices, macros, évolutions), présente-les dans un tableau Markdown propre (| colonne | colonne |, ligne d'en-tête puis |---|), avec des unités. Pas de longs paragraphes de chiffres.
+- Après un tableau : au maximum 2 ou 3 puces courtes avec les conclusions et les ajustements concrets (charge, répétitions, séries, repos, pas, calories, protéines).
+- Appuie-toi uniquement sur ses données ; elles sont fiables (ne parle jamais de bug de capteur ni d'erreur de saisie : une grosse journée de pas est réelle).
+- Une hausse de charge avec moins de répétitions et un volume plus bas peut être un progrès : juge avec le 1RM estimé et l'équilibre charge/répétitions.
+- Ne répète pas son prénom. Pour une douleur ou un problème de santé, conseille de consulter un professionnel.`;
+const mdLite = t => { const L = esc(t).split('\n'), o = []; let i = 0;
+  const inl = x => x.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  while (i < L.length) { const l = L[i].trim();
+    if (/^\|.*\|$/.test(l)) { const rows = []; while (i < L.length && /^\|.*\|$/.test(L[i].trim())) { rows.push(L[i].trim()); i++; }
+      const cells = r => r.slice(1, -1).split('|').map(c => c.trim()), body = rows.filter(r => !/^\|[\s:|-]+\|$/.test(r));
+      if (body.length) o.push(`<div class="mdt"><table><thead><tr>${cells(body[0]).map(c => `<th>${inl(c)}</th>`).join('')}</tr></thead><tbody>${body.slice(1).map(r => `<tr>${cells(r).map(c => `<td>${inl(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`); continue; }
+    if (/^[-•*] /.test(l)) { const it = []; while (i < L.length && /^[-•*] /.test(L[i].trim())) { it.push(L[i].trim().slice(2)); i++; } o.push(`<ul>${it.map(x => `<li>${inl(x)}</li>`).join('')}</ul>`); continue; }
+    if (/^#{1,4} /.test(l)) { o.push(`<h6>${inl(l.replace(/^#+ /, ''))}</h6>`); i++; continue; }
+    if (l) o.push(`<div>${inl(l)}</div>`); i++; }
+  return o.join(''); };
 const coachDraw = () => { const el = $('#coachChat');
-  el.innerHTML = coachMsgs.length ? coachMsgs.map(m => `<p class="${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? '' : '<small>Coach</small>'}${esc(m.t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</p>`).join('')
-    : `<p class="ai"><small>Coach</small>Salut camarade ! Je vois tes pas, tes repas, ton poids et tes séances. Raconte, on fait le point sur le plan ?</p>`;
+  el.innerHTML = coachMsgs.length ? coachMsgs.map(m => `<div class="cb ${m.r === 'user' ? 'me' : 'ai'}">${m.r === 'user' ? esc(m.t) : '<small>Coach</small><span class="cmd">' + mdLite(m.t) + '</span>'}</div>`).join('')
+    : `<p class="ai"><small>Coach</small>Je suis ton coach. Pose-moi une question ou demande un bilan : pas, nutrition, poids ou séances.</p>`;
   requestAnimationFrame(() => { const b = $('#coachBody'); b.scrollTop = b.scrollHeight; }); };
 const woDetail = w => {
   if (!w) return '';
@@ -3181,7 +3193,7 @@ const woDetail = w => {
   if (prev) { L.push(`SÉANCE PRÉCÉDENTE COMPARABLE : « ${prev.name} » du ${key(new Date(prev.start))}, ${prev.min || 0} min, volume total ${Math.round(woVol(prev))} kg.`);
     prev.ex.filter(e => !w.ex.some(x => x.name === e.name)).forEach(e => L.push(`- (fait la dernière fois, pas aujourd'hui) ${e.name} : ${exTxt(prev, e)}`)); }
   else L.push('Pas de séance précédente comparable.');
-  L.push(`Consignes d'analyse : compare exercice par exercice avec la séance précédente. Une hausse de charge avec moins de répétitions et donc un volume plus bas est normale et peut être un vrai progrès : juge avec le 1RM estimé et l'équilibre charge/répétitions, pas seulement le volume. Repère ce qui progresse, ce qui stagne ou régresse (fatigue, charge trop haute, récupération), et donne 2 ou 3 ajustements précis pour la prochaine séance (charge, reps, séries, repos). Reste court et naturel, comme un pote.`);
+  L.push(`Consignes d'analyse : fais un tableau exercice par exercice (séance précédente → aujourd'hui : charge × reps, volume, 1RM estimé, évolution), puis 2 ou 3 puces de conclusions. Une hausse de charge avec moins de répétitions et donc un volume plus bas est normale et peut être un vrai progrès : juge avec le 1RM estimé et l'équilibre charge/répétitions, pas seulement le volume. Repère ce qui progresse, ce qui stagne ou régresse (fatigue, charge trop haute, récupération), et donne 2 ou 3 ajustements précis pour la prochaine séance (charge, reps, séries, repos). Reste court et précis.`);
   return L.join('\n'); };
 const coachAsk = async (txt, ctx) => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
   coachMsgs.push({ r: 'user', t: txt, ts: Date.now() }); coachDraw(); $('#coachMsg').value = ''; $('#coachSend').classList.add('off'); $('#coachMsg').blur();
@@ -3628,9 +3640,18 @@ const renderWeightStats = () => {
   $('#stWSub').textContent = `${ks.length} relevé${ks.length>1?'s':''}` + (bmi?` · IMC ${bmi}`:'');
   // Courbe avec un point par pesée. Maintiens le doigt dessus pour lire chaque poids.
   const lite = document.body.classList.contains('lite');
-  const W = Math.max(200, Math.round(el.clientWidth || 320)), H = lite ? 110 : 160, px = 12, pt = 16, pb = 12;
-  const mn = Math.min(...vals) - .4, mx = Math.max(...vals) + .4;
-  const pts = vals.map((v,i) => [ vals.length === 1 ? W/2 : px + i/(vals.length-1)*(W - 2*px), pt + (1 - (v-mn)/(mx-mn))*(H - pt - pb) ]);
+  const W = Math.max(200, Math.round(el.clientWidth || 320)), H = lite ? 170 : 210, pl = 40, pr = 12, pt = 12, pb = 24;
+  const Gw = goals(), tgtIn = Gw.target && Math.abs(Gw.target - (Math.min(...vals) + Math.max(...vals)) / 2) < 6;
+  let lo = Math.min(...vals, ...(tgtIn ? [Gw.target] : [])), hi0 = Math.max(...vals, ...(tgtIn ? [Gw.target] : []));
+  const span = Math.max(.6, hi0 - lo), stp = [.2, .5, 1, 2, 5, 10].find(x => span / x <= 5) || 10;
+  const mn = Math.floor((lo - span * .08) / stp) * stp, mx = Math.ceil((hi0 + span * .08) / stp) * stp;
+  const X = i => vals.length === 1 ? (pl + W - pr) / 2 : pl + i / (vals.length - 1) * (W - pl - pr), Y = v => pt + (1 - (v - mn) / (mx - mn)) * (H - pt - pb);
+  const pts = vals.map((v, i) => [X(i), Y(v)]);
+  let axis = '';
+  for (let v = mn; v <= mx + 1e-9; v += stp) { const y = Y(v); axis += `<line x1="${pl}" x2="${W - pr}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.07)"/><text x="${pl - 7}" y="${y + 3.5}" text-anchor="end" class="wax">${f1(v).replace(',0', '')}</text>`; }
+  const nl = Math.min(ks.length, Math.max(2, Math.floor((W - pl - pr) / 70)));
+  for (let j = 0; j < nl; j++) { const i = nl === 1 ? 0 : Math.round(j * (ks.length - 1) / (nl - 1)); axis += `<text x="${X(i)}" y="${H - 6}" text-anchor="${j === 0 && ks.length > 1 ? 'start' : j === nl - 1 && ks.length > 1 ? 'end' : 'middle'}" class="wax">${parseKey(ks[i]).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' }).replace('.', '')}</text>`; }
+  if (tgtIn) { const y = Y(Gw.target); axis += `<line x1="${pl}" x2="${W - pr}" y1="${y}" y2="${y}" stroke="#6BD36E" stroke-opacity=".6" stroke-dasharray="4 5"/><text x="${W - pr}" y="${y - 5}" text-anchor="end" class="wax" style="fill:#6BD36E">objectif ${f1(Gw.target)}</text>`; }
   let d = `M${pts[0][0]},${pts[0][1]}`;
   for (let i=1;i<pts.length;i++){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i], cx=(x0+x1)/2; d+=` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
   const r = vals.length > 40 ? 3 : vals.length > 15 ? 4 : 5;
@@ -3655,7 +3676,7 @@ const renderWeightStats = () => {
   }
   el.innerHTML = `<svg class="wsvg" viewBox="0 0 ${W} ${H}">
     <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6BD36E" stop-opacity=".3"/><stop offset="1" stop-color="#6BD36E" stop-opacity="0"/></linearGradient></defs>
-    <path d="${d} L${pts.at(-1)[0]},${H} L${pts[0][0]},${H} Z" fill="url(#wg)"/>
+    ${axis}<path d="${d} L${pts.at(-1)[0]},${H - pb} L${pts[0][0]},${H - pb} Z" fill="url(#wg)"/>
     <path class="ln" d="${d}"/>${smD ? `<path class="lnsm" d="${smD}"/>` : ''}
     <line id="wGuide" x1="0" x2="0" y1="4" y2="${H}" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0"/>
     ${pts.map((p,i) => `<circle class="wdot" style="animation-delay:${Math.min(1.2, .3 + i*.03)}s" cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#6BD36E" stroke="#18181F" stroke-width="2"/>`).join('')}
@@ -3733,9 +3754,10 @@ const renderHistory = () => {
     return `<div class="hx-wk ${cur ? '' : 'past'}" style="animation-delay:${Math.min(wi, 4) * .06}s"><div class="hx-h"><b>${lbl}</b><span class="hx-pill ${ok ? 'g' : ''}">${plan ? `${done}/${plan} séance${plan > 1 ? 's' : ''}` : 'Repos'}</span></div>
       <div class="hx-hero"><div><b>${fmt(avg(stp))}</b><small>pas / jour</small></div>${hSpark(sv, cur ? ACC1 : '#A99BFF', 'hsg' + W.w)}</div>
       <div class="hx-mini"><span>Kcal / jour<b>${cal.length ? fmt(avg(cal)) : '—'}</b></span><span>Prot / jour<b>${pr.length ? Math.round(avg(pr)) + ' g' : '—'}</b></span>
-        ${feat('hxW') && wk.length > 1 ? (() => { const a0 = S.days[wk[0]].weight, a1 = S.days[wk.at(-1)].weight, dd = Math.round((a1 - a0) * 10) / 10;
-          return `<span class="hx-wse">Poids <em class="${dd > 0 ? 'wup' : dd < 0 ? 'wdn' : ''}">${dd > 0 ? '+' : dd < 0 ? '−' : '±'}${f1(Math.abs(dd))}</em><b>${f1(a0)} → ${f1(a1)}<i>kg</i></b></span>`; })()
-        : `<span>Poids<b class="${wd0 > 0 ? 'wup' : wd0 < 0 ? 'wdn' : ''}">${wd0 == null ? '—' : (wd0 > 0 ? '+' : wd0 < 0 ? '−' : '±') + f1(Math.abs(wd0)) + ' kg'}</b></span>`}</div>
+        ${(() => { if (!wk.length) return `<span>Poids moy.<b>—</b></span>`; const av = wk.reduce((t, k) => t + S.days[k].weight, 0) / wk.length;
+          const pa = parseKey(W.w); pa.setDate(pa.getDate() - 7); const pk = key(pa), pw = Object.keys(S.days).filter(k => S.days[k].weight && k >= pk && k < W.w);
+          const dd = pw.length ? Math.round((av - pw.reduce((t, k) => t + S.days[k].weight, 0) / pw.length) * 100) / 100 : null;
+          return `<span class="hx-wav">Poids moy.<b>${f1(av)}<i>kg</i></b>${dd != null ? `<em class="${dd > 0 ? 'wup' : dd < 0 ? 'wdn' : ''}">${dd > 0 ? '+' : dd < 0 ? '−' : '±'}${Math.abs(dd).toFixed(2).replace('.', ',')} kg</em>` : ''}</span>`; })()}</div>
       ${W.ks.map(row).join('')}</div>`; };
   const tok = (renderHistory.tok = (renderHistory.tok || 0) + 1), all = weeks.slice(0, 60);
   el.innerHTML = all.slice(0, 3).map(week).join('') + '<div class="hx-more"></div>';

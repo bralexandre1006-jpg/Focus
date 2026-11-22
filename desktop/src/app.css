@@ -427,3 +427,6 @@ body.narrow .wx .d{display:none}
 .wdd-p .wrow{white-space:nowrap}
 .side .wdd{margin-top:12px}
 .rsz,.mini-b{display:none!important}
+.mdt{overflow-x:auto;margin:6px 0;border-radius:10px;border:1px solid rgba(255,255,255,.1)}.mdt table{border-collapse:collapse;width:100%;font-size:11.5px}.mdt th{background:rgba(255,255,255,.07);font-weight:800;text-align:left;padding:6px 7px}.mdt td{padding:6px 7px;border-top:1px solid rgba(255,255,255,.07)}.mdt td:not(:first-child),.mdt th:not(:first-child){text-align:right}
+.cmd ul{margin:4px 0 2px 16px;padding:0}.cmd li{margin:2px 0}.cmd h6{font-size:13px;margin:6px 0 2px;color:var(--acc)}
+.cch .m.ai{white-space:normal;max-width:86%}
