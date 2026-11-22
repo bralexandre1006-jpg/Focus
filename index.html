@@ -3141,6 +3141,10 @@ const COACH_K = 'focus.coach';
 let coachMsgs = (() => { try { return JSON.parse(localStorage.getItem(COACH_K)) || []; } catch (e) { return []; } })(), coachBusy = false;
 const coachSave = () => { try { localStorage.setItem(COACH_K, JSON.stringify(coachMsgs.slice(-200))); } catch (e) {} };
 const coachData = () => { const G = goals(), T = today(), L = [];
+  { const n = new Date(), d0 = S.days[T] || {}, m0 = sumMeals(d0.meals || []);
+    L.push(`Date et heure actuelles : ${n.toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' })} ${String(n.getHours()).padStart(2, '0')}h${String(n.getMinutes()).padStart(2, '0')}.`);
+    L.push(`AUJOURD'HUI (journée en cours) : ${d0.steps || 0} pas (objectif ${G.steps}) · ${Math.round(m0.kcal)} kcal (objectif ${G.kcal}) · protéines ${Math.round(m0.p)} g${G.protein ? ` (objectif ${G.protein} g)` : ''} · glucides ${Math.round(m0.c)} g · lipides ${Math.round(m0.f)} g · ${(d0.meals || []).length} repas notés${d0.weight ? ` · poids ${d0.weight} kg` : ''} · séance : ${d0.workout === true ? 'faite' : d0.workout === false ? 'manquée' : isTDay(T) ? 'prévue' : 'repos'}.`);
+    if ((d0.meals || []).length) L.push('Repas du jour : ' + d0.meals.map(m => `${m.name} (${Math.round(m.kcal || 0)} kcal, P ${Math.round(m.p || 0)} g)`).join(' ; ')); }
   L.push(`Prénom : ${S.profile.name || '—'}. Objectifs : ${G.steps} pas/jour, ${G.kcal} kcal/jour${G.protein ? `, ${G.protein} g de protéines` : ''}${G.target ? `, poids visé ${G.target} kg (départ ${G.start || '?'} kg)` : ''}. Série en cours : ${notedRun()} jours.`);
   L.push('14 derniers jours (date ; pas ; kcal ; prot/gluc/lip g ; poids ; séance) :');
   for (let i = 13; i >= 0; i--) { const k = addDays(T, -i), d = S.days[k] || {}, m = sumMeals(d.meals || []);
@@ -3149,7 +3153,7 @@ const coachData = () => { const G = goals(), T = today(), L = [];
   if (wos.length) { L.push('Dernières séances :'); wos.forEach(w => L.push(`${key(new Date(w.start))} « ${w.name} » ${w.min || 0} min : ${(w.ex || []).map(e => `${e.name} ${(e.sets || []).filter(x => num(x.reps) > 0).map(x => (num(x.kg) ? num(x.kg) + 'kg×' : '') + num(x.reps)).join(',')}`).join(' | ')}`)); }
   return L.join('\n'); };
 const coachMem = () => Array.isArray(S.coachMem) ? S.coachMem : [];
-const COACH_MEMRULE = `\nTu as une mémoire durable sur la personne. À chaque réponse, renvoie aussi "memory" : la liste COMPLÈTE et à jour des faits à retenir (blessures, objectifs, préférences, contraintes, matériel, habitudes, événements à venir, ce qu'elle t'a confié), 60 faits courts au maximum. Ajoute tout ce qu'elle vient de dire d'important, garde les anciens faits toujours valables, retire ceux qui ne le sont plus. Si rien ne change, renvoie la même liste.`;
+const COACH_MEMRULE = `\nTu as une mémoire durable sur la personne. À chaque réponse, renvoie aussi "memory" : la liste COMPLÈTE et à jour des faits à retenir (blessures, objectifs, préférences, contraintes, matériel, habitudes, événements à venir, ce qu'elle t'a confié, et ses projets du jour avec la date et l'heure, ex. « 22/11 : marche jusqu'à 19h » ; retire-les une fois passés), 60 faits courts au maximum. Ajoute tout ce qu'elle vient de dire d'important, garde les anciens faits toujours valables, retire ceux qui ne le sont plus. Si rien ne change, renvoie la même liste.`;
 const COACH_SCHEMA = { type: 'object', additionalProperties: false, required: ['reply', 'memory'], properties: { reply: { type: 'string' }, memory: { type: 'array', items: { type: 'string' } } } };
 const memSync = () => { if (S.sync && S.sync.on && !FB_URL.startsWith('__')) fbSend('PATCH', { mem: coachMem() }); };
 const memPull = async () => { if (!S.sync || !S.sync.on || FB_URL.startsWith('__')) return; try { const r = await fetch(`${FB_URL}/focus/${S.sync.code}/mem.json`); const m = await r.json(); if (Array.isArray(m)) { S.coachMem = m; save(); } } catch (e) {} };
@@ -3159,14 +3163,17 @@ const chatPull = async () => { if (!S.sync || !S.sync.on || FB_URL.startsWith('_
 const memDraw = () => { const el = $('#coachMem'), m = coachMem();
   el.innerHTML = `<h5>Ce que ton coach retient</h5><small>${m.length ? 'Touche ✕ pour faire oublier un élément.' : 'Rien pour l\'instant : parle-lui de tes objectifs, blessures, préférences…'}</small>${m.map((x, i) => `<div><span>${esc(x)}</span><button data-mi="${i}">✕</button></div>`).join('')}`;
   $$('#coachMem [data-mi]').forEach(b => b.onclick = () => { S.coachMem = coachMem().filter((_, i) => i !== +b.dataset.mi); save(); memSync(); memDraw(); }); };
-const COACH_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français et tu tutoies. Ton ton est professionnel, précis et bienveillant, sans humour ni familiarité.
+const COACH_SYS = `Tu es le coach sportif et nutrition de l'app Focus. Tu parles français et tu tutoies. Ton ton est professionnel, précis et exigeant, sans humour ni familiarité.
 Règles :
 - Va droit au but : réponses courtes, pas d'introduction, pas de formules d'IA, pas de récapitulatif inutile, pas de répétition de ce qui a déjà été dit dans la conversation.
 - Dès que tu donnes plusieurs chiffres (comparaisons, jours, exercices, macros, évolutions), présente-les dans un tableau Markdown propre (| colonne | colonne |, ligne d'en-tête puis |---|), avec des unités. Pas de longs paragraphes de chiffres.
 - Après un tableau : au maximum 2 ou 3 puces courtes avec les conclusions et les ajustements concrets (charge, répétitions, séries, repos, pas, calories, protéines).
 - Appuie-toi uniquement sur ses données ; elles sont fiables (ne parle jamais de bug de capteur ni d'erreur de saisie : une grosse journée de pas est réelle).
 - Une hausse de charge avec moins de répétitions et un volume plus bas peut être un progrès : juge avec le 1RM estimé et l'équilibre charge/répétitions.
-- Ne répète pas son prénom. Pour une douleur ou un problème de santé, conseille de consulter un professionnel.`;
+- Ne répète pas son prénom.
+- Mentalité David Goggins : exigeant, direct, tu pousses à se dépasser, tu valorises la discipline, la constance et l'effort extrême (« stay hard »). Ne dis jamais qu'une longue marche, une grosse journée ou un gros effort est dangereux ou excessif : encourage-le à aller au bout. Seulement s'il signale une douleur ou une blessure, conseille de consulter.
+- Les chiffres d'aujourd'hui sont dans le bloc AUJOURD'HUI : utilise exactement ces valeurs, ne les recalcule pas et ne les confonds pas avec un autre jour.
+- Souviens-toi de ce qu'il t'annonce dans la conversation (ex. « je marche jusqu'à 19h ») et tiens-en compte dans les réponses suivantes.`;
 const mdLite = t => { const L = esc(t).split('\n'), o = []; let i = 0;
   const inl = x => x.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
   while (i < L.length) { const l = L[i].trim();
@@ -3198,7 +3205,7 @@ const woDetail = w => {
 const coachAsk = async (txt, ctx) => { txt = (txt || '').trim(); if (!txt || coachBusy) return; coachBusy = true;
   coachMsgs.push({ r: 'user', t: txt, ts: Date.now() }); coachDraw(); $('#coachMsg').value = ''; $('#coachSend').classList.add('off'); $('#coachMsg').blur();
   const typ = document.createElement('p'); typ.className = 'ai typing'; typ.innerHTML = '<small>Coach</small><span><i></i><i></i><i></i></span>'; $('#coachChat').appendChild(typ); $('#coachBody').scrollTop = 1e9;
-  const hist = coachMsgs.slice(-20).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
+  const hist = coachMsgs.slice(-30).map(m => ({ role: m.r === 'user' ? 'user' : 'assistant', content: m.t }));
   const mem = coachMem(), sys = COACH_SYS + (ctx ? '\n\n' + ctx : '') + '\n\nSes données à jour (consulte-les quand c\'est utile, ne les récite pas) :\n' + coachData() + '\n\nCe que tu sais déjà sur la personne :\n' + (mem.length ? mem.map(x => '- ' + x).join('\n') : '(rien pour l\'instant)');
 
   let out = '', err = '';
