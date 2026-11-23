@@ -525,3 +525,4 @@ nav button.on,.seg button.on,.wkc.on{box-shadow:none!important}
 .card.s .big{background:none;color:var(--txt)}.card.s .big small{-webkit-text-fill-color:initial}
 .cmpc i.c{box-shadow:none}
 .ch path[filter]{display:none}.ds b.win{text-shadow:none}
+.ht span,.ht s{overflow:hidden;text-overflow:ellipsis}
