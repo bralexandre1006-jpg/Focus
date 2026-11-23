@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 let DATA = null, STATUS = 'nocode', CFG = { widgets: {} }, PAGE = 'home', unsub = () => {};
-const ST = { showV: (() => { try { return localStorage.getItem('focus.showV') !== '0'; } catch (e) { return true; } })(), hw: 0, gvm: 'week', oldEx: false, trend: 30, steps: { m: 'week', o: 0, sel: null }, food: { m: 'week', o: 0, sel: null }, wr: 90, cal: 0, csel: null, wsel: 0, ex: '' };
+const ST = { showV: (() => { try { return localStorage.getItem('focus.showV') !== '0'; } catch (e) { return true; } })(), hw: 0, hc: null, hm: 'steps', gvm: 'week', oldEx: false, trend: 30, steps: { m: 'week', o: 0, sel: null }, food: { m: 'week', o: 0, sel: null }, wr: 90, cal: 0, csel: null, wsel: 0, ex: '' };
 const WL = [['steps', 'Pas du jour', 'var(--acc)'], ['kcal', 'Calories', 'var(--cal)'], ['weight', 'Poids', 'var(--wgt)'], ['week', 'Semaine', '#7C8CFF'], ['streak', 'Série', '#FF8A3D'], ['all', 'Tableau de bord', '#B88CFF'], ['clock', 'Horloge', '#FFFFFF'], ['weather', 'Météo', '#5AB8FF']];
 const SLOTS = { breakfast: 'Petit-déj', lunch: 'Midi', dinner: 'Soir', snack: 'Collations' }, SLOTC = { breakfast: '#FFC44A', lunch: '#FF8A4C', dinner: '#B88CFF', snack: '#FF7AB8' };
 const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
@@ -212,31 +212,43 @@ function pWeight(d) {
       return `<div class="li" style="padding:7px 0"><div><b>${dShort(k)}</b><small>${dayLbl(k)}</small></div><div class="r"><b class="num">${f1(w)} kg</b>${df != null ? `<small class="${df <= 0 ? 'up' : 'dn'}">${df > 0 ? '+' : df < 0 ? '−' : '±'}${f1(Math.abs(df))}</small>` : ''}</div></div>`; }).join('') || '<div class="empty">Aucune pesée</div>'}</div></div></div></div>`;
 }
 function pHist(d) {
-  const T = today(), G = d.goals, a = parseKey(monday(T)); a.setDate(a.getDate() - ST.hw * 7);
-  const ks = Array.from({ length: 7 }, (_, i) => { const x = new Date(a); x.setDate(a.getDate() + i); return key(x); }), past = ks.filter(k => k <= T);
-  const sel = ST.csel && ks.includes(ST.csel) ? ST.csel : (ks.includes(T) ? T : ks[6]);
-  const wts = Object.keys(d.days || {}).filter(k => d.days[k][2]).sort(), prevW = k => { const x = wts.filter(y => y < k); return x.length ? d.days[x.at(-1)][2] : null; };
-  const st = past.map(k => D(d, k).steps), kc = past.map(k => D(d, k).kcal).filter(Boolean), pr = past.map(k => D(d, k).p).filter(Boolean);
-  const wosW = (d.wos || []).filter(w => ks.includes(key(new Date(w.t)))), ww = past.filter(k => D(d, k).weight), w0 = ww.length ? (prevW(ww[0]) ?? D(d, ww[0]).weight) : null, wdf = ww.length && w0 != null ? D(d, ww.at(-1)).weight - w0 : null;
-  const b = new Date(a); b.setDate(a.getDate() + 6);
-  const lbl = ST.hw === 0 ? 'Cette semaine' : ST.hw === 1 ? 'Semaine passée' : `${a.getDate()} ${MOIS[a.getMonth()]} – ${b.getDate()} ${MOIS[b.getMonth()]} ${b.getFullYear()}`;
-  const day = k => { const x = D(d, k), hasW = wosW.some(w => key(new Date(w.t)) === k), pw = x.weight ? prevW(k) : null, dk = pw != null ? x.weight - pw : null;
-    const c = k > T ? '#5E5E6C' : x.off ? '#8E8E9E' : hasW || x.wo === 1 ? '#7896FF' : x.wo === 0 ? '#FF5C70' : x.steps >= G.steps ? 'var(--acc)' : '#5E5E6C';
+  const T = today(), G = d.goals, m0 = parseKey(monday(T)), ks0 = Object.keys(d.days || {}).sort(), first = ks0.length ? parseKey(ks0[0]) : m0;
+  const N = Math.max(2, Math.min(52, Math.ceil((m0 - first) / (7 * 864e5)) + 1));
+  const wkS = o => { const a = new Date(m0); a.setDate(a.getDate() - o * 7); const ks = Array.from({ length: 7 }, (_, i) => { const x = new Date(a); x.setDate(a.getDate() + i); return key(x); }), xs = ks.filter(k => k <= T).map(k => D(d, k));
+    const b = new Date(a); b.setDate(a.getDate() + 6); const wv = xs.map(x => x.weight).filter(Boolean), kc = xs.map(x => x.kcal).filter(Boolean), pr = xs.map(x => x.p).filter(Boolean), st = xs.map(x => x.steps);
+    return { o, a, b, ks, st: avg(st), tot: sum(st), kc: kc.length ? avg(kc) : null, pr: pr.length ? avg(pr) : null, w: wv.length ? avg(wv) : null, nw: (d.wos || []).filter(w => ks.includes(key(new Date(w.t)))).length, ok: xs.filter(x => x.steps >= G.steps).length }; };
+  const W = Array.from({ length: N + 1 }, (_, o) => wkS(o)); if (ST.hw >= N) ST.hw = N - 1;
+  const hw = ST.hw, hc = ST.hc != null && ST.hc !== hw && ST.hc < N + 1 ? ST.hc : hw + 1, S = W[hw], C = W[hc];
+  const rng = s => `${s.a.getDate()}${s.a.getMonth() !== s.b.getMonth() ? ' ' + MOIS[s.a.getMonth()] : ''} – ${s.b.getDate()} ${MOIS[s.b.getMonth()]}${s.b.getFullYear() !== m0.getFullYear() ? ' ' + s.b.getFullYear() : ''}`;
+  const nm = o => o === 0 ? 'Cette semaine' : o === 1 ? 'Semaine passée' : `Semaine du ${W[o].a.getDate()} ${MOIS[W[o].a.getMonth()]}`;
+  const sg = v => Math.abs(v) < .05 ? '±' : v > 0 ? '+' : '−', wGood = G.target && S.w ? (G.target < S.w ? -1 : 1) : -1;
+  const tile = (l, c, v, pv, f, u, good) => { const df = v != null && pv != null ? v - pv : null, ok = df == null || !df ? '' : (df > 0) === (good > 0) ? 'up' : 'dn';
+    return `<div class="ht" style="--c:${c}"><small>${l}</small><b class="num">${v != null ? f(v) : '—'}<em>${v != null ? u : ''}</em></b><span class="${ok}">${df != null ? `${df > 0 ? '▲' : df < 0 ? '▼' : '='} ${sg(df)}${f(Math.abs(df))}${u}` : '<i>pas de comparaison</i>'}</span><s>${pv != null ? 'vs ' + f(pv) + u : ''}</s></div>`; };
+  const M = { steps: ['Pas', x => x.steps, 'var(--acc)'], kcal: ['Kcal', x => x.kcal, 'var(--cal)'], p: ['Protéines', x => x.p, 'var(--pro)'], weight: ['Poids', x => x.weight, 'var(--wgt)'] }, hm = M[ST.hm] ? ST.hm : 'steps', mf = M[hm][1];
+  const cv = S.ks.map(k => k <= T ? mf(D(d, k)) || 0 : 0), pv = C.ks.map(k => mf(D(d, k)) || 0), nz = [...cv, ...pv].filter(Boolean);
+  const lo = hm === 'weight' && nz.length ? Math.min(...nz) - .6 : 0, hi = Math.max(lo + 1, ...nz), H = v => v ? Math.max(4, (v - lo) / (hi - lo) * 100) : 0;
+  const lv = v => !v ? '' : hm === 'weight' ? f1(v) : v >= 10000 ? Math.round(v / 100) / 10 + 'k' : fmt(v);
+  const day = k => { const x = D(d, k), hasW = (d.wos || []).some(w => key(new Date(w.t)) === k);
+    const c = x.off ? '#8E8E9E' : hasW || x.wo === 1 ? '#7896FF' : x.wo === 0 ? '#FF5C70' : x.steps >= G.steps ? 'var(--acc)' : '#5E5E6C';
     const bdg = x.off ? ['Jour off', 'rgba(255,255,255,.08)', 'var(--mut)'] : hasW || x.wo === 1 ? ['Séance', 'rgba(120,150,255,.18)', '#9DB0FF'] : x.wo === 0 ? ['Manquée', 'rgba(255,92,112,.15)', '#FF8A99'] : x.steps >= G.steps ? ['Objectif', 'color-mix(in srgb,var(--acc) 20%,transparent)', 'var(--acc)'] : null;
-    return `<div class="dc ${k === sel ? 'sel' : ''} ${k > T ? 'fut' : ''}" data-k="${k}" style="--c:${c}"><div class="dd"><b class="num">${+k.slice(8)}</b><small>${dayLbl(k)}</small></div>
-      <div class="v st">${(() => { const pr = Math.min(1, x.steps / G.steps), C = 2 * Math.PI * 16; return `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="20" cy="20" r="16" fill="none" stroke="var(--acc)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pr)}"/></svg>`; })()}<div><small>Pas</small><b class="num">${fmt(x.steps)}</b></div></div>
+    return `<div class="dc dx" data-k="${k}" style="--c:${c}"><div class="dd"><b class="num">${+k.slice(8)}</b><small>${dayLbl(k)}</small></div>
+      <div class="v st">${(() => { const r = Math.min(1, x.steps / G.steps), L = 2 * Math.PI * 16; return `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="20" cy="20" r="16" fill="none" stroke="var(--acc)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - r)}"/></svg>`; })()}<div><small>Pas</small><b class="num">${fmt(x.steps)}</b></div></div>
       <div class="v"><small>Kcal</small><b class="num" style="${x.kcal > G.kcal * 1.05 ? 'color:var(--bad)' : ''}">${x.kcal ? fmt(x.kcal) : '—'}</b><span class="mini"><s style="width:${Math.min(100, x.kcal / G.kcal * 100)}%;background:var(--cal)"></s></span></div>
       <div class="v"><small>Prot.</small><b class="num" style="${G.protein && x.p >= G.protein ? 'color:var(--pro)' : ''}">${x.p ? x.p + ' g' : '—'}</b><span class="mini"><s style="width:${Math.min(100, x.p / (G.protein || 100) * 100)}%;background:var(--pro)"></s></span></div>
-      <div class="v"><small>Poids</small><b class="num">${x.weight ? f1(x.weight) : '—'}</b>${dk != null ? ` <span style="font-size:11px" class="${dk > 0 ? 'dn' : dk < 0 ? 'up' : ''}">${dk > 0 ? '+' : dk < 0 ? '−' : '±'}${f1(Math.abs(dk))}</span>` : ''}</div>
+      <div class="v"><small>Poids</small><b class="num">${x.weight ? f1(x.weight) : '—'}</b></div>
       ${bdg ? `<span class="bdg" style="background:${bdg[1]};color:${bdg[2]}">${bdg[0]}</span>` : '<span></span>'}</div>`; };
-  const lst = ks.filter(k => k <= T).reverse();
-  return `<div class="row" style="grid-template-columns:1.55fr 1fr;height:100%">
-    <div class="card fx"><div class="hdr2"><div class="lab">Historique</div><div class="pnav"><button class="arr" id="hwP">${ARR(0)}</button><b>${lbl}</b><button class="arr" id="hwN" ${ST.hw ? '' : 'disabled'}>${ARR(1)}</button></div></div>
-      <div class="wsum"><div style="--c:var(--acc)"><small>Pas / jour</small><b class="num">${fmt(avg(st))}</b></div><div style="--c:var(--acc2)"><small>Total</small><b class="num">${fmt(sum(st))}</b></div>
-        <div style="--c:#7896FF"><small>Séances</small><b class="num">${wosW.length}</b></div><div style="--c:var(--cal)"><small>Kcal / jour</small><b class="num">${kc.length ? fmt(avg(kc)) : '—'}</b></div>
-        <div style="--c:var(--wgt)"><small>Poids</small><b class="num ${wdf > 0 ? 'dn' : wdf < 0 ? 'up' : ''}">${wdf == null ? '—' : (wdf > 0 ? '+' : wdf < 0 ? '−' : '±') + f1(Math.abs(wdf)) + ' kg'}</b></div></div>
-      <div class="days">${lst.map(day).join('')}</div></div>
-    <div class="card fx"><div class="lab">Détail du jour</div><div class="scroll">${dayDetail(d, sel)}</div></div></div>`;
+  return `<div class="row hrow">
+    <div class="card fx" data-nox style="--g:var(--wgt)"><div class="lab">Semaines</div><div class="scroll"><div class="wkl">${W.slice(0, N).map(s => { const p = W[s.o + 1], dw = s.w != null && p && p.w != null ? s.w - p.w : null;
+      return `<div class="wkc ${s.o === hw ? 'on' : ''} ${s.o === hc ? 'cmp' : ''}" data-wo="${s.o}"><div class="h"><div><b>${s.o < 2 ? nm(s.o) : rng(s)}</b><small>${s.o < 2 ? rng(s) : s.a.getFullYear()}</small></div>${s.o === hc ? '<span class="vt">comparée</span>' : s.o !== hw ? `<button class="vs" data-vs="${s.o}" data-t="Comparer avec cette semaine">vs</button>` : ''}</div>
+        <div class="w"><b class="num">${s.w != null ? f1(s.w) : '—'}<small>kg · moy.</small></b>${dw != null ? `<em class="${dw * wGood > 0 ? 'up' : dw ? 'dn' : ''}">${sg(dw)}${f1(Math.abs(dw))}</em>` : ''}</div>
+        <div class="m"><span>${fmt(s.st)} pas/j</span><span>${s.nw} séance${s.nw > 1 ? 's' : ''}</span><span class="dots">${s.ks.map(k => `<i class="${k > T ? 'f' : D(d, k).steps >= G.steps ? 'ok' : ''}"></i>`).join('')}</span></div></div>`; }).join('')}</div></div></div>
+    <div class="hcol">
+      <div class="card hsum"><div class="hdr2"><div class="pnav"><button class="arr" id="hwP" ${hw >= N - 1 ? 'disabled' : ''}>${ARR(0)}</button><div class="hn"><b>${nm(hw)}</b><small>${rng(S)}</small></div><button class="arr" id="hwN" ${hw ? '' : 'disabled'}>${ARR(1)}</button></div>
+        <label class="hcs"><small>comparer avec</small><select class="sel2" id="hcS">${W.map(s => s.o === hw ? '' : `<option value="${s.o}" ${s.o === hc ? 'selected' : ''}>${s.o < 2 ? nm(s.o) : rng(s)}</option>`).join('')}</select></label></div>
+        <div class="htl">${tile('Poids moy.', 'var(--wgt)', S.w, C.w, f1, ' kg', wGood)}${tile('Pas / jour', 'var(--acc)', S.st, C.st, fmt, '', 1)}${tile('Total pas', 'var(--acc2)', S.tot, C.tot, fmt, '', 1)}${tile('Kcal / jour', 'var(--cal)', S.kc, C.kc, fmt, '', -1)}${tile('Prot. / jour', 'var(--pro)', S.pr, C.pr, fmt, ' g', 1)}${tile('Séances', '#7896FF', S.nw, C.nw, fmt, '', 1)}</div>
+        <div class="hdr2" style="margin:14px 0 6px"><div class="hlg"><span><i style="background:${M[hm][2]}"></i>${nm(hw)}</span><span><i class="g"></i>${hc < 2 ? nm(hc) : rng(C)}</span></div><div class="seg" id="hmS">${Object.entries(M).map(([k, v]) => `<button data-m="${k}" class="${hm === k ? 'on' : ''}">${v[0]}</button>`).join('')}</div></div>
+        <div class="cmpc" style="--mc:${M[hm][2]}">${S.ks.map((k, i) => `<div class="${k === T ? 'now' : ''}"><div class="bw"><i class="p" style="height:${H(pv[i])}%" data-t="${dShort(C.ks[i])} · ${lv(pv[i]) || '—'}"></i><i class="c" style="height:${H(cv[i])}%" data-t="${dShort(k)} · ${lv(cv[i]) || '—'}"><b class="num">${lv(cv[i])}</b></i></div><span>${dayLbl(k).toUpperCase()}</span></div>`).join('')}</div></div>
+      <div class="card fx" data-nox><div class="lab">Jours · cliquer pour le détail</div><div class="scroll"><div class="days">${S.ks.filter(k => k <= T).reverse().map(day).join('') || '<div class="empty">Aucun jour</div>'}</div></div></div></div></div>`;
 }
 
 function pGym(d) {
@@ -250,12 +262,12 @@ function pGym(d) {
   const wn = VB.map(([a, b]) => wos.filter(w => w.t >= a && w.t < b).length), wavg = avg(wv.filter(Boolean)), hN = ST.gvm === 'day' ? 7 : ST.gvm === 'month' ? 3 : 4, l4 = sum(wv.slice(-hN)), p4 = sum(wv.slice(-2 * hN, -hN));
   CH.gv = el => bars(el, { id: 'gv', vals: wv, labels: VB.map((x, i) => ST.gvm === 'day' ? (VB.length <= 10 || i % 2 === 0 ? x[2] : '') : ST.gvm === 'month' ? x[2] : i % 2 ? '' : x[2]), hi: i => i === VB.length - 1, vlab: true, avgLine: wavg || null, dim: false, tip: i => `${ST.gvm === 'week' ? 'Semaine du ' : ''}${VB[i][2]} · <b>${fmt(wv[i])} kg</b> · ${wn[i]} séance${wn[i] > 1 ? 's' : ''}` });
   const cats = {}; wos.filter(w => w.t >= Date.now() - 30 * 864e5).forEach(w => (w.ex || []).forEach(e => { const c = e[1] || 'Autre'; cats[c] = (cats[c] || 0) + (e[2] || []).length; }));
-  const cl = Object.entries(cats).sort((a, b) => b[1] - a[1]).slice(0, 7), cmx = Math.max(1, ...cl.map(c => c[1]));
+  const cl = Object.entries(cats).sort((a, b) => b[1] - a[1]), cmx = Math.max(1, ...cl.map(c => c[1]));
   const exs = {}; wos.forEach(w => (w.ex || []).forEach(e => { const z = e[2] || []; if (!z.length) return; const bs = z.reduce((b, x) => x[0] > b[0] || (x[0] === b[0] && x[1] > b[1]) ? x : b, z[0]);
     (exs[e[0]] = exs[e[0]] || []).push({ t: w.t, kg: bs[0], rp: bs[1], mr: Math.max(...z.map(x => x[1])), vol: sum(z.map(x => x[0] * x[1])), e1: Math.max(...z.map(x => x[0] * (1 + x[1] / 30))), n: z.length }); }));
   const hid = hiddenEx(), old = n => Math.max(...exs[n].map(p => p.t)) < Date.now() - 60 * 864e5, exAll = Object.keys(exs).sort((a, b) => exs[b].length - exs[a].length), nOld = exAll.filter(n => !hid.includes(n) && old(n)).length, exNames = exAll.filter(n => !hid.includes(n) && (ST.oldEx || !old(n))); if (!exNames.includes(ST.ex)) ST.ex = exNames[0] || '';
   const top = {}; wos.filter(w => w.t >= Date.now() - 30 * 864e5).forEach(w => (w.ex || []).forEach(e => { const t = top[e[0]] = top[e[0]] || { c: e[1], n: 0, kg: 0 }; t.n += (e[2] || []).length; t.kg = Math.max(t.kg, ...(e[2] || []).map(x => x[0]), 0); }));
-  const topL = Object.entries(top).sort((a, b) => b[1].n - a[1].n).slice(0, 5);
+  const topL = Object.entries(top).sort((a, b) => b[1].n - a[1].n).slice(0, 15);
   const pts = (exs[ST.ex] || []).slice().sort((a, b) => a.t - b.t), rec = pts.length ? pts.reduce((b, p) => p.kg > b.kg || (p.kg === b.kg && p.rp > b.rp) ? p : b, pts[0]) : null;
   const PM = { kg: ['Charge', p => p.kg, 'kg'], rp: ['Reps', p => p.mr, 'reps'], vol: ['Volume', p => p.vol, 'kg'], e1: ['1RM', p => p.e1, 'kg'] }, pm = PM[ST.pm] ? ST.pm : 'kg';
   const psel = ST.pp != null && ST.pp < pts.length && ST.ppEx === ST.ex ? ST.pp : pts.length - 1, sp = pts[psel];
@@ -270,7 +282,7 @@ function pGym(d) {
     <div class="card fx" style="--g:#7896FF">${sel ? `<div class="hdr2"><div class="dt" style="margin:0">${esc(sel.n)}</div><span class="tag">${new Date(sel.t).toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>
       <div class="kv" style="grid-template-columns:repeat(3,1fr);margin-bottom:10px"><div><small>Durée</small><b class="num">${sel.m} min</b></div><div><small>Séries</small><b class="num">${nsets(sel)}</b></div><div><small>Volume</small><b class="num">${fmt(wVol(sel))} kg</b></div></div>
       <div class="scroll"><div class="exl">${(sel.ex || []).map(e => `<div class="exr"><div class="t"><i style="background:${catColor(e[1] || e[0])}"></i>${esc(e[0])}<span>${esc(e[1] || '')}</span></div><div class="sets">${(e[2] || []).map(s => `<span>${s[0] ? f1(s[0]).replace(',0', '') + ' kg × ' : ''}${s[1]}</span>`).join('') || '<span>—</span>'}</div></div>`).join('') || '<div class="empty">Détail des exercices indisponible</div>'}</div></div>` : '<div class="empty">Aucune séance</div>'}</div>
-    <div class="card fx"><div class="lab">Séries par muscle · 30 j</div><div class="hb">${cl.slice(0, 6).map(([c, x]) => `<div><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c)}</span><i><s style="width:${x / cmx * 100}%;background:${catColor(c)}"></s></i><b class="num">${x}</b></div>`).join('') || '<div class="empty">Pas de données</div>'}</div>
+    <div class="card fx"><div class="lab">Séries par muscle · 30 j</div><div class="hb">${cl.map(([c, x], i) => `<div class="${i > 5 ? 'xo' : ''}"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c)}</span><i><s style="width:${x / cmx * 100}%;background:${catColor(c)}"></s></i><b class="num">${x}</b></div>`).join('') || '<div class="empty">Pas de données</div>'}</div>
       <div class="sep"></div><div class="lab" style="margin-bottom:4px">Exercices les plus faits · 30 j</div><div class="scroll"><div class="tex">${topL.map(([n, t]) => `<div><i style="background:${catColor(t.c || n)}"></i><span>${esc(n)}</span><small>${t.n} séries</small><b class="num">${t.kg ? f1(t.kg).replace(',0', '') + ' kg' : '—'}</b></div>`).join('') || '<div class="empty">Pas de données</div>'}</div></div></div></div>
   <div class="row" style="grid-template-columns:1fr 1fr">
     <div class="card fx" style="--g:#B88CFF"><div class="hdr2"><div class="lab">Volume</div><div style="display:flex;gap:8px;align-items:center"><div class="seg" id="gvm">${[['day', 'Jour'], ['week', 'Semaine'], ['month', 'Mois']].map(([k, l]) => `<button data-m="${k}" class="${ST.gvm === k ? 'on' : ''}">${l}</button>`).join('')}</div><span class="tag">moy. ${wavg >= 1000 ? f1(wavg / 1000) + ' t' : fmt(wavg) + ' kg'}</span><span class="tag ${l4 >= p4 ? 'ok' : 'no'}" data-t="Période récente vs précédente">${p4 ? (l4 >= p4 ? '+' : '−') + Math.abs(Math.round((l4 - p4) / p4 * 100)) + ' %' : '—'}</span></div></div><div class="ch" data-ch="gv"></div></div>
@@ -397,7 +409,23 @@ function render(anim) {
   $$('#page .card').forEach(c => { if (!c.classList.contains('glow') && !c.style.getPropertyValue('--g')) c.style.setProperty('--g', TC[ti++ % TC.length]); });
   stepNotif();
   drawCharts(); bind();
+  $$('#page .card').forEach(c => { const s = c.querySelector('.scroll'); if (!s || c.hasAttribute('data-nox') || c.querySelector('#cMsgs')) return;
+    if (s.scrollHeight > s.clientHeight + 6 || c.querySelector('.xo')) { c.insertAdjacentHTML('beforeend', '<button class="xmore"><span><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Agrandir</span></button>'); c.querySelector('.xmore').onclick = () => openX(c, c); } });
 }
+function openX(src, from) {
+  closeX(true); let html = src; if (typeof src !== 'string') { const x = src.cloneNode(true); x.querySelectorAll('.xmore').forEach(e => e.remove()); x.querySelectorAll('[id]').forEach(e => e.removeAttribute('id')); html = x.innerHTML; }
+  const ov = document.createElement('div'); ov.className = 'xov'; ov.innerHTML = `<div class="card xcard"><button class="xcl" data-t="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${html}</div>`;
+  document.body.appendChild(ov); const c = ov.querySelector('.xcard'); if (from) c.style.setProperty('--g', getComputedStyle(from).getPropertyValue('--g'));
+  const r2 = c.getBoundingClientRect(), r1 = from && from.getBoundingClientRect();
+  ov._tf = r1 ? `translate(${r1.left + r1.width / 2 - r2.left - r2.width / 2}px,${r1.top + r1.height / 2 - r2.top - r2.height / 2}px) scale(${r1.width / r2.width},${r1.height / r2.height})` : 'scale(.92)';
+  c.animate([{ transform: ov._tf, opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.2,.85,.25,1)' });
+  ov.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260 });
+  ov.onclick = e => { if (e.target === ov || e.target.closest('.xcl')) closeX(); };
+  ov.querySelectorAll('[data-wi]').forEach(b => b.onclick = () => { ST.wsel = +b.dataset.wi; closeX(true); render(); });
+}
+function closeX(now) { const ov = $('.xov'); if (!ov || ov._cl) return; if (now) return ov.remove(); ov._cl = 1;
+  ov.querySelector('.xcard').animate([{ transform: 'none', opacity: 1 }, { transform: ov._tf, opacity: 0 }], { duration: 280, easing: 'cubic-bezier(.4,0,.7,1)', fill: 'forwards' });
+  ov.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 280, fill: 'forwards' }).onfinish = () => ov.remove(); }
 const drawCharts = () => $$('[data-ch]').forEach(el => CH[el.dataset.ch] && CH[el.dataset.ch](el));
 function bind() {
   if ($('#cGo')) { const ci = $('#cIn'); $('#cGo').onclick = () => coachAsk(ci.value); ci.addEventListener('keydown', e => { if (e.key === 'Enter') coachAsk(ci.value); }); $$('[data-cq]').forEach(b => b.onclick = () => coachAsk(b.dataset.cq)); $('#cClr').onclick = () => { CM = []; cSave(); render(); }; $('#cMemB').onclick = () => { cMemOpen = !cMemOpen; render(); }; $$('[data-mi]').forEach(b => b.onclick = () => { cMemPush(cMem().filter((_, i) => i !== +b.dataset.mi)); render(); }); const ms = $('#cMsgs'); ms.scrollTop = ms.scrollHeight; }
@@ -413,7 +441,12 @@ function bind() {
   if ($('#exHide')) $('#exHide').onclick = () => { localStorage.setItem('focus.hiddenEx', JSON.stringify([...hiddenEx(), ST.ex])); ST.ex = ''; render(); };
   if ($('#exShow')) $('#exShow').onclick = () => { localStorage.removeItem('focus.hiddenEx'); render(); };
   $$('.dr[data-k],.dc[data-k]').forEach(b => b.onclick = () => { ST.csel = b.dataset.k; render(); });
-  if ($('#hwP')) { $('#hwP').onclick = () => { ST.hw++; ST.csel = null; render(); }; $('#hwN').onclick = () => { ST.hw = Math.max(0, ST.hw - 1); ST.csel = null; render(); }; }
+  if ($('#hwP')) { $('#hwP').onclick = () => { ST.hw++; ST.hc = null; render(); }; $('#hwN').onclick = () => { ST.hw = Math.max(0, ST.hw - 1); ST.hc = null; render(); }; }
+  $$('[data-wo]').forEach(b => b.onclick = () => { ST.hw = +b.dataset.wo; ST.hc = null; render(); });
+  $$('[data-vs]').forEach(b => b.onclick = e => { e.stopPropagation(); ST.hc = +b.dataset.vs; render(); });
+  if ($('#hcS')) $('#hcS').onchange = e => { ST.hc = +e.target.value; render(); };
+  $$('#hmS button').forEach(b => b.onclick = () => { ST.hm = b.dataset.m; render(); });
+  $$('.dc.dx').forEach(b => b.onclick = () => openX(dayDetail(DATA, b.dataset.k), b));
   $$('[data-eye]').forEach(b => b.onclick = () => { ST.showV = !ST.showV; try { localStorage.setItem('focus.showV', ST.showV ? '1' : '0'); } catch (e) {} render(); });
   if ($('#eyeV')) $('#eyeV').onclick = () => { ST.showV = !ST.showV; try { localStorage.setItem('focus.showV', ST.showV ? '1' : '0'); } catch (e) {} render(); };
   $$('#gvm button').forEach(b => b.onclick = () => { ST.gvm = b.dataset.m; render(); });
@@ -538,7 +571,7 @@ $('#refBtn').onclick = async () => { const b = $('#refBtn'); if (b.classList.con
 $('#av').onclick = async () => { CFG = await fapi.pickPhoto(); side(); };
 $('#wddB').onclick = e => { e.stopPropagation(); $('#wdd').classList.toggle('open'); };
 addEventListener('click', e => { if (!e.target.closest('#wdd')) $('#wdd').classList.remove('open'); });
-addEventListener('keydown', e => { if (e.key === 'Escape') $('#ov').classList.add('hidden'); if (e.altKey && e.key === 'ArrowLeft') goBack(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') { $('#ov').classList.add('hidden'); closeX(); } if (e.altKey && e.key === 'ArrowLeft') goBack(); });
 let rzT; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(drawCharts, 80); });
 const tip = document.createElement('div'); tip.className = 'tip'; document.body.appendChild(tip);
 addEventListener('mousemove', e => { const t = e.target.closest && e.target.closest('[data-t]'); if (!t) { tip.classList.remove('on'); return; }
