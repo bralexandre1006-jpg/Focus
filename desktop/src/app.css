@@ -517,3 +517,11 @@ nav button.on{background:linear-gradient(120deg,var(--acc),color-mix(in srgb,var
 .dc:hover{background:linear-gradient(100deg,color-mix(in srgb,var(--c) 10%,transparent),rgba(255,255,255,.03))!important}
 .scroll{scrollbar-color:color-mix(in srgb,var(--g) 35%,#2a2a2f) transparent}
 ::selection{background:color-mix(in srgb,var(--acc) 40%,transparent)}
+/* sans néon */
+nav button.on,.seg button.on,.wkc.on{box-shadow:none!important}
+.lab::before{box-shadow:none}
+.card::before{background:radial-gradient(circle,color-mix(in srgb,var(--g) 14%,transparent),transparent 68%)}
+.card:hover{box-shadow:0 10px 30px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)}
+.card.s .big{background:none;color:var(--txt)}.card.s .big small{-webkit-text-fill-color:initial}
+.cmpc i.c{box-shadow:none}
+.ch path[filter]{display:none}.ds b.win{text-shadow:none}
