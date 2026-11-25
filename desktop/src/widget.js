@@ -7,14 +7,15 @@ const arc = (p, sz, sw, grad, glow = true) => { const r = (sz - sw) / 2, C = 2 *
   return `<svg viewBox="0 0 ${sz} ${sz}"><defs><linearGradient id="${grad}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--acc)"/><stop offset="1" stop-color="var(--acc2)"/></linearGradient></defs>
     <circle cx="${sz / 2}" cy="${sz / 2}" r="${r}" stroke="rgba(255,255,255,.14)" stroke-width="${sw}"/>
     <circle cx="${sz / 2}" cy="${sz / 2}" r="${r}" stroke="url(#${grad})" stroke-width="${sw}" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - Math.min(1, p))}" style="${glow ? 'filter:drop-shadow(0 0 7px color-mix(in srgb,var(--acc) 70%,transparent));' : ''}transition:stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)"/></svg>`; };
+const kG = (d, k) => d.goals.kcal + Math.max(0, Math.round(((D(d, k).steps || 0) - d.goals.steps) * (d.goals.kpp || 0)));
 const R = {
   steps: d => { const G = d.goals, s = D(d, today()).steps, p = s / G.steps;
     return `${T('Pas du jour')}<div class="sr"><div class="ring">${arc(p, 128, 11, 'a1')}<div class="c"><b class="big num">${fmt(s)}</b><small>${p >= 1 ? 'Objectif atteint' : 'sur ' + fmt(G.steps)}</small></div></div>
       <div class="sub">≈ ${f1(s * .00075)} km · ${fmt(s * .04)} kcal</div></div>`; },
-  kcal: d => { const G = d.goals, t = D(d, today()), p = t.kcal / G.kcal, left = G.kcal - t.kcal;
+  kcal: d => { const G = d.goals, t = D(d, today()), KG = kG(d, today()), p = t.kcal / KG, left = KG - t.kcal;
     const m = (l, v, gl, c) => `<div>${l}<span class="bar"><i style="width:${Math.min(100, v / gl * 100)}%;background:${c}"></i></span><b class="num">${fmt(v)}</b></div>`;
     return `${T('Calories')}<div class="kc"><div class="mini">${arc(p, 82, 9, 'a2', false).replace(/var\(--acc\)/, '#FFC44A').replace(/var\(--acc2\)/, '#FF6B4A')}<b class="num">${fmt(t.kcal)}</b></div>
-      <div><span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)}</span><div class="sub">sur ${fmt(G.kcal)} kcal</div></div></div>
+      <div><span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)}</span><div class="sub">sur ${fmt(KG)} kcal</div></div></div>
       <div class="macs">${m('Prot.', t.p, G.protein || 100, '#FF5C8A')}${m('Gluc.', t.c, G.kcal * .45 / 4, '#FFC44A')}${m('Lip.', t.f, G.kcal * .3 / 9, '#5AB8FF')}</div>`; },
   weight: d => { const G = d.goals, w = lastWeight(d), df = w && G.start ? w - G.start : null, p = G.start && G.target && w ? Math.max(0, Math.min(1, (G.start - w) / (G.start - G.target))) : 0;
     return `${T('Poids')}<div class="big num" style="font-size:42px;margin-top:22px">${w ? f1(w) : '—'}<small>kg</small></div>
@@ -27,12 +28,12 @@ const R = {
   streak: d => `${T('Série')}<div class="stq"><div class="fl"><svg viewBox="0 0 24 24">${FIRE}</svg></div><div class="big num" style="font-size:44px">${d.streak || 0}</div><div class="sub" style="margin:0">jour${d.streak > 1 ? 's' : ''} d'affilée</div></div>`,
   all: d => { const G = d.goals, t = D(d, today()), w = lastWeight(d), ks = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)), v = ks.map(k => D(d, k).steps), mx = Math.max(G.steps, ...v, 1), df = w && G.start ? w - G.start : null;
     const pw = G.start && G.target && w ? Math.max(0, Math.min(1, (G.start - w) / (G.start - G.target))) : 0, wo = (d.wos || [])[0], m = (l, x, gl, c) => `<div>${l}<span class="bar"><i style="width:${Math.min(100, x / gl * 100)}%;background:${c}"></i></span><b class="num">${fmt(x)} g</b></div>`;
-    const left = G.kcal - t.kcal, wkAvg = v.reduce((a, b) => a + b, 0) / 7;
+    const KG = kG(d, today()), left = KG - t.kcal, wkAvg = v.reduce((a, b) => a + b, 0) / 7;
     return `<div class="ban">
       <section class="s1"><div class="ring" style="width:170px;height:170px">${arc(t.steps / G.steps, 170, 13, 'a3')}<div class="c"><b class="big num" style="font-size:34px">${fmt(t.steps)}</b><small>sur ${fmt(G.steps)} pas</small></div></div>
         <div class="sub" style="margin-top:6px">≈ ${f1(t.steps * .00075)} km · ${fmt(t.steps * .04)} kcal</div></section>
-      <section><div class="t"><i style="background:#FF6B4A;box-shadow:0 0 8px #FF6B4A"></i>Calories</div><div class="big num" style="font-size:40px;margin-top:10px">${fmt(t.kcal)}<small>/ ${fmt(G.kcal)}</small></div>
-        <div class="bar" style="margin:10px 0 4px"><i style="width:${Math.min(100, t.kcal / G.kcal * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></div><span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)} kcal</span>
+      <section><div class="t"><i style="background:#FF6B4A;box-shadow:0 0 8px #FF6B4A"></i>Calories</div><div class="big num" style="font-size:40px;margin-top:10px">${fmt(t.kcal)}<small>/ ${fmt(KG)}</small></div>
+        <div class="bar" style="margin:10px 0 4px"><i style="width:${Math.min(100, t.kcal / KG * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></div><span class="pill ${left >= 0 ? 'ok' : 'bad'}">${left >= 0 ? 'reste ' + fmt(left) : '+' + fmt(-left)} kcal</span>
         <div class="mline">P <b>${fmt(t.p)}</b> · G <b>${fmt(t.c)}</b> · L <b>${fmt(t.f)}</b> g</div>
         <div class="macs" style="margin-top:12px">${m('Prot.', t.p, G.protein || 100, '#FF5C8A')}${m('Gluc.', t.c, G.kcal * .45 / 4, '#FFC44A')}${m('Lip.', t.f, G.kcal * .3 / 9, '#5AB8FF')}</div></section>
       <section class="wide"><div class="wh"><div class="t"><i style="background:#7C8CFF;box-shadow:0 0 8px #7C8CFF"></i>Pas · 7 jours</div><span class="pill">moy. <b class="num" style="margin-left:3px">${fmt(wkAvg)}</b></span></div>

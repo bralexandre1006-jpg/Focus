@@ -91,7 +91,7 @@ public class FocusWidget extends AppWidgetProvider {
         boolean fresh = today.equals(p.getString("date", ""));
         int[] r = new int[60];
         float kpp = p.getFloat("kpp", 0.04f);
-        r[0] = fresh ? p.getInt("steps", 0) : 0; r[1] = Math.max(1, p.getInt("stepGoal", 8000)); r[2] = fresh ? p.getInt("kcal", 0) : 0; r[3] = Math.max(1, p.getInt("kcalGoal", 2000));
+        r[0] = fresh ? p.getInt("steps", 0) : 0; r[1] = Math.max(1, p.getInt("stepGoal", 8000)); r[2] = fresh ? p.getInt("kcal", 0) : 0; r[3] = Math.max(1, p.getInt("kcalGoal", 2000)) + Math.max(0, Math.round((r[0] - r[1]) * kpp));
         java.util.Calendar cal = java.util.Calendar.getInstance(); r[4] = (cal.get(java.util.Calendar.DAY_OF_WEEK) + 5) % 7;
         int[] s7 = parse7(p.getString("s7", "")), k7 = parse7(p.getString("k7", ""));
         java.util.Calendar mon = java.util.Calendar.getInstance(); mon.add(java.util.Calendar.DAY_OF_YEAR, -r[4]);

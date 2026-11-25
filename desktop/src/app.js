@@ -9,6 +9,7 @@ const ago = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 
 const dayLbl = k => parseKey(k).toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '');
 const dShort = k => parseKey(k).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' }).replace('.', '');
 const dLong = k => { const s = parseKey(k).toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); return s[0].toUpperCase() + s.slice(1); };
+const kG = (d, k) => d.goals.kcal + Math.max(0, Math.round(((D(d, k).steps || 0) - d.goals.steps) * (d.goals.kpp || 0)));
 const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
 const sum = a => a.reduce((x, y) => x + y, 0);
 const mavg = (a, n = 7) => a.map((_, i) => { const w = a.slice(Math.max(0, i - n + 1), i + 1).filter(x => x); return w.length ? avg(w) : null; });
@@ -100,7 +101,7 @@ function dayDetail(d, k, noMeals) {
   return `<div class="dt">${dLong(k)}</div>
   <div class="dhero"><div class="ring" style="width:92px;height:92px">${ring(x.steps / G.steps, 'var(--acc)', 92, 9)}<b class="num" style="font-size:15px">${Math.round(x.steps / G.steps * 100)} %</b></div>
     <div style="flex:1;min-width:0"><small>Pas</small><b class="num big" style="font-size:28px">${fmt(x.steps)}</b><div class="sub" style="margin-top:2px">${x.steps >= G.steps ? '<span class="up">Objectif atteint</span>' : `${fmt(G.steps - x.steps)} pas sous l'objectif`} · ${f1(x.steps * .00075)} km</div></div></div>
-  <div class="kv" style="margin-top:10px"><div style="--c:var(--cal)"><small>Calories</small><b class="num">${x.kcal ? fmt(x.kcal) : '—'}</b><span class="pbar" style="display:block;margin-top:6px"><i style="width:${Math.min(100, x.kcal / G.kcal * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></span></div>
+  <div class="kv" style="margin-top:10px"><div style="--c:var(--cal)"><small>Calories</small><b class="num">${x.kcal ? fmt(x.kcal) : '—'}</b><span class="pbar" style="display:block;margin-top:6px"><i style="width:${Math.min(100, x.kcal / kG(d, k) * 100)}%;background:linear-gradient(90deg,#FFC44A,#FF6B4A)"></i></span></div>
     <div><small>Poids</small><b class="num">${w ? f1(w) + ' kg' : '—'}</b>${w && pw ? ` <span class="${w - pw > 0 ? 'dn' : 'up'}" style="font-size:12px">${w - pw > 0 ? '+' : w < pw ? '−' : '±'}${f1(Math.abs(w - pw))}</span>` : ''}</div></div>
   ${x.kcal ? `<div class="mbs">${mb('Protéines', x.p, G.protein || 100, 'var(--pro)')}${mb('Glucides', x.c, G.kcal * .45 / 4, 'var(--carb)')}${mb('Lipides', x.f, G.kcal * .3 / 9, 'var(--fat)')}</div>` : ''}
   ${x.off ? '<div style="margin-top:10px"><span class="tag">Jour off</span></div>' : ''}
@@ -122,7 +123,7 @@ function pHome(d) {
   const wos = (d.wos || []).slice(0, 6);
   return `<div class="row" style="grid-template-columns:repeat(4,1fr)">
     <div class="card s glow"><div class="lab">Pas du jour</div><div class="big num">${fmt(t.steps)}<small>/ ${fmt(G.steps)}</small></div><div class="sub">${trend(t.steps, y.steps)} vs hier</div><div class="pbar"><i style="width:${Math.min(100, t.steps / G.steps * 100)}%"></i></div></div>
-    <div class="card s" style="--g:var(--cal)"><div class="lab">Calories</div><div class="big num">${fmt(t.kcal)}<small>/ ${fmt(G.kcal)} kcal</small></div><div class="macs">${mac('Protéines', t.p, G.protein || 100, 'var(--pro)')}${mac('Glucides', t.c, G.kcal * .45 / 4, 'var(--carb)')}${mac('Lipides', t.f, G.kcal * .3 / 9, 'var(--fat)')}</div></div>
+    <div class="card s" style="--g:var(--cal)"><div class="lab">Calories</div><div class="big num">${fmt(t.kcal)}<small>/ ${fmt(kG(d, today()))} kcal</small></div><div class="macs">${mac('Protéines', t.p, G.protein || 100, 'var(--pro)')}${mac('Glucides', t.c, G.kcal * .45 / 4, 'var(--carb)')}${mac('Lipides', t.f, G.kcal * .3 / 9, 'var(--fat)')}</div></div>
     <div class="card s" style="--g:var(--wgt)"><div class="lab">Poids</div><div class="big num">${lw ? f1(lw) : '—'}<small>kg</small></div><div class="sub">${wd != null ? `<span class="${wd <= 0 ? 'up' : 'dn'}">${wd <= 0 ? '−' : '+'}${f1(Math.abs(wd))} kg</span> depuis le départ` : 'Aucune pesée'}</div><div class="pbar"><i style="width:${wp * 100}%;background:linear-gradient(90deg,var(--wgt),var(--acc))"></i></div></div>
     <div class="card s" style="--g:#FF8A3D"><div class="lab">Série</div><div class="big num" style="display:flex;align-items:center;gap:8px"><svg class="flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>${d.streak || 0}<small>jour${d.streak > 1 ? 's' : ''}</small></div><div class="sub">${fmt(d.total)} pas au total</div></div></div>
   <div class="row" style="grid-template-columns:2fr 1fr">
@@ -179,10 +180,10 @@ function pFood(d) {
   const sel = s.sel && P.ks.includes(s.sel) ? s.sel : (P.ks.includes(T) ? T : days.at(-1));
   CH.fb = el => bars(el, { id: 'fb', vals: v, colors: ['var(--pro)', 'var(--carb)', 'var(--fat)'], labels: P.labels, goal: G.kcal, sel: P.year ? null : P.ks.indexOf(sel),
     tip: i => `${P.year ? P.labels[i] + ' (moy.)' : dShort(P.ks[i])} · <b>${fmt(P.year ? sum(v[i]) : D(d, P.ks[i]).kcal)}</b> kcal`, pick: i => { if (P.year) { s.m = 'month'; s.o = (new Date().getFullYear() - +P.title) * 12 + new Date().getMonth() - i; } else s.sel = P.ks[i]; render(); } });
-  const kc = days.map(k => D(d, k).kcal), pr = days.map(k => D(d, k).p), ok = kc.filter(x => x <= G.kcal * 1.05).length;
+  const kc = days.map(k => D(d, k).kcal), pr = days.map(k => D(d, k).p), ok = days.filter(k => D(d, k).kcal <= kG(d, k) * 1.05).length;
   const mp = avg(days.map(k => D(d, k).p)) * 4, mc = avg(days.map(k => D(d, k).c)) * 4, mf = avg(days.map(k => D(d, k).f)) * 9, mt = mp + mc + mf || 1;
   const rng = lastN(60), rv = rng.map(k => D(d, k).kcal), rm = mavg(rv);
-  CH.fl = el => bars(el, { id: 'fl', vals: rv, labels: rng.map((k, i) => i % 7 === 0 ? dShort(k) : ''), goal: G.kcal, goalC: '#FF8A4C', dim: true, hi: i => rv[i] && rv[i] <= G.kcal * 1.05, tip: i => `${dShort(rng[i])} · <b>${rv[i] ? fmt(rv[i]) + ' kcal' : 'rien noté'}</b>${rm[i] ? ` · moy. 7 j ${fmt(rm[i])}` : ''}` });
+  CH.fl = el => bars(el, { id: 'fl', vals: rv, labels: rng.map((k, i) => i % 7 === 0 ? dShort(k) : ''), goal: G.kcal, goalC: '#FF8A4C', dim: true, hi: i => rv[i] && rv[i] <= kG(d, rng[i]) * 1.05, tip: i => `${dShort(rng[i])} · <b>${rv[i] ? fmt(rv[i]) + ' kcal' : 'rien noté'}</b>${rm[i] ? ` · moy. 7 j ${fmt(rm[i])}` : ''}` });
   return `<div class="row" style="grid-template-columns:repeat(4,1fr)">
     <div class="card s" style="--g:var(--cal)"><div class="lab">Moyenne · ${P.title.toLowerCase()}</div><div class="big num">${fmt(avg(kc))}<small>kcal / jour</small></div><div class="sub">objectif ${fmt(G.kcal)}</div></div>
     <div class="card s" style="--g:var(--pro)"><div class="lab">Protéines</div><div class="big num">${fmt(avg(pr))}<small>g / jour</small></div><div class="sub">${G.protein ? `objectif atteint ${pr.filter(x => x >= G.protein).length} / ${days.length} j` : ''}</div></div>
@@ -233,7 +234,7 @@ function pHist(d) {
     const bdg = x.off ? ['Jour off', 'rgba(255,255,255,.08)', 'var(--mut)'] : hasW || x.wo === 1 ? ['Séance', 'rgba(120,150,255,.18)', '#9DB0FF'] : x.wo === 0 ? ['Manquée', 'rgba(255,92,112,.15)', '#FF8A99'] : x.steps >= G.steps ? ['Objectif', 'color-mix(in srgb,var(--acc) 20%,transparent)', 'var(--acc)'] : null;
     return `<div class="dc dx" data-k="${k}" style="--c:${c}"><div class="dd"><b class="num">${+k.slice(8)}</b><small>${dayLbl(k)}</small></div>
       <div class="v st">${(() => { const r = Math.min(1, x.steps / G.steps), L = 2 * Math.PI * 16; return `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="20" cy="20" r="16" fill="none" stroke="var(--acc)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - r)}"/></svg>`; })()}<div><small>Pas</small><b class="num">${fmt(x.steps)}</b></div></div>
-      <div class="v"><small>Kcal</small><b class="num" style="${x.kcal > G.kcal * 1.05 ? 'color:var(--bad)' : ''}">${x.kcal ? fmt(x.kcal) : '—'}</b><span class="mini"><s style="width:${Math.min(100, x.kcal / G.kcal * 100)}%;background:var(--cal)"></s></span></div>
+      <div class="v"><small>Kcal</small><b class="num" style="${x.kcal > kG(d, k) * 1.05 ? 'color:var(--bad)' : ''}">${x.kcal ? fmt(x.kcal) : '—'}</b><span class="mini"><s style="width:${Math.min(100, x.kcal / G.kcal * 100)}%;background:var(--cal)"></s></span></div>
       <div class="v"><small>Prot.</small><b class="num" style="${G.protein && x.p >= G.protein ? 'color:var(--pro)' : ''}">${x.p ? x.p + ' g' : '—'}</b><span class="mini"><s style="width:${Math.min(100, x.p / (G.protein || 100) * 100)}%;background:var(--pro)"></s></span></div>
       <div class="v"><small>Poids</small><b class="num">${x.weight ? f1(x.weight) : '—'}</b></div>
       ${bdg ? `<span class="bdg" style="background:${bdg[1]};color:${bdg[2]}">${bdg[0]}</span>` : '<span></span>'}</div>`; };
@@ -410,7 +411,7 @@ function render(anim) {
   stepNotif();
   drawCharts(); bind();
   $$('#page .card').forEach(c => { const s = c.querySelector('.scroll'); if (!s || c.hasAttribute('data-nox') || c.querySelector('#cMsgs')) return;
-    if (s.scrollHeight > s.clientHeight + 6 || c.querySelector('.xo')) { c.insertAdjacentHTML('beforeend', '<button class="xmore"><span><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Agrandir</span></button>'); c.querySelector('.xmore').onclick = () => openX(c, c); } });
+    if (s.scrollHeight > s.clientHeight + 6 || c.querySelector('.xo')) { c.insertAdjacentHTML('beforeend', '<button class="xmore" data-t="Agrandir"><span><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></button>'); c.querySelector('.xmore').onclick = () => openX(c, c); } });
 }
 function openX(src, from) {
   closeX(true); let html = src; if (typeof src !== 'string') { const x = src.cloneNode(true); x.querySelectorAll('.xmore').forEach(e => e.remove()); x.querySelectorAll('[id]').forEach(e => e.removeAttribute('id')); html = x.innerHTML; }
