@@ -4327,7 +4327,7 @@ const renderSettings = () => {
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
   $('#tRecap').classList.toggle('on', S.settings.recap !== false);
   $$('#pSex button').forEach(b => b.classList.toggle('on', b.dataset.x === (S.profile.sex || 'm')));
-  $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#tWoOne').classList.toggle('on', S.settings.woOne !== false); $('#tWoSets').classList.toggle('on', !!S.settings.woSets); $$('#tRestIn button').forEach(x => x.classList.toggle('on', x.dataset.v === (S.settings.restIn || 'ring'))); $('#tPerf').classList.toggle('on', !!S.settings.perf); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
+  $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#tWoOne').classList.toggle('on', S.settings.woOne !== false); $('#tWoSets').classList.toggle('on', !!S.settings.woSets); $$('#tRestIn button').forEach(x => x.classList.toggle('on', x.dataset.v === (S.settings.restIn || 'band'))); $('#tPerf').classList.toggle('on', !!S.settings.perf); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
   accInfo();
   renderRems(); renderProgSettings(); renderPedo();
 };
@@ -4748,7 +4748,7 @@ const woNav = (dir, top) => { const w = woCur(), body = $('#woBody'), nav = $('#
   const opt = !woEdit && S.settings.woOne !== false, one = opt && !woAll, n = w.ex.length, done = i => w.ex[i].sets.every(x => x.done);
   if (w.cur == null || w.cur >= n || w.cur < 0) { const f = w.ex.findIndex((_, i) => !done(i)); w.cur = f < 0 ? 0 : f; }
   body.classList.toggle('one', one); body.classList.toggle('all1', opt && woAll);
-  const wo = $('#wo'); wo.classList.toggle('one-m', one); wo.classList.toggle('sets-on', !!woEdit || !!S.settings.woSets); ['ring', 'band', 'bar'].forEach(v => wo.classList.toggle('rv-' + v, (S.settings.restIn || 'ring') === v));
+  const wo = $('#wo'); wo.classList.toggle('one-m', one); wo.classList.toggle('sets-on', !!woEdit || !!S.settings.woSets); ['ring', 'band', 'bar'].forEach(v => wo.classList.toggle('rv-' + v, (S.settings.restIn || 'band') === v));
   const tp = $('#woTop'); if (tp) { tp.innerHTML = opt && woAll ? `<button class="wone press" id="wOne"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>Revenir à un exercice à la fois</button>` : ''; if ($('#wOne')) $('#wOne').onclick = () => { woAll = false; woNav(0, true); sfx.tap(); buzz(); }; }
   wRestDraw();
   $$('#woBody .wex').forEach(b => { const sh = +b.dataset.e === w.cur; b.classList.toggle('sh', sh); if (sh && dir) { b.classList.remove('in-l', 'in-r'); void b.offsetWidth; b.classList.add(dir > 0 ? 'in-r' : 'in-l'); } });
