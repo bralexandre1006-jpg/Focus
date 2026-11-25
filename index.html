@@ -471,6 +471,7 @@ html.mono body{filter:grayscale(1)}
 .dim.on{opacity:1;pointer-events:auto}
 .sheet{position:fixed;left:10px;right:10px;bottom:calc(var(--sb) + 10px);background:var(--bg2);border-radius:30px;padding:24px 20px 20px;z-index:160;transform:translateY(120%);transition:transform .5s var(--spring)}
 .sheet.on{transform:none}
+.sheet:not(.on){visibility:hidden;transition:transform .5s var(--ease),visibility 0s .5s}
 .sheet h4{font-size:23px;font-weight:800;margin-bottom:8px}
 .sheet p{color:var(--mut);font-size:16px;margin-bottom:18px;line-height:1.4}
 .sheet .row{display:flex;gap:10px}
@@ -1812,6 +1813,15 @@ body.perf .wo-intro span{box-shadow:none!important}
 .wf-row{display:flex;gap:8px}.wf-c{flex:1;min-width:0;background:rgba(255,255,255,.04);border-radius:16px;padding:12px 14px}
 .wf-c small,.wf-new small{display:block;font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
 .wf-s{display:flex;flex-wrap:wrap;gap:6px}.wf-s span{font-size:15px;font-weight:800;padding:5px 9px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,transparent)}.wf-s i{font-style:normal;color:var(--mut);margin:0 3px;font-size:12px}
+.wo-b.one .wex.sh .wfill{display:flex!important;flex-direction:column;gap:10px;flex:1}
+.wf-evo{position:relative;flex:1;min-height:150px;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border-radius:16px;padding:12px 14px}
+.wf-evo small{font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.wf-eh{display:flex;justify-content:space-between;align-items:center}.wf-eh em{font-style:normal;font-size:12px;font-weight:800;padding:3px 8px;border-radius:8px;background:rgba(255,255,255,.06);color:var(--mut)}
+.wf-eh em.up{color:var(--ok);background:rgba(61,220,132,.12)}.wf-eh em.dn{color:var(--bad);background:rgba(255,77,106,.12)}
+.wf-evo svg{flex:1;width:100%;min-height:80px;margin-top:8px;display:block}
+.wf-dots{position:absolute;left:14px;right:14px;top:38px;bottom:34px;pointer-events:none}.wf-dots i{position:absolute;width:7px;height:7px;margin:-3.5px;border-radius:50%;background:var(--card);box-shadow:0 0 0 2px var(--c)}.wf-dots i.l{width:11px;height:11px;margin:-5.5px;background:var(--c)}
+.wf-ef{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px}.wf-ef b{color:var(--txt)}
+.wf-e0{justify-content:center;min-height:110px}.wf-e0 span{font-size:14px;color:var(--mut);margin-top:6px}
 .wf-n{display:block;text-align:left;min-height:84px;font:inherit;color:inherit}.wf-n span{display:block;font-size:15px;line-height:1.4;white-space:pre-wrap}.wf-n .ph{color:var(--mut)!important;font-size:14px;font-weight:600}
 .wf-g{flex:0 0 auto;min-width:40%;text-align:left}.wf-g b{display:block;font-size:22px;letter-spacing:-.03em;color:var(--c)}.wf-g b i{font-style:normal;font-size:13px;color:var(--mut)}.wf-g em{display:block;font-style:normal;font-size:11.5px;color:var(--mut);margin-top:3px}
 .wf-r{flex:0 0 auto;text-align:center}.wf-r b{font-size:24px;letter-spacing:-.03em;color:var(--c)}.wf-r em{font-style:normal;font-size:12px;color:var(--mut)}
@@ -4741,7 +4751,19 @@ const wGoal = (e, prev) => { const ok = (prev || []).filter(x => num(x.reps) > 0
   const up = hi && ok.every(x => +x.reps >= hi), step = kg >= 40 ? 2.5 : kg >= 10 ? 1 : 0.5;
   const t = up ? { kg: kg + step, r: lo || rp, d: `+${kgTxt(step)} kg` } : { kg, r: rp + 1, d: '+1 rép.' };
   return `<div class="wf-c wf-g"><small>Objectif du jour</small><b>${kgTxt(t.kg)}<i> kg × </i>${t.r}</b><em>${t.d} vs dernière fois</em></div>`; };
-const wFill = (e, prev) => `<div class="wf-row"><button class="wf-c wf-n" data-memo="1"><small>Notes</small>${e.memo ? `<span>${esc(e.memo)}</span>` : '<span class="ph">Touche pour ajouter une note</span>'}</button></div>`;
+const wEvo = e => { const k = exKey(e.name), cur = (woCur() || {}).id;
+  const pts = S.workouts.filter(w => w.id !== cur).map(w => { const x = w.ex.find(z => exKey(z.name) === k), ok = x && x.sets.filter(st => num(st.reps) > 0); if (!ok || !ok.length) return null;
+    const b = ok.reduce((m, st) => num(st.kg) > num(m.kg) || (num(st.kg) === num(m.kg) && +st.reps > +m.reps) ? st : m, ok[0]); return { t: w.start, kg: num(b.kg), r: +b.reps }; }).filter(Boolean).sort((a, b) => a.t - b.t).slice(-10);
+  if (pts.length < 2) return `<div class="wf-evo wf-e0"><small>Évolution</small><span>${pts.length ? 'Encore une séance et ta courbe apparaîtra ici.' : 'Ta courbe de progression apparaîtra ici après 2 séances.'}</span></div>`;
+  const W = 300, H = 100, lo = Math.min(...pts.map(p => p.kg)), hi = Math.max(...pts.map(p => p.kg)), rg = hi - lo || 1;
+  const xy = pts.map((p, i) => [8 + i / (pts.length - 1) * (W - 16), H - 14 - (p.kg - lo) / rg * (H - 32)]), d = xy.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join(' ');
+  const f = pts[0], l = pts.at(-1), dk = l.kg - f.kg, id = 'ev' + Math.random().toString(36).slice(2, 7);
+  return `<div class="wf-evo"><div class="wf-eh"><small>Évolution · ${pts.length} séances</small><em class="${dk > 0 ? 'up' : dk < 0 ? 'dn' : ''}">${dk ? (dk > 0 ? '+' : '−') + kgTxt(Math.abs(dk)) + ' kg' : 'stable'}</em></div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--c)" stop-opacity=".35"/><stop offset="1" stop-color="var(--c)" stop-opacity="0"/></linearGradient></defs>
+    <path d="${d} L${xy.at(-1)[0]} ${H} L${xy[0][0]} ${H} Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="var(--c)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+    <div class="wf-dots">${xy.map((q, i) => `<i style="left:${q[0] / W * 100}%;top:${q[1] / H * 100}%" class="${i === xy.length - 1 ? 'l' : ''}"></i>`).join('')}</div>
+    <div class="wf-ef"><span>${new Date(f.t).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' })} · <b>${kgTxt(f.kg)} kg × ${f.r}</b></span><span>Dernière · <b>${kgTxt(l.kg)} kg × ${l.r}</b></span></div></div>`; };
+const wFill = (e, prev) => (e.sets.length <= 2 ? wEvo(e) : '') + `<div class="wf-row"><button class="wf-c wf-n" data-memo="1"><small>Notes</small>${e.memo ? `<span>${esc(e.memo)}</span>` : '<span class="ph">Touche pour ajouter une note</span>'}</button></div>`;
 const wRestDraw = () => { const on = !!rest; $('#wo').classList.toggle('resting', on); const els = $$('#woBody .wrest'); if (!on) { els.forEach(x => x.innerHTML = ''); return; }
   const left = Math.max(0, rest.end - Date.now()), pr = Math.max(0, left / rest.dur), C = 2 * Math.PI * 70;
   els.forEach(x => { if (!x.firstChild) x.innerHTML = `<div class="wr-ring"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" class="b"/><circle cx="80" cy="80" r="70" class="f" stroke-dasharray="${C}"/></svg><div><small>Repos</small><b>0:00</b><em></em></div></div>
