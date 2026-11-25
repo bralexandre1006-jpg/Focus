@@ -4348,7 +4348,7 @@ $('#tSync').onclick = () => { S.sync = S.sync || {};
   if (!S.sync.code) { const a = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = crypto.getRandomValues(new Uint8Array(12)); S.sync.code = [...b].map(x => a[x % a.length]).join(''); }
   S.sync.on = !S.sync.on; save(); syncUI(); syncNative(); if (S.sync.on) { pushSync(true); batCheck().then(n => { if (n) askBat(); }); } sfx.tap(); buzz(); };
 const batCheck = async () => { const b = $('#syncBat'); if (!b) return; let show = false;
-  let ok = null; try { if (S.sync && S.sync.on && P.StepCounter && P.StepCounter.batteryStatus) { ok = !!(await P.StepCounter.batteryStatus()).ignored; show = !ok; } } catch (e) {}
+  let ok = null; if (S.sync && S.sync.on && P.StepCounter) { try { ok = !!(await P.StepCounter.batteryStatus()).ignored; } catch (e) { ok = false; } show = !ok; }
   b.classList.toggle('hidden', ok === null); b.classList.toggle('ghost', !!ok); b.disabled = !!ok;
   b.textContent = ok ? '✓ Synchro téléphone fermé autorisée' : 'Autoriser la synchro téléphone fermé'; return show; };
 const askBat = () => { try { P.StepCounter && P.StepCounter.askBattery && P.StepCounter.askBattery().catch(() => {}); } catch (e) {} };
