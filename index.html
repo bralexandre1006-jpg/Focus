@@ -1812,6 +1812,8 @@ body.perf .wo-intro span{box-shadow:none!important}
 .wf-row{display:flex;gap:8px}.wf-c{flex:1;min-width:0;background:rgba(255,255,255,.04);border-radius:16px;padding:12px 14px}
 .wf-c small,.wf-new small{display:block;font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
 .wf-s{display:flex;flex-wrap:wrap;gap:6px}.wf-s span{font-size:15px;font-weight:800;padding:5px 9px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,transparent)}.wf-s i{font-style:normal;color:var(--mut);margin:0 3px;font-size:12px}
+.wf-n{display:block;text-align:left;min-height:84px;font:inherit;color:inherit}.wf-n span{display:block;font-size:15px;line-height:1.4;white-space:pre-wrap}.wf-n .ph{color:var(--mut)!important;font-size:14px;font-weight:600}
+.wf-g{flex:0 0 auto;min-width:40%;text-align:left}.wf-g b{display:block;font-size:22px;letter-spacing:-.03em;color:var(--c)}.wf-g b i{font-style:normal;font-size:13px;color:var(--mut)}.wf-g em{display:block;font-style:normal;font-size:11.5px;color:var(--mut);margin-top:3px}
 .wf-r{flex:0 0 auto;text-align:center}.wf-r b{font-size:24px;letter-spacing:-.03em;color:var(--c)}.wf-r em{font-style:normal;font-size:12px;color:var(--mut)}
 .wf-new{background:rgba(255,255,255,.04);border-radius:16px;padding:14px}.wf-new b{display:block;font-size:16px;margin-bottom:4px}.wf-new small{text-transform:none;letter-spacing:0;font-weight:600;margin:0;font-size:13px}
 .wr-ring,.wr-band{display:none}
@@ -4639,7 +4641,7 @@ const startWorkout = async rid => {
   const r = S.routines.find(x => x.id === rid); if (!r) return;
   if (S.activeWo && !(await confirmSheet('Une séance est déjà en cours', `« ${S.activeWo.name} » sera abandonnée.`, { yes:'Lancer quand même' }))) return;
   woEdit = null;
-  S.activeWo = { id: uid(), rid: r.id, name: r.name, start: Date.now(), ex: r.ex.map(e => ({ xid: e.id, name: e.name, cat: e.cat, uni: e.uni, repMin: e.repMin, repMax: e.repMax, note: e.note, cfg: e.cfg || '', rest: e.rest ?? 90, target: e.sets,
+  S.activeWo = { id: uid(), rid: r.id, name: r.name, start: Date.now(), ex: r.ex.map(e => ({ xid: e.id, memo: lastMemo(e.name), name: e.name, cat: e.cat, uni: e.uni, repMin: e.repMin, repMax: e.repMax, note: e.note, cfg: e.cfg || '', rest: e.rest ?? 90, target: e.sets,
     sets: Array.from({ length: e.sets }, () => ({ kg:'', reps:'', repsR:'', note:'', done:false })) })) };
   save(); renderWo(); $('#woIntroN').textContent = r.name; const wo = $('#wo'); wo.classList.remove('intro'); void wo.offsetWidth; wo.classList.add('intro');
   setTimeout(() => wo.classList.remove('intro'), 1600); showWo(); sfx.win(); buzz('success'); renderSession();
@@ -4708,6 +4710,7 @@ const renderWo = () => {
       <div class="wex-f"><button data-add="1">+ Série</button>${e.sets.length > 1 ? '<button data-del="1">Retirer la dernière</button>' : ''}</div>
     </div>`; }).join('') + `<div class="wnav" id="woNav"></div><button class="wo-quit" id="woQuit">${woEdit ? 'Annuler les modifications' : 'Abandonner la séance'}</button>`;
   $$('#woBody .wex').forEach(box => { const e = w.ex[+box.dataset.e], prev = lastSetsFor(e.name, w.id);
+    const mb = box.querySelector('[data-memo]'); if (mb) mb.onclick = () => openNote({ get note() { return e.memo || ''; }, set note(v) { e.memo = v; } }, null, () => { box.querySelector('.wfill').innerHTML = wFill(e, prev); woSave(); renderWo(); });
     box.querySelectorAll('.wset').forEach(row => { const si = +row.dataset.s, st = e.sets[si], p = prev && prev[si];
       row.querySelectorAll('.wi').forEach(inp => {
         inp.oninput = () => { if (inp.dataset.f === 'kg') { const c = inp.value.replace(/[^\d.,]/g, '').replace(/^(\d*[.,]\d{0,2}).*$/, '$1'); if (c !== inp.value) inp.value = c; } else { const c = inp.value.replace(/\D/g, '').slice(0, 3); if (c !== inp.value) inp.value = c; } st[inp.dataset.f] = inp.value; row.querySelector('.wdc').innerHTML = deltaOf(st, p, e.uni); woSave(); autoNext(inp, p, e); };
@@ -4731,10 +4734,14 @@ const renderWo = () => {
   };
 };
 const doneAt = new WeakMap();
-const wFill = (e, prev) => { const ok = (prev || []).filter(x => num(x.reps) > 0), be = bestEver(e.name, (woCur() || {}).id);
-  if (!ok.length && !be) return `<div class="wf-new"><b>Première fois</b><small>Note tes charges : la prochaine fois, elles s'afficheront ici.</small></div>`;
-  return `<div class="wf-row">${ok.length ? `<div class="wf-c"><small>Dernière fois</small><div class="wf-s">${ok.map(x => `<span>${kgTxt(x.kg)}<i>×</i>${e.uni ? `${x.reps}/${x.repsR || x.reps}` : x.reps}</span>`).join('')}</div></div>` : ''}
-    ${be ? `<div class="wf-c wf-r"><small>Record 1RM</small><b>${kgTxt(Math.round(be * 10) / 10)}<em> kg</em></b></div>` : ''}</div>`; };
+const lastMemo = name => { const k = exKey(name); for (let i = S.workouts.length - 1; i >= 0; i--) { const x = S.workouts[i].ex.find(z => exKey(z.name) === k); if (x) return x.memo || ''; } return ''; };
+const wGoal = (e, prev) => { const ok = (prev || []).filter(x => num(x.reps) > 0); const lo = e.repMin || 0, hi = e.repMax || e.repMin || 0;
+  if (!ok.length) return `<div class="wf-c wf-g"><small>Objectif du jour</small><b>${lo ? `${lo}${hi && hi !== lo ? '–' + hi : ''} rép.` : 'Trouve ta charge'}</b><em>${lo ? 'trouve la bonne charge' : 'note tes séries'}</em></div>`;
+  const kg = Math.max(...ok.map(x => num(x.kg))), at = ok.filter(x => num(x.kg) === kg), rp = Math.min(...at.map(x => +(e.uni ? Math.min(x.reps, x.repsR || x.reps) : x.reps)));
+  const up = hi && ok.every(x => +x.reps >= hi), step = kg >= 40 ? 2.5 : kg >= 10 ? 1 : 0.5;
+  const t = up ? { kg: kg + step, r: lo || rp, d: `+${kgTxt(step)} kg` } : { kg, r: rp + 1, d: '+1 rép.' };
+  return `<div class="wf-c wf-g"><small>Objectif du jour</small><b>${kgTxt(t.kg)}<i> kg × </i>${t.r}</b><em>${t.d} vs dernière fois</em></div>`; };
+const wFill = (e, prev) => `<div class="wf-row"><button class="wf-c wf-n" data-memo="1"><small>Notes</small>${e.memo ? `<span>${esc(e.memo)}</span>` : '<span class="ph">Touche pour ajouter une note</span>'}</button>${wGoal(e, prev)}</div>`;
 const wRestDraw = () => { const on = !!rest; $('#wo').classList.toggle('resting', on); const els = $$('#woBody .wrest'); if (!on) { els.forEach(x => x.innerHTML = ''); return; }
   const left = Math.max(0, rest.end - Date.now()), pr = Math.max(0, left / rest.dur), C = 2 * Math.PI * 70;
   els.forEach(x => { if (!x.firstChild) x.innerHTML = `<div class="wr-ring"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" class="b"/><circle cx="80" cy="80" r="70" class="f" stroke-dasharray="${C}"/></svg><div><small>Repos</small><b>0:00</b><em></em></div></div>
@@ -4875,7 +4882,7 @@ $('#woPill').onclick = () => { if (pillDrag) return; if (pillDock) { setDock(fal
 })();
 $('#woEnd').onclick = async () => {
   const w = woCur(); if (!w) return;
-  const ex = w.ex.map(e => ({ name: e.name, cat: e.cat, uni: e.uni, cfg: (e.cfg || '').trim(), rest: e.rest, sets: e.sets.filter(st => st.done || st.kg !== '' || st.reps !== '' || st.repsR !== '')
+  const ex = w.ex.map(e => ({ name: e.name, cat: e.cat, uni: e.uni, cfg: (e.cfg || '').trim(), rest: e.rest, memo: (e.memo || '').trim() || undefined, sets: e.sets.filter(st => st.done || st.kg !== '' || st.reps !== '' || st.repsR !== '')
     .map(st => ({ kg: num(st.kg), reps: parseInt(st.reps) || 0, repsR: e.uni ? (parseInt(st.repsR) || 0) : undefined, note: (st.note || '').trim() })) })).filter(e => e.sets.length);
   const n = ex.reduce((t, e) => t + e.sets.length, 0);
   if (woEdit) {
