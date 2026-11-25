@@ -4741,7 +4741,7 @@ const wGoal = (e, prev) => { const ok = (prev || []).filter(x => num(x.reps) > 0
   const up = hi && ok.every(x => +x.reps >= hi), step = kg >= 40 ? 2.5 : kg >= 10 ? 1 : 0.5;
   const t = up ? { kg: kg + step, r: lo || rp, d: `+${kgTxt(step)} kg` } : { kg, r: rp + 1, d: '+1 rép.' };
   return `<div class="wf-c wf-g"><small>Objectif du jour</small><b>${kgTxt(t.kg)}<i> kg × </i>${t.r}</b><em>${t.d} vs dernière fois</em></div>`; };
-const wFill = (e, prev) => `<div class="wf-row"><button class="wf-c wf-n" data-memo="1"><small>Notes</small>${e.memo ? `<span>${esc(e.memo)}</span>` : '<span class="ph">Touche pour ajouter une note</span>'}</button>${wGoal(e, prev)}</div>`;
+const wFill = (e, prev) => `<div class="wf-row"><button class="wf-c wf-n" data-memo="1"><small>Notes</small>${e.memo ? `<span>${esc(e.memo)}</span>` : '<span class="ph">Touche pour ajouter une note</span>'}</button></div>`;
 const wRestDraw = () => { const on = !!rest; $('#wo').classList.toggle('resting', on); const els = $$('#woBody .wrest'); if (!on) { els.forEach(x => x.innerHTML = ''); return; }
   const left = Math.max(0, rest.end - Date.now()), pr = Math.max(0, left / rest.dur), C = 2 * Math.PI * 70;
   els.forEach(x => { if (!x.firstChild) x.innerHTML = `<div class="wr-ring"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" class="b"/><circle cx="80" cy="80" r="70" class="f" stroke-dasharray="${C}"/></svg><div><small>Repos</small><b>0:00</b><em></em></div></div>
