@@ -194,6 +194,29 @@ public class StepCounterPlugin extends Plugin implements SensorEventListener {
 
     /** Code et adresse de la synchro PC, pour l'envoi des pas en arriere-plan. */
     @PluginMethod
+    public void batteryStatus(PluginCall call) {
+        JSObject r = new JSObject();
+        boolean ok = true;
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            android.os.PowerManager pm = (android.os.PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
+            ok = pm == null || pm.isIgnoringBatteryOptimizations(getContext().getPackageName());
+        }
+        r.put("ignored", ok); call.resolve(r);
+    }
+
+    @PluginMethod
+    public void askBattery(PluginCall call) {
+        Context c = getContext();
+        try {
+            android.content.Intent i = new android.content.Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, android.net.Uri.parse("package:" + c.getPackageName()));
+            i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK); c.startActivity(i);
+        } catch (Throwable t) {
+            try { android.content.Intent i = new android.content.Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS); i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK); c.startActivity(i); } catch (Throwable ignored) {}
+        }
+        call.resolve();
+    }
+
+    @PluginMethod
     public void setSync(PluginCall call) {
         getContext().getSharedPreferences(FocusWidget.PREFS, Context.MODE_PRIVATE).edit()
             .putString("syncCode", call.getString("code", "")).putString("syncUrl", call.getString("url", "")).apply();

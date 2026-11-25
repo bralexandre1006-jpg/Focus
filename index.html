@@ -1804,10 +1804,35 @@ body.perf .wo-intro span{box-shadow:none!important}
 .screen.zz *,.modal:not(.on) *,.sheet:not(.on) *{animation-play-state:paused!important}
 .hx-more{height:1px}
 /* séance : un exercice plein écran */
+.wo-b.one{overflow-y:auto}
+.wo-b.one .wex.sh{flex:1 0 auto!important;padding:16px 14px 12px!important;border-radius:26px!important}
+.wo-b.one .wex.sh::after{font-size:96px!important;top:2px!important;right:14px!important}
+.wo-b.one .wex-h{flex-direction:row!important;align-items:center!important;gap:12px!important;margin-bottom:10px!important}
+.wo-b.one .wex-i{width:42px!important;height:42px!important;font-size:18px!important}
+.wo-b.one .wex-h b{font-size:23px!important}
+.wo-b.one .wex-h .wcat{margin-top:4px;font-size:12px;padding:3px 9px}
+.wo-b.one .wnow{display:none!important}
+.wo-b.one .wchips{margin-bottom:8px!important}.wo-b.one .wchips span{font-size:13px!important;padding:5px 10px!important}
+.wo-b.one .wtip{font-size:14px!important;padding:8px 12px!important;margin-bottom:8px!important}
+.wo-b.one .wlab{margin:0 0 2px!important}
+.wo-b.one .wset{margin-bottom:5px!important}
+.wo-b.one .wi{height:50px!important;font-size:20px!important}
+.wo-b.one .wn{width:42px!important;height:42px!important}
+.wo-b.one .wrow{grid-template-columns:42px 1fr 1fr 46px 44px!important}
+.wo-b.one .wrow.uni{grid-template-columns:42px 1fr .85fr .85fr 46px 44px!important}
+.wo-b.one .wex.sh .wfill{min-height:0;padding-top:10px!important;gap:8px!important}
+.wo-b.one .wf-evo{min-height:0!important;padding:10px 12px!important}
+.wo-b.one .wf-evo svg{min-height:0!important}
+.wo-b.one .wf-n{min-height:54px!important;padding:10px 12px!important}.wo-b.one .wf-n small{margin-bottom:3px}
+.wo-b.one .wex.sh .wrest{flex-shrink:1;min-height:0;padding-top:8px!important}
+.wo-b.one .wr-band{padding:10px 14px!important}.wo-b.one .wr-band b{font-size:40px!important}.wo-b.one .wr-band i{margin-top:8px!important}
+.wo-b.one .wr-btn{margin-top:8px!important}.wo-b.one .wr-btn button{height:44px!important}
+.wo-b.one .wnav{margin-top:10px!important}.wo-b.one .wnv{height:52px!important;min-width:52px!important}.wo-b.one .wls{width:44px!important;height:44px!important}
+.wo-b.one .wo-quit{height:30px!important;margin-top:4px!important}
 .wfill,.wrest{display:none}
 #wo:not(.sets-on) .wex-f{display:none}
 .wo-b.one .wex.sh .wfill{display:block;margin-top:auto;padding-top:14px}
-#wo.resting:not(.rv-bar) .wo-b.one .wex.sh .wfill{display:none}
+#wo.resting:not(.rv-bar) .wo-b.one .wex.sh .wfill{display:none!important}
 #wo.resting:not(.rv-bar) .wo-b.one .wex.sh .wrest{display:block;margin:auto 0;padding-top:14px}
 #wo.one-m.resting:not(.rv-bar) .rest{display:none}
 .wf-row{display:flex;gap:8px}.wf-c{flex:1;min-width:0;background:rgba(255,255,255,.04);border-radius:16px;padding:12px 14px}
@@ -2132,6 +2157,7 @@ body.perf .wo-intro span{box-shadow:none!important}
       <div class="acc-b"><div class="acc-i">
       <div class="srow"><div class="l">Envoyer mes données au logiciel PC</div><button class="tgl" id="tSync"></button></div>
       <div class="synccode hidden" id="syncBox"><small>Ton code à taper sur le PC</small><b id="syncCode"></b><button class="btn ghost full press" id="syncCopy" style="margin:8px 0 0">Copier le code</button></div>
+      <button class="btn full press hidden" id="syncBat" style="margin-top:10px">Autoriser la synchro téléphone fermé</button>
       <div class="hint" id="syncInfo">Tes pas, repas, poids et séances s'affichent en direct dans le logiciel Focus pour Windows.</div>
       </div></div>
     </div>
@@ -4312,7 +4338,7 @@ const pushSync = async (full) => {
   if (syncAgain) { syncAgain = false; setTimeout(() => pushSync(), 300); } };
 window.__pcSync = () => { if (!syncT) syncT = setTimeout(() => { syncT = 0; pushSync(); }, 500); clearTimeout(syncFT); syncFT = setTimeout(() => pushSync(true), 30000); };
 const syncUI = () => { const on = !!(S.sync && S.sync.on);
-  $('#tSync').classList.toggle('on', on); $('#syncBox').classList.toggle('hidden', !on);
+  $('#tSync').classList.toggle('on', on); $('#syncBox').classList.toggle('hidden', !on); setTimeout(batCheck, 0);
   if (on) $('#syncCode').textContent = S.sync.code.replace(/(.{4})(?=.)/g, '$1 ');
   $('#syncI').textContent = on ? (S.sync.ok === false ? 'Erreur' : 'Activée') : '';
   $('#syncInfo').textContent = !on ? "Tes pas, repas, poids et séances s'affichent en direct dans le logiciel Focus pour Windows."
@@ -4320,7 +4346,13 @@ const syncUI = () => { const on = !!(S.sync && S.sync.on);
     : S.sync.ok === false ? "Échec du dernier envoi, nouvel essai à la prochaine modification." : S.sync.last ? 'Synchronisé en temps réel.' : 'Premier envoi en cours…'; };
 $('#tSync').onclick = () => { S.sync = S.sync || {};
   if (!S.sync.code) { const a = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', b = crypto.getRandomValues(new Uint8Array(12)); S.sync.code = [...b].map(x => a[x % a.length]).join(''); }
-  S.sync.on = !S.sync.on; save(); syncUI(); syncNative(); if (S.sync.on) pushSync(true); sfx.tap(); buzz(); };
+  S.sync.on = !S.sync.on; save(); syncUI(); syncNative(); if (S.sync.on) { pushSync(true); batCheck().then(n => { if (n) askBat(); }); } sfx.tap(); buzz(); };
+const batCheck = async () => { const b = $('#syncBat'); if (!b) return; let show = false;
+  try { if (S.sync && S.sync.on && P.StepCounter && P.StepCounter.batteryStatus) show = !(await P.StepCounter.batteryStatus()).ignored; } catch (e) {}
+  b.classList.toggle('hidden', !show); return show; };
+const askBat = () => { try { P.StepCounter && P.StepCounter.askBattery && P.StepCounter.askBattery().catch(() => {}); } catch (e) {} };
+$('#syncBat').onclick = () => { askBat(); sfx.tap(); buzz(); };
+document.addEventListener('visibilitychange', () => { if (!document.hidden) batCheck(); });
 const syncNative = () => { try { P.StepCounter && P.StepCounter.setSync && P.StepCounter.setSync({ code: S.sync && S.sync.on ? S.sync.code : '', url: FB_URL.startsWith('__') ? '' : FB_URL }).catch(() => {}); } catch (e) {} };
 setTimeout(syncNative, 4000);
 $('#syncCopy').onclick = async () => { try { await navigator.clipboard.writeText(S.sync.code); toast('Code copié'); } catch (e) { toast(S.sync.code); } buzz(); };
@@ -5121,7 +5153,7 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
   return { n: ws.length, min: ws.reduce((t, w) => t + w.min, 0), vol: ws.reduce((t, w) => t + woVol(w), 0), cats: Object.entries(byCat).sort((x, y) => y[1] - x[1]).slice(0, 3) }; };
 
 /* ---------- v1.37 : fonctionnalités ---------- */
-const APP_VER = '1.43';
+const APP_VER = '1.44';
 const CHANGELOG = [
   { v:'1.41', items:[
     'Graphiques : un appui court sélectionne un jour, le défilement ne clique plus dessus',
