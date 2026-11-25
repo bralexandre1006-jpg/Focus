@@ -160,6 +160,7 @@ button{border:0;background:none;cursor:pointer}
   border:1px solid rgba(255,255,255,.07);box-shadow:0 20px 50px rgba(0,0,0,.55);display:flex;padding:6px;z-index:50;
   transition:transform .6s var(--spring),opacity .4s}
 .tabbar.hide{transform:translateY(140%);opacity:0}
+.tabbar.mini:not(.hide){transform:translateY(12px) scale(.78);opacity:.92}
 .tab-ind{position:absolute;top:6px;bottom:6px;left:6px;border-radius:22px;background:var(--acc);transition:transform .5s var(--spring),width .5s var(--spring)}
 .tab{flex:1;min-width:0;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--mut);font-size:11px;font-weight:800;transition:color .35s}
 .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--spring)}
@@ -1329,6 +1330,7 @@ body.lite.gymopen .wopill{bottom:calc(var(--sb) + 136px)}
 .rest{position:absolute;left:12px;right:12px;bottom:calc(var(--sb) + 12px);height:64px;border-radius:20px;background:#1E1E27;border:1px solid rgba(255,255,255,.08);box-shadow:0 14px 40px rgba(0,0,0,.6);
   display:flex;align-items:center;gap:6px;padding:0 8px 0 16px;overflow:hidden;transform:translateY(130%);transition:transform .5s var(--spring)}
 .rest.on{transform:none}
+.rest:not(.on){transform:translateY(calc(100% + var(--sb) + 40px));visibility:hidden;transition:transform .5s var(--spring),visibility 0s .5s}
 .rest-p{position:absolute;left:0;top:0;bottom:0;width:100%;background:rgba(215,255,58,.13);transform-origin:0 50%;transition:transform .25s linear}
 .rest-i{flex:1;min-width:0;position:relative}
 .rest-i small{display:block;color:var(--mut);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1471,6 +1473,11 @@ body.lite .glsw{border-radius:20px}
 .gex-m strong{display:block;font-size:24px;font-weight:900;letter-spacing:-.04em;margin-top:2px;white-space:nowrap}
 .gex-m strong em{font-style:normal;font-size:14px;color:var(--mut);font-weight:800}
 .gex-sp{flex-shrink:0;overflow:visible}
+.gex.gx2{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:6px;border-radius:14px}
+.gx-d{width:8px;height:8px;border-radius:50%;background:var(--gc);flex-shrink:0}
+.gx-t{flex:1;min-width:0}.gx-t b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gx-t small{font-size:12px;color:var(--mut);font-weight:700}
+.gx2 .gex-sp{width:56px;height:24px}.gx2 .gex-c{font-size:11px;padding:4px 7px;border-radius:8px}
+.gx-more{display:block;width:100%;height:40px;margin-top:8px;border-radius:12px;background:var(--card2);color:var(--mut);font-weight:800;font-size:13px}
 .rc-gym{background:var(--card);border-radius:20px;padding:14px;margin-top:10px;animation:rise .5s .15s var(--ease) both}
 .rc-gym>small{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
 .rc-gk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
@@ -1796,6 +1803,33 @@ body.perf .wo-intro span{box-shadow:none!important}
 .screen.zz *,.modal:not(.on) *,.sheet:not(.on) *{animation-play-state:paused!important}
 .hx-more{height:1px}
 /* séance : un exercice plein écran */
+.wfill,.wrest{display:none}
+#wo:not(.sets-on) .wex-f{display:none}
+.wo-b.one .wex.sh .wfill{display:block;margin-top:auto;padding-top:14px}
+#wo.resting:not(.rv-bar) .wo-b.one .wex.sh .wfill{display:none}
+#wo.resting:not(.rv-bar) .wo-b.one .wex.sh .wrest{display:block;margin:auto 0;padding-top:14px}
+#wo.one-m.resting:not(.rv-bar) .rest{display:none}
+.wf-row{display:flex;gap:8px}.wf-c{flex:1;min-width:0;background:rgba(255,255,255,.04);border-radius:16px;padding:12px 14px}
+.wf-c small,.wf-new small{display:block;font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.wf-s{display:flex;flex-wrap:wrap;gap:6px}.wf-s span{font-size:15px;font-weight:800;padding:5px 9px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,transparent)}.wf-s i{font-style:normal;color:var(--mut);margin:0 3px;font-size:12px}
+.wf-r{flex:0 0 auto;text-align:center}.wf-r b{font-size:24px;letter-spacing:-.03em;color:var(--c)}.wf-r em{font-style:normal;font-size:12px;color:var(--mut)}
+.wf-new{background:rgba(255,255,255,.04);border-radius:16px;padding:14px}.wf-new b{display:block;font-size:16px;margin-bottom:4px}.wf-new small{text-transform:none;letter-spacing:0;font-weight:600;margin:0;font-size:13px}
+.wr-ring,.wr-band{display:none}
+#wo.rv-ring .wr-ring{display:grid;place-items:center;position:relative;width:min(168px,44vw);aspect-ratio:1;margin:0 auto}
+.wr-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.wr-ring .b{fill:none;stroke:rgba(255,255,255,.07);stroke-width:10}.wr-ring .f{fill:none;stroke:var(--c);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
+.wr-ring>div,.wr-band>div{text-align:center;position:relative}
+.wr-ring small,.wr-band small{display:block;font-size:12px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.wr-ring b{display:block;font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1.05}
+.wr-ring em,.wr-band em{display:block;font-style:normal;font-size:12.5px;color:var(--mut);max-width:150px;margin:2px auto 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wo.rv-band .wr-band{display:block;background:color-mix(in srgb,var(--c) 10%,rgba(255,255,255,.03));border-radius:20px;padding:12px 16px}
+.wr-band b{display:block;font-size:46px;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1.05}.wr-band em{max-width:none}
+.wr-band i{display:block;height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:12px}.wr-band i s{display:block;height:100%;background:var(--c);transform-origin:0 50%;transition:transform .3s linear}
+.wr-btn{display:flex;gap:8px;margin-top:10px}.wr-btn button{flex:1;height:46px;border-radius:14px;background:rgba(255,255,255,.07);font-weight:800;font-size:14px}
+.wr-btn [data-wr="x"]{background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c)}
+.wtop:empty{display:none}.wtop{position:sticky;top:-14px;z-index:5;margin:-14px -12px 12px;padding:10px 12px;background:linear-gradient(var(--bg) 70%,transparent)}
+.wtop .wone{background:var(--acc);color:#0B0B0F}.wtop .wone svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4}
+.seg2{display:flex;gap:3px;padding:3px;border-radius:11px;background:var(--card2)}.seg2 button{height:30px;padding:0 9px;border-radius:9px;font-size:12px;font-weight:800;color:var(--mut)}.seg2 button.on{background:var(--acc);color:#0B0B0F}
 .wo-b.one{display:flex;flex-direction:column;padding:8px 12px calc(var(--sb) + 12px)!important}
 .wo-b.one .wex.sh{flex:1 0 auto;display:flex;flex-direction:column;margin:0!important;padding:22px 16px 14px!important;border-radius:30px!important;position:relative;overflow:hidden;
   background:radial-gradient(130% 55% at 50% -8%,color-mix(in srgb,var(--c) 30%,transparent),transparent 70%),linear-gradient(180deg,color-mix(in srgb,var(--c) 7%,var(--card)),var(--card) 55%)!important;
@@ -2064,6 +2098,8 @@ body.perf .wo-intro span{box-shadow:none!important}
       <div class="srow"><div class="l">Mode performance<small style="display:block;color:var(--mut);font-size:12px;font-weight:700;margin-top:2px">Retire lueurs et halos pour plus de fluidité</small></div><button class="tgl" id="tPerf"></button></div>
       <div class="srow" id="gradRow"><div class="l">Couleurs des cartes</div><button class="tgl" id="tGrad"></button></div>
       <div class="srow"><div class="l">Séance : un exercice à la fois</div><button class="tgl" id="tWoOne"></button></div>
+      <div class="srow"><div class="l">Séance : ajouter / retirer des séries</div><button class="tgl" id="tWoSets"></button></div>
+      <div class="srow"><div class="l">Minuteur de repos</div><div class="seg2" id="tRestIn"><button data-v="ring">Anneau</button><button data-v="band">Bandeau</button><button data-v="bar">En bas</button></div></div>
     </div></div></div>
 <div class="card acc" id="accExp">
       <button class="acc-h"><h3><i style="background:var(--spt)"></i>Sons et vibrations</h3><small></small><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -4204,6 +4240,8 @@ const applyLite = () => {
   setTimeout(moveInd, 30);
 };
 $('#tPerf').onclick = () => { S.settings.perf = !S.settings.perf; save(); $('#tPerf').classList.toggle('on', S.settings.perf); applyLite(); sfx.tap(); buzz(); };
+$('#tWoSets').onclick = () => { S.settings.woSets = !S.settings.woSets; save(); $('#tWoSets').classList.toggle('on', S.settings.woSets); if (woCur()) woNav(); sfx.tap(); buzz(); };
+$$('#tRestIn button').forEach(b => b.onclick = () => { S.settings.restIn = b.dataset.v; save(); $$('#tRestIn button').forEach(x => x.classList.toggle('on', x === b)); if (woCur()) woNav(); sfx.tap(); buzz(); });
 $('#tWoOne').onclick = () => { S.settings.woOne = S.settings.woOne === false; save(); $('#tWoOne').classList.toggle('on', S.settings.woOne); woAll = false; if (woCur()) woNav(); sfx.tap(); buzz(); };
 $('#tGrad').onclick = () => {
   S.settings.grad = S.settings.grad === false; save(); $('#tGrad').classList.toggle('on', S.settings.grad);
@@ -4289,7 +4327,7 @@ const renderSettings = () => {
   $('#tSound').classList.toggle('on',S.settings.sound); $('#tHaptic').classList.toggle('on',S.settings.haptic);
   $('#tRecap').classList.toggle('on', S.settings.recap !== false);
   $$('#pSex button').forEach(b => b.classList.toggle('on', b.dataset.x === (S.profile.sex || 'm')));
-  $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#tWoOne').classList.toggle('on', S.settings.woOne !== false); $('#tPerf').classList.toggle('on', !!S.settings.perf); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
+  $('#tGrad').classList.toggle('on', S.settings.grad !== false); $('#tWoOne').classList.toggle('on', S.settings.woOne !== false); $('#tWoSets').classList.toggle('on', !!S.settings.woSets); $$('#tRestIn button').forEach(x => x.classList.toggle('on', x.dataset.v === (S.settings.restIn || 'ring'))); $('#tPerf').classList.toggle('on', !!S.settings.perf); $('#gradRow').classList.toggle('hidden', !S.settings.lite);
   accInfo();
   renderRems(); renderProgSettings(); renderPedo();
 };
@@ -4650,7 +4688,7 @@ const renderWo = () => {
   $('#woDate').textContent = woEdit ? new Date(w.start).toLocaleDateString('fr-BE', { weekday:'long', day:'numeric', month:'long' }) : 'Séance en cours';
   $('#woEnd').textContent = woEdit ? 'Enregistrer' : 'Terminer';
   $('#woClockW').classList.toggle('hidden', !!woEdit);
-  $('#woBody').innerHTML = w.ex.map((e, ei) => { const prev = lastSetsFor(e.name, w.id);
+  $('#woBody').innerHTML = '<div class="wtop" id="woTop"></div>' + w.ex.map((e, ei) => { const prev = lastSetsFor(e.name, w.id);
     const cols = e.uni ? '<span>Kg</span><span>Gauche</span><span>Droite</span>' : '<span>Kg</span><span>Rép.</span>';
     return `<div class="wex" data-e="${ei}" data-n="${ei + 1}" style="--c:${catColor(e.cat)};animation-delay:${Math.min(ei * .05, .4)}s">
       <div class="wex-h"><span class="wex-i">${ei + 1}</span><div><b>${esc(e.name)}</b><span class="wcat">${esc(e.cat)}</span><em class="wnow">En cours</em></div><span class="wdone">✓</span></div>
@@ -4666,6 +4704,7 @@ const renderWo = () => {
           <button class="wnb ${st.note ? 'has' : ''}" aria-label="Note">${NOTE_IC}</button>
           <span class="wdc">${deltaOf(st, p, e.uni)}</span></div>
           <div class="wnt">${st.note ? `<span class="me">${esc(st.note)}</span>` : p && p.note ? `<span class="pv">Dernière fois : ${esc(p.note)}</span>` : ''}</div></div>`; }).join('')}
+      <div class="wfill">${wFill(e, prev)}</div><div class="wrest"></div>
       <div class="wex-f"><button data-add="1">+ Série</button>${e.sets.length > 1 ? '<button data-del="1">Retirer la dernière</button>' : ''}</div>
     </div>`; }).join('') + `<div class="wnav" id="woNav"></div><button class="wo-quit" id="woQuit">${woEdit ? 'Annuler les modifications' : 'Abandonner la séance'}</button>`;
   $$('#woBody .wex').forEach(box => { const e = w.ex[+box.dataset.e], prev = lastSetsFor(e.name, w.id);
@@ -4692,14 +4731,29 @@ const renderWo = () => {
   };
 };
 const doneAt = new WeakMap();
+const wFill = (e, prev) => { const ok = (prev || []).filter(x => num(x.reps) > 0), be = bestEver(e.name, (woCur() || {}).id);
+  if (!ok.length && !be) return `<div class="wf-new"><b>Première fois</b><small>Note tes charges : la prochaine fois, elles s'afficheront ici.</small></div>`;
+  return `<div class="wf-row">${ok.length ? `<div class="wf-c"><small>Dernière fois</small><div class="wf-s">${ok.map(x => `<span>${kgTxt(x.kg)}<i>×</i>${e.uni ? `${x.reps}/${x.repsR || x.reps}` : x.reps}</span>`).join('')}</div></div>` : ''}
+    ${be ? `<div class="wf-c wf-r"><small>Record 1RM</small><b>${kgTxt(Math.round(be * 10) / 10)}<em> kg</em></b></div>` : ''}</div>`; };
+const wRestDraw = () => { const on = !!rest; $('#wo').classList.toggle('resting', on); const els = $$('#woBody .wrest'); if (!on) { els.forEach(x => x.innerHTML = ''); return; }
+  const left = Math.max(0, rest.end - Date.now()), pr = Math.max(0, left / rest.dur), C = 2 * Math.PI * 70;
+  els.forEach(x => { if (!x.firstChild) x.innerHTML = `<div class="wr-ring"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" class="b"/><circle cx="80" cy="80" r="70" class="f" stroke-dasharray="${C}"/></svg><div><small>Repos</small><b>0:00</b><em></em></div></div>
+      <div class="wr-band"><div><small>Repos</small><b>0:00</b><em></em></div><i><s></s></i></div>
+      <div class="wr-btn"><button data-wr="-15">−15 s</button><button data-wr="15">+15 s</button><button data-wr="x">Passer</button></div>`;
+    x.querySelectorAll('b').forEach(b => b.textContent = fmtClock(left)); x.querySelectorAll('em').forEach(m => m.textContent = rest.label ? ($('#restL').textContent.includes('ensuite') ? 'ensuite ' : '') + rest.label : '');
+    x.querySelector('.wr-ring .f').style.strokeDashoffset = C * (1 - pr); x.querySelector('.wr-band s').style.transform = `scaleX(${pr})`; }); };
+$('#woBody').addEventListener('click', ev => { const b = ev.target.closest('[data-wr]'); if (!b || !rest) return; if (b.dataset.wr === 'x') { stopRest(false); } else { const d = +b.dataset.wr * 1000; rest.end = Math.max(Date.now() + 1000, rest.end + d); rest.dur = Math.max(rest.dur, rest.end - Date.now()); scheduleRestNotif(); tickRest(); } sfx.tap(); buzz(); });
 let woAll = false;
 const woNav = (dir, top) => { const w = woCur(), body = $('#woBody'), nav = $('#woNav'); if (!w || !nav) return;
   const opt = !woEdit && S.settings.woOne !== false, one = opt && !woAll, n = w.ex.length, done = i => w.ex[i].sets.every(x => x.done);
   if (w.cur == null || w.cur >= n || w.cur < 0) { const f = w.ex.findIndex((_, i) => !done(i)); w.cur = f < 0 ? 0 : f; }
   body.classList.toggle('one', one); body.classList.toggle('all1', opt && woAll);
+  const wo = $('#wo'); wo.classList.toggle('one-m', one); wo.classList.toggle('sets-on', !!woEdit || !!S.settings.woSets); ['ring', 'band', 'bar'].forEach(v => wo.classList.toggle('rv-' + v, (S.settings.restIn || 'ring') === v));
+  const tp = $('#woTop'); if (tp) { tp.innerHTML = opt && woAll ? `<button class="wone press" id="wOne"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>Revenir à un exercice à la fois</button>` : ''; if ($('#wOne')) $('#wOne').onclick = () => { woAll = false; woNav(0, true); sfx.tap(); buzz(); }; }
+  wRestDraw();
   $$('#woBody .wex').forEach(b => { const sh = +b.dataset.e === w.cur; b.classList.toggle('sh', sh); if (sh && dir) { b.classList.remove('in-l', 'in-r'); void b.offsetWidth; b.classList.add(dir > 0 ? 'in-r' : 'in-l'); } });
   if (!opt) { nav.innerHTML = ''; return; }
-  if (!one) { nav.innerHTML = `<button class="wone press" id="wOne"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>Un exercice à la fois</button>`; $('#wOne').onclick = () => { woAll = false; woNav(0, true); sfx.tap(); buzz(); }; return; }
+  if (!one) { nav.innerHTML = ''; return; }
   const c = w.cur, cd = done(c);
   nav.innerHTML = `<button class="wnv press" data-nv="-1" ${c ? '' : 'disabled'} aria-label="Précédent"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
     <div class="wnc"><b>${c + 1} <small>/ ${n}</small></b><div class="wdots">${w.ex.map((e, i) => `<i class="${i === c ? 'on' : done(i) ? 'ok' : ''}" style="--c:${catColor(e.cat)}"></i>`).join('')}</div></div>
@@ -4753,18 +4807,19 @@ const bestEver = (name, skipId) => { const k = exKey(name); let b = 0; S.workout
 let rest = null;
 const startRest = (sec, label, isNext) => {
   rest = { end: Date.now() + sec * 1000, dur: sec * 1000, label };
-  $('#restL').textContent = (isNext ? 'Repos · ensuite ' : 'Repos · ') + label; $('#rest').classList.add('on'); scheduleRestNotif(); startTick();
+  $('#restL').textContent = (isNext ? 'Repos · ensuite ' : 'Repos · ') + label; $('#rest').classList.add('on'); scheduleRestNotif(); startTick(); wRestDraw();
 };
 const stopRest = (done) => {
-  if (!rest) return; rest = null; $('#rest').classList.remove('on'); cancelRestNotif();
+  if (!rest) return; rest = null; $('#rest').classList.remove('on'); cancelRestNotif(); wRestDraw();
   if (done) { if (!nativeRest()) tone([784, 988, 1175], .14, 'triangle', .14); buzz('success'); if (navigator.vibrate) navigator.vibrate([200, 100, 200]); toast('Repos terminé'); }
   startTick();
 };
 const tickRest = () => { if (!rest) return; const left = rest.end - Date.now();
   if (left <= 0) { stopRest(true); return; }
-  $('#restT').textContent = fmtClock(left); $('#restP').style.transform = `scaleX(${Math.max(0, left / rest.dur)})`; };
+  $('#restT').textContent = fmtClock(left); $('#restP').style.transform = `scaleX(${Math.max(0, left / rest.dur)})`; wRestDraw(); };
 $$('#rest [data-r]').forEach(b => b.onclick = () => { if (!rest) return; const d = +b.dataset.r * 1000; rest.end = Math.max(Date.now() + 1000, rest.end + d); rest.dur = Math.max(rest.dur, rest.end - Date.now()); scheduleRestNotif(); tickRest(); sfx.tap(); buzz(); });
 $('#restX').onclick = () => { stopRest(false); sfx.tap(); buzz(); };
+{ let tbT = 0; document.addEventListener('scroll', ev => { const t = ev.target; if (!t.classList || !t.classList.contains('screen')) return; const tb = $('#tabbar'); tb.classList.add('mini'); clearTimeout(tbT); tbT = setTimeout(() => tb.classList.remove('mini'), 380); }, true); }
 const RSND = [['bip','Bip'],['cloche','Cloche'],['gong','Gong'],['sifflet','Sifflet'],['arcade','Arcade'],['systeme','Système'],['vibre','Vibreur']];
 const restSnd = () => S.settings.restSnd || 'bip';
 const nativeRest = () => P.StepCounter && P.StepCounter.restStart;
@@ -4978,10 +5033,12 @@ const renderGstats = () => {
     if (Math.abs(dk) >= .05) return `<span class="gex-c ${dk > 0 ? 'up' : 'dn'}">${dk > 0 ? '▲ +' : '▼ −'}${kgTxt(Math.abs(dk))} kg</span>`;
     if (dr) return `<span class="gex-c ${dr > 0 ? 'up' : 'dn'}">${dr > 0 ? '▲ +' : '▼ −'}${Math.abs(dr)} rép</span>`;
     return '<span class="gex-c eq">= stable</span>'; };
-  $('#gsEx').innerHTML = rows.length ? rows.map((r, i) => { const col = catColor(r.cat), h = hist(r.k);
-    return `<button class="gex press" data-x="${esc(r.k)}" style="--gc:${col};animation-delay:${i * 40}ms"><div class="gex-t"><i></i><b>${esc(r.name)}</b>${chip(r)}</div>
-      <div class="gex-m"><div><small>Meilleure série</small><strong>${kgTxt(r.bn.kg)}<em> kg</em> × ${r.bn.reps}</strong></div>${spark(h, col)}</div></button>`; }).join('')
+  const gxAll = $('#gsEx').dataset.all === '1', gxN = 6;
+  $('#gsEx').innerHTML = rows.length ? rows.slice(0, gxAll ? 99 : gxN).map((r, i) => { const col = catColor(r.cat), h = hist(r.k);
+    return `<button class="gex gx2 press" data-x="${esc(r.k)}" style="--gc:${col};animation-delay:${i * 30}ms"><i class="gx-d"></i><div class="gx-t"><b>${esc(r.name)}</b><small>${kgTxt(r.bn.kg)} kg × ${r.bn.reps}</small></div>${spark(h, col)}${chip(r)}</button>`; }).join('')
+      + (rows.length > gxN ? `<button class="gx-more press" id="gxMore">${gxAll ? 'Voir moins' : `Voir les ${rows.length} exercices`}</button>` : '')
     : '<div class="empty" style="padding:12px 0">Lance une routine pour suivre ta progression</div>';
+  if ($('#gxMore')) $('#gxMore').onclick = () => { $('#gsEx').dataset.all = gxAll ? '0' : '1'; renderGstats(); sfx.tap(); buzz(); };
   $$('#gsEx [data-x]').forEach(b => b.onclick = () => openExStats(b.dataset.x));
   // régularité : 12 semaines
   const m0 = new Date(now.getFullYear(), now.getMonth(), now.getDate() - wd(now)), h0 = new Date(m0); h0.setDate(m0.getDate() - 77);
@@ -5035,7 +5092,7 @@ const gymWeek = (a, b) => { const aT = a.getTime(), bT = b.getTime() + 864e5, ws
   return { n: ws.length, min: ws.reduce((t, w) => t + w.min, 0), vol: ws.reduce((t, w) => t + woVol(w), 0), cats: Object.entries(byCat).sort((x, y) => y[1] - x[1]).slice(0, 3) }; };
 
 /* ---------- v1.37 : fonctionnalités ---------- */
-const APP_VER = '1.42';
+const APP_VER = '1.43';
 const CHANGELOG = [
   { v:'1.41', items:[
     'Graphiques : un appui court sélectionne un jour, le défilement ne clique plus dessus',
