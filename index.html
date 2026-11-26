@@ -256,8 +256,9 @@ body.lite .hx-wk{border-radius:22px}
 .hx-nav{display:flex;align-items:center;gap:10px;margin:0 0 12px}.hx-nav>div{flex:1;text-align:center}.hx-nav b{display:block;font-size:17px}.hx-nav small{font-size:12px;color:var(--mut)}
 .hx-nav button{width:46px;height:46px;border-radius:15px;background:var(--card);display:grid;place-items:center;color:var(--txt)}.hx-nav button:disabled{opacity:.25}
 .hx-nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.hx-one{display:flex;flex-direction:column;min-height:calc(100vh - var(--st) - var(--sb) - 250px);margin-bottom:0!important}
-.hx-one>.hx-r,.hx-one>.hx-off{flex:1 1 0;max-height:96px;min-height:58px}
+.hx-one{display:flex;flex-direction:column;height:calc(100vh - var(--st) - var(--sb) - 236px);min-height:520px;margin-bottom:0!important}
+.hx-one>.hx-r,.hx-one>.hx-off{flex:1 1 0;max-height:84px;min-height:0;padding-top:4px!important;padding-bottom:4px!important;margin-bottom:4px!important}
+.hx-one .hx-hero{padding:4px 6px 2px}.hx-one .hx-mini{padding:6px 6px 8px}.hx-one .hx-hero b{font-size:30px}
 .hxa-l{animation:wsl2 .35s var(--ease) both!important}.hxa-r{animation:wsl .35s var(--ease) both!important}
 .hx-wse{position:relative}.hx-wse em{font-style:normal;font-size:10.5px;font-weight:800;margin-left:3px}
 .hx-wse em.wdn{color:var(--ok)}.hx-wse em.wup{color:var(--bad)}
@@ -1448,7 +1449,12 @@ body.lite .glsw{border-radius:20px}
 .gb b{display:block;font-size:24px;letter-spacing:-.03em;margin:4px 0 2px}
 .gb em{font-style:normal;font-size:12px;font-weight:800;color:var(--mut)}.gb em.up{color:var(--ok)}.gb em.dn{color:var(--bad)}
 .gb span{display:block;font-size:11px;color:var(--dim);margin-top:3px}
-.gpx-ex{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 12px;padding:0 2px}.gpx-ex::-webkit-scrollbar{display:none}
+.gpx-ex{margin:0 0 12px}
+.gpx-pick{position:relative;display:flex;align-items:center;gap:10px;height:50px;padding:0 14px;border-radius:15px;background:color-mix(in srgb,var(--c) 13%,var(--card2));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 40%,transparent)}
+.gpx-pick i{width:10px;height:10px;border-radius:50%;background:var(--c);flex-shrink:0}
+.gpx-pick select{flex:1;min-width:0;appearance:none;-webkit-appearance:none;background:none;border:0;outline:0;color:var(--txt);font:inherit;font-size:16px;font-weight:800;height:100%}
+.gpx-pick select option{background:#16161C;color:#fff}
+.gpx-pick svg{width:18px;height:18px;fill:none;stroke:var(--c);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.gpx-ex::-webkit-scrollbar{display:none}
 .gpx-ex button{flex-shrink:0;height:34px;padding:0 12px;border-radius:11px;background:var(--card2);color:var(--mut);font-weight:800;font-size:13px;white-space:nowrap}
 .gpx-ex button.on{background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c);box-shadow:inset 0 0 0 1.5px var(--c)}
 .gpx-m{margin-bottom:12px;width:fit-content}
@@ -5093,9 +5099,8 @@ const renderGstats = () => {
   // progression par exercice
   const freq = {}; S.workouts.filter(w => w.start >= Date.now() - 90 * 864e5).forEach(w => w.ex.forEach(e => { const k = exKey(e.name); (freq[k] ||= { n: 0, name: e.name, cat: e.cat }).n++; }));
   const exs = Object.entries(freq).sort((x, y) => y[1].n - x[1].n); if (!gsEx || !freq[gsEx]) gsEx = exs.length ? exs[0][0] : null;
-  $('#gsExL').innerHTML = exs.map(([k, x]) => `<button class="${k === gsEx ? 'on' : ''}" data-gx="${esc(k)}" style="--c:${catColor(x.cat)}">${esc(x.name)}</button>`).join('') || '';
-  $$('#gsExL [data-gx]').forEach(bt => bt.onclick = () => { gsEx = bt.dataset.gx; gsSel = null; renderGstats(); sfx.tap(); buzz(); });
-  const on = $('#gsExL .on'); if (on) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+  $('#gsExL').innerHTML = exs.length ? `<label class="gpx-pick" style="--c:${catColor(freq[gsEx].cat)}"><i></i><select id="gsExS">${exs.map(([k, x]) => `<option value="${esc(k)}" ${k === gsEx ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></label>` : '';
+  if ($('#gsExS')) $('#gsExS').onchange = e => { gsEx = e.target.value; gsSel = null; renderGstats(); sfx.tap(); buzz(); };
   const pg = $('#gsProg');
   if (!gsEx) { pg.innerHTML = '<div class="empty" style="padding:12px 0">Lance une séance pour suivre ta progression</div>'; }
   else { const H = exHist(gsEx).slice(-20), col = catColor(freq[gsEx].cat), M = { kg: ['Charge', x => x.kg, ' kg'], e1: ['1RM', x => x.e1, ' kg'], vol: ['Volume', x => x.vol, ' kg'], r: ['Reps', x => x.mr, ''] }, mf = M[gsM][1];
