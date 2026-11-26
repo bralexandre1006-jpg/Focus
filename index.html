@@ -257,6 +257,8 @@ body.lite .hx-wk{border-radius:22px}
 .hx-nav button{width:46px;height:46px;border-radius:15px;background:var(--card);display:grid;place-items:center;color:var(--txt)}.hx-nav button:disabled{opacity:.25}
 .hx-nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .hx-one{display:flex;flex-direction:column;height:calc(100vh - var(--st) - var(--sb) - 236px);min-height:520px;margin-bottom:0!important}
+#s-history{padding-bottom:calc(var(--sb) + 78px)!important}
+.hx-one>.hx-r,.hx-one>.hx-off{max-height:100px!important}
 .hx-one>.hx-r,.hx-one>.hx-off{flex:1 1 0;max-height:84px;min-height:0;padding-top:4px!important;padding-bottom:4px!important;margin-bottom:4px!important}
 .hx-one .hx-hero{padding:4px 6px 2px}.hx-one .hx-mini{padding:6px 6px 8px}.hx-one .hx-hero b{font-size:30px}
 .hxa-l{animation:wsl2 .35s var(--ease) both!important}.hxa-r{animation:wsl .35s var(--ease) both!important}
@@ -3948,10 +3950,13 @@ const renderHistory = () => {
   el.innerHTML = `<div class="hx-nav"><button class="press" data-hn="1" ${histI >= all.length - 1 ? 'disabled' : ''} aria-label="Semaine précédente"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
     <div><b>${a0.getDate()} ${a0.toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')} – ${b0.getDate()} ${b0.toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')}</b><small>${histI ? `il y a ${histI} semaine${histI > 1 ? 's' : ''}` : 'semaine en cours'}</small></div>
     <button class="press" data-hn="-1" ${histI ? '' : 'disabled'} aria-label="Semaine suivante"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>` + week(W0, 0).replace('class="hx-wk', `class="hx-one hxa-${histDir > 0 ? 'l' : histDir < 0 ? 'r' : 'n'} hx-wk`);
-  histDir = 0;
+  histDir = 0; requestAnimationFrame(histFit);
   el.querySelectorAll('[data-hn]').forEach(bt => bt.onclick = () => { histDir = +bt.dataset.hn; histI += histDir; renderHistory(); sfx.tap(); buzz(); });
 };
 let histI = 0, histDir = 0;
+const histFit = () => { const c = $('#histList .hx-one'), tb = $('#tabbar'); if (!c || !tb || !c.offsetParent) return;
+  const h = tb.getBoundingClientRect().top - 10 - c.getBoundingClientRect().top - ($('#s-history').scrollTop ? 0 : 0); if (h > 300) c.style.height = h + 'px'; };
+addEventListener('resize', () => requestAnimationFrame(histFit));
 { let x0 = null, y0 = 0; const sc = $('#histList');
   sc.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
   sc.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
